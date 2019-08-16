@@ -1,0 +1,59 @@
+{
+   "name": "Pedigree Editor Module",
+   "namespace": "AEHRC\\PedigreeEditorExternalModule", 
+   "description": "This module will allow the use of a pedigree editor to build a pedigree diagram, saving the diagram into a field with the tag @PEDIGREE_EDITOR",
+   "authors": [
+       {
+            "name": "David Conlan",
+            "email": "david.conlan@csiro.au",
+            "institution": "The Australian E-Heath Research Centre"
+        },
+   	 	{
+            "name": "Maryam Mehdizadeh",
+            "email": "maryam.mehdizadeh@csiro.au",
+            "institution": "The Australian E-Heath Research Centre"
+        }           
+    ],
+    "permissions": [
+        "redcap_every_page_top", "redcap_data_entry_form"
+    ],
+    "system-settings" : [
+				{
+					"key" : "tag",
+					"name" : "Pedigree Editor Action Tag",
+					"type" : "text",
+          			"required" : true
+				},
+				{
+					"key" : "tag_desc",
+					"name" : "Recommended action tag is @PEDIGREE_EDITOR",
+					"type" : "descriptive"
+				},
+				{
+					"key" : "hide_text",
+					"name" : "Hide Text",
+					"type" : "checkbox"
+				},
+				{
+					"key" : "editor_page",
+					"name" : "Pedigree Editor URL",
+					"type" : "text",
+          			"required" : true
+				},
+				{
+					"key" : "editor_page_desc",
+					"name" : "Recommended editor URL is https://aehrc.github.io/panogram/messageEditor.html",
+					"type" : "descriptive"
+				},
+				{
+					"key" : "editor_page_local",
+					"name" : "Pedigree Editor is local",
+					"type" : "checkbox"
+				}
+								
+	],
+  "compatibility": {
+    "php-version-min" : "5.4.0",
+    "redcap-version-min": "8.8.1"
+  }
+}
