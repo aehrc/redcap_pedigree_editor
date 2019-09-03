@@ -9,19 +9,29 @@ The module will then hide or disable the notes field and instead spawn a new win
 
 Once installed the module has a number of system wide options:
 
- - *Pedigree Editor Action Tag* - This is the action tag the external module should use to recognise which fields to apply to. This should be set to `@PEDIGREE_EDITOR`
  - *Hide Text* - Flag to indicate if the text area associated with the note should be shown. The format used to store diagram will likely not make sense to anyone so this option should probably set to true.
- - *Pedigree Editor URL* - The URL for the pedigree editor. This is the url that the module will open in a new window to edit the pedigree diagram. The *recommended* value is `https://aehrc.github.io/panogram/messageEditor.html`
- - *Pedigree Editor is local* - This flag is used to indicate that the url is internal to the external module. If there are firewall issues with reaching the recommended url, the panogram editor can be included into the external module and this flag set to true. In this case the url should be set to `panogram-master/messageEditor.html`
-
+ - *Ontology Server URL* - The URL for FHIR ontology server used to lookup disorders, phenotypes and genes. If left blank then the default *'https://genomics.ontoserver.csiro.au/fhir/'* will be used. There is a matching project setting, which allows a project to use a different ontology server.
  
-![Configure](documentation/configure.png)
+![Configure](documentation/system_settings.png)
 
+### Project Settings
+
+Each project can override the *Ontology Server URL* setting. If left blank then the system setting will be used.
+
+![Configure](documentation/project_settings.png)
 
 ## Creating a Pedigree field
-To make use of the editor a field needs to be created in the online designer and marked with the corresponding action tag. Only fields of type `Notes Box` are considered.
+To make use of the editor a field needs to be created in the online designer and marked with one of two action tags. Only fields of type `Notes Box` are considered.
+  - *@PEDIGREE_HPO* - Marks a field to be a pedigree editor using the HPO and OMIM coding systems for phenotypes and disorders.
+  - *@PEDIGREE_SCT* - Marks a field to be a pedigree editor using the SNOMED-CT coding system for phenotypes and disorders.
 
-![Online Designer](documentation/online_designer.png)
+The default 'Hide Text' flag can be overriden in the action tag by appending
+  - *=HIDE_TEXT* - Hide the text area.
+  - *=SHOW_TEXT* - Show the text area.
+
+An action tag of @PEDIGREE_HPO=HIDE_TEXT will use the HPO code system and hide the text area for the field.
+
+![Online Designer](documentation/designer.png)
 
 
 ## Data Entry
@@ -33,32 +43,5 @@ In the data entry page, fields marked with the pedigree editor action tag will s
 ![Panogram Editor](documentation/panogram.png)
 
 ![Data Entry (with data)](documentation/data_entry_2.png)
-
-
-## Running a local editor
-The recommended editor url is at a third party site, this may be unacceptable due to firewalls or other issues. The module also allows for the editor page to be contained within the module. To do this visit the editors github page and download a zip of the editor.
-
-[https://github.com/aehrc/panogram/archive/master.zip](https://github.com/aehrc/panogram/archive/master.zip)
-
-This zip is then extracted into the pedigree external module directory. This wil result in a directory panogram-master with all the files required by the editor. The module then needs to configured to have a url of `panogram-master/messageEditor.html` and have the `Pedigree Editor is local` checkbox selected.
-
-
-## Message Protocol
-Strictly speaking, this module does not understand the format of the pedigree editor. It just knows to open a url in a new browser window and to send the contents of the notes box via a window.postMessage() function, and to listen for message events and update the contents with data in the message. Below is the basic protocol the module uses.
-
-1. Register for message events
-2. Open url in window.
-3. Wait for a message from the window with the contents `{ "messageType" : "panogram_control", "message": "started"}` this tells the module the page is loaded and can be sent the data to display
-4. Send a message to the window with the contents
-
-        { "messageType" : "panogram", 
-          "panogramData" : { 
-               "context": { "field" : <redcap field name> }, 
-               "data" : <redcap field data> } 
-          } 
-        }
-5. Wait for a message from the editor window with the same contents as step 4, but with updated data.
-
-The module uses the contexts field to work out which field needs to be updated. If the instrument has more than one pedigree field this is how the module knows which to update. The module will also send a blank data message when the data entry page is left, this is incase the editor window is not closed. The editor should close when the save button is pressed, but the user can always navigate between the windows manually.
 
 			

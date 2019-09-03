@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>Smart on FHIR launcher</title>
+        <script src="https://cdn.jsdelivr.net/npm/fhirclient/build/fhir-client.js"></script>
+    </head>
+    <body>
+        <script>
+          var url = new URL(location.href);
+          if (!url.searchParams.has("launch") || !url.searchParams.has("iss")) {
+            document.body.innerHTML = 'This page is for launching a smart on fhir application. If things work it should forward to the oauth authorisation system';
+          }
+          else {
+            FHIR.oauth2.authorize({
+
+              // The client_id that you should have obtained after registering a client at
+              // the EHR.
+              clientId: "panogram",
+
+              // The scopes that you request from the EHR
+              scope: [
+                "launch",           // Get the launch context in EHR launch mode
+                "openid fhirUser",  // Get the current user
+                "patient/Patient.read",   // Read patient data
+                "patient/Composition.*",
+              ].join(" "),
+
+              // Typically, if your redirectUri points to the root of the current directory
+              // (where the launchUri is), you can omit this option because the default
+              // value is ".". However, some servers (like this one) do not support directory
+              // indexes so "." and "./" will not automatically map to the "index.html" file
+              // in that directory.
+              redirectUri: "smartEditorM.html"
+            });
+          }
+        </script>
+    </body>
+</html>

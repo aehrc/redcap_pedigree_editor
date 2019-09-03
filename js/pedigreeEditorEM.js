@@ -32,18 +32,13 @@ pedigreeEditorEM.start = function() {
 			// pedigreeEditorEM.fieldsOfInterest[i].field + "'");
 			pedigreeEditorEM.render(pedigreeEditorEM.fieldsOfInterest[i]);
 		}
-
-		window.addEventListener('message', pedigreeEditorEM.onMessageEvent,
-				false);
-		window.addEventListener('unload', function(event) {
-			// clear out the editor data
-			if (pedigreeEditorEM.editorWindow) {
-				pedigreeEditorEM.editorWindow.postMessage({
-					"messageType" : "panogram",
-					"panogramData" : null
-				}, pedigreeEditorEM.editorPageOrigin);
-			}
-		});
+		if (pedigreeEditorEM.transportType == 'local'){
+			window.addEventListener('storage', pedigreeEditorEM.onStorageEvent, false);	
+		}
+		else {
+			window.addEventListener('message', pedigreeEditorEM.onMessageEvent,	false);	
+		}
+		window.addEventListener('unload', function(event) {pedigreeEditorEM.clearDataToEditor()});
 	});
 };
 
@@ -60,13 +55,11 @@ pedigreeEditorEM.render = function(fieldData) {
 	var data = $('td.data', tr);
 
 	var result;
-	if (fieldData.type == "notes") {
-		result = $('textarea[name="' + fieldData.field + '"]', tr);
-	}
+	result = $('textarea[name="' + fieldData.field + '"]', tr);
 	var haveData = false;
 	if (result) {
 		result.attr('readonly', true);
-		if (pedigreeEditorEM.hideInput) {
+		if (fieldData.hideText) {
 			result.hide();
 		}
 		if (result.val().length > 0) {
@@ -102,19 +95,16 @@ pedigreeEditorEM.edit = function(field) {
 	var tr = $('tr[sq_id=' + field + ']');
 
 	var currentValue;
-	if (fieldData.type == "notes") {
-		currentValue = $('textarea[name="' + fieldData.field + '"]', tr).val();
-	}
+    currentValue = $('textarea[name="' + fieldData.field + '"]', tr).val();
 	var data = {};
 	data.context = {
 		'field' : field
 	};
 	data.value = currentValue;
-
-	pedigreeEditorEM.sendWhenReady = true;
-	pedigreeEditorEM.messageData = data;
-
-	pedigreeEditorEM.editorWindow = window.open(pedigreeEditorEM.editorPage,
+	pedigreeEditorEM.sendDataToEditor(data);
+	pedigreeEditorEM.log("Opening editor window");
+	var pageToOpen = (fieldData.mode == 'HPO') ? pedigreeEditorEM.hpoEditorPage : pedigreeEditorEM.sctEditorPage; 
+	pedigreeEditorEM.editorWindow = window.open(pageToOpen,
 			pedigreeEditorEM.windowName);
 
 	return true;
@@ -134,11 +124,7 @@ pedigreeEditorEM.save = function(field, value) {
 		return;
 	}
 	var tr = $('tr[sq_id=' + field + ']');
-	if (fieldData.type == "text") {
-		$('input[name="' + fieldData.field + '"]', tr).val(value);
-	} else if (fieldData.type == "notes") {
-		$('textarea[name="' + fieldData.field + '"]', tr).val(value);
-	}
+	$('textarea[name="' + fieldData.field + '"]', tr).val(value);
 
 	var imageId = field + '_pedigreeEditorEM_icon';
 	var icon = value ? pedigreeEditorEM.dataIcon : pedigreeEditorEM.emptyIcon;
@@ -146,6 +132,32 @@ pedigreeEditorEM.save = function(field, value) {
 	window.focus();
 
 }
+
+pedigreeEditorEM.sendDataToEditor = function(data){
+	if (pedigreeEditorEM.transportType == 'local'){
+		window.localStorage.setItem(pedigreeEditorEM.probandStorageKey, '');
+		window.localStorage.setItem(pedigreeEditorEM.panogramDataKey, JSON.stringify(data));
+	}
+	else {
+		// doesn't get sent until get the ready signal
+		pedigreeEditorEM.sendWhenReady = true;
+		pedigreeEditorEM.messageData = data;
+	}
+};
+
+pedigreeEditorEM.clearDataToEditor = function(){
+	pedigreeEditorEM.log("Clearing transport data");
+	if (pedigreeEditorEM.transportType == 'local'){
+		window.localStorage.setItem(pedigreeEditorEM.probandStorageKey, null);
+		window.localStorage.setItem(pedigreeEditorEM.panogramDataKey, null);
+	}
+	else {
+		if (pedigreeEditorEM.editorWindow) {
+			pedigreeEditorEM.editorWindow.postMessage({"messageType" : "panogram","panogramData" : null}, pedigreeEditorEM.editorPageOrigin);
+			pedigreeEditorEM.editorWindow.postMessage({"messageType" : "proband","probandData" : null}, pedigreeEditorEM.editorPageOrigin);
+		}
+	}
+};
 
 pedigreeEditorEM.onMessageEvent = function(event) {
 
@@ -156,24 +168,37 @@ pedigreeEditorEM.onMessageEvent = function(event) {
 			if (event.data.message == "started"
 					&& pedigreeEditorEM.sendWhenReady) {
 
-				console.log("Sending data to editor");
+				pedigreeEditorEM.log("Sending data to editor");
 
-				pedigreeEditorEM.editorWindow.postMessage({
-					"messageType" : "panogram",
-					"panogramData" : pedigreeEditorEM.messageData
-				}, pedigreeEditorEM.editorPageOrigin);
+				pedigreeEditorEM.editorWindow.postMessage({"messageType" : "proband","probandData" : null}, pedigreeEditorEM.editorPageOrigin);
+				pedigreeEditorEM.editorWindow.postMessage({"messageType" : "panogram","panogramData" : pedigreeEditorEM.messageData}, 
+						pedigreeEditorEM.editorPageOrigin);
 				pedigreeEditorEM.sendWhenReady = false;
 			}
 		} else if (event.data.messageType === "panogram") {
-			console.log("Got data from editor");
+			pedigreeEditorEM.log("Got data from editor");
 			if (event.data.panogramData) {
-				pedigreeEditorEM.save(event.data.panogramData.context.field,
-						event.data.panogramData.value);
+				pedigreeEditorEM.save(event.data.panogramData.context.field, event.data.panogramData.value);
 
 			}
 		}
 	}
 }
+
+pedigreeEditorEM.onStorageEvent = function(storageEvent) {
+
+	if (storageEvent.storageArea == window.localStorage && storageEvent.key == pedigreeEditorEM.panogramDataKey){
+		// the data has been updated
+		var data = JSON.parse(storageEvent.newValue);
+		
+		if (data && data.context && data.context.field) {
+			pedigreeEditorEM.log("Got data from editor");
+			pedigreeEditorEM.save(data.context.field, data.value);
+		}
+	}
+}
+
+
 
 $(document).ready(function() {
 	pedigreeEditorEM.start();

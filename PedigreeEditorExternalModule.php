@@ -14,82 +14,148 @@ use ExternalModules\AbstractExternalModule;
  */
 class PedigreeEditorExternalModule extends AbstractExternalModule {
 
-    public $defaultTag = "@PEDIGREE_EDITOR";
-    public $defaultEditorPage = "panogram_editor.html";
-    public $defaultEditorPageLocal = true;
-
+    public function validateSettings($settings){
+        $errors='';
+                
+        $systemOntologyServer = $settings['system_ontology_server'];
+        if ($systemOntologyServer){
+            $metadata = http_get($systemOntologyServer . 'metadata');
+            if ($metadata == FALSE){
+                $errors .= "Failed to get metadata for fhir server at '" . $systemOntologyServer . "'metadata\n";
+            }
+        }
+        $projectOntologyServer = $settings['project_ontology_server'];
+        if ($projectOntologyServer){
+            $metadata = http_get($projectOntologyServer . 'metadata', null, $info);
+            if ($metadata == FALSE){
+                $errors .= "Failed to get metadata for fhir server at '" . $projectOntologyServer . "'metadata\n" . json_encode($info);
+            }
+        }
+        return $errors;
+    }
     
     function redcap_data_entry_form ($project_id, $record, $instrument, $event_id, $group_id, $repeat_instance) {
-        $tag = $this->getSystemSetting('tag');
-        if (!$tag){
-            $tag = $this->defaultTag;
-        }
+        
+        // At one stage these things were going to be in the settings for the editor
+        // maybe in the future they will be exposed.
+        $hpoEditorPage = 'panogram/localEditor.html?mode=HPO';
+        $sctEditorPage = 'panogram/localEditor.html?mode=SCT';
+        $editorPageLocal = TRUE;
+        $hpoTag = '@PEDIGREE_HPO';
+        $sctTag = '@PEDIGREE_SCT';
+        $hideTextOption = 'HIDE_TEXT';
+        $showTextOption = 'SHOW_TEXT';
+        $transportType = 'local';
+        
         $hideText = $this->getSystemSetting('hide_text');
         
         // Get the data dictionary for the current instrument in array format
         $dd_array = \REDCap::getDataDictionary($project_id, 'array',  false, null, $instrument);
-        $dd_json = \REDCap::getDataDictionary($project_id, 'json',  false, null, $instrument);
         
         $fieldsOfInterest = array();
         
         foreach ($dd_array as $field_name=>$field_attributes)
         {
-            $pos = strpos($field_attributes['field_annotation'], $tag);
-            if ($pos !== FALSE && $field_attributes['field_type'] === 'notes'){
-                $row = array();
-                $row['field'] = $field_name;
-                $row['type'] = $field_attributes['field_type'];
-                $row['label'] = $field_attributes['field_label'];
-                $fieldsOfInterest[] = $row;
+            if ($field_attributes['field_type'] === 'notes'){
+                $hpoPos = strpos($field_attributes['field_annotation'], $hpoTag);
+                $mode = null;
+                if ($hpoPos !== FALSE){
+                    $mode = 'HPO';
+                }
+                else {
+                    $sctPos = strpos($field_attributes['field_annotation'], $sctTag);
+                    if ($sctPos !== FALSE){
+                        $mode = 'SCT';
+                    }
+                }
+                if ($mode !== null){
+                    $hide = $hideText;
+                    $hidePos = strPos($field_attributes['field_annotation'], $mode . '=' . $hideTextOption);
+                    if ($hidePos !== FALSE){
+                        $hide = TRUE;
+                    }
+                    else {
+                        $showPos = strPos($field_attributes['field_annotation'], $mode . '=' . $showTextOption);
+                        if ($showPos !== FALSE){
+                            $hide = FALSE;
+                        }
+                    }
+                    $row = array();
+                    $row['field'] = $field_name;
+                    $row['label'] = $field_attributes['field_label'];
+                    $row['mode'] = $mode;
+                    $row['hideText'] = $hide;
+                    $fieldsOfInterest[] = $row;
+                }
             }
         }
 
-        
-//         if (empty($fieldsOfInterest)) {
-//             return;
-//         }
-        
-        $editorPage = $this->getSystemSetting('editor_page');
-        $editorPageLocal = $this->getSystemSetting('editor_page_local');
-        if (!$editorPage){
-            $editorPage = $this->defaultEditorPage;
-            $editorPageLocal = $this->defaultEditorPageLocal;
+
+        if (empty($fieldsOfInterest)) {
+            return;
         }
         
         
+        $systemOntologyServer = $this->getSystemSetting('system_ontology_server');
+        $projectOntologyServer = $this->getProjectSetting('project_ontology_server', $project_id);
+        
+        $ontologyServer = ($projectOntologyServer) ? $projectOntologyServer : $systemOntologyServer;
+
+        if ($ontologyServer){
+            $hpoEditorPage = $hpoEditorPage . '&ontologyServer=' . $ontologyServer;
+            $sctEditorPage = $sctEditorPage . '&ontologyServer=' . $ontologyServer;
+        }
+        // the local url build wants to put a '?' on the end which breaks paramaters, so add one to soak the extra
+        $hpoEditorPage = $hpoEditorPage . '&broken=redcap';
+        $sctEditorPage = $sctEditorPage . '&broken=redcap';
         
         $fieldsOfInterestJson = json_encode($fieldsOfInterest);
         if ($editorPageLocal){
-            $editorUrl = $this->getLocalUrl($editorPage);
+            $hpoEditorUrl = $this->getLocalUrl($hpoEditorPage);
+            $sctEditorUrl = $this->getLocalUrl($sctEditorPage);
         }
         else {
-            $editorUrl = $editorPage;
+            $hpoEditorUrl = $hpoEditorPage;
+            $sctEditorUrl = $sctEditorPage;
         }
-        $urlData = parse_url($editorUrl);
-        $scheme   = isset($urlData['scheme']) ? $urlData['scheme'] . '://' : '';
-        $host     = isset($urlData['host']) ? $urlData['host'] : '';
-        $port     = isset($urlData['port']) ? ':' . $urlData['port'] : '';
-        $editorUrlOrigin = $scheme . $host . $port;
+        
+        if ($transportType == 'message'){
+            $urlData = parse_url($hpoEditorUrl);
+            $scheme   = isset($urlData['scheme']) ? $urlData['scheme'] . '://' : '';
+            $host     = isset($urlData['host']) ? $urlData['host'] : '';
+            $port     = isset($urlData['port']) ? ':' . $urlData['port'] : '';
+            $editorUrlOrigin = $scheme . $host . $port;
+            
+            $transportOptions = <<<EOD
+    pedigreeEditorEM.sendWhenReady = false;
+    pedigreeEditorEM.messageData = null;
+    pedigreeEditorEM.editorPageOrigin = '{$editorUrlOrigin}';
+EOD;
+        }
+        else {
+            $transportOptions = <<<EOD
+    pedigreeEditorEM.panogramDataKey = 'PANOGRAM_DIAGRAM_DATA';
+    pedigreeEditorEM.probandDataKey = 'PANOGRAM_PROBAND_DATA';
+EOD;
+        }
+        
         
         $emptyIcon = $this->getLocalUrl('empty_pedigree.svg');
         $dataIcon = $this->getLocalUrl('pedigree_with_data.svg');
-        $hideInput = $hideText ? 'true' : 'false';
         
         $dialog = <<<EOD
         
 <script type="text/javascript">
     var pedigreeEditorEM = pedigreeEditorEM || {};
     pedigreeEditorEM.fieldsOfInterest = {$fieldsOfInterestJson};
-    pedigreeEditorEM.editorPage = '{$editorUrl}';
+    pedigreeEditorEM.hpoEditorPage = '{$hpoEditorUrl}';
+    pedigreeEditorEM.sctEditorPage = '{$sctEditorUrl}';
     pedigreeEditorEM.emptyIcon = '{$emptyIcon}';
     pedigreeEditorEM.dataIcon = '{$dataIcon}';
     pedigreeEditorEM.windowName = 'pedigreeEditor';
-    pedigreeEditorEM.localStorageKey = 'PedigreeEditorExternalModuleTransfer';
     pedigreeEditorEM.editorWindow = null;
-    pedigreeEditorEM.editorPageOrigin = '{$editorUrlOrigin}';
-    pedigreeEditorEM.sendWhenReady = false;
-    pedigreeEditorEM.hideInput = {$hideInput};
-    pedigreeEditorEM.dd = {$dd_json};
+    pedigreeEditorEM.transportType = '{$transportType}';
+{$transportOptions}
 </script>
 
 EOD;
@@ -99,26 +165,6 @@ EOD;
         $this->includeJs('js/pedigreeEditorEM.js');
     }
     
-    /**
-     * @inheritdoc
-     */
-    function redcap_every_page_top($project_id) {
-        
-        $tag = $this->getSystemSetting('tag');
-        if (!$tag){
-            $tag = $this->defaultTag;
-        }
-        
-        if (PAGE == 'Design/online_designer.php' && $project_id) {
-
-            echo "<script>var pedigreeEditorEM = pedigreeEditorEM || {};</script>";
-            echo "<script>pedigreeEditorEM.actionTag = '" . $tag . "';</script>";
-
-//             $this->includeJs('js/helper.js');
-        }
-
-        
-    }
 
     /**
      * Includes a local JS file - uses the API endpoint if auth type is shib

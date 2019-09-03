@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<!-- Bootstrap CSS -->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+	integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+	crossorigin="anonymous">
+
+<title>Panogram Smart on FHIR editor</title>
+</head>
+<body>
+	<!-- Optional JavaScript -->
+	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+		integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+		integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/fhirclient/build/fhir-client.js"></script>
+
+
+	<div class="container-fluid">
+		<div class="row">
+			<h2>Panogram Smart on FHIR editor</h2>
+		</div>
+		<div class="row">
+			<div class="search-table-outter wrapper">
+				<table class="table table-striped table-bordered">
+					<tr>
+						<td style="font-weight: bold">Patient ID</td>
+						<td id="patient_id"></td>
+					</tr>
+					<tr>
+						<td style="font-weight: bold">Patient Name</td>
+						<td id="patient_name"></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div class="row">
+			<div class="search-table-outter wrapper">
+				<table class="table table-hover table-bordered">
+					<thead>
+						<tr>
+							<th>Date Created</th>
+							<th>Disorder</th>
+							<th>Family Members</th>
+						</tr>
+					</thead>
+					<tbody id="pedigree_list">
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="row">
+			<a class="btn btn-info" role="button" onclick="createNewClicked()">New
+				Pedigree Diagram</a>
+		</div>
+
+	</div>
+
+	<script type="text/javascript">
+		// <![CDATA[
+
+		var SmartPanogram = SmartPanogram || {};
+		SmartPanogram.editorWindow = null;
+		SmartPanogram.editorPage = "https://aehrc.github.io/panogram/messageEditor.html";
+		SmartPanogram.editorPageOrigin = "https://aehrc.github.io";
+		SmartPanogram.windowName = "panagram";
+		SmartPanogram.sendWhenReady = false;
+		SmartPanogram.probandData = {};
+		SmartPanogram.panogramData = {
+			"context" : {},
+			"value" : {}
+		};
+		SmartPanogram.compositions = [];
+		SmartPanogram.compositionsByReference = {};
+
+		SmartPanogram.loadData = function(client) {
+			SmartPanogram.client = client;
+			SmartPanogram.patientRef = 'Patient/' + client.patient.id;
+			SmartPanogram.panogramData.context.patientFhirRef = SmartPanogram.patientRef;
+			client.request(SmartPanogram.patientRef).then(
+					SmartPanogram.handlePatientLoaded);
+			SmartPanogram.compositionQuery = 'Composition?subject='
+					+ SmartPanogram.patientRef + '&title=Pedigree Details';
+			client.request(SmartPanogram.compositionQuery).then(
+					SmartPanogram.handleCompositionsLoaded);
+			$('#patient_id').html(client.patient.id);
+		};
+
+		SmartPanogram.handlePatientLoaded = function(patient) {
+			SmartPanogram.patient = patient;
+
+			if (patient) {
+				var gender = patient.gender;
+				if (gender === 'female') {
+					gender = 'F';
+				} else if (gender === 'male') {
+					gender = 'M';
+				} else {
+					gender = 'U';
+				}
+				var first_name = '';
+				var last_name = '';
+				var useOrder = [ 'anonymous', 'maiden', 'old', 'temp', null,
+						undefined, 'nickname', 'usual', 'official' ];
+				var useIndex = -2;
+				if (patient.name) {
+					var nameCount = patient.name.length;
+					for (var i = 0; i < nameCount; i++) {
+						console.log(patient.name[i]);
+						var u = useOrder.indexOf(patient.name[i].use);
+						if (u > useIndex) {
+							console.log(`u = ${u}`);
+							console.log(patient.name[i].use,
+									patient.name[i].family);
+							useIndex = u;
+							last_name = patient.name[i].family;
+							first_name = (patient.name[i].given) ? patient.name[i].given[0]
+									: '';
+						}
+					}
+				}
+				SmartPanogram.probandData.gender = gender;
+				SmartPanogram.probandData.firstName = first_name;
+				SmartPanogram.probandData.lastName = last_name;
+				$('#patient_name').html(first_name + " " + last_name);
+			}
+		};
+
+		SmartPanogram.handleCompositionsLoaded = function(bundle) {
+			console.log('Handle composition load');
+			console.log(bundle);
+			// remove any rows
+			SmartPanogram.compositions = [];
+			SmartPanogram.compositionsByReference = {};
+			$('#pedigree_list').empty();
+			if (bundle.entry){
+				
+				for (var i = 0; i < bundle.entry.length; i++) {
+					var resource = bundle.entry[i].resource;
+					var reference = 'Composition/' + resource.id;
+
+					SmartPanogram.compositions.push(resource);
+					SmartPanogram.compositionsByReference[reference] = resource;
+
+					var dateCreated = resource.date;
+					var disorders = [];
+					var fmCount = 0;
+					for (var j = 0; j < resource.contained.length; j++) {
+						if (resource.contained[j].resourceType == 'FamilyMemberHistory') {
+							fmCount++;
+						} else if (resource.contained[j].resourceType == 'Condition') {
+							if (resource.contained[j].code) {
+								disorders.push(resource.contained[j].code.text);
+							}
+
+						}
+					}
+					$('#pedigree_list').append(
+							'<tr onclick="editClicked(\'' + reference + '\')"><td>'
+									+ dateCreated + '</td><td>' + disorders.join()
+									+ '</td><td>' + fmCount + '</td></tr>');
+				}
+			}
+		};
+
+		SmartPanogram.refreshCompositions = function(result) {
+			console.log(result);
+			if (SmartPanogram.client) {
+				SmartPanogram.client.request(SmartPanogram.compositionQuery)
+						.then(SmartPanogram.handleCompositionsLoaded);
+			}
+		}
+
+		SmartPanogram.newDiagram = function() {
+			if (SmartPanogram.sendWhenReady) {
+				console.log("Already waiting to send");
+				return;
+			}
+			console.log('new Diagram');
+
+			console.log("Opening panogram editor in a new window");
+			SmartPanogram.panogramData.value = '';
+			SmartPanogram.panogramData.context.compositionFhirRef = null;
+			SmartPanogram.sendWhenReady = true;
+			SmartPanogram.editorWindow = window.open(SmartPanogram.editorPage,
+					SmartPanogram.windowName);
+		};
+
+		SmartPanogram.editDiagram = function(reference) {
+			if (SmartPanogram.sendWhenReady) {
+				console.log("Already waiting to send");
+				return;
+			}
+			console.log('Edit Diagram ' + reference);
+			if (SmartPanogram.compositionsByReference[reference]) {
+				console.log("Opening panogram editor in a new window");
+				SmartPanogram.panogramData.value = JSON
+						.stringify(SmartPanogram.compositionsByReference[reference]);
+				SmartPanogram.panogramData.context.compositionFhirRef = reference;
+				SmartPanogram.sendWhenReady = true;
+				SmartPanogram.editorWindow = window.open(
+						SmartPanogram.editorPage, SmartPanogram.windowName);
+			}
+		};
+
+		SmartPanogram.handleDataFromEditor = function(data) {
+			if (!SmartPanogram.client) {
+				// no client to send
+				return;
+			}
+			if (data && data.context
+					&& data.context.patientFhirRef === SmartPanogram.patientRef) {
+				var resource = JSON.parse(data.value);
+				console.log('Handle data from editor');
+				console.log(resource);
+				if (data.context.compositionFhirRef) {
+					if (SmartPanogram.compositionsByReference[data.context.compositionFhirRef]) {
+						resource.id = SmartPanogram.compositionsByReference[data.context.compositionFhirRef].id;
+						SmartPanogram.client.update(resource).then(
+								SmartPanogram.refreshCompositions);
+					} else {
+						SmartPanogram.client.create(resource).then(
+								SmartPanogram.refreshCompositions);
+					}
+				} else {
+					SmartPanogram.client.create(resource).then(
+							SmartPanogram.refreshCompositions);
+				}
+			}
+		}
+
+		window
+				.addEventListener(
+						'message',
+						function(event) {
+							if (event.source == SmartPanogram.editorWindow
+									&& event.origin == SmartPanogram.editorPageOrigin) {
+								// the message is from editor window
+								if (event.data.messageType === "panogram_control") {
+									if (event.data.message == "started"
+											&& SmartPanogram.sendWhenReady) {
+
+										console.log("Sending data to editor");
+
+										SmartPanogram.editorWindow
+												.postMessage(
+														{
+															"messageType" : "proband",
+															"probandData" : SmartPanogram.probandData
+														},
+														SmartPanogram.editorPageOrigin);
+										SmartPanogram.editorWindow
+												.postMessage(
+														{
+															"messageType" : "panogram",
+															"panogramData" : SmartPanogram.panogramData
+														},
+														SmartPanogram.editorPageOrigin);
+										SmartPanogram.sendWhenReady = false;
+									}
+								} else if (event.data.messageType === "panogram") {
+									console.log("Got data from editor");
+									SmartPanogram
+											.handleDataFromEditor(event.data.panogramData);
+								}
+							}
+						}, false);
+
+		FHIR.oauth2.ready().then(SmartPanogram.loadData);
+
+		function createNewClicked() {
+			SmartPanogram.newDiagram();
+		}
+
+		function editClicked(reference) {
+			SmartPanogram.editDiagram(reference);
+		}
+
+		// ]]>
+	</script>
+
+</body>
+</html>

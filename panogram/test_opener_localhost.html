@@ -1,0 +1,1567 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Test Opener</title>
+  </head>
+  <body>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	<script type="text/javascript">
+        // <![CDATA[
+        	var editorWindow = null;
+    		var editorPage = "http://localhost:8990/messageEditor.html";
+    		var editorPageOrigin = "http://localhost:8990";
+    		var windowName = "panagram";
+    		var sendWhenReady = false;
+        	
+        	window.addEventListener('message',  function(event) {   	
+            	if (event.source == editorWindow && event.origin == editorPageOrigin){
+            		// the message is from editor window
+            		if (event.data.messageType === "panogram_control"){
+            			if (event.data.message == "started" && sendWhenReady){
+            				var context = $("#context").val();
+                    		var data = $("#data").val();
+                    		var panogramData = {"context": context, "value": data};
+                    		
+                    		console.log("Sending data to editor");
+                    		
+                    		editorWindow.postMessage({"messageType": "panogram", "panogramData": panogramData}, editorPageOrigin);
+                    		sendWhenReady = false;
+            			}
+            		}
+            		else if (event.data.messageType === "panogram"){
+            			console.log("Gor data from editor");
+            			if (event.data.panogramData){
+            				$("#context").val(event.data.panogramData.context);
+                    		$("#data").val(event.data.panogramData.value);
+            			}
+            			else {
+            				$("#context").val("");
+                    		$("#data").val("");
+            			}        			
+            		}
+            	}
+            }, false);
+        	
+        	function openEditor(element){
+        		console.log("Opening panogram editor in a new window");
+        		var firstChar = '?';
+        		var pageToOpen = editorPage;
+        		var ontologyServer = $("#ontologyServer").val();
+        		if (ontologyServer) {
+        			pageToOpen += firstChar + 'ontologyServer=' + ontologyServer;
+        			firstChar = '&';
+        		}
+        		if($('#sctMode').is(':checked')){
+        			pageToOpen += firstChar + 'mode=SCT';
+        			firstChar = '&';
+        		}
+        		
+        		sendWhenReady = true;
+        		editorWindow = window.open(pageToOpen, windowName);
+        	}
+        	
+        	function clearData(element){
+        		console.log("Clearing");
+        		$("#context").val("");
+        		$("#data").val("");
+        	}
+        // ]]>
+    </script>
+
+
+    <h1>Test Opener</h1>
+
+	<div class="container-fluid">
+<form>
+  <div class="form-group">
+    <label for="context">Editor Context</label>
+    <input type="text" class="form-control" id="context" aria-describedby="contextHelp" placeholder="Enter context">
+    <small id="contextHelp" class="form-text text-muted">The context is sent to panogram and then returned with saved diagram data.</small>
+  </div>
+    <div class="form-group">
+    <label for="context">Ontology Server</label>
+    <input type="text" class="form-control" id="ontologyServer" aria-describedby="contextHelp" placeholder="Enter Server of leave blank for default">
+    <small id="contextHelp" class="form-text text-muted">The ontology server used to lookup disorders and phenotypes</small>
+  </div>
+  <div class="form-group">
+    <label for="mode">Mode</label>
+    <div class="form-control">
+    <div class="form-check form-check-inline">
+		<input class="form-check-input" type="radio" name="mode" id="hpoMode" value="HPO" checked="checked">
+  		<label class="form-check-label active" for="hpoMode">HPO</label>
+	</div>
+	<div class="form-check form-check-inline">
+  		<input class="form-check-input" type="radio" name="mode" id="sctMode" value="SCT">
+  		<label class="form-check-label" for="sctMode">SCT</label>
+	</div>
+    </div>
+    <small id="contextHelp" class="form-text text-muted">Code system to use for disorders and phenotypes. The test example uses HPO, clear the input before changing to SCT</small>
+  </div>
+  <div class="form-group">
+    <label for="data">Data</label>
+    <textarea class="form-control" id="data" rows="10" readOnly="true">{
+	"resourceType" : "Composition",
+	"status" : "preliminary",
+	"type" : {
+		"coding" : {
+			"system" : "http://loinc.org",
+			"code" : "11488-4",
+			"display" : "Consult note"
+		}
+	},
+	"subject" : {
+		"type" : "Patient",
+		"reference" : "#pat"
+	},
+	"date" : "2019-08-28T12:13:15-10:00",
+	"title" : "Pedigree Details",
+	"extension" : [ {
+		"url" : "https://github.com/aehrc/panogram/panogram-data-extension",
+		"valueAttachment" : {
+			"contentType" : "application/json",
+			"data" : "W3siaWQiOjAsImZhdGhlciI6MiwibW90aGVyIjoxLCJzZXgiOiJmZW1hbGUiLCJjb21tZW50cyI6Ik9ORVNFTEZcblRFU1QiLCJmaXJzdE5hbWUiOiJKYW5lIiwibGFzdE5hbWUiOiJTbWl0aCIsImxhc3ROYW1lQXRCaXJ0aCI6IkNvb3BlciIsImJpcnRoRGF0ZSI6IlR1ZSBGZWIgMTAgMTk3MCIsImRpc29yZGVycyI6WyIyMzQ3MDAiLCIyMzQ3NTAiXSwiaHBvVGVybXMiOlsiSFA6MDAxMjE2OCIsImh0dHA6Ly9wdXJsLm9ib2xpYnJhcnkub3JnL29iby9QUl8wMDAwMDEzNTIiXSwiY2FuZGlkYXRlR2VuZXMiOlsiSEdOQzoxODUiXSwidHdpbkdyb3VwIjowLCJjYXJyaWVyU3RhdHVzIjoiYWZmZWN0ZWQifSx7ImlkIjoxLCJmYXRoZXIiOjE4LCJtb3RoZXIiOjE3LCJzZXgiOiJmZW1hbGUiLCJjb21tZW50cyI6Ik5NVEgiLCJmaXJzdE5hbWUiOiJNYXJ5IiwibGFzdE5hbWUiOiJDb29wZXIiLCJsYXN0TmFtZUF0QmlydGgiOiJKb3JkYW4iLCJiaXJ0aERhdGUiOiJNb24gQXVnIDA2IDE5NTEiLCJjYXJyaWVyU3RhdHVzIjoiY2FycmllciJ9LHsiaWQiOjIsInNleCI6Im1hbGUiLCJjb21tZW50cyI6Ik5GVEgiLCJmaXJzdE5hbWUiOiJSb2dlciIsImxhc3ROYW1lIjoiQ29vcGVyIiwiYmlydGhEYXRlIjoiVHVlIE1hciAwOCAxOTQ5In0seyJpZCI6Mywic2V4IjoibWFsZSIsImNvbW1lbnRzIjoiU0lHT1RIUiIsImZpcnN0TmFtZSI6IlRhcnphbiIsImxhc3ROYW1lIjoiU21pdGgiLCJiaXJ0aERhdGUiOiJUdWUgQXVnIDE1IDE5NjcifSx7ImlkIjo0LCJmYXRoZXIiOjMsIm1vdGhlciI6MCwic2V4IjoibWFsZSIsImNvbW1lbnRzIjoiU09OIiwiZmlyc3ROYW1lIjoiQm9iIiwibGFzdE5hbWUiOiJTbWl0aCIsImxhc3ROYW1lQXRCaXJ0aCI6IlNtaXRoIiwiYmlydGhEYXRlIjoiV2VkIEF1ZyAwMSAxOTkwIn0seyJpZCI6NSwic2V4IjoiZmVtYWxlIiwiY29tbWVudHMiOiJEQVVJTkxBVyIsImZpcnN0TmFtZSI6IkFubmUiLCJsYXN0TmFtZSI6IlNtaXRoIiwibGFzdE5hbWVBdEJpcnRoIjoiTGltZXQiLCJiaXJ0aERhdGUiOiJUdWUgQXByIDE0IDE5OTIifSx7ImlkIjo2LCJmYXRoZXIiOjQsIm1vdGhlciI6NSwic2V4IjoibWFsZSIsImNvbW1lbnRzIjoiR1JORFNPTiIsImZpcnN0TmFtZSI6IkplcnJ5IiwibGFzdE5hbWUiOiJTbWl0aCIsImJpcnRoRGF0ZSI6IldlZCBBdWcgMTYgMjAxNyJ9LHsiaWQiOjcsInNleCI6Im1hbGUiLCJjb21tZW50cyI6IlNUUEZUSCIsImZpcnN0TmFtZSI6IkZyZWQiLCJsYXN0TmFtZSI6IkFzdGFpciIsImJpcnRoRGF0ZSI6IlR1ZSBBdWcgMDEgMTk1MCIsImxpZmVTdGF0dXMiOiJkZWNlYXNlZCIsImRlYXRoRGF0ZSI6IldlZCBBdWcgMjAgMTk2OSJ9LHsiaWQiOjgsImZhdGhlciI6NywibW90aGVyIjoxLCJzZXgiOiJmZW1hbGUiLCJjb21tZW50cyI6IkhTSVMiLCJmaXJzdE5hbWUiOiJLYXJlbiIsImxhc3ROYW1lIjoiRmxvcmVuY2UiLCJsYXN0TmFtZUF0QmlydGgiOiJBc3RhaXIiLCJiaXJ0aERhdGUiOiJXZWQgQXVnIDA2IDE5NjkifSx7ImlkIjo5LCJzZXgiOiJtYWxlIiwiY29tbWVudHMiOiJCUk9JTkxBVyIsImZpcnN0TmFtZSI6Ikdlb3JnZSIsImxhc3ROYW1lIjoiRmxvcmVuY2UiLCJiaXJ0aERhdGUiOiJXZWQgQXVnIDE4IDE5NjUifSx7ImlkIjoxMCwiZmF0aGVyIjo5LCJtb3RoZXIiOjgsInNleCI6Im1hbGUiLCJjb21tZW50cyI6Ik5FUEhFVyIsImZpcnN0TmFtZSI6IlBhdHJpY2siLCJsYXN0TmFtZSI6IkZsb3JlbmNlIiwiYmlydGhEYXRlIjoiV2VkIEF1ZyAxOSAxOTkyIn0seyJpZCI6MTEsImZhdGhlciI6MiwibW90aGVyIjoxLCJzZXgiOiJmZW1hbGUiLCJjb21tZW50cyI6Ik5TSVMiLCJmaXJzdE5hbWUiOiJTYXJhaCIsImxhc3ROYW1lIjoiQ29vcGVyIiwiYmlydGhEYXRlIjoiVHVlIEFwciAwOCAxOTc1In0seyJpZCI6MTIsImZhdGhlciI6MiwibW90aGVyIjoxLCJzZXgiOiJmZW1hbGUiLCJjb21tZW50cyI6IlRXSU5TSVMiLCJmaXJzdE5hbWUiOiJSYWNoYWVsIiwibGFzdE5hbWUiOiJMaXR0bGUiLCJsYXN0TmFtZUF0QmlydGgiOiJDb29wZXIiLCJiaXJ0aERhdGUiOiJUdWUgRmViIDEwIDE5NzAiLCJ0d2luR3JvdXAiOjB9LHsiaWQiOjEzLCJzZXgiOiJmZW1hbGUiLCJmaXJzdE5hbWUiOiJLYXlsYSIsImxhc3ROYW1lIjoiRmxvcmVuY2UiLCJsYXN0TmFtZUF0QmlydGgiOiJKb2huc29uIiwiYmlydGhEYXRlIjoiVHVlIEF1ZyAwNiAyMDE5In0seyJpZCI6MTQsImZhdGhlciI6MTAsIm1vdGhlciI6MTMsInNleCI6Im1hbGUiLCJjb21tZW50cyI6IkdORVBIRVciLCJmaXJzdE5hbWUiOiJQYXVsIiwibGFzdE5hbWUiOiJGbG9yZW5jZSIsImJpcnRoRGF0ZSI6IldlZCBBdWcgMDggMjAxOCJ9LHsiaWQiOjE1LCJzZXgiOiJtYWxlIiwiY29tbWVudHMiOiJCUk9JTkxBVyIsImZpcnN0TmFtZSI6IkpvaG4iLCJsYXN0TmFtZSI6IkxpdHRsZSIsImJpcnRoRGF0ZSI6IldlZCBPY3QgMjIgMTk2OSJ9LHsiaWQiOjE2LCJmYXRoZXIiOjE1LCJtb3RoZXIiOjEyLCJzZXgiOiJtYWxlIiwiY29tbWVudHMiOiJORVBIRVciLCJmaXJzdE5hbWUiOiJGcmFuayIsImxhc3ROYW1lIjoiTGl0dGxlIiwibGFzdE5hbWVBdEJpcnRoIjoiTGl0dGxlIiwiYmlydGhEYXRlIjoiU3VuIEF1ZyAwMyAyMDAzIn0seyJpZCI6MTcsInNleCI6ImZlbWFsZSIsImNvbW1lbnRzIjoiTUdSTVRIIiwiZmlyc3ROYW1lIjoiRWxpemFiZXRoIiwibGFzdE5hbWUiOiJKb3Jkb24iLCJsYXN0TmFtZUF0QmlydGgiOiJHYWxsYXdheSIsImJpcnRoRGF0ZSI6IldlZCBBcHIgMjYgMTkzMyIsImNhcnJpZXJTdGF0dXMiOiJjYXJyaWVyIn0seyJpZCI6MTgsInNleCI6Im1hbGUiLCJjb21tZW50cyI6Ik1HUkZUSCIsImZpcnN0TmFtZSI6IkphbWVzIiwibGFzdE5hbWUiOiJKb3JkYW4iLCJiaXJ0aERhdGUiOiJUdWUgQXVnIDEzIDE5MjkifSx7ImlkIjoxOSwiZmF0aGVyIjoxOCwibW90aGVyIjoxNywic2V4IjoiZmVtYWxlIiwiY29tbWVudHMiOiJNQVVOVCIsImZpcnN0TmFtZSI6IkppbGwiLCJsYXN0TmFtZSI6IkdpbGxpbGFuZCIsImxhc3ROYW1lQXRCaXJ0aCI6IkpvcmRhbiIsImRpc29yZGVycyI6WyIyMzQ3MDAiXSwiaHBvVGVybXMiOlsiSFA6MDAxMjE2OCJdLCJjYW5kaWRhdGVHZW5lcyI6WyJIR05DOjE4NSJdLCJjYXJyaWVyU3RhdHVzIjoiYWZmZWN0ZWQifSx7ImlkIjoyMCwic2V4IjoibWFsZSIsImNvbW1lbnRzIjoiTVVOQ0xFIiwiZmlyc3ROYW1lIjoiVG9tIiwibGFzdE5hbWUiOiJHaWxsaWxhbmQifSx7ImlkIjoyMSwiZmF0aGVyIjoyMCwibW90aGVyIjoxOSwic2V4IjoibWFsZSIsImNvbW1lbnRzIjoiTUNPVVNJTiIsImZpcnN0TmFtZSI6IlBldGVyIiwibGFzdE5hbWUiOiJHaWxsaWxhbmQiLCJsYXN0TmFtZUF0QmlydGgiOiJHaWxsaWxhbmQifSx7ImlkIjoyMiwic2V4IjoiZmVtYWxlIiwiZmlyc3ROYW1lIjoiSGVsZW4iLCJsYXN0TmFtZSI6IkdpbGxpbGFuZCJ9LHsiaWQiOjIzLCJmYXRoZXIiOjIxLCJtb3RoZXIiOjIyLCJzZXgiOiJtYWxlIiwiY29tbWVudHMiOiJNQ09VU0lOIiwiZmlyc3ROYW1lIjoiVHJlYW50IiwibGFzdE5hbWUiOiJHaWxsaWxhbmQifV0="
+		}
+	} ],
+	"section" : [ {
+		"title" : "Patient Condition",
+		"entry" : [ {
+			"type" : "Condition",
+			"reference" : "#cond_0"
+		}, {
+			"type" : "Condition",
+			"reference" : "#cond_1"
+		}, {
+			"type" : "Observation",
+			"reference" : "#fmh_clinical_0_0"
+		}, {
+			"type" : "Observation",
+			"reference" : "#fmh_clinical_0_1"
+		}, {
+			"type" : "Observation",
+			"reference" : "#fmh_genes_0_0"
+		} ]
+	}, {
+		"title" : "Family History",
+		"code" : {
+			"coding" : {
+				"system" : "http://loinc.org",
+				"code" : "10157-6",
+				"display" : "History of family member diseases"
+			}
+		},
+		"entry" : [ {
+			"type" : "FamilyMemberHistory",
+			"reference" : "#FMH_0"
+		}, {
+			"type" : "FamilyMemberHistory",
+			"reference" : "#FMH_1"
+		}, {
+			"type" : "FamilyMemberHistory",
+			"reference" : "#FMH_2"
+		}, {
+			"type" : "FamilyMemberHistory",
+			"reference" : "#FMH_3"
+		}, {
+			"type" : "FamilyMemberHistory",
+			"reference" : "#FMH_4"
+		}, {
+			"type" : "FamilyMemberHistory",
+			"reference" : "#FMH_5"
+		}, {
+			"type" : "FamilyMemberHistory",
+			"reference" : "#FMH_6"
+		}, {
+			"type" : "FamilyMemberHistory",
+			"reference" : "#FMH_7"
+		}, {
+			"type" : "FamilyMemberHistory",
+			"reference" : "#FMH_8"
+		}, {
+			"type" : "FamilyMemberHistory",
+			"reference" : "#FMH_9"
+		}, {
+			"type" : "FamilyMemberHistory",
+			"reference" : "#FMH_10"
+		}, {
+			"type" : "FamilyMemberHistory",
+			"reference" : "#FMH_11"
+		}, {
+			"type" : "FamilyMemberHistory",
+			"reference" : "#FMH_12"
+		}, {
+			"type" : "FamilyMemberHistory",
+			"reference" : "#FMH_13"
+		}, {
+			"type" : "FamilyMemberHistory",
+			"reference" : "#FMH_14"
+		}, {
+			"type" : "FamilyMemberHistory",
+			"reference" : "#FMH_15"
+		}, {
+			"type" : "FamilyMemberHistory",
+			"reference" : "#FMH_16"
+		}, {
+			"type" : "FamilyMemberHistory",
+			"reference" : "#FMH_17"
+		}, {
+			"type" : "FamilyMemberHistory",
+			"reference" : "#FMH_18"
+		}, {
+			"type" : "FamilyMemberHistory",
+			"reference" : "#FMH_19"
+		}, {
+			"type" : "Observation",
+			"reference" : "#fmh_clinical_19_0"
+		}, {
+			"type" : "Observation",
+			"reference" : "#fmh_genes_19_0"
+		}, {
+			"type" : "FamilyMemberHistory",
+			"reference" : "#FMH_20"
+		}, {
+			"type" : "FamilyMemberHistory",
+			"reference" : "#FMH_21"
+		}, {
+			"type" : "FamilyMemberHistory",
+			"reference" : "#FMH_22"
+		}, {
+			"type" : "FamilyMemberHistory",
+			"reference" : "#FMH_23"
+		} ]
+	} ],
+	"contained" : [
+			{
+				"id" : "pat",
+				"resourceType" : "Patient",
+				"gender" : "female",
+				"birthDate" : "1970-2-10"
+			},
+			{
+				"resourceType" : "Condition",
+				"id" : "cond_0",
+				"subject" : {
+					"type" : "Patient",
+					"reference" : "#pat"
+				},
+				"code" : {
+					"coding" : [ {
+						"system" : "http://www.omim.org",
+						"code" : "234700",
+						"display" : "HEART BLOCK, CONGENITAL"
+					} ]
+				}
+			},
+			{
+				"resourceType" : "Condition",
+				"id" : "cond_1",
+				"subject" : {
+					"type" : "Patient",
+					"reference" : "#pat"
+				},
+				"code" : {
+					"coding" : [ {
+						"system" : "http://www.omim.org",
+						"code" : "234750",
+						"display" : "HEART, MALFORMATION OF"
+					} ]
+				}
+			},
+			{
+				"resourceType" : "FamilyMemberHistory",
+				"id" : "FMH_0",
+				"status" : "completed",
+				"patient" : {
+					"type" : "Patient",
+					"reference" : "#pat"
+				},
+				"name" : "Smith, Jane (Cooper)",
+				"sex" : {
+					"coding" : [ {
+						"system" : "http://hl7.org/fhir/administrative-gender",
+						"code" : "female",
+						"display" : "Female"
+					} ]
+				},
+				"relationship" : {
+					"coding" : [ {
+						"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+						"code" : "ONESELF",
+						"display" : "self"
+					} ]
+				},
+				"extension" : [
+						{
+							"url" : "http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent",
+							"extension" : [
+									{
+										"url" : "type",
+										"valueCodeableConcept" : {
+											"coding" : [ {
+												"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+												"code" : "NPRN",
+												"display" : "natural parent"
+											} ]
+										}
+									}, {
+										"url" : "reference",
+										"valueReference" : {
+											"reference" : "#FMH_1"
+										}
+									} ]
+						},
+						{
+							"url" : "http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent",
+							"extension" : [
+									{
+										"url" : "type",
+										"valueCodeableConcept" : {
+											"coding" : [ {
+												"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+												"code" : "NPRN",
+												"display" : "natural parent"
+											} ]
+										}
+									}, {
+										"url" : "reference",
+										"valueReference" : {
+											"reference" : "#FMH_2"
+										}
+									} ]
+						},
+						{
+							"url" : "http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-observation",
+							"valueReference" : {
+								"type" : "Observation",
+								"reference" : "#fmh_clinical_0_0"
+							}
+						},
+						{
+							"url" : "http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-observation",
+							"valueReference" : {
+								"type" : "Observation",
+								"reference" : "#fmh_clinical_0_1"
+							}
+						},
+						{
+							"url" : "http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-observation",
+							"valueReference" : {
+								"type" : "Observation",
+								"reference" : "#fmh_genes_0_0"
+							}
+						} ],
+				"bornDate" : "1970-2-10",
+				"note" : [ {
+					"text" : "ONESELF\nTEST"
+				} ],
+				"condition" : [ {
+					"code" : {
+						"coding" : [ {
+							"system" : "http://www.omim.org",
+							"code" : "234700",
+							"display" : "HEART BLOCK, CONGENITAL"
+						} ]
+					}
+				}, {
+					"code" : {
+						"coding" : [ {
+							"system" : "http://www.omim.org",
+							"code" : "234750",
+							"display" : "HEART, MALFORMATION OF"
+						} ]
+					}
+				} ]
+			},
+			{
+				"resourceType" : "Observation",
+				"id" : "fmh_clinical_0_0",
+				"status" : "preliminary",
+				"valueString" : "HP:0012168",
+				"subject" : {
+					"type" : "Patient",
+					"reference" : "#pat"
+				}
+			},
+			{
+				"resourceType" : "Observation",
+				"id" : "fmh_clinical_0_1",
+				"status" : "preliminary",
+				"valueString" : "http://purl.obolibrary.org/obo/PR_000001352",
+				"subject" : {
+					"type" : "Patient",
+					"reference" : "#pat"
+				}
+			},
+			{
+				"resourceType" : "Observation",
+				"id" : "fmh_genes_0_0",
+				"status" : "preliminary",
+				"valueString" : "HGNC:185",
+				"subject" : {
+					"type" : "Patient",
+					"reference" : "#pat"
+				}
+			},
+			{
+				"resourceType" : "FamilyMemberHistory",
+				"id" : "FMH_1",
+				"status" : "completed",
+				"patient" : {
+					"type" : "Patient",
+					"reference" : "#pat"
+				},
+				"name" : "Cooper, Mary (Jordan)",
+				"sex" : {
+					"coding" : [ {
+						"system" : "http://hl7.org/fhir/administrative-gender",
+						"code" : "female",
+						"display" : "Female"
+					} ]
+				},
+				"relationship" : {
+					"coding" : [ {
+						"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+						"code" : "NPRN",
+						"display" : "natural parent"
+					} ]
+				},
+				"extension" : [
+						{
+							"url" : "http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent",
+							"extension" : [
+									{
+										"url" : "type",
+										"valueCodeableConcept" : {
+											"coding" : [ {
+												"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+												"code" : "NMTH",
+												"display" : "natural mother"
+											} ]
+										}
+									}, {
+										"url" : "reference",
+										"valueReference" : {
+											"reference" : "#FMH_17"
+										}
+									} ]
+						},
+						{
+							"url" : "http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent",
+							"extension" : [
+									{
+										"url" : "type",
+										"valueCodeableConcept" : {
+											"coding" : [ {
+												"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+												"code" : "NFTH",
+												"display" : "natural father"
+											} ]
+										}
+									}, {
+										"url" : "reference",
+										"valueReference" : {
+											"reference" : "#FMH_18"
+										}
+									} ]
+						} ],
+				"bornDate" : "1951-8-6",
+				"note" : [ {
+					"text" : "NMTH"
+				} ]
+			},
+			{
+				"resourceType" : "FamilyMemberHistory",
+				"id" : "FMH_2",
+				"status" : "completed",
+				"patient" : {
+					"type" : "Patient",
+					"reference" : "#pat"
+				},
+				"name" : "Cooper, Roger",
+				"sex" : {
+					"coding" : [ {
+						"system" : "http://hl7.org/fhir/administrative-gender",
+						"code" : "male",
+						"display" : "Male"
+					} ]
+				},
+				"relationship" : {
+					"coding" : [ {
+						"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+						"code" : "NPRN",
+						"display" : "natural parent"
+					} ]
+				},
+				"bornDate" : "1949-3-8",
+				"note" : [ {
+					"text" : "NFTH"
+				} ]
+			},
+			{
+				"resourceType" : "FamilyMemberHistory",
+				"id" : "FMH_3",
+				"status" : "completed",
+				"patient" : {
+					"type" : "Patient",
+					"reference" : "#pat"
+				},
+				"name" : "Smith, Tarzan",
+				"sex" : {
+					"coding" : [ {
+						"system" : "http://hl7.org/fhir/administrative-gender",
+						"code" : "male",
+						"display" : "Male"
+					} ]
+				},
+				"relationship" : {
+					"coding" : [ {
+						"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+						"code" : "SIGOTHR",
+						"display" : "significant other"
+					} ]
+				},
+				"bornDate" : "1967-8-15",
+				"note" : [ {
+					"text" : "SIGOTHR"
+				} ]
+			},
+			{
+				"resourceType" : "FamilyMemberHistory",
+				"id" : "FMH_4",
+				"status" : "completed",
+				"patient" : {
+					"type" : "Patient",
+					"reference" : "#pat"
+				},
+				"name" : "Smith, Bob",
+				"sex" : {
+					"coding" : [ {
+						"system" : "http://hl7.org/fhir/administrative-gender",
+						"code" : "male",
+						"display" : "Male"
+					} ]
+				},
+				"relationship" : {
+					"coding" : [ {
+						"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+						"code" : "SON",
+						"display" : "natural son"
+					} ]
+				},
+				"extension" : [
+						{
+							"url" : "http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent",
+							"extension" : [
+									{
+										"url" : "type",
+										"valueCodeableConcept" : {
+											"coding" : [ {
+												"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+												"code" : "NMTH",
+												"display" : "natural mother"
+											} ]
+										}
+									}, {
+										"url" : "reference",
+										"valueReference" : {
+											"reference" : "#FMH_0"
+										}
+									} ]
+						},
+						{
+							"url" : "http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent",
+							"extension" : [
+									{
+										"url" : "type",
+										"valueCodeableConcept" : {
+											"coding" : [ {
+												"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+												"code" : "NFTH",
+												"display" : "natural father"
+											} ]
+										}
+									}, {
+										"url" : "reference",
+										"valueReference" : {
+											"reference" : "#FMH_3"
+										}
+									} ]
+						} ],
+				"bornDate" : "1990-8-1",
+				"note" : [ {
+					"text" : "SON"
+				} ]
+			},
+			{
+				"resourceType" : "FamilyMemberHistory",
+				"id" : "FMH_5",
+				"status" : "completed",
+				"patient" : {
+					"type" : "Patient",
+					"reference" : "#pat"
+				},
+				"name" : "Smith, Anne (Limet)",
+				"sex" : {
+					"coding" : [ {
+						"system" : "http://hl7.org/fhir/administrative-gender",
+						"code" : "female",
+						"display" : "Female"
+					} ]
+				},
+				"relationship" : {
+					"coding" : [ {
+						"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+						"code" : "DAUINLAW",
+						"display" : "daughter in-law"
+					} ]
+				},
+				"bornDate" : "1992-4-14",
+				"note" : [ {
+					"text" : "DAUINLAW"
+				} ]
+			},
+			{
+				"resourceType" : "FamilyMemberHistory",
+				"id" : "FMH_6",
+				"status" : "completed",
+				"patient" : {
+					"type" : "Patient",
+					"reference" : "#pat"
+				},
+				"name" : "Smith, Jerry",
+				"sex" : {
+					"coding" : [ {
+						"system" : "http://hl7.org/fhir/administrative-gender",
+						"code" : "male",
+						"display" : "Male"
+					} ]
+				},
+				"relationship" : {
+					"coding" : [ {
+						"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+						"code" : "GRNDSON",
+						"display" : "grandson"
+					} ]
+				},
+				"extension" : [
+						{
+							"url" : "http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent",
+							"extension" : [
+									{
+										"url" : "type",
+										"valueCodeableConcept" : {
+											"coding" : [ {
+												"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+												"code" : "NFTH",
+												"display" : "natural father"
+											} ]
+										}
+									}, {
+										"url" : "reference",
+										"valueReference" : {
+											"reference" : "#FMH_4"
+										}
+									} ]
+						},
+						{
+							"url" : "http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent",
+							"extension" : [
+									{
+										"url" : "type",
+										"valueCodeableConcept" : {
+											"coding" : [ {
+												"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+												"code" : "NMTH",
+												"display" : "natural mother"
+											} ]
+										}
+									}, {
+										"url" : "reference",
+										"valueReference" : {
+											"reference" : "#FMH_5"
+										}
+									} ]
+						} ],
+				"bornDate" : "2017-8-16",
+				"note" : [ {
+					"text" : "GRNDSON"
+				} ]
+			},
+			{
+				"resourceType" : "FamilyMemberHistory",
+				"id" : "FMH_7",
+				"status" : "completed",
+				"patient" : {
+					"type" : "Patient",
+					"reference" : "#pat"
+				},
+				"name" : "Astair, Fred",
+				"sex" : {
+					"coding" : [ {
+						"system" : "http://hl7.org/fhir/administrative-gender",
+						"code" : "male",
+						"display" : "Male"
+					} ]
+				},
+				"relationship" : {
+					"coding" : [ {
+						"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+						"code" : "STPPRN",
+						"display" : "step parent"
+					} ]
+				},
+				"bornDate" : "1950-8-1",
+				"deceasedDate" : "1969-8-20",
+				"note" : [ {
+					"text" : "STPFTH"
+				} ]
+			},
+			{
+				"resourceType" : "FamilyMemberHistory",
+				"id" : "FMH_8",
+				"status" : "completed",
+				"patient" : {
+					"type" : "Patient",
+					"reference" : "#pat"
+				},
+				"name" : "Florence, Karen (Astair)",
+				"sex" : {
+					"coding" : [ {
+						"system" : "http://hl7.org/fhir/administrative-gender",
+						"code" : "female",
+						"display" : "Female"
+					} ]
+				},
+				"relationship" : {
+					"coding" : [ {
+						"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+						"code" : "HSIS",
+						"display" : "half-sister"
+					} ]
+				},
+				"extension" : [
+						{
+							"url" : "http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent",
+							"extension" : [
+									{
+										"url" : "type",
+										"valueCodeableConcept" : {
+											"coding" : [ {
+												"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+												"code" : "NMTH",
+												"display" : "natural mother"
+											} ]
+										}
+									}, {
+										"url" : "reference",
+										"valueReference" : {
+											"reference" : "#FMH_1"
+										}
+									} ]
+						},
+						{
+							"url" : "http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent",
+							"extension" : [
+									{
+										"url" : "type",
+										"valueCodeableConcept" : {
+											"coding" : [ {
+												"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+												"code" : "NFTH",
+												"display" : "natural father"
+											} ]
+										}
+									}, {
+										"url" : "reference",
+										"valueReference" : {
+											"reference" : "#FMH_7"
+										}
+									} ]
+						} ],
+				"bornDate" : "1969-8-6",
+				"note" : [ {
+					"text" : "HSIS"
+				} ]
+			},
+			{
+				"resourceType" : "FamilyMemberHistory",
+				"id" : "FMH_9",
+				"status" : "completed",
+				"patient" : {
+					"type" : "Patient",
+					"reference" : "#pat"
+				},
+				"name" : "Florence, George",
+				"sex" : {
+					"coding" : [ {
+						"system" : "http://hl7.org/fhir/administrative-gender",
+						"code" : "male",
+						"display" : "Male"
+					} ]
+				},
+				"relationship" : {
+					"coding" : [ {
+						"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+						"code" : "BROINLAW",
+						"display" : "brother-in-law"
+					} ]
+				},
+				"bornDate" : "1965-8-18",
+				"note" : [ {
+					"text" : "BROINLAW"
+				} ]
+			},
+			{
+				"resourceType" : "FamilyMemberHistory",
+				"id" : "FMH_10",
+				"status" : "completed",
+				"patient" : {
+					"type" : "Patient",
+					"reference" : "#pat"
+				},
+				"name" : "Florence, Patrick",
+				"sex" : {
+					"coding" : [ {
+						"system" : "http://hl7.org/fhir/administrative-gender",
+						"code" : "male",
+						"display" : "Male"
+					} ]
+				},
+				"relationship" : {
+					"coding" : [ {
+						"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+						"code" : "NEPHEW",
+						"display" : "nephew"
+					} ]
+				},
+				"extension" : [
+						{
+							"url" : "http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent",
+							"extension" : [
+									{
+										"url" : "type",
+										"valueCodeableConcept" : {
+											"coding" : [ {
+												"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+												"code" : "NMTH",
+												"display" : "natural mother"
+											} ]
+										}
+									}, {
+										"url" : "reference",
+										"valueReference" : {
+											"reference" : "#FMH_8"
+										}
+									} ]
+						},
+						{
+							"url" : "http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent",
+							"extension" : [
+									{
+										"url" : "type",
+										"valueCodeableConcept" : {
+											"coding" : [ {
+												"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+												"code" : "NFTH",
+												"display" : "natural father"
+											} ]
+										}
+									}, {
+										"url" : "reference",
+										"valueReference" : {
+											"reference" : "#FMH_9"
+										}
+									} ]
+						} ],
+				"bornDate" : "1992-8-19",
+				"note" : [ {
+					"text" : "NEPHEW"
+				} ]
+			},
+			{
+				"resourceType" : "FamilyMemberHistory",
+				"id" : "FMH_11",
+				"status" : "completed",
+				"patient" : {
+					"type" : "Patient",
+					"reference" : "#pat"
+				},
+				"name" : "Cooper, Sarah",
+				"sex" : {
+					"coding" : [ {
+						"system" : "http://hl7.org/fhir/administrative-gender",
+						"code" : "female",
+						"display" : "Female"
+					} ]
+				},
+				"relationship" : {
+					"coding" : [ {
+						"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+						"code" : "NSIS",
+						"display" : "natural sister"
+					} ]
+				},
+				"extension" : [
+						{
+							"url" : "http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent",
+							"extension" : [
+									{
+										"url" : "type",
+										"valueCodeableConcept" : {
+											"coding" : [ {
+												"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+												"code" : "NMTH",
+												"display" : "natural mother"
+											} ]
+										}
+									}, {
+										"url" : "reference",
+										"valueReference" : {
+											"reference" : "#FMH_1"
+										}
+									} ]
+						},
+						{
+							"url" : "http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent",
+							"extension" : [
+									{
+										"url" : "type",
+										"valueCodeableConcept" : {
+											"coding" : [ {
+												"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+												"code" : "NFTH",
+												"display" : "natural father"
+											} ]
+										}
+									}, {
+										"url" : "reference",
+										"valueReference" : {
+											"reference" : "#FMH_2"
+										}
+									} ]
+						} ],
+				"bornDate" : "1975-4-8",
+				"note" : [ {
+					"text" : "NSIS"
+				} ]
+			},
+			{
+				"resourceType" : "FamilyMemberHistory",
+				"id" : "FMH_12",
+				"status" : "completed",
+				"patient" : {
+					"type" : "Patient",
+					"reference" : "#pat"
+				},
+				"name" : "Little, Rachael (Cooper)",
+				"sex" : {
+					"coding" : [ {
+						"system" : "http://hl7.org/fhir/administrative-gender",
+						"code" : "female",
+						"display" : "Female"
+					} ]
+				},
+				"relationship" : {
+					"coding" : [ {
+						"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+						"code" : "TWINSIS",
+						"display" : "twin sister"
+					} ]
+				},
+				"extension" : [
+						{
+							"url" : "http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent",
+							"extension" : [
+									{
+										"url" : "type",
+										"valueCodeableConcept" : {
+											"coding" : [ {
+												"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+												"code" : "NMTH",
+												"display" : "natural mother"
+											} ]
+										}
+									}, {
+										"url" : "reference",
+										"valueReference" : {
+											"reference" : "#FMH_1"
+										}
+									} ]
+						},
+						{
+							"url" : "http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent",
+							"extension" : [
+									{
+										"url" : "type",
+										"valueCodeableConcept" : {
+											"coding" : [ {
+												"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+												"code" : "NFTH",
+												"display" : "natural father"
+											} ]
+										}
+									}, {
+										"url" : "reference",
+										"valueReference" : {
+											"reference" : "#FMH_2"
+										}
+									} ]
+						} ],
+				"bornDate" : "1970-2-10",
+				"note" : [ {
+					"text" : "TWINSIS"
+				} ]
+			},
+			{
+				"resourceType" : "FamilyMemberHistory",
+				"id" : "FMH_13",
+				"status" : "completed",
+				"patient" : {
+					"type" : "Patient",
+					"reference" : "#pat"
+				},
+				"name" : "Florence, Kayla (Johnson)",
+				"sex" : {
+					"coding" : [ {
+						"system" : "http://hl7.org/fhir/administrative-gender",
+						"code" : "female",
+						"display" : "Female"
+					} ]
+				},
+				"relationship" : {
+					"coding" : [ {
+						"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+						"code" : "FAMMEMB",
+						"display" : "family member"
+					} ]
+				},
+				"bornDate" : "2019-8-6"
+			},
+			{
+				"resourceType" : "FamilyMemberHistory",
+				"id" : "FMH_14",
+				"status" : "completed",
+				"patient" : {
+					"type" : "Patient",
+					"reference" : "#pat"
+				},
+				"name" : "Florence, Paul",
+				"sex" : {
+					"coding" : [ {
+						"system" : "http://hl7.org/fhir/administrative-gender",
+						"code" : "male",
+						"display" : "Male"
+					} ]
+				},
+				"relationship" : {
+					"coding" : [ {
+						"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+						"code" : "EXT",
+						"display" : "extended family member"
+					} ]
+				},
+				"extension" : [
+						{
+							"url" : "http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent",
+							"extension" : [
+									{
+										"url" : "type",
+										"valueCodeableConcept" : {
+											"coding" : [ {
+												"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+												"code" : "NFTH",
+												"display" : "natural father"
+											} ]
+										}
+									}, {
+										"url" : "reference",
+										"valueReference" : {
+											"reference" : "#FMH_10"
+										}
+									} ]
+						},
+						{
+							"url" : "http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent",
+							"extension" : [
+									{
+										"url" : "type",
+										"valueCodeableConcept" : {
+											"coding" : [ {
+												"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+												"code" : "NMTH",
+												"display" : "natural mother"
+											} ]
+										}
+									}, {
+										"url" : "reference",
+										"valueReference" : {
+											"reference" : "#FMH_13"
+										}
+									} ]
+						} ],
+				"bornDate" : "2018-8-8",
+				"note" : [ {
+					"text" : "GNEPHEW"
+				} ]
+			},
+			{
+				"resourceType" : "FamilyMemberHistory",
+				"id" : "FMH_15",
+				"status" : "completed",
+				"patient" : {
+					"type" : "Patient",
+					"reference" : "#pat"
+				},
+				"name" : "Little, John",
+				"sex" : {
+					"coding" : [ {
+						"system" : "http://hl7.org/fhir/administrative-gender",
+						"code" : "male",
+						"display" : "Male"
+					} ]
+				},
+				"relationship" : {
+					"coding" : [ {
+						"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+						"code" : "BROINLAW",
+						"display" : "brother-in-law"
+					} ]
+				},
+				"bornDate" : "1969-10-22",
+				"note" : [ {
+					"text" : "BROINLAW"
+				} ]
+			},
+			{
+				"resourceType" : "FamilyMemberHistory",
+				"id" : "FMH_16",
+				"status" : "completed",
+				"patient" : {
+					"type" : "Patient",
+					"reference" : "#pat"
+				},
+				"name" : "Little, Frank",
+				"sex" : {
+					"coding" : [ {
+						"system" : "http://hl7.org/fhir/administrative-gender",
+						"code" : "male",
+						"display" : "Male"
+					} ]
+				},
+				"relationship" : {
+					"coding" : [ {
+						"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+						"code" : "NEPHEW",
+						"display" : "nephew"
+					} ]
+				},
+				"extension" : [
+						{
+							"url" : "http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent",
+							"extension" : [
+									{
+										"url" : "type",
+										"valueCodeableConcept" : {
+											"coding" : [ {
+												"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+												"code" : "NFTH",
+												"display" : "natural father"
+											} ]
+										}
+									}, {
+										"url" : "reference",
+										"valueReference" : {
+											"reference" : "#FMH_15"
+										}
+									} ]
+						},
+						{
+							"url" : "http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent",
+							"extension" : [
+									{
+										"url" : "type",
+										"valueCodeableConcept" : {
+											"coding" : [ {
+												"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+												"code" : "NMTH",
+												"display" : "natural mother"
+											} ]
+										}
+									}, {
+										"url" : "reference",
+										"valueReference" : {
+											"reference" : "#FMH_12"
+										}
+									} ]
+						} ],
+				"bornDate" : "2003-8-3",
+				"note" : [ {
+					"text" : "NEPHEW"
+				} ]
+			},
+			{
+				"resourceType" : "FamilyMemberHistory",
+				"id" : "FMH_17",
+				"status" : "completed",
+				"patient" : {
+					"type" : "Patient",
+					"reference" : "#pat"
+				},
+				"name" : "Jordon, Elizabeth (Gallaway)",
+				"sex" : {
+					"coding" : [ {
+						"system" : "http://hl7.org/fhir/administrative-gender",
+						"code" : "female",
+						"display" : "Female"
+					} ]
+				},
+				"relationship" : {
+					"coding" : [ {
+						"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+						"code" : "GRMTH",
+						"display" : "grandmother"
+					} ]
+				},
+				"bornDate" : "1933-4-26",
+				"note" : [ {
+					"text" : "MGRMTH"
+				} ]
+			},
+			{
+				"resourceType" : "FamilyMemberHistory",
+				"id" : "FMH_18",
+				"status" : "completed",
+				"patient" : {
+					"type" : "Patient",
+					"reference" : "#pat"
+				},
+				"name" : "Jordan, James",
+				"sex" : {
+					"coding" : [ {
+						"system" : "http://hl7.org/fhir/administrative-gender",
+						"code" : "male",
+						"display" : "Male"
+					} ]
+				},
+				"relationship" : {
+					"coding" : [ {
+						"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+						"code" : "GRFTH",
+						"display" : "grandfather"
+					} ]
+				},
+				"bornDate" : "1929-8-13",
+				"note" : [ {
+					"text" : "MGRFTH"
+				} ]
+			},
+			{
+				"resourceType" : "FamilyMemberHistory",
+				"id" : "FMH_19",
+				"status" : "completed",
+				"patient" : {
+					"type" : "Patient",
+					"reference" : "#pat"
+				},
+				"name" : "Gilliland, Jill (Jordan)",
+				"sex" : {
+					"coding" : [ {
+						"system" : "http://hl7.org/fhir/administrative-gender",
+						"code" : "female",
+						"display" : "Female"
+					} ]
+				},
+				"relationship" : {
+					"coding" : [ {
+						"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+						"code" : "AUNT",
+						"display" : "aunt"
+					} ]
+				},
+				"extension" : [
+						{
+							"url" : "http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent",
+							"extension" : [
+									{
+										"url" : "type",
+										"valueCodeableConcept" : {
+											"coding" : [ {
+												"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+												"code" : "NMTH",
+												"display" : "natural mother"
+											} ]
+										}
+									}, {
+										"url" : "reference",
+										"valueReference" : {
+											"reference" : "#FMH_17"
+										}
+									} ]
+						},
+						{
+							"url" : "http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent",
+							"extension" : [
+									{
+										"url" : "type",
+										"valueCodeableConcept" : {
+											"coding" : [ {
+												"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+												"code" : "NFTH",
+												"display" : "natural father"
+											} ]
+										}
+									}, {
+										"url" : "reference",
+										"valueReference" : {
+											"reference" : "#FMH_18"
+										}
+									} ]
+						},
+						{
+							"url" : "http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-observation",
+							"valueReference" : {
+								"type" : "Observation",
+								"reference" : "#fmh_clinical_19_0"
+							}
+						},
+						{
+							"url" : "http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-observation",
+							"valueReference" : {
+								"type" : "Observation",
+								"reference" : "#fmh_genes_19_0"
+							}
+						} ],
+				"note" : [ {
+					"text" : "MAUNT"
+				} ],
+				"condition" : [ {
+					"code" : {
+						"coding" : [ {
+							"system" : "http://www.omim.org",
+							"code" : "234700",
+							"display" : "HEART BLOCK, CONGENITAL"
+						} ]
+					}
+				} ]
+			},
+			{
+				"resourceType" : "Observation",
+				"id" : "fmh_clinical_19_0",
+				"status" : "preliminary",
+				"valueString" : "HP:0012168",
+				"focus" : {
+					"type" : "FamilyMemberHistory",
+					"reference" : "#FMH_19"
+				}
+			},
+			{
+				"resourceType" : "Observation",
+				"id" : "fmh_genes_19_0",
+				"status" : "preliminary",
+				"valueString" : "HGNC:185",
+				"focus" : {
+					"type" : "FamilyMemberHistory",
+					"reference" : "#FMH_19"
+				}
+			},
+			{
+				"resourceType" : "FamilyMemberHistory",
+				"id" : "FMH_20",
+				"status" : "completed",
+				"patient" : {
+					"type" : "Patient",
+					"reference" : "#pat"
+				},
+				"name" : "Gilliland, Tom",
+				"sex" : {
+					"coding" : [ {
+						"system" : "http://hl7.org/fhir/administrative-gender",
+						"code" : "male",
+						"display" : "Male"
+					} ]
+				},
+				"relationship" : {
+					"coding" : [ {
+						"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+						"code" : "FAMMEMB",
+						"display" : "family member"
+					} ]
+				},
+				"note" : [ {
+					"text" : "MUNCLE"
+				} ]
+			},
+			{
+				"resourceType" : "FamilyMemberHistory",
+				"id" : "FMH_21",
+				"status" : "completed",
+				"patient" : {
+					"type" : "Patient",
+					"reference" : "#pat"
+				},
+				"name" : "Gilliland, Peter",
+				"sex" : {
+					"coding" : [ {
+						"system" : "http://hl7.org/fhir/administrative-gender",
+						"code" : "male",
+						"display" : "Male"
+					} ]
+				},
+				"relationship" : {
+					"coding" : [ {
+						"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+						"code" : "COUSN",
+						"display" : "cousin"
+					} ]
+				},
+				"extension" : [
+						{
+							"url" : "http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent",
+							"extension" : [
+									{
+										"url" : "type",
+										"valueCodeableConcept" : {
+											"coding" : [ {
+												"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+												"code" : "NMTH",
+												"display" : "natural mother"
+											} ]
+										}
+									}, {
+										"url" : "reference",
+										"valueReference" : {
+											"reference" : "#FMH_19"
+										}
+									} ]
+						},
+						{
+							"url" : "http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent",
+							"extension" : [
+									{
+										"url" : "type",
+										"valueCodeableConcept" : {
+											"coding" : [ {
+												"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+												"code" : "NFTH",
+												"display" : "natural father"
+											} ]
+										}
+									}, {
+										"url" : "reference",
+										"valueReference" : {
+											"reference" : "#FMH_20"
+										}
+									} ]
+						} ],
+				"note" : [ {
+					"text" : "MCOUSIN"
+				} ]
+			},
+			{
+				"resourceType" : "FamilyMemberHistory",
+				"id" : "FMH_22",
+				"status" : "completed",
+				"patient" : {
+					"type" : "Patient",
+					"reference" : "#pat"
+				},
+				"name" : "Gilliland, Helen",
+				"sex" : {
+					"coding" : [ {
+						"system" : "http://hl7.org/fhir/administrative-gender",
+						"code" : "female",
+						"display" : "Female"
+					} ]
+				},
+				"relationship" : {
+					"coding" : [ {
+						"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+						"code" : "FAMMEMB",
+						"display" : "family member"
+					} ]
+				}
+			},
+			{
+				"resourceType" : "FamilyMemberHistory",
+				"id" : "FMH_23",
+				"status" : "completed",
+				"patient" : {
+					"type" : "Patient",
+					"reference" : "#pat"
+				},
+				"name" : "Gilliland, Treant",
+				"sex" : {
+					"coding" : [ {
+						"system" : "http://hl7.org/fhir/administrative-gender",
+						"code" : "male",
+						"display" : "Male"
+					} ]
+				},
+				"relationship" : {
+					"coding" : [ {
+						"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+						"code" : "COUSN",
+						"display" : "cousin"
+					} ]
+				},
+				"extension" : [
+						{
+							"url" : "http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent",
+							"extension" : [
+									{
+										"url" : "type",
+										"valueCodeableConcept" : {
+											"coding" : [ {
+												"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+												"code" : "NFTH",
+												"display" : "natural father"
+											} ]
+										}
+									}, {
+										"url" : "reference",
+										"valueReference" : {
+											"reference" : "#FMH_21"
+										}
+									} ]
+						},
+						{
+							"url" : "http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent",
+							"extension" : [
+									{
+										"url" : "type",
+										"valueCodeableConcept" : {
+											"coding" : [ {
+												"system" : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+												"code" : "NMTH",
+												"display" : "natural mother"
+											} ]
+										}
+									}, {
+										"url" : "reference",
+										"valueReference" : {
+											"reference" : "#FMH_22"
+										}
+									} ]
+						} ],
+				"note" : [ {
+					"text" : "MCOUSIN"
+				} ]
+			} ]
+}</textarea>
+  </div>
+  <button type="button" id="editButton" class="btn btn-primary" onclick="openEditor(this)">Edit</button>
+  <button type="button" id="clearButton" class="btn btn-primary" onclick="clearData(this)">Clear</button>
+</form>  	
+	</div>
+  </body>
+</html>

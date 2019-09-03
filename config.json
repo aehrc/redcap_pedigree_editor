@@ -15,43 +15,38 @@
         }           
     ],
     "permissions": [
-        "redcap_every_page_top", "redcap_data_entry_form"
+        "redcap_data_entry_form"
     ],
     "system-settings" : [
-				{
-					"key" : "tag",
-					"name" : "Pedigree Editor Action Tag",
-					"type" : "text",
-          			"required" : true
-				},
-				{
-					"key" : "tag_desc",
-					"name" : "Recommended action tag is @PEDIGREE_EDITOR",
-					"type" : "descriptive"
-				},
 				{
 					"key" : "hide_text",
 					"name" : "Hide Text",
 					"type" : "checkbox"
 				},
 				{
-					"key" : "editor_page",
-					"name" : "Pedigree Editor URL",
-					"type" : "text",
-          			"required" : true
+					"key" : "system_ontology_server",
+					"name" : "Ontology Server URL",
+					"type" : "text"
 				},
 				{
-					"key" : "editor_page_desc",
-					"name" : "Recommended editor URL is https://aehrc.github.io/panogram/messageEditor.html",
+					"key" : "system_ontology_server_info",
+					"name" : "The Hide Text flag indicates if the text area containing the FHIR representation of the diagram should be hidden.<br>The Ontology Server URL setting indicates the server to use to lookup disorders and phenotypes, leaving blank will result in the default value of <b>'https://genomics.ontoserver.csiro.au/fhir/'</b><br>Two action tags will be enabled for notes<ul><li><b>'@PEDIGREE_HPO'</b> - A pedigree diagram using HPO and OMIM coding systems</li><li><b>'@PEDIGREE_SCT'</b> - A pedigree diagram using SNOMED-CT coding system</li></ul>The default 'Hide Text' flag can be overriden in the action tag by appending <ul><li><b>=HIDE_TEXT</b> - Hide the text area.</li><li><b>=SHOW_TEXT</b> - Show the text area.</li></ul>An action tag of <b>@PEDIGREE_HPO=HIDE_TEXT</b> will use the HPO code system and hide the text area for the field.",
 					"type" : "descriptive"
+				}
+	],
+	"project-settings" : [
+				{
+					"key" : "project_ontology_server",
+					"name" : "Ontology Server URL",
+					"type" : "text"
 				},
 				{
-					"key" : "editor_page_local",
-					"name" : "Pedigree Editor is local",
-					"type" : "checkbox"
+					"key" : "project_ontology_server_info",
+					"name" : "The Ontology Server URL setting indicates the server to use to lookup disorders and phenotypes, leaving blank will use the system wide setting.<br>Two action tags will be enabled for notes<ul><li><b>'@PEDIGREE_HPO'</b> - A pedigree diagram using HPO and OMIM coding systems</li><li><b>'@PEDIGREE_SCT'</b> - A pedigree diagram using SNOMED-CT coding system</li></ul>The default 'Hide Text' flag can be overriden in the action tag by appending <ul><li><b>=HIDE_TEXT</b> - Hide the text area.</li><li><b>=SHOW_TEXT</b> - Show the text area.</li></ul>An action tag of <b>@PEDIGREE_HPO=HIDE_TEXT</b> will use the HPO code system and hide the text area for the field.",
+					"type" : "descriptive"
 				}
-								
 	],
+	
   "compatibility": {
     "php-version-min" : "5.4.0",
     "redcap-version-min": "8.8.1"
