@@ -38,8 +38,8 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
         
         // At one stage these things were going to be in the settings for the editor
         // maybe in the future they will be exposed.
-        $hpoEditorPage = 'panogram/localEditor.html?mode=HPO';
-        $sctEditorPage = 'panogram/localEditor.html?mode=SCT';
+        $hpoEditorPage = 'open-pedigree/localEditor.html?mode=HPO';
+        $sctEditorPage = 'open-pedigree/localEditor.html?mode=SCT';
         $editorPageLocal = TRUE;
         $hpoTag = '@PEDIGREE_HPO';
         $sctTag = '@PEDIGREE_SCT';
@@ -134,8 +134,7 @@ EOD;
         }
         else {
             $transportOptions = <<<EOD
-    pedigreeEditorEM.panogramDataKey = 'PANOGRAM_DIAGRAM_DATA';
-    pedigreeEditorEM.probandDataKey = 'PANOGRAM_PROBAND_DATA';
+    pedigreeEditorEM.openPedigreeDataKey = 'pedigreeData';
 EOD;
         }
         

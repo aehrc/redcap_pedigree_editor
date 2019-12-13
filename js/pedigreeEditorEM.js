@@ -135,8 +135,8 @@ pedigreeEditorEM.save = function(field, value) {
 
 pedigreeEditorEM.sendDataToEditor = function(data){
 	if (pedigreeEditorEM.transportType == 'local'){
-		window.localStorage.setItem(pedigreeEditorEM.probandStorageKey, '');
-		window.localStorage.setItem(pedigreeEditorEM.panogramDataKey, JSON.stringify(data));
+		// window.localStorage.setItem(pedigreeEditorEM.probandStorageKey, '');
+		window.localStorage.setItem(pedigreeEditorEM.openPedigreeDataKey, JSON.stringify(data));
 	}
 	else {
 		// doesn't get sent until get the ready signal
@@ -148,13 +148,13 @@ pedigreeEditorEM.sendDataToEditor = function(data){
 pedigreeEditorEM.clearDataToEditor = function(){
 	pedigreeEditorEM.log("Clearing transport data");
 	if (pedigreeEditorEM.transportType == 'local'){
-		window.localStorage.setItem(pedigreeEditorEM.probandStorageKey, null);
-		window.localStorage.setItem(pedigreeEditorEM.panogramDataKey, null);
+		// window.localStorage.setItem(pedigreeEditorEM.probandStorageKey, null);
+		window.localStorage.setItem(pedigreeEditorEM.openPedigreeDataKey, null);
 	}
 	else {
 		if (pedigreeEditorEM.editorWindow) {
-			pedigreeEditorEM.editorWindow.postMessage({"messageType" : "panogram","panogramData" : null}, pedigreeEditorEM.editorPageOrigin);
-			pedigreeEditorEM.editorWindow.postMessage({"messageType" : "proband","probandData" : null}, pedigreeEditorEM.editorPageOrigin);
+			pedigreeEditorEM.editorWindow.postMessage({"messageType" : "openPedigree_data","openPedigreeData" : null}, pedigreeEditorEM.editorPageOrigin);
+			// pedigreeEditorEM.editorWindow.postMessage({"messageType" : "openPedigree_proband","probandData" : null}, pedigreeEditorEM.editorPageOrigin);
 		}
 	}
 };
@@ -164,21 +164,21 @@ pedigreeEditorEM.onMessageEvent = function(event) {
 	if (event.source == pedigreeEditorEM.editorWindow
 			&& event.origin == pedigreeEditorEM.editorPageOrigin) {
 		// the message is from editor window
-		if (event.data.messageType === "panogram_control") {
+		if (event.data.messageType === "openPedigree_control") {
 			if (event.data.message == "started"
 					&& pedigreeEditorEM.sendWhenReady) {
 
 				pedigreeEditorEM.log("Sending data to editor");
 
-				pedigreeEditorEM.editorWindow.postMessage({"messageType" : "proband","probandData" : null}, pedigreeEditorEM.editorPageOrigin);
-				pedigreeEditorEM.editorWindow.postMessage({"messageType" : "panogram","panogramData" : pedigreeEditorEM.messageData}, 
+				// pedigreeEditorEM.editorWindow.postMessage({"messageType" : "openPedigree_proband", "probandData" : null}, pedigreeEditorEM.editorPageOrigin);
+				pedigreeEditorEM.editorWindow.postMessage({"messageType" : "openPedigree_data", "openPedigreeData" : pedigreeEditorEM.messageData}, 
 						pedigreeEditorEM.editorPageOrigin);
 				pedigreeEditorEM.sendWhenReady = false;
 			}
-		} else if (event.data.messageType === "panogram") {
+		} else if (event.data.messageType === "openPedigree_data") {
 			pedigreeEditorEM.log("Got data from editor");
-			if (event.data.panogramData) {
-				pedigreeEditorEM.save(event.data.panogramData.context.field, event.data.panogramData.value);
+			if (event.data.openPedigreeData) {
+				pedigreeEditorEM.save(event.data.openPedigreeData.context.field, event.data.openPedigreeData.value);
 
 			}
 		}
@@ -187,7 +187,7 @@ pedigreeEditorEM.onMessageEvent = function(event) {
 
 pedigreeEditorEM.onStorageEvent = function(storageEvent) {
 
-	if (storageEvent.storageArea == window.localStorage && storageEvent.key == pedigreeEditorEM.panogramDataKey){
+	if (storageEvent.storageArea == window.localStorage && storageEvent.key == pedigreeEditorEM.openPedigreeDataKey){
 		// the data has been updated
 		var data = JSON.parse(storageEvent.newValue);
 		

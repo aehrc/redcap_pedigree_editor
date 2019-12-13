@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Open Pedigree by PhenoTips&reg;</title>
+
+    <!-- Load jquery before prototype, making it available via jQuery but not $ -->
+    <script type="text/javascript" src="public/vendor/jquery-3.4.1.min.js"></script>
+
+    <!-- PrototypeJS and scriptaculous plugin -->
+    <script type="text/javascript" src="public/vendor/prototype-1.7.3.js"></script>
+    <script type="text/javascript" src="public/vendor/scriptaculous/effects.js"></script>
+    <script type="text/javascript" src="public/vendor/scriptaculous/dragdrop.js"></script>
+    <script type="text/javascript" src="public/vendor/scriptaculous/slider.js"></script>
+
+    <!-- File download -->
+    <script type="text/javascript" src="public/vendor/filesaver/Blob.js"></script>
+    <script type="text/javascript" src="public/vendor/filesaver/FileSaver.js"></script>
+    <script type="text/javascript" src="public/vendor/URI.js"></script>
+
+    <!-- XWiki REST API and widgets -->
+    <script type="text/javascript" src="public/vendor/xwiki/xwiki-min.js"></script>
+    <script type="text/javascript" src="public/vendor/phenotips/Widgets.js"></script>
+    <script type="text/javascript" src="public/vendor/phenotips/DateTimePicker.js"></script>
+    <script type="text/javascript" src="public/vendor/selectize/selectize.js"></script>
+
+    <!-- Open Pedigree bundle -->
+    <script type="text/javascript" src="dist/pedigree.min.js"></script>
+
+  </head>
+
+  <body id='body'>
+  <script type="text/javascript">
+
+    function getParameterByName(name, url) {
+      if (!url) url = window.location.href;
+      name = name.replace(/[\[\]]/g, '\\$&');
+      var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+              results = regex.exec(url);
+      if (!results) return null;
+      if (!results[2]) return '';
+      return decodeURIComponent(results[2].replace(/\+/g, ' '));
+    };
+
+    var editor;
+
+    document.observe('dom:loaded',function() {
+      var ontologyServer = getParameterByName('ontologyServer') || 'https://genomics.ontoserver.csiro.au/fhir/';
+
+      var mode = getParameterByName('mode');
+      if (mode === 'SCT') {
+        OpenPedigree.setFHIRTerminology('disorder', ontologyServer, 'http://snomed.info/sct',
+                'http://snomed.info/sct?fhir_vs=refset/32570581000036105', /[0-9]+/, 20);
+        OpenPedigree.setFHIRTerminology('phenotype', ontologyServer, 'http://snomed.info/sct',
+                'http://ga4gh.org/fhir/ValueSet/phenotype', /[0-9]+/, 20);
+        OpenPedigree.setFHIRTerminology('gene', ontologyServer, 'http://www.genenames.org',
+                'http://www.genenames.org', /^HGNC:/, 20);
+      }
+      else {
+        OpenPedigree.setFHIRTerminology('disorder', ontologyServer, 'http://www.omim.org',
+                'http://www.omim.org', /[0-9]+/, 20);
+        OpenPedigree.setFHIRTerminology('phenotype', ontologyServer, 'http://purl.obolibrary.org/obo/hp.owl',
+                'http://purl.obolibrary.org/obo/hp.owl?vs', /^(http:\/\/)|(HP:)/, 20);
+        OpenPedigree.setFHIRTerminology('gene', ontologyServer, 'http://www.genenames.org',
+                'http://www.genenames.org', /^HGNC:/, 20);
+      }
+      console.log("creating editor");
+
+      var editorOptions = {patientDataUrl: 'local:pedigreeData?format=fhir&closeOnSave=true',
+                           returnUrl: '#CloseWindow'};
+
+
+      editor = OpenPedigree.initialiseEditor(editorOptions);
+
+    });
+  </script>
+  </body>
+</html>
