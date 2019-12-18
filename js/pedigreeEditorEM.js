@@ -106,7 +106,7 @@ pedigreeEditorEM.edit = function(field) {
 	var pageToOpen = (fieldData.mode == 'HPO') ? pedigreeEditorEM.hpoEditorPage : pedigreeEditorEM.sctEditorPage; 
 	pedigreeEditorEM.editorWindow = window.open(pageToOpen,
 			pedigreeEditorEM.windowName);
-
+	pedigreeEditorEM.editorWindow.focus();
 	return true;
 }
 
