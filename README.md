@@ -2,8 +2,33 @@
 
 The pedigree editor external module allows a notes field to be marked with an anotation to indicate the field will represent a pedigree diagram.
 
-The module will then hide or disable the notes field and instead spawn a new window to allow the entry of the pedigree diagram. The diagram will then be serialised as a FHIR Composition JSON string and written into the notes field. The pedigree editor used is [https://github.com/aehrc/panogram](https://github.com/aehrc/panogram) which is an early version of the phenotips pedigree editor.
+The module will then hide or disable the notes field and instead spawn a new window to allow the entry of the pedigree diagram. The diagram will then be serialised as a FHIR Composition JSON string and written into the notes field. 
+The pedigree editor used is [https://github.com/aehrc/open-pedigree](https://github.com/aehrc/open-pedigree) which is an open version of the phenotips pedigree editor.
 
+
+## Installing the module
+
+To install first you need to retrieve the distribution. This can be found on the releases page [https://github.com/aehrc/redcap_pedigree_editor/releases](https://github.com/aehrc/redcap_pedigree_editor/releases) page or 
+the official redcap repository [https://redcap.vanderbilt.edu/consortium/modules/](https://redcap.vanderbilt.edu/consortium/modules/)
+
+Alternatively you can clone the git repository and generate your own distribution file. To do this, clone the git repository into a working directory, then use the git archive command to build a release.
+```
+git clone https://github.com/aehrc/redcap_pedigree_editor.git
+cd redcap_pedigree_editor
+git archive --format=zip  --prefix=redcap_pedigree_editor_v0.1/ -o ../redcap_pedigree_editor_v0.1.zip HEAD
+```
+
+This will give you a file redcap_pedigree_editor_v0.1.zip
+
+# Install the distribution
+
+The distribution is installed by unzipping the distribution file into the `redcap/modules/` directory of the redcap installation.
+
+This should result in the new directory `'redcap_pedigree_editor_v0.1'`. The external module directory name must meet a strict naming
+convention, if the directory is missing the `'v'` before the version number then the module won't be picked up by redcap, so rename
+the directory to match the form `'<module name>_v<version number>'`.
+
+If everything has gone to plan the module should now appear in the list of available modules that can be enabled.
 
 ## Configuring the module
 
@@ -38,11 +63,11 @@ An action tag of @PEDIGREE_HPO=HIDE_TEXT will use the HPO code system and hide t
 
 In the data entry page, fields marked with the pedigree editor action tag will show a large image, if this is clicked a new window will open and allow the pedigree diagram to be editted. An empty field will appear as a single diamond, which an entry with some data will show a three element tree.
 
-![Data Entry (empty)](documentation/data_entry_1.png)
+![Data Entry (empty)](documentation/data_entry_r_1.png)
 
 ![Panogram Editor](documentation/panogram.png)
 
-![Data Entry (with data)](documentation/data_entry_2.png)
+![Data Entry (with data)](documentation/data_entry_r_2.png)
 
 # Limitations
 
