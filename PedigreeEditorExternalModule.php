@@ -33,9 +33,18 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
         }
         return $errors;
     }
-    
+
+    function redcap_survey_page ( $project_id, $record, $instrument, $event_id, $group_id, $survey_hash, $response_id, $repeat_instance) {
+        $this->add_pedigree_to_form($project_id, $instrument);
+    }
+
+
     function redcap_data_entry_form ($project_id, $record, $instrument, $event_id, $group_id, $repeat_instance) {
-        
+        $this->add_pedigree_to_form($project_id, $instrument);
+    }
+
+    function add_pedigree_to_form ($project_id, $instrument) {
+
         // At one stage these things were going to be in the settings for the editor
         // maybe in the future they will be exposed.
         $hpoEditorPage = 'open-pedigree/localEditor.html?mode=HPO';

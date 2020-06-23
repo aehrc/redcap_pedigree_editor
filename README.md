@@ -15,16 +15,16 @@ Alternatively you can clone the git repository and generate your own distributio
 ```
 git clone https://github.com/aehrc/redcap_pedigree_editor.git
 cd redcap_pedigree_editor
-git archive --format=zip  --prefix=redcap_pedigree_editor_v0.1/ -o ../redcap_pedigree_editor_v0.1.zip HEAD
+git archive --format=zip  --prefix=redcap_pedigree_editor_v0.1.1/ -o ../redcap_pedigree_editor_v0.1.1.zip HEAD
 ```
 
-This will give you a file redcap_pedigree_editor_v0.1.zip
+This will give you a file redcap_pedigree_editor_v0.1.1.zip
 
 # Install the distribution
 
 The distribution is installed by unzipping the distribution file into the `redcap/modules/` directory of the redcap installation.
 
-This should result in the new directory `'redcap_pedigree_editor_v0.1'`. The external module directory name must meet a strict naming
+This should result in the new directory `'redcap_pedigree_editor_v0.1.1'`. The external module directory name must meet a strict naming
 convention, if the directory is missing the `'v'` before the version number then the module won't be picked up by redcap, so rename
 the directory to match the form `'<module name>_v<version number>'`.
 
