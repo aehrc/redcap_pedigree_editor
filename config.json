@@ -24,6 +24,16 @@
 					"type" : "checkbox"
 				},
 				{
+					"key" : "system_compression",
+					"name" : "Compress Data",
+					"type": "dropdown",
+					"choices": [
+						{ "value": "never", "name": "Never Compress"},
+						{ "value": "large", "name": "Compress Large Diagrams >65K"},
+						{ "value": "always", "name": "Always Compress"}
+					]
+				},
+				{
 					"key" : "system_ontology_server",
 					"name" : "Ontology Server URL",
 					"type" : "text"
@@ -35,6 +45,16 @@
 				}
 	],
 	"project-settings" : [
+				{
+					"key" : "project_compression",
+					"name" : "Compress Data",
+					"type": "dropdown",
+					"choices": [
+						{ "value": "never", "name": "Never compress"},
+						{ "value": "large", "name": "Compress Large Diagrams >65K"},
+						{ "value": "always", "name": "Always compress"}
+					]
+				},
 				{
 					"key" : "project_ontology_server",
 					"name" : "Ontology Server URL",

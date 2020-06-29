@@ -42,6 +42,40 @@ pedigreeEditorEM.start = function() {
 	});
 };
 
+pedigreeEditorEM.getPedigreeSVG = function(value) {
+	var svg = $(pedigreeEditorEM.emptyIcon).html();
+	if (value && value.length > 0){
+		let foundSVG = false;
+		try{
+			var valueToParse = value;
+			if (value.startsWith('GZ:')){
+				valueToParse = pako.ungzip(atob(value.slice(3)),{ to: 'string' });
+			}
+			var FHIRdata = JSON.parse(valueToParse);
+			if (FHIRdata) {
+				if (FHIRdata.contained) {
+					for (let containedResource of FHIRdata.contained) {
+						if (containedResource.id === 'pedigreeImage') {
+							foundSVG = true;
+							svg = decodeURIComponent(escape(atob(containedResource.content.attachment.data)));
+							svg = svg.replace(/width=".*?"/, 'width="auto"')
+								.replace(/height=".*?"/, 'height="auto"');
+							break;
+						}
+					}
+				}
+			}
+		}
+		catch (e) {
+			console.log(e);
+		}
+		if (!foundSVG){
+			svg = $(pedigreeEditorEM.dataIcon).html();
+		}
+	}
+	return svg;
+};
+
 pedigreeEditorEM.render = function(fieldData) {
 	// Get TR Element
 	var tr = $('tr[sq_id=' + fieldData.field + ']');
@@ -69,13 +103,12 @@ pedigreeEditorEM.render = function(fieldData) {
 	if (data) {
 		var onClickText = "pedigreeEditorEM.edit('" + fieldData.field + "')";
 		var imageId = fieldData.field + '_pedigreeEditorEM_icon';
-		var icon = haveData ? pedigreeEditorEM.dataIcon
-				: pedigreeEditorEM.emptyIcon;
+		var svg = pedigreeEditorEM.getPedigreeSVG(result.val());
 		$(data).prepend(
-				'<a href="javascript:;" tabindex="-1" onclick="' + onClickText
-						+ '"><img id="' + imageId + '" src="'
-						+ icon
-						+ '" alt="Edit" width="225" height="225"></a>');
+				'<a href="javascript:;" tabindex="-1" onclick="' + onClickText +'">'
+						+ '<div id="' + imageId + '">'
+						+ svg
+						+ '</div></a>');
 	}
 }
 
@@ -96,6 +129,15 @@ pedigreeEditorEM.edit = function(field) {
 
 	var currentValue;
     currentValue = $('textarea[name="' + fieldData.field + '"]', tr).val();
+    try {
+		if (currentValue.startsWith('GZ:')){
+			currentValue = pako.ungzip(atob(currentValue.slice(3)),{ to: 'string' });
+		}
+	}
+	catch (e) {
+		console.log('Error decompressing', e);
+		currentValue=''
+	}
 	var data = {};
 	data.context = {
 		'field' : field
@@ -124,13 +166,59 @@ pedigreeEditorEM.save = function(field, value) {
 		return;
 	}
 	var tr = $('tr[sq_id=' + field + ']');
-	$('textarea[name="' + fieldData.field + '"]', tr).val(value);
+
+	if (fieldData.compress === 'always'){
+		let compressedValue = 'GZ:' + btoa(pako.gzip(value,{ to: 'string' }))
+		if (compressedValue.length > 65300) {
+			compressedValue = 'GZ:' + btoa(pako.gzip(pedigreeEditorEM.removeDiagramFromFhir(value),{ to: 'string' }));
+			if (compressedValue.length > 65300) {
+				alert('Pedigree Diagram is too large, even when compressed, not updating');
+				window.focus();
+				return;
+			}
+		}
+		$('textarea[name="' + fieldData.field + '"]', tr).val(compressedValue);
+	}
+	else if (fieldData.compress === 'large'){
+		if (value.length > 65300) {
+			var compressedValue = 'GZ:' + btoa(pako.gzip(value,{ to: 'string' }))
+			if (compressedValue.length > 65300) {
+				compressedValue = pedigreeEditorEM.removeDiagramFromFhir(value);
+				if (compressedValue.length > 65300) {
+					compressedValue = 'GZ:' + btoa(pako.gzip(compressedValue,{ to: 'string' }));
+					if (compressedValue.length > 65300) {
+						alert('Pedigree Diagram is too large, even when compressed, not updating');
+						window.focus();
+						return;
+					}
+				}
+			}
+			$('textarea[name="' + fieldData.field + '"]', tr).val(compressedValue);
+		}
+		else {
+			$('textarea[name="' + fieldData.field + '"]', tr).val(value);
+		}
+	}
+	else {
+		if (value.length > 65300) {
+			var compressedValue = pedigreeEditorEM.removeDiagramFromFhir(value);
+			if (compressedValue.length > 65300) {
+				alert('Pedigree Diagram is too large, not updating');
+				window.focus();
+				return;
+			}
+			$('textarea[name="' + fieldData.field + '"]', tr).val(compressedValue);
+		}
+		else {
+			$('textarea[name="' + fieldData.field + '"]', tr).val(value);
+		}
+	}
 
 	var imageId = field + '_pedigreeEditorEM_icon';
-	var icon = value ? pedigreeEditorEM.dataIcon : pedigreeEditorEM.emptyIcon;
-	$('#' + imageId).attr("src", icon);
-	window.focus();
+	var svg = pedigreeEditorEM.getPedigreeSVG(value);
+	$('#' + imageId).html(svg);
 
+	window.focus();
 }
 
 pedigreeEditorEM.sendDataToEditor = function(data){
@@ -198,6 +286,48 @@ pedigreeEditorEM.onStorageEvent = function(storageEvent) {
 	}
 }
 
+pedigreeEditorEM.removeDiagramFromFhir = function(fhirJson) {
+	try {
+		let fhir = JSON.parse(fhirJson);
+		let foundImageSection = false;
+		let foundImageResource = false;
+		if (fhir.section){
+			let newSections = [];
+			for (let section of fhir.section){
+				if (section.title === 'Pedigree Diagram') {
+
+				}
+				else {
+					newSections.push(section);
+				}
+			}
+			if (foundImageSection){
+				fhir.section = newSections;
+			}
+		}
+		if (fhir.contained) {
+			let newContained = [];
+			for (let containedResource of fhir.contained) {
+				if (containedResource.id === 'pedigreeImage') {
+					foundImageResource = true;
+				}
+				else {
+					newContained.push(containedResource);
+				}
+			}
+			if (foundImageResource){
+				fhir.contained = newContained;
+			}
+		}
+		if (foundImageResource || foundImageSection){
+			return JSON.stringify(fhir, null, 2);
+		}
+	}
+	catch (e) {
+		console.log("Failed to parse FHIR json", e);
+	}
+	return fhirJson;
+}
 
 
 $(document).ready(function() {
