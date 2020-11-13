@@ -16,19 +16,22 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
 
     public function validateSettings($settings){
         $errors='';
-                
-        $systemOntologyServer = $settings['system_ontology_server'];
-        if ($systemOntologyServer){
-            $metadata = http_get($systemOntologyServer . 'metadata');
-            if ($metadata == false){
-                $errors .= "Failed to get metadata for fhir server at '" . $systemOntologyServer . "'metadata\n";
+        if (function_exists('curl_init')){
+            // if curl isn't installed the check can fail even though the url is correct.
+            // better to just not check.
+            $systemOntologyServer = $settings['system_ontology_server'];
+            if ($systemOntologyServer){
+                $metadata = http_get($systemOntologyServer . 'metadata');
+                if ($metadata == false){
+                    $errors .= "Failed to get metadata for fhir server at '" . $systemOntologyServer . "'metadata\n";
+                }
             }
-        }
-        $projectOntologyServer = $settings['project_ontology_server'];
-        if ($projectOntologyServer){
-            $metadata = http_get($projectOntologyServer . 'metadata', null, $info);
-            if ($metadata == false){
-                $errors .= "Failed to get metadata for fhir server at '" . $projectOntologyServer . "'metadata\n" . json_encode($info);
+            $projectOntologyServer = $settings['project_ontology_server'];
+            if ($projectOntologyServer){
+                $metadata = http_get($projectOntologyServer . 'metadata', null, $info);
+                if ($metadata == false){
+                    $errors .= "Failed to get metadata for fhir server at '" . $projectOntologyServer . "'metadata\n" . json_encode($info);
+                }
             }
         }
         return $errors;
@@ -238,9 +241,8 @@ EOD;
      *   The relative path to the js file.
      */
     protected function includeJs($path) {
-        // For shib installations, it is necessary to use the API endpoint for resources
-        global $auth_meth;
-        $ext_path = $auth_meth == 'shibboleth' ? $this->getUrl($path, true, true) : $this->getUrl($path);
+        // the API endpoint seems to break things, so we won't use it even for shib installations.
+        $ext_path = $this->getUrl($path);
         echo '<script src="' . $ext_path . '"></script>';
     }
     
@@ -250,10 +252,8 @@ EOD;
      *   The relative path to the js file.
      */
     protected function getLocalUrl($path) {
-        // For shib installations, it is necessary to use the API endpoint for resources
-        global $auth_meth;
-        return ($auth_meth == 'shibboleth') ? $this->getUrl($path, true, true) : $this->getUrl($path);
-        
+        // the API endpoint seems to break things, so we won't use it even for shib installations.
+        return $this->getUrl($path);
     }
     
     
