@@ -16,37 +16,55 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
 
     public function validateSettings($settings){
         $errors='';
-        if (function_exists('curl_init')){
-            // if curl isn't installed the check can fail even though the url is correct.
-            // better to just not check.
-            $systemOntologyServer = $settings['system_ontology_server'];
-            if ($systemOntologyServer){
-                $metadata = http_get($systemOntologyServer . 'metadata');
-                if ($metadata == false){
-                    $errors .= "Failed to get metadata for fhir server at '" . $systemOntologyServer . "'metadata\n";
-                }
+        $systemOntologyServer = $settings['system_ontology_server'];
+        if ($systemOntologyServer){
+            $strlen = strlen($systemOntologyServer);
+            if ('/' === $systemOntologyServer[$strlen - 1]){
+                $systemOntologyServer = substr($systemOntologyServer, 0, $strlen - 1);
             }
-            $projectOntologyServer = $settings['project_ontology_server'];
-            if ($projectOntologyServer){
-                $metadata = http_get($projectOntologyServer . 'metadata', null, $info);
-                if ($metadata == false){
-                    $errors .= "Failed to get metadata for fhir server at '" . $projectOntologyServer . "'metadata\n" . json_encode($info);
+            $metadata = http_get($systemOntologyServer . '/metadata');
+            if ($metadata == false){
+                $errors .= "Failed to get metadata for fhir server at '" . $systemOntologyServer . "'/metadata\n";
+            }
+        }
+        $authType = $settings['authentication_type'];
+        if ($authType === 'cc') {
+            $authEndpoint = $settings['cc_token_endpoint'];
+            $clientId = $settings['cc_client_id'];
+            $clientSecret = $settings['cc_client_secret'];
+            // get the access token
+            $params = array('grant_type' => 'client_credentials');
+            $headers = ['Authorization: Basic ' . base64_encode($clientId . ':' . $clientSecret)];
+
+            try {
+                $response = $this->httpPost($authEndpoint, $params, 'application/x-www-form-urlencoded', $headers);
+
+                if ($response === false) {
+                    $r = implode("", $http_response_header);
+                    $errors .= "Failed to get Authentication Token for fhir server at '" . $authEndpoint . "' response = false, r='" . $r . "'\n";
+                } else {
+                    $responseJson = json_decode($response, true);
+                    if (!array_key_exists('access_token', $responseJson)) {
+                        $errors .= "Failed to get Authentication Token for fhir server at '" . $authEndpoint . "'$response\n";
+                    }
                 }
+            } catch (\Exception $e) {
+                $errors .= "Failed to get Authentication Token for fhir server at '" . $authEndpoint . "' got exception $e\n";
             }
         }
         return $errors;
     }
 
     function redcap_survey_page ( $project_id, $record, $instrument, $event_id, $group_id, $survey_hash, $response_id, $repeat_instance) {
-        $this->add_pedigree_to_form($project_id, $instrument);
+        $this->add_pedigree_to_form($project_id, $record, $instrument, $event_id, $group_id, $repeat_instance);
     }
 
 
     function redcap_data_entry_form ($project_id, $record, $instrument, $event_id, $group_id, $repeat_instance) {
-        $this->add_pedigree_to_form($project_id, $instrument);
+        $this->add_pedigree_to_form($project_id, $record, $instrument, $event_id, $group_id, $repeat_instance);
     }
 
-    function add_pedigree_to_form ($project_id, $instrument) {
+    function add_pedigree_to_form ($project_id, $record, $instrument, $event_id, $group_id, $repeat_instance) {
 
         // At one stage these things were going to be in the settings for the editor
         // maybe in the future they will be exposed.
@@ -66,11 +84,16 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
         $systemCompression = $this->getSystemSetting('system_compression');
         $projectCompression = $this->getProjectSetting('project_compression', $project_id);
 
-        $compression = ($projectCompression) ? $projectCompression : $systemCompression;
+        $compression = ($projectCompression) ?: $systemCompression;
         
         // Get the data dictionary for the current instrument in array format
-        $dd_array = \REDCap::getDataDictionary($project_id, 'array',  false, null, $instrument);
-        
+        try {
+            $dd_array = \REDCap::getDataDictionary($project_id, 'array', false, null, $instrument);
+        } catch (\Exception $e) {
+            // error reading data dictionary
+            return;
+        }
+
         $fieldsOfInterest = array();
         
         foreach ($dd_array as $field_name=>$field_attributes)
@@ -117,15 +140,20 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
             return;
         }
         
-        
-        $systemOntologyServer = $this->getSystemSetting('system_ontology_server');
-        $projectOntologyServer = $this->getProjectSetting('project_ontology_server', $project_id);
-        
-        $ontologyServer = ($projectOntologyServer) ? $projectOntologyServer : $systemOntologyServer;
+
+        $ontologyServer = urlencode($this->getUrl('TerminologyService.php', false, true));
+
+        $systemFormat = $this->getSystemSetting('system_format');
+        $projectFormat = $this->getProjectSetting('project_format', $project_id);
+
+        $format = ($projectFormat) ?: $systemFormat;
+        $this->getSystemSetting('system_compression');
+        $hpoEditorPage = $hpoEditorPage . '&format=' . $format;
+        $sctEditorPage = $sctEditorPage . '&format=' . $format;
 
         if ($ontologyServer){
-            $hpoEditorPage = $hpoEditorPage . '&ontologyServer=' . $ontologyServer;
-            $sctEditorPage = $sctEditorPage . '&ontologyServer=' . $ontologyServer;
+            $hpoEditorPage = $hpoEditorPage . '&redcapTerminolgyUrl=' . $ontologyServer;
+            $sctEditorPage = $sctEditorPage . '&redcapTerminolgyUrl=' . $ontologyServer;
         }
         // the local url build wants to put a '?' on the end which breaks paramaters, so add one to soak the extra
         $hpoEditorPage = $hpoEditorPage . '&broken=redcap';
@@ -255,6 +283,208 @@ EOD;
         // the API endpoint seems to break things, so we won't use it even for shib installations.
         return $this->getUrl($path);
     }
-    
-    
+
+    /**
+     * @param $fullUrl
+     */
+    private function outputGet($fullUrl)
+    {
+        $headers = [];
+        $authToken = $this->getAuthToken();
+        if ($authToken !== false) {
+            $headers[] = 'Authorization: Bearer ' . $this->getAuthToken();
+        }
+        $result = $this->httpGet($fullUrl, $headers);
+
+        if ($result === false) {
+            $error = ['error' => 'Internal Error', 'error_description' => 'Failed to retrieve data from FHIR server - '.$fullUrl];
+            header('Content-type: application/json');
+            http_response_code(400);
+            echo json_encode($error, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        } else {
+            header('Content-type: application/json');
+            echo $result;
+        }
+    }
+
+    private function getFhirServerUri()
+    {
+        $ontologyServer = $this->getSystemSetting('system_ontology_server');
+        if (!$ontologyServer){
+            $ontologyServer = 'https://r4.ontoserver.csiro.au/fhir'; // default
+        }
+        if ($ontologyServer) {
+            $strlen = strlen($ontologyServer);
+            if ('/' === $ontologyServer[$strlen - 1]) {
+                // remove trailing /
+                $ontologyServer = substr($ontologyServer, 0, $strlen - 1);
+            }
+        }
+        return $ontologyServer;
+    }
+
+    public function lookupTerminologyCode($system, $code){
+        $params = ["_format" => "json", "system" => $system, "code" => $code];
+        $fullUrl = $this->getFhirServerUri() . '/CodeSystem/$lookup?' . http_build_query($params);
+        $this->outputGet($fullUrl);
+    }
+
+    public function queryTerminology($valueSet, $filter, $count){
+
+        $params = ["url" => $valueSet, "filter" => $filter, "count" => $count];
+        $fullUrl = $this->getFhirServerUri() . '/ValueSet/$expand?' . http_build_query($params);
+        $this->outputGet($fullUrl);
+    }
+
+
+    private function httpGet($fullUrl, $headers)
+    {
+        // if curl isn't install the default version of http_get in init_functions doesn't include the headers.
+        if (function_exists('curl_init') || empty($headers)) {
+            return http_get($fullUrl, null, '', $headers, null);
+        }
+        if (ini_get('allow_url_fopen')) {
+            // Set http array for file_get_contents
+            $headerText = '';
+            foreach ($headers as $hvalue) {
+                $headerText .= $hvalue . "\r\n";
+            }
+            $http_array = array('method' => 'GET', 'header' => $headerText);
+            // If using a proxy
+            if (!sameHostUrl($fullUrl) && PROXY_HOSTNAME != '') {
+                $http_array['proxy'] = str_replace(array('http://', 'https://'), array('tcp://', 'tcp://'), PROXY_HOSTNAME);
+                $http_array['request_fulluri'] = true;
+                if (PROXY_USERNAME_PASSWORD != '') {
+                    $proxy_auth = "Proxy-Authorization: Basic " . base64_encode(PROXY_USERNAME_PASSWORD);
+                    if (isset($http_array['header'])) {
+                        $http_array['header'] .= $proxy_auth . "\r\n";
+                    } else {
+                        $http_array['header'] = $proxy_auth . "\r\n";
+                    }
+                }
+            }
+            // Use file_get_contents
+            $content = @file_get_contents($fullUrl, false, stream_context_create(array('http' => $http_array)));
+        } else {
+            $content = false;
+        }
+        // Return the response
+        return $content;
+    }
+
+    private function httpPost($fullUrl, $postData, $contentType, $headers)
+    {
+        // if curl isn't install the default version of http_post in init_functions doesn't include the headers.
+        if (function_exists('curl_init') || empty($headers)) {
+            return http_post($fullUrl, $postData, null, $contentType, '', $headers);
+        }
+        // If params are given as an array, then convert to query string format, else leave as is
+        if ($contentType == 'application/json') {
+            // Send as JSON data
+            $param_string = (is_array($postData)) ? json_encode($postData) : $postData;
+        } elseif ($contentType == 'application/x-www-form-urlencoded') {
+            // Send as Form encoded data
+            $param_string = (is_array($postData)) ? http_build_query($postData, '', '&') : $postData;
+        } else {
+            // Send params as is (e.g., Soap XML string)
+            $param_string = $postData;
+        }
+        if (ini_get('allow_url_fopen')) {
+            // Set http array for file_get_contents
+            // Set http array for file_get_contents
+            $headerText = '';
+            foreach ($headers as $hvalue) {
+                $headerText .= $hvalue . "\r\n";
+            }
+
+            $http_array = array('method' => 'POST',
+                'header' => "Content-type: $contentType" . "\r\n" . $headerText . "Content-Length: " . strlen($param_string) . "\r\n",
+                'content' => $param_string
+            );
+            // If using a proxy
+            if (!sameHostUrl($fullUrl) && PROXY_HOSTNAME != '') {
+                $http_array['proxy'] = str_replace(array('http://', 'https://'), array('tcp://', 'tcp://'), PROXY_HOSTNAME);
+                $http_array['request_fulluri'] = true;
+                if (PROXY_USERNAME_PASSWORD != '') {
+                    $http_array['header'] .= "Proxy-Authorization: Basic " . base64_encode(PROXY_USERNAME_PASSWORD) . "\r\n";
+                }
+            }
+
+            // Use file_get_contents
+            $content = @file_get_contents($fullUrl, false, stream_context_create(array('http' => $http_array)));
+
+            // Return the content
+            if ($content !== false) {
+                return $content;
+            } // If no content, check the headers to see if it's hiding there (why? not sure, but it happens)
+            else {
+                $content = implode("", $http_response_header);
+                //  If header is a true header, then return false, else return the content found in the header
+                return (substr($content, 0, 5) == 'HTTP/') ? false : $content;
+            }
+        }
+        return false;
+    }
+
+
+    private function getAuthToken()
+    {
+        $authType = $this->getSystemSetting('authentication_type');
+        if ($authType === 'cc') {
+            $authEndpoint = $this->getSystemSetting('cc_token_endpoint');
+            $clientId = $this->getSystemSetting('cc_client_id');
+            $clientSecret = $this->getSystemSetting('cc_client_secret');
+
+            return $this->getClientCredentialsToken($authEndpoint, $clientId, $clientSecret);
+        }
+        return false;
+    }
+
+    private function getClientCredentialsToken($tokenEndpoint, $clientId, $clientSecret)
+    {
+        $now = time();
+        if (array_key_exists('PEDIGREE_FHIR_ONTOLOGY_TOKEN_EXPIRES', $_SESSION) &&
+            array_key_exists('PEDIGREE_FHIR_ONTOLOGY_TOKEN', $_SESSION)) {
+            $expire = $_SESSION['PEDIGREE_FHIR_ONTOLOGY_TOKEN_EXPIRES'];
+            if ($now < $expire) {
+                // not expired.
+                return $_SESSION['PEDIGREE_FHIR_ONTOLOGY_TOKEN'];
+            }
+        }
+
+        // get the access token
+        $params = array(
+            'grant_type' => 'client_credentials'
+        );
+        $headers = ['Authorization: Basic ' . base64_encode($clientId . ':' . $clientSecret)];
+
+        $clear = true;
+        try {
+            $response = $this->httpPost($tokenEndpoint, $params, 'application/x-www-form-urlencoded', $headers);
+            $responseJson = json_decode($response, true);
+            if (array_key_exists('access_token', $responseJson)) {
+                $clear = false;
+                $_SESSION['PEDIGREE_FHIR_ONTOLOGY_TOKEN'] = $responseJson['access_token'];
+                if (array_key_exists('expires_in', $responseJson)) {
+                    $_SESSION['PEDIGREE_FHIR_ONTOLOGY_TOKEN_EXPIRES'] = $now + ($responseJson['expires_in'] * 1000);
+                } else {
+                    $_SESSION['PEDIGREE_FHIR_ONTOLOGY_TOKEN_EXPIRES'] = $now + (60 * 60 * 1000);
+                }
+            } elseif (array_key_exists('error', $responseJson)) {
+                error_log("Failed to negotiate auth token : " . $responseJson['error'] . " - " . $responseJson['error_description']);
+            } else {
+                error_log("Failed to negotiate auth token : " . $response);
+            }
+        } catch (\Exception $e) {
+            $error_code = $e->getCode();
+            $error_message = $e->getMessage();
+            error_log("Failed to negotiate auth token : {$error_code} - {$error_message}");
+        }
+        if ($clear) {
+            unset($_SESSION['PEDIGREE_FHIR_ONTOLOGY_TOKEN_EXPIRES']);
+            unset($_SESSION['PEDIGREE_FHIR_ONTOLOGY_TOKEN']);
+            return false;
+        }
+        return $_SESSION['PEDIGREE_FHIR_ONTOLOGY_TOKEN'];
+    }
 }

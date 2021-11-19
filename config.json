@@ -6,67 +6,151 @@
        {
             "name": "David Conlan",
             "email": "david.conlan@csiro.au",
-            "institution": "The Australian E-Heath Research Centre"
+            "institution": "Commonwealth Science & Industrial Research Organisation"
         },
    	 	{
             "name": "Maryam Mehdizadeh",
             "email": "maryam.mehdizadeh@csiro.au",
-            "institution": "The Australian E-Heath Research Centre"
+            "institution": "Commonwealth Science & Industrial Research Organisation"
         }           
     ],
     "permissions": [
         "redcap_data_entry_form", "redcap_survey_page"
     ],
     "system-settings" : [
+		{
+			"key" : "action_tag_info",
+			"name" : "Two action tags will be enabled for notes<ul><li><b>'@PEDIGREE_HPO'</b> - A pedigree diagram using HPO and OMIM coding systems</li><li><b>'@PEDIGREE_SCT'</b> - A pedigree diagram using SNOMED-CT coding system</li></ul>The default 'Hide Text' flag can be overriden in the action tag by appending <ul><li><b>=HIDE_TEXT</b> - Hide the text area.</li><li><b>=SHOW_TEXT</b> - Show the text area.</li></ul>An action tag of <b>@PEDIGREE_HPO=HIDE_TEXT</b> will use the HPO code system and hide the text area for the field.",
+			"type" : "descriptive"
+		},
+		{
+			"key" : "hide_text_info",
+			"name" : "The Hide Text flag indicates if the text area containing the FHIR representation of the diagram should be hidden.<br>The default 'Hide Text' flag can be overriden in the action tag by appending <ul><li><b>=HIDE_TEXT</b> - Hide the text area.</li><li><b>=SHOW_TEXT</b> - Show the text area.</li></ul>An action tag of <b>@PEDIGREE_HPO=HIDE_TEXT</b> will use the HPO code system and hide the text area for the field.",
+			"type" : "descriptive"
+		},
+		{
+			"key" : "hide_text",
+			"name" : "Hide Text",
+			"type" : "checkbox"
+		},
+		{
+			"key" : "system_format_info",
+			"name" : "The original version of this plugin used a custom FHIR format, from version 0.3 this was changed to a format defined by GA4GH. The format field allows the format to be selected, <i><b>fhir_v1</b></i> is the old format, while <i><b>GA4GH</b></i> is the new format. If <i><b>GA4GH</b></i> is selected it will still read the old format. The new format is recommended and has better round tripping",
+			"type" : "descriptive"
+		},
+		{
+			"key" : "system_format",
+			"name" : "FHIR format",
+			"type": "dropdown",
+			"choices": [
+				{ "value": "fhir_v1", "name": "fhir_v1 - Legacy Format"},
+				{ "value": "GA4GH", "name": "GA4GH - Recommended Format"}
+			]
+		},
+		{
+			"key" : "compression_info",
+			"name" : "A complicated pedigree may be large, the compress data setting indicates if the data should be compressed.<br>The default 'Compress Data' value can be overridden in the action tag by appending <ul><li><b>=NEVER_COMPRESS</b> - Never Compress.</li><li><b>=COMPRESS_LARGE</b> - Compress Large Diagrams >65K.</li><li><b>=ALWAYS_COMPRESS</b> - Always Compress</li></ul>An action tag of <b>@PEDIGREE_HPO=ALWAYS_COMPRESS</b> will always compress the data in the field.",
+			"type" : "descriptive"
+		},
+		{
+			"key" : "system_compression",
+			"name" : "Compress Data",
+			"type": "dropdown",
+			"choices": [
+				{ "value": "never", "name": "Never Compress"},
+				{ "value": "large", "name": "Compress Large Diagrams >65K"},
+				{ "value": "always", "name": "Always Compress"}
+			]
+		},
+		{
+			"key" : "system_ontology_server_info",
+			"name" : "The Ontology Server URL setting indicates the server to use to lookup disorders and phenotypes, leaving blank will result in the default value of <b>'https://r4.ontoserver.csiro.au/fhir'</b>",
+			"type" : "descriptive"
+		},
+		{
+			"key" : "system_ontology_server",
+			"name" : "Ontology Server URL",
+			"type" : "text"
+		},
+		{
+			"key": "authentication_type_info",
+			"name": "The fhir server may require some form of authentication, currently only OAuth2 Client Credentials is supported. Communication with the FHIR server is made by the redcap server, not the users browser.",
+			"type": "descriptive"
+		},
+		{
+			"key": "authentication_type",
+			"name": "Authentication Type",
+			"required": true,
+			"type": "dropdown",
+			"choices": [
 				{
-					"key" : "hide_text",
-					"name" : "Hide Text",
-					"type" : "checkbox"
+					"value": "none",
+					"name": "No Authentication Required"
 				},
 				{
-					"key" : "system_compression",
-					"name" : "Compress Data",
-					"type": "dropdown",
-					"choices": [
-						{ "value": "never", "name": "Never Compress"},
-						{ "value": "large", "name": "Compress Large Diagrams >65K"},
-						{ "value": "always", "name": "Always Compress"}
-					]
-				},
-				{
-					"key" : "system_ontology_server",
-					"name" : "Ontology Server URL",
-					"type" : "text"
-				},
-				{
-					"key" : "system_ontology_server_info",
-					"name" : "The Hide Text flag indicates if the text area containing the FHIR representation of the diagram should be hidden.<br>The Ontology Server URL setting indicates the server to use to lookup disorders and phenotypes, leaving blank will result in the default value of <b>'https://genomics.ontoserver.csiro.au/fhir/'</b><br>Two action tags will be enabled for notes<ul><li><b>'@PEDIGREE_HPO'</b> - A pedigree diagram using HPO and OMIM coding systems</li><li><b>'@PEDIGREE_SCT'</b> - A pedigree diagram using SNOMED-CT coding system</li></ul>The default 'Hide Text' flag can be overriden in the action tag by appending <ul><li><b>=HIDE_TEXT</b> - Hide the text area.</li><li><b>=SHOW_TEXT</b> - Show the text area.</li></ul>An action tag of <b>@PEDIGREE_HPO=HIDE_TEXT</b> will use the HPO code system and hide the text area for the field.",
-					"type" : "descriptive"
+					"value": "cc",
+					"name": "OAuth2 Client Credentials"
 				}
+			]
+		},
+		{
+			"key": "cc_token_endpoint",
+			"name": "OAuth2 token endpoint",
+			"type": "text",
+			"branchingLogic": {
+				"field": "authentication_type",
+				"value": "cc"
+			}
+		},
+		{
+			"key": "cc_client_id",
+			"name": "Client Id",
+			"type": "text",
+			"branchingLogic": {
+				"field": "authentication_type",
+				"value": "cc"
+			}
+		},
+		{
+			"key": "cc_client_secret",
+			"name": "Client Secret",
+			"type": "text",
+			"branchingLogic": {
+				"field": "authentication_type",
+				"value": "cc"
+			}
+		}
 	],
 	"project-settings" : [
-				{
-					"key" : "project_compression",
-					"name" : "Compress Data",
-					"type": "dropdown",
-					"choices": [
-						{ "value": "never", "name": "Never compress"},
-						{ "value": "large", "name": "Compress Large Diagrams >65K"},
-						{ "value": "always", "name": "Always compress"}
-					]
-				},
-				{
-					"key" : "project_ontology_server",
-					"name" : "Ontology Server URL",
-					"type" : "text"
-				},
-				{
-					"key" : "project_ontology_server_info",
-					"name" : "The Ontology Server URL setting indicates the server to use to lookup disorders and phenotypes, leaving blank will use the system wide setting.<br>Two action tags will be enabled for notes<ul><li><b>'@PEDIGREE_HPO'</b> - A pedigree diagram using HPO and OMIM coding systems</li><li><b>'@PEDIGREE_SCT'</b> - A pedigree diagram using SNOMED-CT coding system</li></ul>The default 'Hide Text' flag can be overriden in the action tag by appending <ul><li><b>=HIDE_TEXT</b> - Hide the text area.</li><li><b>=SHOW_TEXT</b> - Show the text area.</li></ul>An action tag of <b>@PEDIGREE_HPO=HIDE_TEXT</b> will use the HPO code system and hide the text area for the field.",
-					"type" : "descriptive"
-				}
+		{
+			"key" : "project_format_info",
+			"name" : "The original version of this plugin used a custom FHIR format, from version 0.3 this was changed to a format defined by GA4GH. The format field allows the format to be selected, <i><b>fhir_v1</b></i> is the old format, while <i><b>GA4GH</b></i> is the new format. If <i><b>GA4GH</b></i> is selected it will still read the old format. The new format is recommended and has better round tripping",
+			"type" : "descriptive"
+		},
+		{
+			"key" : "project_format",
+			"name" : "FHIR format",
+			"type": "dropdown",
+			"choices": [
+				{ "value": "fhir_v1", "name": "fhir_v1 - Legacy Format"},
+				{ "value": "GA4GH", "name": "GA4GH - Recommended Format"}
+			]
+		},
+		{
+			"key" : "project_compression",
+			"name" : "Compress Data",
+			"type": "dropdown",
+			"choices": [
+				{ "value": "never", "name": "Never compress"},
+				{ "value": "large", "name": "Compress Large Diagrams >65K"},
+				{ "value": "always", "name": "Always compress"}
+			]
+		}
 	],
-	
+	"no-auth-pages": [
+		"TerminologyService"
+	],
+
   "compatibility": {
     "php-version-min" : "5.4.0",
     "redcap-version-min": "8.8.1"

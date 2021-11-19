@@ -81,16 +81,22 @@ name field which is a string. The pedigree editor has a first name, last name an
 be written into the FamilyHistory resource as <first name> <last name> (<last name at birth>). When importing the FHIR
 resource everything but the last word is the first name and a trailing name in brackets will be taken as last name at birth.
 
-Heredity options - This can be 'Childless' or 'Infertile' in the editor, but is not currently stored on the fhir resource.
-Carrier Status - This can be 'Carrier' or 'Pre-symptomatic' in the editor, but is not currently stored on the fhir resource.
-Evaluated - This is a checkbox in the editor, but is not currently stored on the fhir resource.
-Lost Contact - This is a checkbox in the editor, but is not currently stored on the fhir resource. 
-Multiple Sibling Nodes - In the editor you can create a single node to represent multiple siblings, at the moment these
+- Heredity options - This can be 'Childless' or 'Infertile' in the editor, this is added as an Observation resource with
+a predefined name. If the name doesn't match, then the field won't be populated.
+- Carrier Status - This can be 'Carrier' or 'Pre-symptomatic' in the editor, this is added as an Observation resource with
+a predefined name. If the name doesn't match, then the field won't be populated.
+- Evaluated - This is a checkbox in the editor, but is not currently stored on the fhir resource.
+- Lost Contact - This is a checkbox in the editor, but is not currently stored on the fhir resource. 
+- Multiple Sibling Nodes - In the editor you can create a single node to represent multiple siblings, at the moment these
 will be saved as a single familiy history resource with no name and the number of siblings will be lost.
 
-Phenotype and Candidate Genes are both stored as Observation Resources associated with a family history resource. The
+- Phenotype and Candidate Genes are both stored as Observation Resources associated with a family history resource. The
 system uses a naming convention to distinguish the two, otherwise it tries to match the code system to try and determine
 if the observation represents a Phenotype or Candidate gene.
 
-Life status - This can be 'unborn', 'stillborn' and 'aborted' with an associated gestation age. This will be written into
+- Life status - This can be 'unborn', 'stillborn' and 'aborted' with an associated gestation age. This will be written into
 the deceasedString field on the family history resource in a form like 'stillborn 34 weeks'.
+
+## Pedigree Diagram
+The fhir format now includes a DocumentReference resource which contains an attachement
+of an svg representation of the pedigree diagram.

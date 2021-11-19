@@ -53,14 +53,31 @@ pedigreeEditorEM.getPedigreeSVG = function(value) {
 			}
 			var FHIRdata = JSON.parse(valueToParse);
 			if (FHIRdata) {
-				if (FHIRdata.contained) {
-					for (let containedResource of FHIRdata.contained) {
-						if (containedResource.id === 'pedigreeImage') {
-							foundSVG = true;
-							svg = decodeURIComponent(escape(atob(containedResource.content.attachment.data)));
-							svg = svg.replace(/width=".*?"/, 'width="auto"')
-								.replace(/height=".*?"/, 'height="auto"');
-							break;
+				if ("Composition" === FHIRdata.resourceType){
+					if (FHIRdata.contained) {
+						for (let containedResource of FHIRdata.contained) {
+							if (containedResource.id === 'pedigreeImage') {
+								foundSVG = true;
+								svg = decodeURIComponent(escape(atob(containedResource.content.attachment.data)));
+								svg = svg.replace(/width=".*?"/, 'width="auto"')
+									.replace(/height=".*?"/, 'height="auto"');
+								break;
+							}
+						}
+					}
+				}
+				else if ("Bundle" === FHIRdata.resourceType){
+					if (FHIRdata.entry) {
+						for (let e of FHIRdata.entry) {
+							let containedResource = e.resource;
+							if ('DocumentReference' === containedResource.resourceType &&
+							    'Pedigree Diagram of Family in SVG format' === containedResource.description){
+								foundSVG = true;
+								svg = decodeURIComponent(escape(atob(containedResource.content.attachment.data)));
+								svg = svg.replace(/width=".*?"/, 'width="auto"')
+									.replace(/height=".*?"/, 'height="auto"');
+								break;
+							}
 						}
 					}
 				}
@@ -291,32 +308,79 @@ pedigreeEditorEM.removeDiagramFromFhir = function(fhirJson) {
 		let fhir = JSON.parse(fhirJson);
 		let foundImageSection = false;
 		let foundImageResource = false;
-		if (fhir.section){
-			let newSections = [];
-			for (let section of fhir.section){
-				if (section.title === 'Pedigree Diagram') {
-
+		if ("Composition" === fhir.resourceType){
+			if (fhir.section){
+				let newSections = [];
+				for (let section of fhir.section){
+					if (section.title === 'Pedigree Diagram') {
+						foundImageSection = true;
+					}
+					else {
+						newSections.push(section);
+					}
 				}
-				else {
+				if (foundImageSection){
+					fhir.section = newSections;
+				}
+			}
+			if (fhir.contained) {
+				let newContained = [];
+				for (let containedResource of fhir.contained) {
+					if (containedResource.id === 'pedigreeImage') {
+						foundImageResource = true;
+					}
+					else {
+						newContained.push(containedResource);
+					}
+				}
+				if (foundImageResource){
+					fhir.contained = newContained;
+				}
+			}
+		} else if ("Bundle" === fhir.resourceType){
+			let composition = fhir.entry[0].resource;
+			let imageSection = null;
+			let docRef = null;
+			let newSections = [];
+			for (let section of composition.section) {
+				if (section.title === 'Pedigree Diagram') {
+					foundImageSection = true;
+					imageSection = section;
+					docRef = section.entry[0].reference;
+				} else {
 					newSections.push(section);
 				}
 			}
 			if (foundImageSection){
-				fhir.section = newSections;
-			}
-		}
-		if (fhir.contained) {
-			let newContained = [];
-			for (let containedResource of fhir.contained) {
-				if (containedResource.id === 'pedigreeImage') {
-					foundImageResource = true;
+				composition.section = newSections;
+				// replace link to docreference
+				let newLink = [];
+				let foundLink = false;
+				for (let l of fhir.entry[0].link){
+					if (l.url === docRef){
+						foundLink = true;
+					}
+					else {
+						newLink.push(l);
+					}
 				}
-				else {
-					newContained.push(containedResource);
+				if (foundLink){
+					fhir.entry[0].link = newLink;
 				}
-			}
-			if (foundImageResource){
-				fhir.contained = newContained;
+				// replace doc reference entry
+				let newEntry = [];
+				let foundEntry = false;
+				for (let e of fhir.entry){
+					if (e.fullUrl === docRef){
+						foundEntry = true;
+					}
+					else {
+						newEntry.push(e);
+					}
+				}
+				if (foundEntry){
+					fhir.entry = newEntry;
+				}
 			}
 		}
 		if (foundImageResource || foundImageSection){

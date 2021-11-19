@@ -45,28 +45,58 @@
     var editor;
 
     document.observe('dom:loaded',function() {
-      var ontologyServer = getParameterByName('ontologyServer') || 'https://genomics.ontoserver.csiro.au/fhir/';
+      var redcapTerminolgyUrl = getParameterByName('redcapTerminolgyUrl');
+      if (redcapTerminolgyUrl){
 
-      var mode = getParameterByName('mode');
-      if (mode === 'SCT') {
-        OpenPedigree.setFHIRTerminology('disorder', ontologyServer, 'http://snomed.info/sct',
-                'http://snomed.info/sct?fhir_vs=refset/32570581000036105', /[0-9]+/, 20);
-        OpenPedigree.setFHIRTerminology('phenotype', ontologyServer, 'http://snomed.info/sct',
-                'http://ga4gh.org/fhir/ValueSet/phenotype', /[0-9]+/, 20);
-        OpenPedigree.setFHIRTerminology('gene', ontologyServer, 'http://www.genenames.org',
-                'http://www.genenames.org', /^HGNC:/, 20);
+        var mode = getParameterByName('mode');
+        if (mode === 'SCT') {
+          OpenPedigree.setREDCapFHIRTerminology('disorder', redcapTerminolgyUrl, 'http://snomed.info/sct',
+                  'http://snomed.info/sct?fhir_vs=refset/32570581000036105', /[0-9]+/, 20);
+          OpenPedigree.setREDCapFHIRTerminology('phenotype', redcapTerminolgyUrl, 'http://snomed.info/sct',
+                  'http://ga4gh.org/fhir/ValueSet/phenotype', /[0-9]+/, 20);
+          OpenPedigree.setREDCapFHIRTerminology('gene', redcapTerminolgyUrl, 'http://www.genenames.org/geneId',
+                  'http://www.genenames.org/geneId?vs', /^HGNC:/, 20);
+        }
+        else {
+          OpenPedigree.setREDCapFHIRTerminology('disorder', redcapTerminolgyUrl, 'http://www.omim.org',
+                  'http://www.omim.org?vs', /[0-9]+/, 20);
+          OpenPedigree.setREDCapFHIRTerminology('phenotype', redcapTerminolgyUrl, 'http://purl.obolibrary.org/obo/hp.fhir',
+                  'http://purl.obolibrary.org/obo/hp.fhir?vs', /^(http:\/\/)|(HP:)/, 20);
+          OpenPedigree.setREDCapFHIRTerminology('gene', redcapTerminolgyUrl, 'http://www.genenames.org/geneId',
+                  'http://www.genenames.org/geneId?vs', /^HGNC:/, 20);
+        }
       }
       else {
-        OpenPedigree.setFHIRTerminology('disorder', ontologyServer, 'http://www.omim.org',
-                'http://www.omim.org', /[0-9]+/, 20);
-        OpenPedigree.setFHIRTerminology('phenotype', ontologyServer, 'http://purl.obolibrary.org/obo/hp.owl',
-                'http://purl.obolibrary.org/obo/hp.owl?vs', /^(http:\/\/)|(HP:)/, 20);
-        OpenPedigree.setFHIRTerminology('gene', ontologyServer, 'http://www.genenames.org',
-                'http://www.genenames.org', /^HGNC:/, 20);
+        var ontologyServer = getParameterByName('ontologyServer') || 'https://r4.ontoserver.csiro.au/fhir/';
+
+        var mode = getParameterByName('mode');
+        if (mode === 'SCT') {
+          OpenPedigree.setFHIRTerminology('disorder', ontologyServer, 'http://snomed.info/sct',
+                  'http://snomed.info/sct?fhir_vs=refset/32570581000036105', /[0-9]+/, 20);
+          OpenPedigree.setFHIRTerminology('phenotype', ontologyServer, 'http://snomed.info/sct',
+                  'http://ga4gh.org/fhir/ValueSet/phenotype', /[0-9]+/, 20);
+          OpenPedigree.setFHIRTerminology('gene', ontologyServer, 'http://www.genenames.org/geneId',
+                  'http://www.genenames.org/geneId?vs', /^HGNC:/, 20);
+        }
+        else {
+          OpenPedigree.setFHIRTerminology('disorder', ontologyServer, 'http://www.omim.org',
+                  'http://www.omim.org?vs', /[0-9]+/, 20);
+          OpenPedigree.setFHIRTerminology('phenotype', ontologyServer, 'http://purl.obolibrary.org/obo/hp.fhir',
+                  'http://purl.obolibrary.org/obo/hp.fhir?vs', /^(http:\/\/)|(HP:)/, 20);
+          OpenPedigree.setFHIRTerminology('gene', ontologyServer, 'http://www.genenames.org/geneId',
+                  'http://www.genenames.org/geneId?vs', /^HGNC:/, 20);
+        }
+      }
+
+      var qData = getParameterByName('qData');
+
+      var format = getParameterByName('format') || 'fhir';
+      if (format === ''){
+        format = 'fhir';
       }
       console.log("creating editor");
 
-      var editorOptions = {patientDataUrl: 'local:pedigreeData?format=fhir&closeOnSave=true',
+      var editorOptions = {patientDataUrl: 'local:pedigreeData?format='+format+'&closeOnSave=true' + (qData?('&qData='+qData):''),
                            returnUrl: '#CloseWindow'};
 
 
