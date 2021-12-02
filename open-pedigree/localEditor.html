@@ -18,6 +18,11 @@
     <script type="text/javascript" src="public/vendor/filesaver/FileSaver.js"></script>
     <script type="text/javascript" src="public/vendor/URI.js"></script>
 
+    <!-- PDF libraries -->
+    <script type="text/javascript" src="public/vendor/pdfkit/pdfkit.standalone.js"></script>
+    <script type="text/javascript" src="public/vendor/pdfkit/svg-to-pdfkit.js"></script>
+    <script type="text/javascript" src="public/vendor/pdfkit/blob-stream.js"></script>
+
     <!-- XWiki REST API and widgets -->
     <script type="text/javascript" src="public/vendor/xwiki/xwiki-min.js"></script>
     <script type="text/javascript" src="public/vendor/phenotips/Widgets.js"></script>
@@ -94,6 +99,7 @@
       if (format === ''){
         format = 'fhir';
       }
+
       console.log("creating editor");
 
       var editorOptions = {patientDataUrl: 'local:pedigreeData?format='+format+'&closeOnSave=true' + (qData?('&qData='+qData):''),

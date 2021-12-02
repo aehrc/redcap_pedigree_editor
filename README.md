@@ -17,7 +17,7 @@ Alternatively you can clone the git repository and generate your own distributio
 ```
 git clone https://github.com/aehrc/redcap_pedigree_editor.git
 cd redcap_pedigree_editor
-git archive --format=zip  --prefix=redcap_pedigree_editor_v0.3/ -o ../redcap_pedigree_editor_v0.3.zip HEAD
+git archive --format=zip  --prefix=redcap_pedigree_editor_v0.3.1/ -o ../redcap_pedigree_editor_v0.3.1.zip HEAD
 ```
 
 This will give you a file redcap_pedigree_editor_v0.3.zip
@@ -28,6 +28,7 @@ This will give you a file redcap_pedigree_editor_v0.3.zip
 - v0.2 - Upgrade open-pedigree version to allow use of the svg image encoded in the pedigree data to show real 
 representation of the diagram, add compression for large diagrams.
 - v0.3 - Change to use the new GA4GH FHIR format, do terminology lookups via a web service hosted in redcap.
+- v0.3.1 - Minor bug fix in open-pedigree
 
 # Install the distribution
 

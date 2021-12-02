@@ -153,6 +153,7 @@
 
   "compatibility": {
     "php-version-min" : "5.4.0",
-    "redcap-version-min": "8.8.1"
+    "redcap-version-min": "8.8.1",
+    "framework-version": 1
   }
 }
