@@ -17,7 +17,7 @@ Alternatively you can clone the git repository and generate your own distributio
 ```
 git clone https://github.com/aehrc/redcap_pedigree_editor.git
 cd redcap_pedigree_editor
-git archive --format=zip  --prefix=redcap_pedigree_editor_v0.3.1/ -o ../redcap_pedigree_editor_v0.3.1.zip HEAD
+git archive --format=zip  --prefix=redcap_pedigree_editor_v0.3.2/ -o ../redcap_pedigree_editor_v0.3.2.zip HEAD
 ```
 
 This will give you a file redcap_pedigree_editor_v0.3.zip
@@ -29,12 +29,13 @@ This will give you a file redcap_pedigree_editor_v0.3.zip
 representation of the diagram, add compression for large diagrams.
 - v0.3 - Change to use the new GA4GH FHIR format, do terminology lookups via a web service hosted in redcap.
 - v0.3.1 - Minor bug fix in open-pedigree
+- v0.3.2 - Add new action tag **@PEDIGREE** which uses configurable terminology settings.
 
 # Install the distribution
 
 The distribution is installed by unzipping the distribution file into the `redcap/modules/` directory of the redcap installation.
 
-This should result in the new directory `'redcap_pedigree_editor_v0.1.1'`. The external module directory name must meet a strict naming
+This should result in the new directory `'redcap_pedigree_editor_v0.3.2'`. The external module directory name must meet a strict naming
 convention, if the directory is missing the `'v'` before the version number then the module won't be picked up by redcap, so rename
 the directory to match the form `'<module name>_v<version number>'`.
 
@@ -60,25 +61,56 @@ Once installed the module has a number of system wide options:
    - *Compress Large Diagrams >65K* - The data is compressed if its over 65K. If its still too large after being 
      compressed, the diagram is stripped and the if its greater than 65K its compressed.
    - *Always Compress* - The data is always compressed. If the compressed data is greater than 65K the diagram is stripped.
- - *Ontology Server URL* - The URL for FHIR ontology server used to lookup disorders, phenotypes and genes. If left blank then the default *'https://genomics.ontoserver.csiro.au/fhir/'* will be used. There is a matching project setting, which allows a project to use a different ontology server.
+ - *Ontology Server URL* - The URL for FHIR ontology server used to lookup disorders, phenotypes and genes.
  - *Authentication Type* - The authentication to use when communicating with the FHIR server. This can be either `none`
       or `OAuth2 Client Credentials`. The client credentials flow uses a client id and secret to obtain an access token.
    - *OAuth2 token endpoint*  - The token endpoint used to obtain the access token. This is required for `Oauth2 Client Credentials` authentication type.
    - *Client Id* - The client id to use to fetch an access token. This is required for `Oauth2 Client Credentials` authentication type.
    - *Client Secret* - The client secret to use to fetch an access token. This is required for `Oauth2 Client Credentials` authentication type.
+ - *Default Terminology* - This setting configures the system level default terminologies to use with the @PEDIGREE tag. It will be one of:
+   - *SNOMEDCT* - This uses the same terminology as the @PEDIGREE_SCT tag.
+   - *HPO* - This uses the same terminology as the @PEDIGREE_HPO tag.
+   - *Custom* - The terminology settings will be entered into additional fields.
+     - *Disorder Code System* - The FHIR code system to use for disorders.
+     - *Disorder Valueset* - The FHIR valueset to use for disorders.
+     - *Disorder Regex* - Regular expression used to test if a code could be a member of the phenotype code system.
+     - *Phenotype Code System* - The FHIR code system to use for phenotypes.
+     - *Phenotype Valueset* - The FHIR valueset to use for phenotypes.
+     - *Phenotype Regex* - Regular expression used to test if a code could be a member of the phenotype code system.
+     - *Gene Code System* - The FHIR code system to use for genes.
+     - *Gene Valueset* - The FHIR valueset to use for genes.
+     - *Gene Regex* - Regular expression used to test if a code could be a member of the gene code system.
 
-![Configure](documentation/pedigree_v0.3_system_settings.png)
+![Configure](documentation/pedigree_v0.3.2_system_settings_1.png)
+![Configure](documentation/pedigree_v0.3.2_system_settings_2.png)
 
 ### Project Settings
 
 Each project can override the *FHIR Format* and *Compress Data* setting. If left blank then the system setting will be used.
+The project can also override the terminology to use with the @PEDIGREE action tag
+- *Default Terminology* - This setting configures the system level default terminologies to use with the @PEDIGREE tag. It will be one of:
+    - *SNOMEDCT* - This uses the same terminology as the @PEDIGREE_SCT tag.
+    - *HPO* - This uses the same terminology as the @PEDIGREE_HPO tag.
+    - *System* - This uses the system default terminology settings.
+    - *Custom* - The terminology settings will be entered into additional fields.
+        - *Disorder Code System* - The FHIR code system to use for disorders.
+        - *Disorder Valueset* - The FHIR valueset to use for disorders.
+        - *Disorder Regex* - Regular expression used to test if a code could be a member of the phenotype code system.
+        - *Phenotype Code System* - The FHIR code system to use for phenotypes.
+        - *Phenotype Valueset* - The FHIR valueset to use for phenotypes.
+        - *Phenotype Regex* - Regular expression used to test if a code could be a member of the phenotype code system.
+        - *Gene Code System* - The FHIR code system to use for genes.
+        - *Gene Valueset* - The FHIR valueset to use for genes.
+        - *Gene Regex* - Regular expression used to test if a code could be a member of the gene code system.
 
-![Configure](documentation/pedigree_v0.3_project_settings.png)
+
+![Configure](documentation/pedigree_v0.3.2_project_settings.png)
 
 ## Creating a Pedigree field
 To make use of the editor a field needs to be created in the online designer and marked with one of two action tags. Only fields of type `Notes Box` are considered.
   - *@PEDIGREE_HPO* - Marks a field to be a pedigree editor using the HPO and OMIM coding systems for phenotypes and disorders.
   - *@PEDIGREE_SCT* - Marks a field to be a pedigree editor using the SNOMED-CT coding system for phenotypes and disorders.
+  - *@PEDIGREE* - Marks a field to be a pedigree editor using the default coding system for phenotypes and disorders (new to version 0.3.2).
 
 The default 'Hide Text' and 'Compress Data' options can be overriden in the action tag by appending '=' plus a comma 
 separated list of options.
@@ -153,6 +185,9 @@ problems reloading the disorder, genes and phenotypic features fields.
 |Phenotype CodeSystem|http://snomed.info/sct                                 |http://snomed.info/sct                                 |
 |Phenotype ValueSet  |http://ga4gh.org/fhir/ValueSet/phenotype               |http://ga4gh.org/fhir/ValueSet/phenotype               |
 |--------------------|-------------------------------------------------------|-------------------------------------------------------|
+
+In version 0.3.2 a new action tag **@PEDIGREE** was added, this will use the terminology configured as the default terminology.
+The default terminology may be a custom set of terminology bindings.
 
 # Large Data Issues
 A redcap notes field can store up to 65K of character data. This should be fine if someone was typing a note, but with

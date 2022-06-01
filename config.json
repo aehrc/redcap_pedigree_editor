@@ -20,7 +20,7 @@
     "system-settings" : [
 		{
 			"key" : "action_tag_info",
-			"name" : "Two action tags will be enabled for notes<ul><li><b>'@PEDIGREE_HPO'</b> - A pedigree diagram using HPO and OMIM coding systems</li><li><b>'@PEDIGREE_SCT'</b> - A pedigree diagram using SNOMED-CT coding system</li></ul>The default 'Hide Text' flag can be overriden in the action tag by appending <ul><li><b>=HIDE_TEXT</b> - Hide the text area.</li><li><b>=SHOW_TEXT</b> - Show the text area.</li></ul>An action tag of <b>@PEDIGREE_HPO=HIDE_TEXT</b> will use the HPO code system and hide the text area for the field.",
+			"name" : "Three action tags will be enabled for notes<ul><li><b>'@PEDIGREE_HPO'</b> - A pedigree diagram using HPO and OMIM coding systems</li><li><b>'@PEDIGREE_SCT'</b> - A pedigree diagram using SNOMED-CT coding system</li><li><b>'@PEDIGREE'</b> - A pedigree diagram using the project configured default coding systems.</li></ul>The default 'Hide Text' flag can be overriden in the action tag by appending <ul><li><b>=HIDE_TEXT</b> - Hide the text area.</li><li><b>=SHOW_TEXT</b> - Show the text area.</li></ul>An action tag of <b>@PEDIGREE_HPO=HIDE_TEXT</b> will use the HPO code system and hide the text area for the field.",
 			"type" : "descriptive"
 		},
 		{
@@ -119,6 +119,121 @@
 				"field": "authentication_type",
 				"value": "cc"
 			}
+		},
+		{
+			"key" : "terminology_info",
+			"name" : "FHIR valuesets to use for disorders, phenotypes and genes to use for @PEDIGREE tag.",
+			"type" : "descriptive"
+		},
+		{
+			"key": "system_def_terminology",
+			"name": "Default Terminology",
+			"required": true,
+			"type": "dropdown",
+			"choices": [
+				{
+					"value": "SCT",
+					"name": "SnomedCT"
+				},
+				{
+					"value": "HPO",
+					"name": "HPO + omim"
+				},
+				{
+					"value": "CUSTOM",
+					"name": "Custom"
+				}
+			]
+		},
+		{
+			"key" : "system_custom_terminology_info",
+			"name" : "Custom terminology requires a code system, valueset and valid code regular expression to be defined for disorders, phenotypes and genes.<br/>A regular expression of '.+' should be used if the code systems values are not regular.<br/>The following values are used for HPO and SCT tags:<br/><table><tr><th>Entry</th><th>Code System</th><th>Valueset</th><th>Regex</th></tr><tr><td>OMIM (HPO Disorder)</td><td>http://www.omim.org</td><td>http://www.omim.org?vs</td><td>[0-9]+</td></tr><tr><td>HPO (HPO Phenotype)</td><td>http://purl.obolibrary.org/obo/hp.fhir</td><td>http://purl.obolibrary.org/obo/hp.fhir?vs</td><td>^(http:\\/\\/)|(HP:)</td></tr><tr><td>Gene</td><td>http://www.genenames.org/geneId</td><td>http://www.genenames.org/geneId?vs</td><td>^HGNC:</td></tr><tr><td>SnomedCT (SCT Disorder)</td><td>http://snomed.info/sct</td><td>http://snomed.info/sct?fhir_vs=refset/32570581000036105</td><td>[0-9]+</td></tr><tr><td>SnomedCT (SCT Phenotype)</td><td>http://snomed.info/sct</td><td>http://ga4gh.org/fhir/ValueSet/phenotype</td><td>[0-9]+</td></tr></table>",
+			"type" : "descriptive",
+			"branchingLogic": {
+				"field": "system_def_terminology",
+				"value": "CUSTOM"
+			}
+		},
+		{
+			"key": "system_disorder_system",
+			"name": "Disorder Code System",
+			"type": "text",
+			"branchingLogic": {
+				"field": "system_def_terminology",
+				"value": "CUSTOM"
+			}
+		},
+		{
+			"key": "system_disorder_valueset",
+			"name": "Disorder Value Set",
+			"type": "text",
+			"branchingLogic": {
+				"field": "system_def_terminology",
+				"value": "CUSTOM"
+			}
+		},
+		{
+			"key": "system_disorder_regex",
+			"name": "Disorder Regex",
+			"type": "text",
+			"branchingLogic": {
+				"field": "system_def_terminology",
+				"value": "CUSTOM"
+			}
+		},
+		{
+			"key": "system_phenotype_system",
+			"name": "Phenotype Code System",
+			"type": "text",
+			"branchingLogic": {
+				"field": "system_def_terminology",
+				"value": "CUSTOM"
+			}
+		},
+		{
+			"key": "system_phenotype_valueset",
+			"name": "Phenotype Value Set",
+			"type": "text",
+			"branchingLogic": {
+				"field": "system_def_terminology",
+				"value": "CUSTOM"
+			}
+		},
+		{
+			"key": "system_phenotype_regex",
+			"name": "Phenotype Regex",
+			"type": "text",
+			"branchingLogic": {
+				"field": "system_def_terminology",
+				"value": "CUSTOM"
+			}
+		},
+		{
+			"key": "system_gene_system",
+			"name": "Gene Code System",
+			"type": "text",
+			"branchingLogic": {
+				"field": "system_def_terminology",
+				"value": "CUSTOM"
+			}
+		},
+		{
+			"key": "system_gene_valueset",
+			"name": "Gene Value Set",
+			"type": "text",
+			"branchingLogic": {
+				"field": "system_def_terminology",
+				"value": "CUSTOM"
+			}
+		},
+		{
+			"key": "system_gene_regex",
+			"name": "Gene Regex",
+			"type": "text",
+			"branchingLogic": {
+				"field": "system_def_terminology",
+				"value": "CUSTOM"
+			}
 		}
 	],
 	"project-settings" : [
@@ -145,6 +260,124 @@
 				{ "value": "large", "name": "Compress Large Diagrams >65K"},
 				{ "value": "always", "name": "Always compress"}
 			]
+		},
+		{
+			"key" : "project_terminology_info",
+			"name" : "FHIR valuesets to use for disorders, phenotypes and genes to use for @PEDIGREE tag.",
+			"type" : "descriptive"
+		},
+		{
+			"key": "project_def_terminology",
+			"name": "Default Terminology",
+			"type": "dropdown",
+			"choices": [
+				{
+					"value": "SYSTEM",
+					"name": "System Default"
+				},
+				{
+					"value": "SCT",
+					"name": "SnomedCT"
+				},
+				{
+					"value": "HPO",
+					"name": "HPO + omim"
+				},
+				{
+					"value": "CUSTOM",
+					"name": "Custom"
+				}
+			]
+		},
+		{
+			"key" : "project_custom_terminology_info",
+			"name" : "Custom terminology requires a code system, valueset and valid code regular expression to be defined for disorders, phenotypes and genes.<br/>A regular expression of '.+' should be used if the code systems values are not regular.<br/>The following values are used for HPO and SCT tags:<br/><table><tr><th>Entry</th><th>Code System</th><th>Valueset</th><th>Regex</th></tr><tr><td>OMIM (HPO Disorder)</td><td>http://www.omim.org</td><td>http://www.omim.org?vs</td><td>[0-9]+</td></tr><tr><td>HPO (HPO Phenotype)</td><td>http://purl.obolibrary.org/obo/hp.fhir</td><td>http://purl.obolibrary.org/obo/hp.fhir?vs</td><td>^(http:\\/\\/)|(HP:)</td></tr><tr><td>Gene</td><td>http://www.genenames.org/geneId</td><td>http://www.genenames.org/geneId?vs</td><td>^HGNC:</td></tr><tr><td>SnomedCT (SCT Disorder)</td><td>http://snomed.info/sct</td><td>http://snomed.info/sct?fhir_vs=refset/32570581000036105</td><td>[0-9]+</td></tr><tr><td>SnomedCT (SCT Phenotype)</td><td>http://snomed.info/sct</td><td>http://ga4gh.org/fhir/ValueSet/phenotype</td><td>[0-9]+</td></tr></table>",
+			"type" : "descriptive",
+			"branchingLogic": {
+				"field": "project_def_terminology",
+				"value": "CUSTOM"
+			}
+		},
+		{
+			"key": "project_disorder_system",
+			"name": "Disorder Code System",
+			"type": "text",
+			"branchingLogic": {
+				"field": "project_def_terminology",
+				"value": "CUSTOM"
+			}
+		},
+		{
+			"key": "project_disorder_valueset",
+			"name": "Disorder Value Set",
+			"type": "text",
+			"branchingLogic": {
+				"field": "project_def_terminology",
+				"value": "CUSTOM"
+			}
+		},
+		{
+			"key": "project_disorder_regex",
+			"name": "Disorder Regex",
+			"type": "text",
+			"branchingLogic": {
+				"field": "project_def_terminology",
+				"value": "CUSTOM"
+			}
+		},
+		{
+			"key": "project_phenotype_system",
+			"name": "Phenotype Code System",
+			"type": "text",
+			"branchingLogic": {
+				"field": "project_def_terminology",
+				"value": "CUSTOM"
+			}
+		},
+		{
+			"key": "project_phenotype_valueset",
+			"name": "Phenotype Value Set",
+			"type": "text",
+			"branchingLogic": {
+				"field": "project_def_terminology",
+				"value": "CUSTOM"
+			}
+		},
+		{
+			"key": "project_phenotype_regex",
+			"name": "Phenotype Regex",
+			"type": "text",
+			"branchingLogic": {
+				"field": "project_def_terminology",
+				"value": "CUSTOM"
+			}
+		},
+		{
+			"key": "project_gene_system",
+			"name": "Gene Code System",
+			"type": "text",
+			"branchingLogic": {
+				"field": "project_def_terminology",
+				"value": "CUSTOM"
+			}
+		},
+		{
+			"key": "project_gene_valueset",
+			"name": "Gene Value Set",
+			"type": "text",
+			"branchingLogic": {
+				"field": "project_def_terminology",
+				"value": "CUSTOM"
+			}
+		},
+		{
+			"key": "project_gene_regex",
+			"name": "Gene Regex",
+			"type": "text",
+			"branchingLogic": {
+				"field": "project_def_terminology",
+				"value": "CUSTOM"
+			}
 		}
 	],
 	"no-auth-pages": [

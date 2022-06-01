@@ -52,6 +52,53 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
                 $errors .= "Failed to get Authentication Token for fhir server at '" . $authEndpoint . "' got exception $e\n";
             }
         }
+
+        $keyNameLookup = [
+            'disorder_system' => 'Disorder System',
+            'disorder_valueset' => 'Disorder Valueset',
+            'phenotype_system' => 'Phenotype System',
+            'phenotype_valueset' => 'Phenotype Valueset',
+            'gene_system' => 'Gene System',
+            'gene_valueset' => 'Gene Valueset',
+        ];
+        $regexNameLookup = [
+            'disorder_regex' => 'Disorder Regex',
+            'phenotype_regex' => 'Phenotype Regex',
+            'gene_regex' => 'Gene Regex',
+        ];
+        $systemDefTerminology = $settings['system_def_terminology'];
+        if ($systemDefTerminology === 'CUSTOM'){
+            // need to check something has been entered for terminology
+            foreach($keyNameLookup as $setting => $name){
+                if (!$settings['system_'.$setting]) {
+                    $errors .= "Custom " . $name . " is required.\n";
+                }
+            }
+            foreach($regexNameLookup as $setting => $name){
+                if (!$settings['system_'.$setting]) {
+                    $errors .= "Custom " . $name . " is required.\n";
+                } else if (preg_match('/'.$settings['system_'.$setting].'/', '') === false){
+                    $errors .= "Custom " . $name . " is not a valid regular expression.\n";
+                }
+            }
+        }
+        $projectDefTerminology = $settings['project_def_terminology'];
+        if ($projectDefTerminology === 'CUSTOM'){
+            // need to check something has been entered for terminology
+            foreach($keyNameLookup as $setting => $name){
+                if (!$settings['project_'.$setting]) {
+                    $errors .= "Custom " . $name . " is required.\n";
+                }
+            }
+            foreach($regexNameLookup as $setting => $name){
+                if (!$settings['project_'.$setting]) {
+                    $errors .= "Custom " . $name . " is required.\n";
+                } else if (preg_match('/'.$settings['project_'.$setting].'/', '') === false){
+                    $errors .= "Custom " . $name . " is not a valid regular expression.\n";
+                }
+            }
+        }
+
         return $errors;
     }
 
@@ -70,6 +117,7 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
         // maybe in the future they will be exposed.
         $hpoEditorPage = 'open-pedigree/localEditor.html?mode=HPO';
         $sctEditorPage = 'open-pedigree/localEditor.html?mode=SCT';
+        $customEditorPage = 'open-pedigree/localEditor.html?mode=CUSTOM';
         $editorPageLocal = true;
         $hpoTag = '@PEDIGREE_HPO';
         $sctTag = '@PEDIGREE_SCT';
@@ -85,7 +133,40 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
         $projectCompression = $this->getProjectSetting('project_compression', $project_id);
 
         $compression = ($projectCompression) ?: $systemCompression;
-        
+
+        $systemDefTerminology = $this->getSystemSetting('system_def_terminology');
+        $projectDefTerminology = $this->getProjectSetting('project_def_terminology', $project_id);
+        $customTerminology = array();
+
+        $defTerminology = (!$projectDefTerminology || $projectDefTerminology === 'SYSTEM') ? $systemDefTerminology
+            : $projectDefTerminology;
+
+        if (!$projectDefTerminology || $projectDefTerminology === 'SYSTEM'){
+            if ($defTerminology === 'CUSTOM'){
+                $customTerminology['disorderSystem'] = $this->getSystemSetting('system_disorder_system');
+                $customTerminology['disorderValueset'] = $this->getSystemSetting('system_disorder_valueset');
+                $customTerminology['disorderRegex'] = $this->getSystemSetting('system_disorder_regex');
+                $customTerminology['phenotypeSystem'] = $this->getSystemSetting('system_phenotype_system');
+                $customTerminology['phenotypeValueset'] = $this->getSystemSetting('system_phenotype_valueset');
+                $customTerminology['phenotypeRegex'] = $this->getSystemSetting('system_phenotype_regex');
+                $customTerminology['geneSystem'] = $this->getSystemSetting('system_gene_system');
+                $customTerminology['geneValueset'] = $this->getSystemSetting('system_gene_valueset');
+                $customTerminology['geneRegex'] = $this->getSystemSetting('system_gene_regex');
+            }
+        } else if ($projectDefTerminology === 'CUSTOM') {
+            $customTerminology['disorderSystem'] = $this->getProjectSetting('system_disorder_system', $project_id);
+            $customTerminology['disorderValueset'] = $this->getProjectSetting('system_disorder_valueset', $project_id);
+            $customTerminology['disorderRegex'] = $this->getProjectSetting('system_disorder_regex', $project_id);
+            $customTerminology['phenotypeSystem'] = $this->getProjectSetting('system_phenotype_system', $project_id);
+            $customTerminology['phenotypeValueset'] = $this->getProjectSetting('system_phenotype_valueset', $project_id);
+            $customTerminology['phenotypeRegex'] = $this->getProjectSetting('system_phenotype_regex', $project_id);
+            $customTerminology['geneSystem'] = $this->getProjectSetting('system_gene_system', $project_id);
+            $customTerminology['geneValueset'] = $this->getProjectSetting('system_gene_valueset', $project_id);
+            $customTerminology['geneRegex'] = $this->getProjectSetting('system_gene_regex', $project_id);
+        }
+
+
+
         // Get the data dictionary for the current instrument in array format
         try {
             $dd_array = \REDCap::getDataDictionary($project_id, 'array', false, null, $instrument);
@@ -100,14 +181,14 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
         {
             if ($field_attributes['field_type'] === 'notes'){
                 if (preg_match(
-                    '/@PEDIGREE_(HPO|SCT)(=(HIDE_TEXT|SHOW_TEXT|NEVER_COMPRESS|COMPRESS_LARGE|ALWAYS_COMPRESS)(,(HIDE_TEXT|SHOW_TEXT|NEVER_COMPRESS|COMPRESS_LARGE|ALWAYS_COMPRESS))?)?/',
+                    '/@PEDIGREE(_(HPO|SCT))?(=(HIDE_TEXT|SHOW_TEXT|NEVER_COMPRESS|COMPRESS_LARGE|ALWAYS_COMPRESS)(,(HIDE_TEXT|SHOW_TEXT|NEVER_COMPRESS|COMPRESS_LARGE|ALWAYS_COMPRESS))?)?/',
                     $field_attributes['field_annotation'], $matches) === 1){
 
-                    $mode = $matches[1];
+                    $mode = $matches[2] ?: $defTerminology;
                     $hide = $hideText;
                     $fCompress = $compression;
-                    $option1 = $matches[3];
-                    $option2 = $matches[5];
+                    $option1 = $matches[4];
+                    $option2 = $matches[6];
                     if ($option1 === $hideTextOption || $option2 === $hideTextOption){
                         $hide = true;
                     }
@@ -127,7 +208,7 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
                     $row = array();
                     $row['field'] = $field_name;
                     $row['label'] = $field_attributes['field_label'];
-                    $row['mode'] = $mode;
+                    $row['mode'] = $mode ?: $defTerminology;
                     $row['hideText'] = $hide;
                     $row['compress'] = $fCompress;
                     $fieldsOfInterest[] = $row;
@@ -150,23 +231,33 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
         $this->getSystemSetting('system_compression');
         $hpoEditorPage = $hpoEditorPage . '&format=' . $format;
         $sctEditorPage = $sctEditorPage . '&format=' . $format;
+        $customEditorPage = $customEditorPage . '&format=' . $format;
 
         if ($ontologyServer){
             $hpoEditorPage = $hpoEditorPage . '&redcapTerminolgyUrl=' . $ontologyServer;
             $sctEditorPage = $sctEditorPage . '&redcapTerminolgyUrl=' . $ontologyServer;
+            $customEditorPage = $customEditorPage . '&redcapTerminolgyUrl=' . $ontologyServer;
+        }
+        if ($customTerminology){
+            foreach ($customTerminology as $key=>$val){
+                $customEditorPage = $customEditorPage . '&'.$key .'=' . urlencode($val);
+            }
         }
         // the local url build wants to put a '?' on the end which breaks paramaters, so add one to soak the extra
         $hpoEditorPage = $hpoEditorPage . '&broken=redcap';
         $sctEditorPage = $sctEditorPage . '&broken=redcap';
-        
+        $customEditorPage = $customEditorPage . '&broken=redcap';
+
         $fieldsOfInterestJson = json_encode($fieldsOfInterest);
         if ($editorPageLocal){
             $hpoEditorUrl = $this->getLocalUrl($hpoEditorPage);
             $sctEditorUrl = $this->getLocalUrl($sctEditorPage);
+            $customEditorUrl = $this->getLocalUrl($customEditorPage);
         }
         else {
             $hpoEditorUrl = $hpoEditorPage;
             $sctEditorUrl = $sctEditorPage;
+            $customEditorUrl = $customEditorPage;
         }
         
         if ($transportType == 'message'){
@@ -195,6 +286,7 @@ EOD;
     pedigreeEditorEM.fieldsOfInterest = {$fieldsOfInterestJson};
     pedigreeEditorEM.hpoEditorPage = '{$hpoEditorUrl}';
     pedigreeEditorEM.sctEditorPage = '{$sctEditorUrl}';
+    pedigreeEditorEM.customEditorPage = '{$customEditorUrl}';
     pedigreeEditorEM.emptyIcon = '#__pedigree_empty_svg';
     pedigreeEditorEM.dataIcon = '#__pedigree_with_data_svg';
     pedigreeEditorEM.windowName = 'pedigreeEditor';

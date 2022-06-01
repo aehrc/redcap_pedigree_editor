@@ -62,6 +62,25 @@
           OpenPedigree.setREDCapFHIRTerminology('gene', redcapTerminolgyUrl, 'http://www.genenames.org/geneId',
                   'http://www.genenames.org/geneId?vs', /^HGNC:/, 20);
         }
+        else if (mode === 'CUSTOM'){
+          var disorderSystem = getParameterByName('disorderSystem');
+          var disorderValueset = getParameterByName('disorderValueset');
+          var disorderRegex = getParameterByName('disorderRegex');
+          OpenPedigree.setREDCapFHIRTerminology('disorder', redcapTerminolgyUrl, disorderSystem,
+                  disorderValueset, new RegExp(disorderRegex), 20);
+
+          var phenotypeSystem = getParameterByName('phenotypeSystem');
+          var phenotypeValueset = getParameterByName('phenotypeValueset');
+          var phenotypeRegex = getParameterByName('phenotypeRegex');
+          OpenPedigree.setREDCapFHIRTerminology('phenotype', redcapTerminolgyUrl, phenotypeSystem,
+                  phenotypeValueset,  new RegExp(phenotypeRegex), 20);
+
+          var geneSystem = getParameterByName('geneSystem');
+          var geneValueset = getParameterByName('geneValueset');
+          var geneRegex = getParameterByName('geneRegex');
+          OpenPedigree.setREDCapFHIRTerminology('gene', redcapTerminolgyUrl, geneSystem,
+                  geneValueset, new RegExp(geneRegex), 20);
+        }
         else {
           OpenPedigree.setREDCapFHIRTerminology('disorder', redcapTerminolgyUrl, 'http://www.omim.org',
                   'http://www.omim.org?vs', /[0-9]+/, 20);
@@ -83,6 +102,25 @@
           OpenPedigree.setFHIRTerminology('gene', ontologyServer, 'http://www.genenames.org/geneId',
                   'http://www.genenames.org/geneId?vs', /^HGNC:/, 20);
         }
+        else if (mode === 'CUSTOM'){
+          var disorderSystem = getParameterByName('disorderSystem');
+          var disorderValueset = getParameterByName('disorderValueset');
+          var disorderRegex = getParameterByName('disorderRegex');
+          OpenPedigree.setREDCapFHIRTerminology('disorder', ontologyServer, disorderSystem,
+                  disorderValueset, new RegExp(disorderRegex), 20);
+
+          var phenotypeSystem = getParameterByName('phenotypeSystem');
+          var phenotypeValueset = getParameterByName('phenotypeValueset');
+          var phenotypeRegex = getParameterByName('phenotypeRegex');
+          OpenPedigree.setREDCapFHIRTerminology('phenotype', ontologyServer, phenotypeSystem,
+                  phenotypeValueset,  new RegExp(phenotypeRegex), 20);
+
+          var geneSystem = getParameterByName('geneSystem');
+          var geneValueset = getParameterByName('geneValueset');
+          var geneRegex = getParameterByName('geneRegex');
+          OpenPedigree.setREDCapFHIRTerminology('gene', ontologyServer, geneSystem,
+                  geneValueset, new RegExp(geneRegex), 20);
+        }
         else {
           OpenPedigree.setFHIRTerminology('disorder', ontologyServer, 'http://www.omim.org',
                   'http://www.omim.org?vs', /[0-9]+/, 20);
@@ -102,7 +140,7 @@
 
       console.log("creating editor");
 
-      var editorOptions = {patientDataUrl: 'local:pedigreeData?format='+format+'&closeOnSave=true' + (qData?('&qData='+qData):''),
+      var editorOptions = {patientDataUrl: 'local:pedigreeData?format='+format+'&closeOnSave=true',
                            returnUrl: '#CloseWindow'};
 
 

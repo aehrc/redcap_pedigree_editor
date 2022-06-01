@@ -55,7 +55,8 @@ pedigreeEditorEM.getPedigreeSVG = function(value) {
 			if (FHIRdata) {
 				if ("Composition" === FHIRdata.resourceType){
 					if (FHIRdata.contained) {
-						for (let containedResource of FHIRdata.contained) {
+						for (let containedResourceIndex=0; containedResourceIndex < FHIRdata.contained.length; containedResourceIndex++) {
+							let containedResource = FHIRdata.contained[containedResourceIndex]
 							if (containedResource.id === 'pedigreeImage') {
 								foundSVG = true;
 								svg = decodeURIComponent(escape(atob(containedResource.content.attachment.data)));
@@ -68,7 +69,8 @@ pedigreeEditorEM.getPedigreeSVG = function(value) {
 				}
 				else if ("Bundle" === FHIRdata.resourceType){
 					if (FHIRdata.entry) {
-						for (let e of FHIRdata.entry) {
+						for (let eIndex=0; eIndex < FHIRdata.entry.length; eIndex++) {
+							let e = FHIRdata.entry[eIndex];
 							let containedResource = e.resource;
 							if ('DocumentReference' === containedResource.resourceType &&
 							    'Pedigree Diagram of Family in SVG format' === containedResource.description){
@@ -162,7 +164,8 @@ pedigreeEditorEM.edit = function(field) {
 	data.value = currentValue;
 	pedigreeEditorEM.sendDataToEditor(data);
 	pedigreeEditorEM.log("Opening editor window");
-	var pageToOpen = (fieldData.mode == 'HPO') ? pedigreeEditorEM.hpoEditorPage : pedigreeEditorEM.sctEditorPage; 
+	var pageToOpen = (fieldData.mode == 'HPO') ? pedigreeEditorEM.hpoEditorPage :
+		(fieldData.mode == 'CUSTOM') ? pedigreeEditorEM.customEditorPage : pedigreeEditorEM.sctEditorPage;
 	pedigreeEditorEM.editorWindow = window.open(pageToOpen,
 			pedigreeEditorEM.windowName);
 	pedigreeEditorEM.editorWindow.focus();
@@ -311,7 +314,8 @@ pedigreeEditorEM.removeDiagramFromFhir = function(fhirJson) {
 		if ("Composition" === fhir.resourceType){
 			if (fhir.section){
 				let newSections = [];
-				for (let section of fhir.section){
+				for (let sectionIndex =0; sectionIndex < fhir.section.length; sectionIndex++){
+					let section = fhir.section[sectionIndex]
 					if (section.title === 'Pedigree Diagram') {
 						foundImageSection = true;
 					}
@@ -325,7 +329,8 @@ pedigreeEditorEM.removeDiagramFromFhir = function(fhirJson) {
 			}
 			if (fhir.contained) {
 				let newContained = [];
-				for (let containedResource of fhir.contained) {
+				for (let containedResourceIndex = 0; containedResourceIndex < fhir.contained.length; containedResourceIndex++) {
+					let containedResource = fhir.contained[containedResourceIndex]
 					if (containedResource.id === 'pedigreeImage') {
 						foundImageResource = true;
 					}
@@ -342,7 +347,8 @@ pedigreeEditorEM.removeDiagramFromFhir = function(fhirJson) {
 			let imageSection = null;
 			let docRef = null;
 			let newSections = [];
-			for (let section of composition.section) {
+			for (let sectionIndex=0; sectionIndex < composition.section.length; sectionIndex++) {
+				let section = composition.section[sectionIndex]
 				if (section.title === 'Pedigree Diagram') {
 					foundImageSection = true;
 					imageSection = section;
@@ -356,7 +362,8 @@ pedigreeEditorEM.removeDiagramFromFhir = function(fhirJson) {
 				// replace link to docreference
 				let newLink = [];
 				let foundLink = false;
-				for (let l of fhir.entry[0].link){
+				for (let lIndex=0; lIndex < fhir.entry[0].link.length; lIndex++){
+					let l = fhir.entry[0].link[lIndex]
 					if (l.url === docRef){
 						foundLink = true;
 					}
@@ -370,7 +377,8 @@ pedigreeEditorEM.removeDiagramFromFhir = function(fhirJson) {
 				// replace doc reference entry
 				let newEntry = [];
 				let foundEntry = false;
-				for (let e of fhir.entry){
+				for (let eIndex=0; eIndex < fhir.entry.length; eIndex++){
+					let e = fhir.entry[eIndex]
 					if (e.fullUrl === docRef){
 						foundEntry = true;
 					}
