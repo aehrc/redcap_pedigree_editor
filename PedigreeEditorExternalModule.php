@@ -226,8 +226,12 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
 
         $systemFormat = $this->getSystemSetting('system_format');
         $projectFormat = $this->getProjectSetting('project_format', $project_id);
-
         $format = ($projectFormat) ?: $systemFormat;
+
+        $systemAllowEdit = $this->getSystemSetting('system_allow_edit');
+        $projectAllowEdit = $this->getProjectSetting('project__allow_edit', $project_id);
+        $allowEdit = ($projectAllowEdit) ?: $systemAllowEdit;
+
         $this->getSystemSetting('system_compression');
         $hpoEditorPage = $hpoEditorPage . '&format=' . $format;
         $sctEditorPage = $sctEditorPage . '&format=' . $format;
@@ -291,6 +295,8 @@ EOD;
     pedigreeEditorEM.dataIcon = '#__pedigree_with_data_svg';
     pedigreeEditorEM.windowName = 'pedigreeEditor';
     pedigreeEditorEM.editorWindow = null;
+    pedigreeEditorEM.format = '{$format}';
+    pedigreeEditorEM.allowEdit = '{$allowEdit}';
     pedigreeEditorEM.transportType = '{$transportType}';
 {$transportOptions}
 </script>

@@ -46,41 +46,61 @@ pedigreeEditorEM.getPedigreeSVG = function(value) {
 	var svg = $(pedigreeEditorEM.emptyIcon).html();
 	if (value && value.length > 0){
 		let foundSVG = false;
+
 		try{
 			var valueToParse = value;
 			if (value.startsWith('GZ:')){
 				valueToParse = pako.ungzip(atob(value.slice(3)),{ to: 'string' });
 			}
-			var FHIRdata = JSON.parse(valueToParse);
-			if (FHIRdata) {
-				if ("Composition" === FHIRdata.resourceType){
-					if (FHIRdata.contained) {
-						for (let containedResourceIndex=0; containedResourceIndex < FHIRdata.contained.length; containedResourceIndex++) {
-							let containedResource = FHIRdata.contained[containedResourceIndex]
-							if (containedResource.id === 'pedigreeImage') {
-								foundSVG = true;
-								svg = decodeURIComponent(escape(atob(containedResource.content.attachment.data)));
-								svg = svg.replace(/width=".*?"/, 'width="auto"')
-									.replace(/height=".*?"/, 'height="auto"');
-								break;
+			if (valueToParse.startsWith('{')){
+				var FHIRdata = JSON.parse(valueToParse);
+				if (FHIRdata) {
+					if ("Composition" === FHIRdata.resourceType){
+						if (FHIRdata.contained) {
+							for (let containedResourceIndex=0; containedResourceIndex < FHIRdata.contained.length; containedResourceIndex++) {
+								let containedResource = FHIRdata.contained[containedResourceIndex]
+								if (containedResource.id === 'pedigreeImage') {
+									foundSVG = true;
+									svg = decodeURIComponent(escape(atob(containedResource.content.attachment.data)));
+									svg = svg.replace(/width=".*?"/, 'width="auto"')
+										.replace(/height=".*?"/, 'height="auto"');
+									break;
+								}
+							}
+						}
+					}
+					else if ("Bundle" === FHIRdata.resourceType){
+						if (FHIRdata.entry) {
+							for (let eIndex=0; eIndex < FHIRdata.entry.length; eIndex++) {
+								let e = FHIRdata.entry[eIndex];
+								let containedResource = e.resource;
+								if ('DocumentReference' === containedResource.resourceType &&
+									'Pedigree Diagram of Family in SVG format' === containedResource.description){
+									foundSVG = true;
+									svg = decodeURIComponent(escape(atob(containedResource.content.attachment.data)));
+									svg = svg.replace(/width=".*?"/, 'width="auto"')
+										.replace(/height=".*?"/, 'height="auto"');
+									break;
+								}
 							}
 						}
 					}
 				}
-				else if ("Bundle" === FHIRdata.resourceType){
-					if (FHIRdata.entry) {
-						for (let eIndex=0; eIndex < FHIRdata.entry.length; eIndex++) {
-							let e = FHIRdata.entry[eIndex];
-							let containedResource = e.resource;
-							if ('DocumentReference' === containedResource.resourceType &&
-							    'Pedigree Diagram of Family in SVG format' === containedResource.description){
-								foundSVG = true;
-								svg = decodeURIComponent(escape(atob(containedResource.content.attachment.data)));
-								svg = svg.replace(/width=".*?"/, 'width="auto"')
-									.replace(/height=".*?"/, 'height="auto"');
-								break;
-							}
-						}
+			}
+			else if (valueToParse.startsWith('<')){
+				const parser = new DOMParser();
+				let doc = parser.parseFromString(valueToParse, "application/xml");
+				let errorNode = doc.querySelector("parsererror");
+				if (errorNode) {
+					console.log('Unable to parse pedigree - ' + errorNode.innerHTML);
+				}
+				else {
+					const imageNode = doc.querySelector('image');
+					if (imageNode){
+						foundSVG = true;
+						svg = imageNode.innerHTML;
+						svg = svg.replace(/width=".*?"/, 'width="auto"')
+							.replace(/height=".*?"/, 'height="auto"');
 					}
 				}
 			}
@@ -111,7 +131,9 @@ pedigreeEditorEM.render = function(fieldData) {
 	result = $('textarea[name="' + fieldData.field + '"]', tr);
 	var haveData = false;
 	if (result) {
-		result.attr('readonly', true);
+		if (!pedigreeEditorEM.allowEdit){
+			result.attr('readonly', true);
+		}
 		if (fieldData.hideText) {
 			result.hide();
 		}
@@ -172,7 +194,7 @@ pedigreeEditorEM.edit = function(field) {
 	return true;
 }
 
-pedigreeEditorEM.save = function(field, value) {
+pedigreeEditorEM.save = function(field, value, svg) {
 	var fieldData;
 
 	for (var i = 0; i < pedigreeEditorEM.fieldsOfInterest.length; i++) {
@@ -235,7 +257,13 @@ pedigreeEditorEM.save = function(field, value) {
 	}
 
 	var imageId = field + '_pedigreeEditorEM_icon';
-	var svg = pedigreeEditorEM.getPedigreeSVG(value);
+	if (!svg){
+		svg = pedigreeEditorEM.getPedigreeSVG(value);
+	}
+	else {
+		svg = svg.replace(/width=".*?"/, 'width="auto"')
+			.replace(/height=".*?"/, 'height="auto"');
+	}
 	$('#' + imageId).html(svg);
 
 	window.focus();
@@ -286,7 +314,7 @@ pedigreeEditorEM.onMessageEvent = function(event) {
 		} else if (event.data.messageType === "openPedigree_data") {
 			pedigreeEditorEM.log("Got data from editor");
 			if (event.data.openPedigreeData) {
-				pedigreeEditorEM.save(event.data.openPedigreeData.context.field, event.data.openPedigreeData.value);
+				pedigreeEditorEM.save(event.data.openPedigreeData.context.field, event.data.openPedigreeData.value, event.data.openPedigreeData.svg);
 
 			}
 		}
@@ -301,104 +329,123 @@ pedigreeEditorEM.onStorageEvent = function(storageEvent) {
 		
 		if (data && data.context && data.context.field) {
 			pedigreeEditorEM.log("Got data from editor");
-			pedigreeEditorEM.save(data.context.field, data.value);
+			pedigreeEditorEM.save(data.context.field, data.value, data.svg);
 		}
 	}
 }
 
-pedigreeEditorEM.removeDiagramFromFhir = function(fhirJson) {
-	try {
-		let fhir = JSON.parse(fhirJson);
-		let foundImageSection = false;
-		let foundImageResource = false;
-		if ("Composition" === fhir.resourceType){
-			if (fhir.section){
+pedigreeEditorEM.removeDiagramFromFhir = function(rawData) {
+	if (rawData.startsWith('{')){
+		// probably one of the json formats
+		try {
+			let fhir = JSON.parse(rawData);
+			let foundImageSection = false;
+			let foundImageResource = false;
+			if ("Composition" === fhir.resourceType){
+				if (fhir.section){
+					let newSections = [];
+					for (let sectionIndex =0; sectionIndex < fhir.section.length; sectionIndex++){
+						let section = fhir.section[sectionIndex]
+						if (section.title === 'Pedigree Diagram') {
+							foundImageSection = true;
+						}
+						else {
+							newSections.push(section);
+						}
+					}
+					if (foundImageSection){
+						fhir.section = newSections;
+					}
+				}
+				if (fhir.contained) {
+					let newContained = [];
+					for (let containedResourceIndex = 0; containedResourceIndex < fhir.contained.length; containedResourceIndex++) {
+						let containedResource = fhir.contained[containedResourceIndex]
+						if (containedResource.id === 'pedigreeImage') {
+							foundImageResource = true;
+						}
+						else {
+							newContained.push(containedResource);
+						}
+					}
+					if (foundImageResource){
+						fhir.contained = newContained;
+					}
+				}
+			} else if ("Bundle" === fhir.resourceType){
+				let composition = fhir.entry[0].resource;
+				let imageSection = null;
+				let docRef = null;
 				let newSections = [];
-				for (let sectionIndex =0; sectionIndex < fhir.section.length; sectionIndex++){
-					let section = fhir.section[sectionIndex]
+				for (let sectionIndex=0; sectionIndex < composition.section.length; sectionIndex++) {
+					let section = composition.section[sectionIndex]
 					if (section.title === 'Pedigree Diagram') {
 						foundImageSection = true;
-					}
-					else {
+						imageSection = section;
+						docRef = section.entry[0].reference;
+					} else {
 						newSections.push(section);
 					}
 				}
 				if (foundImageSection){
-					fhir.section = newSections;
+					composition.section = newSections;
+					// replace link to docreference
+					let newLink = [];
+					let foundLink = false;
+					for (let lIndex=0; lIndex < fhir.entry[0].link.length; lIndex++){
+						let l = fhir.entry[0].link[lIndex]
+						if (l.url === docRef){
+							foundLink = true;
+						}
+						else {
+							newLink.push(l);
+						}
+					}
+					if (foundLink){
+						fhir.entry[0].link = newLink;
+					}
+					// replace doc reference entry
+					let newEntry = [];
+					let foundEntry = false;
+					for (let eIndex=0; eIndex < fhir.entry.length; eIndex++){
+						let e = fhir.entry[eIndex]
+						if (e.fullUrl === docRef){
+							foundEntry = true;
+						}
+						else {
+							newEntry.push(e);
+						}
+					}
+					if (foundEntry){
+						fhir.entry = newEntry;
+					}
 				}
 			}
-			if (fhir.contained) {
-				let newContained = [];
-				for (let containedResourceIndex = 0; containedResourceIndex < fhir.contained.length; containedResourceIndex++) {
-					let containedResource = fhir.contained[containedResourceIndex]
-					if (containedResource.id === 'pedigreeImage') {
-						foundImageResource = true;
-					}
-					else {
-						newContained.push(containedResource);
-					}
-				}
-				if (foundImageResource){
-					fhir.contained = newContained;
-				}
-			}
-		} else if ("Bundle" === fhir.resourceType){
-			let composition = fhir.entry[0].resource;
-			let imageSection = null;
-			let docRef = null;
-			let newSections = [];
-			for (let sectionIndex=0; sectionIndex < composition.section.length; sectionIndex++) {
-				let section = composition.section[sectionIndex]
-				if (section.title === 'Pedigree Diagram') {
-					foundImageSection = true;
-					imageSection = section;
-					docRef = section.entry[0].reference;
-				} else {
-					newSections.push(section);
-				}
-			}
-			if (foundImageSection){
-				composition.section = newSections;
-				// replace link to docreference
-				let newLink = [];
-				let foundLink = false;
-				for (let lIndex=0; lIndex < fhir.entry[0].link.length; lIndex++){
-					let l = fhir.entry[0].link[lIndex]
-					if (l.url === docRef){
-						foundLink = true;
-					}
-					else {
-						newLink.push(l);
-					}
-				}
-				if (foundLink){
-					fhir.entry[0].link = newLink;
-				}
-				// replace doc reference entry
-				let newEntry = [];
-				let foundEntry = false;
-				for (let eIndex=0; eIndex < fhir.entry.length; eIndex++){
-					let e = fhir.entry[eIndex]
-					if (e.fullUrl === docRef){
-						foundEntry = true;
-					}
-					else {
-						newEntry.push(e);
-					}
-				}
-				if (foundEntry){
-					fhir.entry = newEntry;
-				}
+			if (foundImageResource || foundImageSection){
+				return JSON.stringify(fhir, null, 2);
 			}
 		}
-		if (foundImageResource || foundImageSection){
-			return JSON.stringify(fhir, null, 2);
+		catch (e) {
+			console.log("Failed to parse FHIR json", e);
 		}
 	}
-	catch (e) {
-		console.log("Failed to parse FHIR json", e);
+	else if (rawData.startsWith('<')){
+		// xml format
+		const parser = new DOMParser();
+		let doc = parser.parseFromString(rawData, "application/xml");
+		let errorNode = doc.querySelector("parsererror");
+		if (errorNode) {
+			console.log('Unable to parse pedigree - ' + errorNode.innerHTML);
+		}
+		else {
+			const imageNode = doc.querySelector('image');
+			if (imageNode){
+				imageNode.parentNode.removeChild(imageNode);
+				return (new XMLSerializer().serializeToString(doc.documentElement));
+			}
+		}
 	}
-	return fhirJson;
+	return rawData;
 }
 
 

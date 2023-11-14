@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Test Opener</title>
+</head>
+<body>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+<script type="text/javascript">
+    // <![CDATA[
+    var editorWindow = null;
+    var editorPage = "localEditor.html";
+    var windowName = "open-pedigree";
+    var sendWhenReady = false;
+    var localStorageKey = 'pedigreeData';
+
+
+    window.addEventListener('storage', function (storageEvent) {
+        if (storageEvent.storageArea == window.localStorage && storageEvent.key == localStorageKey) {
+            // the data has been updated
+            console.log("Got storage event, updating fields");
+            var data = JSON.parse(storageEvent.newValue);
+            $("#context").val(data.context);
+            $("#data").val(data.value);
+            let foundSVG = false;
+            if (data.value.startsWith('{')) {
+                var FHIRdata = JSON.parse(data.value);
+                if (FHIRdata) {
+                    if ("Composition" === FHIRdata.resourceType) {
+                        if (FHIRdata.contained) {
+                            for (let containedResource of FHIRdata.contained) {
+                                if (containedResource.id === 'pedigreeImage') {
+                                    foundSVG = true;
+                                    svg = decodeURIComponent(escape(atob(containedResource.content.attachment.data)));
+                                    svg = svg.replace(/width=".*?"/, 'width="auto"')
+                                        .replace(/height=".*?"/, 'height="auto"');
+                                    break;
+                                }
+                            }
+                        }
+                    } else if ("Bundle" === FHIRdata.resourceType) {
+                        if (FHIRdata.entry) {
+                            for (let e of FHIRdata.entry) {
+                                let containedResource = e.resource;
+                                if ('DocumentReference' === containedResource.resourceType &&
+                                    'Pedigree Diagram of Family in SVG format' === containedResource.description) {
+                                    foundSVG = true;
+                                    svg = decodeURIComponent(escape(atob(containedResource.content.attachment.data)));
+                                    svg = svg.replace(/width=".*?"/, 'width="auto"')
+                                        .replace(/height=".*?"/, 'height="auto"');
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+            else if (data.value.startsWith('<')){
+                // xml document
+                const parser = new DOMParser();
+                let doc = parser.parseFromString(data.value, "application/xml");
+                let errorNode = doc.querySelector("parsererror");
+                if (errorNode) {
+                    console.error('Unable to parse pedigree - ' + errorNode.innerHTML);
+                }
+                else {
+                    const imageNode = doc.querySelector('image');
+                    if (imageNode){
+                        foundSVG = true;
+                        svg = imageNode.innerHTML;
+                        svg = svg.replace(/width=".*?"/, 'width="auto"')
+                            .replace(/height=".*?"/, 'height="auto"');
+                    }
+                }
+            }
+
+            if (foundSVG) {
+                var container = document.getElementById("SVGContainer");
+                container.innerHTML = svg;
+            } else if (data.svg) {
+                var container = document.getElementById("SVGContainer");
+                container.innerHTML = data.svg;
+            } else {
+                console.log("no svg data");
+            }
+        }
+    }, false);
+
+    function openEditor(element) {
+        console.log("Opening panogram editor in a new window");
+
+        var firstChar = '?';
+        var pageToOpen = editorPage;
+        var ontologyServer = $("#ontologyServer").val();
+        if (ontologyServer) {
+            pageToOpen += firstChar + 'ontologyServer=' + ontologyServer;
+            firstChar = '&';
+        }
+        if ($('#sctMode').is(':checked')) {
+            pageToOpen += firstChar + 'mode=SCT';
+            firstChar = '&';
+        }
+        if ($('#fhir_v1_format').is(':checked')) {
+            pageToOpen += firstChar + 'format=fhir_v1';
+            firstChar = '&';
+        } else if ($('#GA4GH_format').is(':checked')) {
+            pageToOpen += firstChar + 'format=GA4GH';
+            firstChar = '&';
+        } else if ($('#PED_format').is(':checked')) {
+            pageToOpen += firstChar + 'format=PED';
+            firstChar = '&';
+        } else if ($('#PEDX_format').is(':checked')) {
+            pageToOpen += firstChar + 'format=PEDX';
+            firstChar = '&';
+        } else if ($('#internal_format').is(':checked')) {
+            pageToOpen += firstChar + 'format=internal';
+            firstChar = '&';
+        } else if ($('#DADA2_format').is(':checked')) {
+            pageToOpen += firstChar + 'format=DADA2';
+            firstChar = '&';
+        } else if ($('#DADA2X_format').is(':checked')) {
+            pageToOpen += firstChar + 'format=DADA2X';
+            firstChar = '&';
+        }
+
+        var context = $("#context").val();
+        var data = $("#data").val();
+
+        var pedigreeData = {'value': data, 'context': context};
+
+        localStorage.setItem(localStorageKey, JSON.stringify(pedigreeData, null, 2));
+
+        editorWindow = window.open(pageToOpen, windowName);
+    }
+
+    function clearData(element) {
+        console.log("Clearing");
+        $("#context").val("");
+        $("#data").val("");
+        $("#SVGContainer").empty();
+    }
+
+    // ]]>
+</script>
+
+
+<h1>Test Opener</h1>
+
+<div class="container-fluid">
+    <form>
+        <div class="form-group">
+            <label for="context">Editor Context</label>
+            <input type="text" class="form-control" id="context" aria-describedby="contextHelp"
+                   placeholder="Enter context">
+            <small id="contextHelp" class="form-text text-muted">The context is sent to panogram and then returned with
+                saved diagram data.</small>
+        </div>
+        <div class="form-group">
+            <label for="ontologyServer">Ontology Server</label>
+            <input type="text" class="form-control" id="ontologyServer" aria-describedby="contextHelp"
+                   placeholder="Enter Server of leave blank for default">
+            <small id="ontologyHelp" class="form-text text-muted">The ontology server used to lookup disorders and
+                phenotypes</small>
+        </div>
+        <div class="form-group">
+            <label>Mode</label>
+            <div class="form-control">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="mode" id="hpoMode" value="HPO" checked="checked">
+                    <label class="form-check-label active" for="hpoMode">HPO</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="mode" id="sctMode" value="SCT">
+                    <label class="form-check-label" for="sctMode">SCT</label>
+                </div>
+            </div>
+            <small class="form-text text-muted">Code system to use for disorders and phenotypes. The test example uses
+                HPO, clear the input before changing to SCT</small>
+        </div>
+        <div class="form-group">
+            <label>Format</label>
+            <div class="form-control">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="format" id="fhir_v1_format" value="fhir_v1">
+                    <label class="form-check-label active" for="fhir_v1_format">FHIR v1</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="format" id="GA4GH_format" value="GA4GH"
+                           checked="checked">
+                    <label class="form-check-label" for="GA4GH_format">GA4GH FHIR</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="format" id="PED_format" value="PED">
+                    <label class="form-check-label" for="PED_format">PED</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="format" id="PEDX_format" value="PEDX">
+                    <label class="form-check-label" for="PEDX_format">PEDX</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="format" id="DADA2_format" value="DADA2">
+                    <label class="form-check-label" for="DADA2_format">DADA2</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="format" id="DADA2X_format" value="DADA2X">
+                    <label class="form-check-label" for="DADA2X_format">DADA2X</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="format" id="internal_format" value="internal">
+                    <label class="form-check-label" for="internal_format">Internal</label>
+                </div>
+            </div>
+            <small class="form-text text-muted">Format to store pedigree</small>
+        </div>
+
+        <div class="form-group">
+            <label for="data">Data</label>
+            <textarea class="form-control" id="data" rows="10"></textarea>
+        </div>
+        <button type="button" id="editButton" class="btn btn-primary" onclick="openEditor(this)">Edit</button>
+        <button type="button" id="clearButton" class="btn btn-primary" onclick="clearData(this)">Clear</button>
+    </form>
+    <div class="row" id="SVGContainer">
+
+    </div>
+</div>
+</body>
+</html>

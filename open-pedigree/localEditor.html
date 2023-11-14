@@ -5,7 +5,7 @@
     <title>Open Pedigree by PhenoTips&reg;</title>
 
     <!-- Load jquery before prototype, making it available via jQuery but not $ -->
-    <script type="text/javascript" src="public/vendor/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="public/vendor/jquery-3.7.1.min.js"></script>
 
     <!-- PrototypeJS and scriptaculous plugin -->
     <script type="text/javascript" src="public/vendor/prototype-1.7.3.js"></script>
@@ -45,90 +45,147 @@
       if (!results) return null;
       if (!results[2]) return '';
       return decodeURIComponent(results[2].replace(/\+/g, ' '));
-    };
+    }
 
     var editor;
 
     document.observe('dom:loaded',function() {
+
+      const mode = getParameterByName('mode');
+
+      const disorderSystem = (mode === 'SCT') ? 'http://snomed.info/sct' :
+              (mode === 'CUSTOM') ? getParameterByName('disorderSystem') : 'http://www.omim.org';
+      const disorderValueset = (mode === 'SCT') ? 'http://snomed.info/sct?fhir_vs=refset/32570581000036105' :
+              (mode === 'CUSTOM') ? getParameterByName('disorderValueset') : 'http://www.omim.org?vs';
+      const disorderRegex = (mode === 'SCT') ? /\d+/ :
+              (mode === 'CUSTOM') ? new RegExp(getParameterByName('disorderRegex')) : /\d+/;
+
+      const phenotypeSystem = (mode === 'SCT') ? 'http://snomed.info/sct' :
+              (mode === 'CUSTOM') ? getParameterByName('phenotypeSystem') : 'http://purl.obolibrary.org/obo/hp.fhir';
+      const phenotypeValueset = (mode === 'SCT') ? 'http://ga4gh.org/fhir/ValueSet/phenotype' :
+              (mode === 'CUSTOM') ? getParameterByName('phenotypeValueset') : 'http://purl.obolibrary.org/obo/hp.fhir?vs';
+      const phenotypeRegex = (mode === 'SCT') ? /\d+/ :
+              (mode === 'CUSTOM') ? new RegExp(getParameterByName('phenotypeRegex')) : /^(http:\/\/)|(HP:)/;
+      const geneSystem = (mode === 'CUSTOM') ? getParameterByName('geneSystem') : 'http://www.genenames.org/geneId';
+      const geneValueset = (mode === 'CUSTOM') ? getParameterByName('geneValueset') : 'http://www.genenames.org/geneId?vs';
+      const geneRegex = (mode === 'CUSTOM') ? new RegExp(getParameterByName('geneRegex')) :  /^HGNC:/;
+
       var redcapTerminolgyUrl = getParameterByName('redcapTerminolgyUrl');
+
+      const processLookupFn = function (id, response) {
+        const parsed = JSON.parse(response.responseText);
+        if (parsed.parameter) {
+          for (let i = 0; i < parsed.parameter.length; i++) {
+            if (parsed.parameter[i].name === 'display') {
+              return parsed.parameter[i].valueString;
+            }
+          }
+        }
+        throw 'Failed to find result in response';
+      };
+      const processSearchFn = function (search, response) {
+        const result = [];
+        if (response && response.responseText) {
+          const parsed = JSON.parse(response.responseText);
+
+          if (parsed.expansion && parsed.expansion.contains) {
+            for (const v of parsed.expansion.contains) {
+              result.push({'text': v.display, 'value': v.code});
+            }
+          }
+        }
+        return result;
+      };
+
+      let terminologyOptions;
       if (redcapTerminolgyUrl){
-
-        var mode = getParameterByName('mode');
-        if (mode === 'SCT') {
-          OpenPedigree.setREDCapFHIRTerminology('disorder', redcapTerminolgyUrl, 'http://snomed.info/sct',
-                  'http://snomed.info/sct?fhir_vs=refset/32570581000036105', /[0-9]+/, 20);
-          OpenPedigree.setREDCapFHIRTerminology('phenotype', redcapTerminolgyUrl, 'http://snomed.info/sct',
-                  'http://ga4gh.org/fhir/ValueSet/phenotype', /[0-9]+/, 20);
-          OpenPedigree.setREDCapFHIRTerminology('gene', redcapTerminolgyUrl, 'http://www.genenames.org/geneId',
-                  'http://www.genenames.org/geneId?vs', /^HGNC:/, 20);
-        }
-        else if (mode === 'CUSTOM'){
-          var disorderSystem = getParameterByName('disorderSystem');
-          var disorderValueset = getParameterByName('disorderValueset');
-          var disorderRegex = getParameterByName('disorderRegex');
-          OpenPedigree.setREDCapFHIRTerminology('disorder', redcapTerminolgyUrl, disorderSystem,
-                  disorderValueset, new RegExp(disorderRegex), 20);
-
-          var phenotypeSystem = getParameterByName('phenotypeSystem');
-          var phenotypeValueset = getParameterByName('phenotypeValueset');
-          var phenotypeRegex = getParameterByName('phenotypeRegex');
-          OpenPedigree.setREDCapFHIRTerminology('phenotype', redcapTerminolgyUrl, phenotypeSystem,
-                  phenotypeValueset,  new RegExp(phenotypeRegex), 20);
-
-          var geneSystem = getParameterByName('geneSystem');
-          var geneValueset = getParameterByName('geneValueset');
-          var geneRegex = getParameterByName('geneRegex');
-          OpenPedigree.setREDCapFHIRTerminology('gene', redcapTerminolgyUrl, geneSystem,
-                  geneValueset, new RegExp(geneRegex), 20);
-        }
-        else {
-          OpenPedigree.setREDCapFHIRTerminology('disorder', redcapTerminolgyUrl, 'http://www.omim.org',
-                  'http://www.omim.org?vs', /[0-9]+/, 20);
-          OpenPedigree.setREDCapFHIRTerminology('phenotype', redcapTerminolgyUrl, 'http://purl.obolibrary.org/obo/hp.fhir',
-                  'http://purl.obolibrary.org/obo/hp.fhir?vs', /^(http:\/\/)|(HP:)/, 20);
-          OpenPedigree.setREDCapFHIRTerminology('gene', redcapTerminolgyUrl, 'http://www.genenames.org/geneId',
-                  'http://www.genenames.org/geneId?vs', /^HGNC:/, 20);
-        }
+        terminologyOptions = {
+          'disorderOptions': {
+            'type': 'Delegating',
+            'lookupUrlFn':  (id) => redcapTerminolgyUrl,
+            'processLookupResponseFn': processLookupFn,
+            'lookupAjaxOptionsFn':  (id) => ({
+              method: 'POST',
+              contentType: 'application/x-www-form-urlencoded',
+              parameters: {type: 'lookup', system: disorderSystem, code: id}
+            }),
+            'searchUrlFn': (search)=> redcapTerminolgyUrl,
+            'processSearchResponseFn': processSearchFn,
+            'searchAjaxOptionsFn':  (search) => ({
+              method: 'POST',
+              contentType: 'application/x-www-form-urlencoded',
+              parameters: { type: 'query', url: disorderValueset, filter: search, count: 20 }
+            })
+          },
+          phenotypeOptions: {
+            'type': 'Delegating',
+            'lookupUrlFn':  (id) => redcapTerminolgyUrl,
+            'processLookupResponseFn': processLookupFn,
+            'lookupAjaxOptionsFn':  (id) => ({
+              method: 'POST',
+              contentType: 'application/x-www-form-urlencoded',
+              parameters: {type: 'lookup', system: phenotypeSystem, code: id}
+            }),
+            'searchUrlFn': (search)=> redcapTerminolgyUrl,
+            'processSearchResponseFn': processSearchFn,
+            'searchAjaxOptionsFn':  (search) => ({
+              method: 'POST',
+              contentType: 'application/x-www-form-urlencoded',
+              parameters: { type: 'query', url: disorderValueset, filter: search, count: 20 }
+            })
+          },
+          'geneOptions': {
+            'type': 'Delegating',
+            'lookupUrlFn':  (id) => redcapTerminolgyUrl,
+            'processLookupResponseFn': processLookupFn,
+            'lookupAjaxOptionsFn':  (id) => ({
+              method: 'POST',
+              contentType: 'application/x-www-form-urlencoded',
+              parameters: {type: 'lookup', system: geneSystem, code: id}
+            }),
+            'searchUrlFn': (search)=> redcapTerminolgyUrl,
+            'processSearchResponseFn': processSearchFn,
+            'searchAjaxOptionsFn':  (search) => ({
+              method: 'POST',
+              contentType: 'application/x-www-form-urlencoded',
+              parameters: { type: 'query', url: geneValueset, filter: search, count: 20 }
+            })
+          },
+          'fhirTerminologyHelperOptions': {
+            'disorderCodeSystem': disorderSystem,
+            'phenotypeCodeSystem': phenotypeSystem,
+            'geneCodeSystem': geneSystem
+          }
+        };
       }
       else {
         var ontologyServer = getParameterByName('ontologyServer') || 'https://r4.ontoserver.csiro.au/fhir/';
 
-        var mode = getParameterByName('mode');
-        if (mode === 'SCT') {
-          OpenPedigree.setFHIRTerminology('disorder', ontologyServer, 'http://snomed.info/sct',
-                  'http://snomed.info/sct?fhir_vs=refset/32570581000036105', /[0-9]+/, 20);
-          OpenPedigree.setFHIRTerminology('phenotype', ontologyServer, 'http://snomed.info/sct',
-                  'http://ga4gh.org/fhir/ValueSet/phenotype', /[0-9]+/, 20);
-          OpenPedigree.setFHIRTerminology('gene', ontologyServer, 'http://www.genenames.org/geneId',
-                  'http://www.genenames.org/geneId?vs', /^HGNC:/, 20);
-        }
-        else if (mode === 'CUSTOM'){
-          var disorderSystem = getParameterByName('disorderSystem');
-          var disorderValueset = getParameterByName('disorderValueset');
-          var disorderRegex = getParameterByName('disorderRegex');
-          OpenPedigree.setREDCapFHIRTerminology('disorder', ontologyServer, disorderSystem,
-                  disorderValueset, new RegExp(disorderRegex), 20);
-
-          var phenotypeSystem = getParameterByName('phenotypeSystem');
-          var phenotypeValueset = getParameterByName('phenotypeValueset');
-          var phenotypeRegex = getParameterByName('phenotypeRegex');
-          OpenPedigree.setREDCapFHIRTerminology('phenotype', ontologyServer, phenotypeSystem,
-                  phenotypeValueset,  new RegExp(phenotypeRegex), 20);
-
-          var geneSystem = getParameterByName('geneSystem');
-          var geneValueset = getParameterByName('geneValueset');
-          var geneRegex = getParameterByName('geneRegex');
-          OpenPedigree.setREDCapFHIRTerminology('gene', ontologyServer, geneSystem,
-                  geneValueset, new RegExp(geneRegex), 20);
-        }
-        else {
-          OpenPedigree.setFHIRTerminology('disorder', ontologyServer, 'http://www.omim.org',
-                  'http://www.omim.org?vs', /[0-9]+/, 20);
-          OpenPedigree.setFHIRTerminology('phenotype', ontologyServer, 'http://purl.obolibrary.org/obo/hp.fhir',
-                  'http://purl.obolibrary.org/obo/hp.fhir?vs', /^(http:\/\/)|(HP:)/, 20);
-          OpenPedigree.setFHIRTerminology('gene', ontologyServer, 'http://www.genenames.org/geneId',
-                  'http://www.genenames.org/geneId?vs', /^HGNC:/, 20);
-        }
+        terminologyOptions = {
+          'disorderOptions': {
+            'type': 'FHIR',
+            'validIdRegex': disorderRegex,
+            'fhirBaseUrl': ontologyServer,
+            'valueSet': disorderValueset
+          },
+          'phenotypeOptions': {
+            'type': 'FHIR',
+            'validIdRegex': phenotypeRegex,
+            'fhirBaseUrl': ontologyServer,
+            'valueSet': phenotypeValueset
+          },
+          'geneOptions': {
+            'type': 'FHIR',
+            'validIdRegex': geneRegex,
+            'fhirBaseUrl': ontologyServer,
+            'valueSet': geneValueset
+          },
+          'fhirTerminologyHelperOptions': {
+            'disorderCodeSystem': disorderSystem,
+            'phenotypeCodeSystem': phenotypeSystem,
+            'geneCodeSystem': geneSystem
+          }
+        };
       }
 
       var qData = getParameterByName('qData');
@@ -140,8 +197,12 @@
 
       console.log("creating editor");
 
-      var editorOptions = {patientDataUrl: 'local:pedigreeData?format='+format+'&closeOnSave=true',
-                           returnUrl: '#CloseWindow'};
+      var editorOptions = {
+        // patientDataUrl: 'local:pedigreeData?format='+format+'&closeOnSave=true' + (qData?('&qData='+qData):''),
+        patientDataUrl: 'local:pedigreeData?format='+format+'&closeOnSave=true',
+        returnUrl: '#CloseWindow',
+        backend: OpenPedigree.localStorageBackend,
+        ...terminologyOptions};
 
 
       editor = OpenPedigree.initialiseEditor(editorOptions);

@@ -34,17 +34,27 @@
 			"type" : "checkbox"
 		},
 		{
+			"key" : "system_allow_edit",
+			"name" : "Allow manual entry",
+			"type" : "checkbox"
+		},
+		{
 			"key" : "system_format_info",
-			"name" : "The original version of this plugin used a custom FHIR format, from version 0.3 this was changed to a format defined by GA4GH. The format field allows the format to be selected, <i><b>fhir_v1</b></i> is the old format, while <i><b>GA4GH</b></i> is the new format. If <i><b>GA4GH</b></i> is selected it will still read the old format. The new format is recommended and has better round tripping",
+			"name" : "The original version of this plugin used a custom FHIR format, in version 0.3 this was changed to a format defined by GA4GH. The format field allows the format to be selected, <i><b>fhir_v1</b></i> is the old format, while <i><b>GA4GH</b></i> is the new format. If <i><b>GA4GH</b></i> is selected it will still read the old format. The new format is recommended and has better round tripping. In version 0.4 five new formats were added, <i><b>PED</b></i>, <i><b>PEDX</b></i>, <i><b>DADA2</b></i>, <i><b>DADA2X</b></i> and <i><b>internal</b></i>. <i><b>PED</b></i> is a very simple format that only captures the base structure of the pedigree, but could be used to default the value of the field based on other fields in the instrument. <i><b>PEDX</b></i> is an extension to this that wraps the <i><b>PED</b></i> format in an XML document to allow the resulting SVG image produced to also be stored. <i><b>DADA2</b></i> and <i><b>DADA2X</b></i> are a customization of the PED format for use at DADA2.org. It includes an extra field for life status. Finally <i><b>internal</b></i> uses the openpedigree internal json model which is not documented and may not be compatible with future versions of the external module but should allow the best round tripping. This format and PED do not include a svg version of the pedigree diagram so will not show the diagram except when the diagram is saved into the system.",
 			"type" : "descriptive"
 		},
 		{
 			"key" : "system_format",
-			"name" : "FHIR format",
+			"name" : "Storage Format",
 			"type": "dropdown",
 			"choices": [
-				{ "value": "fhir_v1", "name": "fhir_v1 - Legacy Format"},
-				{ "value": "GA4GH", "name": "GA4GH - Recommended Format"}
+				{ "value": "fhir_v1", "name": "fhir_v1 - Legacy FHIR Format"},
+				{ "value": "GA4GH", "name": "GA4GH - Recommended FHIR Format"},
+				{ "value": "PED", "name": "PED Format"},
+				{ "value": "PEDX", "name": "PEDX - XML format PED and possible SVG Image"},
+				{ "value": "DADA2", "name": "DADA2 Format"},
+				{ "value": "DADA2X", "name": "DADA2X - XML format DADA2 and possible SVG Image"},
+				{ "value": "internal", "name": "Open-pedigree internal format - may break with new version of EM"}
 			]
 		},
 		{
@@ -238,17 +248,27 @@
 	],
 	"project-settings" : [
 		{
+			"key" : "project_allow_edit",
+			"name" : "Allow manual entry",
+			"type" : "checkbox"
+		},
+		{
 			"key" : "project_format_info",
-			"name" : "The original version of this plugin used a custom FHIR format, from version 0.3 this was changed to a format defined by GA4GH. The format field allows the format to be selected, <i><b>fhir_v1</b></i> is the old format, while <i><b>GA4GH</b></i> is the new format. If <i><b>GA4GH</b></i> is selected it will still read the old format. The new format is recommended and has better round tripping",
+			"name" : "The original version of this plugin used a custom FHIR format, in version 0.3 this was changed to a format defined by GA4GH. The format field allows the format to be selected, <i><b>fhir_v1</b></i> is the old format, while <i><b>GA4GH</b></i> is the new format. If <i><b>GA4GH</b></i> is selected it will still read the old format. The new format is recommended and has better round tripping. In version 0.4 five new formats were added, <i><b>PED</b></i>, <i><b>PEDX</b></i>, <i><b>DADA2</b></i>, <i><b>DADA2X</b></i> and <i><b>internal</b></i>. <i><b>PED</b></i> is a very simple format that only captures the base structure of the pedigree, but could be used to default the value of the field based on other fields in the instrument. <i><b>PEDX</b></i> is an extension to this that wraps the <i><b>PED</b></i> format in an XML document to allow the resulting SVG image produced to also be stored. <i><b>DADA2</b></i> and <i><b>DADA2X</b></i> are a customization of the PED format for use at DADA2.org. It includes an extra field for life status. Finally <i><b>internal</b></i> uses the openpedigree internal json model which is not documented and may not be compatible with future versions of the external module but should allow the best round tripping. This format and PED do not include a svg version of the pedigree diagram so will not show the diagram except when the diagram is saved into the system.",
 			"type" : "descriptive"
 		},
 		{
 			"key" : "project_format",
-			"name" : "FHIR format",
+			"name" : "Storage Format",
 			"type": "dropdown",
 			"choices": [
 				{ "value": "fhir_v1", "name": "fhir_v1 - Legacy Format"},
-				{ "value": "GA4GH", "name": "GA4GH - Recommended Format"}
+				{ "value": "GA4GH", "name": "GA4GH - Recommended Format"},
+				{ "value": "PED", "name": "PED Format"},
+				{ "value": "PEDX", "name": "PEDX - XML format PED and possible SVG Image"},
+				{ "value": "DADA2", "name": "DADA2 Format"},
+				{ "value": "DADA2X", "name": "DADA2X - XML format DADA2 and possible SVG Image"},
+				{ "value": "internal", "name": "Open-pedigree internal format"}
 			]
 		},
 		{

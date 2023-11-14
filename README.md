@@ -3,7 +3,8 @@
 The pedigree editor external module allows a notes field to be marked with an anotation to indicate the field will represent a pedigree diagram.
 
 The module will then hide or disable the notes field and instead spawn a new window to allow the entry of the pedigree diagram. The diagram will then be serialised as a FHIR Composition JSON string and written into the notes field. 
-The pedigree editor used is [https://github.com/aehrc/open-pedigree](https://github.com/aehrc/open-pedigree) which is an open version of the phenotips pedigree editor.
+The pedigree editor used is based on [https://github.com/aehrc/open-pedigree](https://github.com/aehrc/open-pedigree) which is an open version of the phenotips pedigree editor.
+The [feature/redcap_em_0.4](https://github.com/aehrc/open-pedigree/tree/feature/redcap_em_0.4) branch of this codebase is included in the module.
 The plugin also makes use of [pako](https://github.com/nodeca/pako) a javascript implementation of the Zlib library.
 
 This module will not function in internet explorer.
@@ -17,10 +18,10 @@ Alternatively you can clone the git repository and generate your own distributio
 ```
 git clone https://github.com/aehrc/redcap_pedigree_editor.git
 cd redcap_pedigree_editor
-git archive --format=zip  --prefix=redcap_pedigree_editor_v0.3.2/ -o ../redcap_pedigree_editor_v0.3.2.zip HEAD
+git archive --format=zip  --prefix=redcap_pedigree_editor_v0.4/ -o ../redcap_pedigree_editor_v0.4.zip HEAD
 ```
 
-This will give you a file redcap_pedigree_editor_v0.3.zip
+This will give you a file redcap_pedigree_editor_v0.4.zip
 
 ## Changes
 - v0.1 - Initial Release 
@@ -30,12 +31,13 @@ representation of the diagram, add compression for large diagrams.
 - v0.3 - Change to use the new GA4GH FHIR format, do terminology lookups via a web service hosted in redcap.
 - v0.3.1 - Minor bug fix in open-pedigree
 - v0.3.2 - Add new action tag **@PEDIGREE** which uses configurable terminology settings.
+- v0.4 - Add support for PED and DADA2 formats.
 
 # Install the distribution
 
 The distribution is installed by unzipping the distribution file into the `redcap/modules/` directory of the redcap installation.
 
-This should result in the new directory `'redcap_pedigree_editor_v0.3.2'`. The external module directory name must meet a strict naming
+This should result in the new directory `'redcap_pedigree_editor_v0.4'`. The external module directory name must meet a strict naming
 convention, if the directory is missing the `'v'` before the version number then the module won't be picked up by redcap, so rename
 the directory to match the form `'<module name>_v<version number>'`.
 
@@ -43,13 +45,23 @@ If everything has gone to plan the module should now appear in the list of avail
 
 ## Configuring the module
 
-Once installed the module has a number of system wide options:
+Once installed the module has a number of system-wide options:
 
  - *Hide Text* - Flag to indicate if the text area associated with the note should be shown. The format used to store 
    diagram will likely not make sense to anyone so this option should probably set to true.
- - *FHIR Format* - Allows the selection of which FHIR format to use. This is to allow the legacy FHIR format used for 
-   version prior to v0.3 to continue to be used. The GA4GH format is recommended. This is the system wide
-   setting, there is also a project level FHIR format setting which can be used to override this.
+ - *Allow Manual Entry* - Normal if the text area is shown it is made readonly to prevent accidental entry. This option
+   allow manual entry into the field (it is recommended not to enable this).
+ - *Storage Format* - Allows the selection of which Storage format to use. This is to allow the legacy FHIR format used for 
+   version prior to v0.3 to continue to be used. The GA4GH format is recommended. In version 0.4 five new formats were 
+   added, ***PED***, ***PEDX***, ***DADA2***, ***DADA2X*** and ***internal***. ***PED*** is a very simple format that 
+   only captures the base structure of the pedigree, it was added to allow piping to construct a basic pedigree. 
+   ***PEDX*** is an extension to this that wraps the ***PED*** format in an XML document to allow the resulting SVG image
+   produced to also be stored. ***DADA2*** and ***DADA2X*** are a customization of the PED format for use at DADA2.org. 
+   It includes an extra field for life status. Finally, ***internal*** uses the openpedigree internal json model which 
+   is not documented and may not be compatible with future versions of the external module but should allow the best 
+   round tripping. This format, PED and DADA2 do not include a svg version of the pedigree diagram so will not show the
+   diagram except when the diagram is saved into the system. This is the system wide setting, there is also a project 
+   level storage format setting which can be used to override this.
  - *Compress Data* - Specifies how to deal with large diagrams. The fhir format returned from the open_pedigree editor 
    will now have a new section called 'Pedigree Diagram' which will contain a DocumentReference which will have an SVG 
    representation of the pedigree diagram. This diagram will be used by the redcap plugin to show the pedigree diagram. 
@@ -81,12 +93,12 @@ Once installed the module has a number of system wide options:
      - *Gene Valueset* - The FHIR valueset to use for genes.
      - *Gene Regex* - Regular expression used to test if a code could be a member of the gene code system.
 
-![Configure](documentation/pedigree_v0.3.2_system_settings_1.png)
-![Configure](documentation/pedigree_v0.3.2_system_settings_2.png)
+![Configure](documentation/pedigree_v0.4_system_settings.png)
+
 
 ### Project Settings
 
-Each project can override the *FHIR Format* and *Compress Data* setting. If left blank then the system setting will be used.
+Each project can override the *Allow Manual Entry*, *Storage Format* and *Compress Data* setting. If left blank then the system setting will be used.
 The project can also override the terminology to use with the @PEDIGREE action tag
 - *Default Terminology* - This setting configures the system level default terminologies to use with the @PEDIGREE tag. It will be one of:
     - *SNOMEDCT* - This uses the same terminology as the @PEDIGREE_SCT tag.
@@ -104,7 +116,7 @@ The project can also override the terminology to use with the @PEDIGREE action t
         - *Gene Regex* - Regular expression used to test if a code could be a member of the gene code system.
 
 
-![Configure](documentation/pedigree_v0.3.2_project_settings.png)
+![Configure](documentation/pedigree_v0.4_project_settings.png)
 
 ## Creating a Pedigree field
 To make use of the editor a field needs to be created in the online designer and marked with one of two action tags. Only fields of type `Notes Box` are considered.
@@ -200,6 +212,107 @@ There is a slight disconnect between the data that can be entered into the open-
 is stored in the GA4GH FHIR format. The editor allows for the entry of a multi-person node, which represents multiple
 offspring. In the GA4GH format these will be represented as a single individual and the count will be lost.
 
+# PED and DADA2 Formats
+In version 0.4 of this external module, support was added for the PED and DADA2 formats. Julie Williams from the 
+[dada2 Foundation](https://dada2.org/) made the suggestion of using piping to pre-populate the pedigree diagram. The
+two existing FHIR formats are a bit complex for such a procedure but the pedigree editor could already import and export
+using the very simple PED format, which made it a possible candidate for piping. We had some success using `@CALCTEXT`
+and `@DEFAULT` to build up a default value for the pedigree diagram using this PED format. We then extended the existing
+PED format to include an information on life status and called this version DADA2 format. A slight tweak was made to the
+PED format to allow lines starting with a `#` to be considered a comment. This is because new lines are not well
+supported by CALCTEXT, and blank values are replaced by `____` with DEFAULT. The PEDX and DADA2X formats were added to
+allow the SVG of the image to be included in the resulting format.
+
+## PED format
+The PED format described in the open-pedigree source as follows:
+
+```
+ * PED format:
+ * (from http://pngu.mgh.harvard.edu/~purcell/plink/data.shtml#ped)
+ *   Family ID
+ *   Individual ID
+ *   Paternal ID
+ *   Maternal ID
+ *   Sex (1=male; 2=female; other=unknown)
+ *   Phenotype
+ *
+ *   Phenotype, by default, should be coded as:
+ *      -9 missing
+ *       0 missing
+ *       1 unaffected
+ *       2 affected
+```
+Here is an example:
+```
+OPENPED Proband Father Mother 1 2
+OPENPED Mother 0 0 2 2
+OPENPED Father 0 0 1 -9
+OPENPED Sister Father Mother 2 2
+```
+
+## DADA2 format
+The format is based on PED, but there is a field for life status and adopted, and the phenotype
+mapping includes 0=missing; 1= unaffected; 2=affected; 3=Carrier; 4=Pre-symptomatic;-9=missing
+
+First entry is the proband.
+
+ * Family ID
+ * Individual ID
+ * Paternal ID
+ * Maternal ID
+ * Sex (1=male; 2=female; other=unknown)
+ * Affected (1= unaffected; 2=affected; 3=Carrier; 4=Pre-symptomatic;other=unaffected)
+ * Life Status (1=Alive; 2=Deceased; 3=Unborn; 4=Stillborn; 5=Miscarriage; 6=Aborted; other/blank=Alive)
+ * Adopted Outs (0=Not Adopted; 1=Adopted Out; other/blank=Not Adopted)
+
+Here is an example:
+```
+DADA2 1 2 3 1 2 1
+DADA2 2 0 0 1 -9 2
+DADA2 3 0 0 2 2 1
+DADA2 4 3 2 2 3 1
+```
+
+## PEDX Format
+The open-pedigree editor which is used to create the pedigree diagram returns an SVG of the diagram to the redcap. This
+will be displayed in the form. The existing FHIR format includes this svg, but it may be removed if the fhir format with
+the diagram is larger than 65K. This allows the external module to show the diagram if the form is returned to at a
+later date. The PEDX and DADA2X format are meant to allow the same mechanism to exist but for these simplier formats.
+The PEDX format is an xml with two main elements, `<ped>` which contains the PED format of the diagram and `<image>`
+which contains the svg image of the diagram. Like the PED format, it should be possible to use `@CALCTEXT` and `@DEFAULT`
+to pipe variables into the pedigree field to prepopulate the diagram.
+
+```xml
+<openpedigree>
+    <ped>
+OPENPED Proband Father Mother 1 2
+OPENPED Mother 0 0 2 2
+OPENPED Father 0 0 1 -9
+OPENPED Sister Father Mother 2 2        
+    </ped>
+    <image>
+        ...
+    </image>
+</openpedigree>
+```
+
+## DADAX Format
+Like the PEDX format, DADA2X is the DADA2 format inside of an xml document to allow the svg image of the pedigree diagram
+to be included.
+
+```xml
+<openpedigree>
+    <dada2>
+DADA2 1 2 3 1 2 1
+DADA2 2 0 0 1 -9 2
+DADA2 3 0 0 2 2 1
+DADA2 4 3 2 2 3 1
+    </dada2>
+    <image>
+        ...
+    </image>
+</openpedigree>
+```
 
 # Legacy FHIR Formation Limitations
 Unfortunately the legacy FHIR format specification does not map all the data field in the open-pedigree editor into the
