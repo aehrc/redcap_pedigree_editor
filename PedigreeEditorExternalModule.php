@@ -154,15 +154,15 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
                 $customTerminology['geneRegex'] = $this->getSystemSetting('system_gene_regex');
             }
         } else if ($projectDefTerminology === 'CUSTOM') {
-            $customTerminology['disorderSystem'] = $this->getProjectSetting('system_disorder_system', $project_id);
-            $customTerminology['disorderValueset'] = $this->getProjectSetting('system_disorder_valueset', $project_id);
-            $customTerminology['disorderRegex'] = $this->getProjectSetting('system_disorder_regex', $project_id);
-            $customTerminology['phenotypeSystem'] = $this->getProjectSetting('system_phenotype_system', $project_id);
-            $customTerminology['phenotypeValueset'] = $this->getProjectSetting('system_phenotype_valueset', $project_id);
-            $customTerminology['phenotypeRegex'] = $this->getProjectSetting('system_phenotype_regex', $project_id);
-            $customTerminology['geneSystem'] = $this->getProjectSetting('system_gene_system', $project_id);
-            $customTerminology['geneValueset'] = $this->getProjectSetting('system_gene_valueset', $project_id);
-            $customTerminology['geneRegex'] = $this->getProjectSetting('system_gene_regex', $project_id);
+            $customTerminology['disorderSystem'] = $this->getProjectSetting('project_disorder_system', $project_id);
+            $customTerminology['disorderValueset'] = $this->getProjectSetting('project_disorder_valueset', $project_id);
+            $customTerminology['disorderRegex'] = $this->getProjectSetting('project_disorder_regex', $project_id);
+            $customTerminology['phenotypeSystem'] = $this->getProjectSetting('project_phenotype_system', $project_id);
+            $customTerminology['phenotypeValueset'] = $this->getProjectSetting('project_phenotype_valueset', $project_id);
+            $customTerminology['phenotypeRegex'] = $this->getProjectSetting('project_phenotype_regex', $project_id);
+            $customTerminology['geneSystem'] = $this->getProjectSetting('project_gene_system', $project_id);
+            $customTerminology['geneValueset'] = $this->getProjectSetting('project_gene_valueset', $project_id);
+            $customTerminology['geneRegex'] = $this->getProjectSetting('project_gene_regex', $project_id);
         }
 
 
