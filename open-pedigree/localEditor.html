@@ -3,31 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <title>Open Pedigree by PhenoTips&reg;</title>
-
-    <!-- Load jquery before prototype, making it available via jQuery but not $ -->
-    <script type="text/javascript" src="public/vendor/jquery-3.7.1.min.js"></script>
-
-    <!-- PrototypeJS and scriptaculous plugin -->
-    <script type="text/javascript" src="public/vendor/prototype-1.7.3.js"></script>
-    <script type="text/javascript" src="public/vendor/scriptaculous/effects.js"></script>
-    <script type="text/javascript" src="public/vendor/scriptaculous/dragdrop.js"></script>
-    <script type="text/javascript" src="public/vendor/scriptaculous/slider.js"></script>
-
-    <!-- File download -->
-    <script type="text/javascript" src="public/vendor/filesaver/Blob.js"></script>
-    <script type="text/javascript" src="public/vendor/filesaver/FileSaver.js"></script>
-    <script type="text/javascript" src="public/vendor/URI.js"></script>
-
-    <!-- PDF libraries -->
-    <script type="text/javascript" src="public/vendor/pdfkit/pdfkit.standalone.js"></script>
-    <script type="text/javascript" src="public/vendor/pdfkit/svg-to-pdfkit.js"></script>
-    <script type="text/javascript" src="public/vendor/pdfkit/blob-stream.js"></script>
-
-    <!-- XWiki REST API and widgets -->
-    <script type="text/javascript" src="public/vendor/xwiki/xwiki-min.js"></script>
-    <script type="text/javascript" src="public/vendor/phenotips/Widgets.js"></script>
-    <script type="text/javascript" src="public/vendor/phenotips/DateTimePicker.js"></script>
-    <script type="text/javascript" src="public/vendor/selectize/selectize.js"></script>
+    <link rel="icon" type="image/png" href="dist/assets/open-pedigree-icon.png">
 
     <!-- Open Pedigree bundle -->
     <script type="text/javascript" src="dist/pedigree.min.js"></script>
@@ -49,7 +25,7 @@
 
     var editor;
 
-    document.observe('dom:loaded',function() {
+    document.addEventListener('DOMContentLoaded', function() {
 
       const mode = getParameterByName('mode');
 
@@ -68,7 +44,7 @@
               (mode === 'CUSTOM') ? new RegExp(getParameterByName('phenotypeRegex')) : /^(http:\/\/)|(HP:)/;
       const geneSystem = (mode === 'CUSTOM') ? getParameterByName('geneSystem') : 'http://purl.bioontology.org/ontology/HGNC/hgnc.owl';
       const geneValueset = (mode === 'CUSTOM') ? getParameterByName('geneValueset') : 'http://www.genenames.org';
-      const geneRegex = (mode === 'CUSTOM') ? new RegExp(getParameterByName('geneRegex')) :  /\d+/;
+      const geneRegex = (mode === 'CUSTOM') ? new RegExp(getParameterByName('geneRegex')) :  /[0-9]+/;
 
       var redcapTerminolgyUrl = getParameterByName('redcapTerminolgyUrl');
 
@@ -131,7 +107,7 @@
             'searchAjaxOptionsFn':  (search) => ({
               method: 'POST',
               contentType: 'application/x-www-form-urlencoded',
-              parameters: { type: 'query', url: phenotypeValueset, filter: search, count: 20 }
+              parameters: { type: 'query', url: disorderValueset, filter: search, count: 20 }
             })
           },
           'geneOptions': {
@@ -164,18 +140,21 @@
         terminologyOptions = {
           'disorderOptions': {
             'type': 'FHIR',
+            'codeSystem': disorderSystem,
             'validIdRegex': disorderRegex,
             'fhirBaseUrl': ontologyServer,
             'valueSet': disorderValueset
           },
           'phenotypeOptions': {
             'type': 'FHIR',
+            'codeSystem': phenotypeSystem,
             'validIdRegex': phenotypeRegex,
             'fhirBaseUrl': ontologyServer,
             'valueSet': phenotypeValueset
           },
           'geneOptions': {
             'type': 'FHIR',
+            'codeSystem': geneSystem,
             'validIdRegex': geneRegex,
             'fhirBaseUrl': ontologyServer,
             'valueSet': geneValueset
