@@ -2,3 +2,5 @@
 .idea
 .project
 .settings
+/vendor/
+/composer.lock
