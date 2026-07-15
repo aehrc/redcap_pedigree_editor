@@ -2,6 +2,7 @@
    "name": "Pedigree Editor Module",
    "namespace": "AEHRC\\PedigreeEditorExternalModule", 
    "description": "This module will allow the use of a pedigree editor to build a pedigree diagram, saving the diagram into a field with the tag @PEDIGREE_EDITOR",
+   "framework-version": 16,
    "authors": [
        {
             "name": "David Conlan",
@@ -12,10 +13,7 @@
             "name": "Maryam Mehdizadeh",
             "email": "maryam.mehdizadeh@csiro.au",
             "institution": "Commonwealth Science & Industrial Research Organisation"
-        }           
-    ],
-    "permissions": [
-        "redcap_data_entry_form", "redcap_survey_page"
+        }
     ],
     "system-settings" : [
 		{
@@ -74,7 +72,7 @@
 		},
 		{
 			"key" : "system_ontology_server_info",
-			"name" : "The Ontology Server URL setting indicates the server to use to lookup disorders and phenotypes, leaving blank will result in the default value of <b>'https://r4.ontoserver.csiro.au/fhir'</b>",
+			"name" : "The Ontology Server URL setting indicates the server to use to lookup disorders and phenotypes, leaving blank will result in the default value of <b>'https://tx.ontoserver.csiro.au/fhir'</b>",
 			"type" : "descriptive"
 		},
 		{
@@ -157,7 +155,7 @@
 		},
 		{
 			"key" : "system_custom_terminology_info",
-			"name" : "Custom terminology requires a code system, valueset and valid code regular expression to be defined for disorders, phenotypes and genes.<br/>A regular expression of '.+' should be used if the code systems values are not regular.<br/>The following values are used for HPO and SCT tags:<br/><table><tr><th>Entry</th><th>Code System</th><th>Valueset</th><th>Regex</th></tr><tr><td>OMIM (HPO Disorder)</td><td>http://www.omim.org</td><td>http://www.omim.org?vs</td><td>[0-9]+</td></tr><tr><td>HPO (HPO Phenotype)</td><td>http://purl.obolibrary.org/obo/hp.fhir</td><td>http://purl.obolibrary.org/obo/hp.fhir?vs</td><td>^(http:\\/\\/)|(HP:)</td></tr><tr><td>Gene</td><td>http://www.genenames.org/geneId</td><td>http://www.genenames.org/geneId?vs</td><td>^HGNC:</td></tr><tr><td>SnomedCT (SCT Disorder)</td><td>http://snomed.info/sct</td><td>http://snomed.info/sct?fhir_vs=refset/32570581000036105</td><td>[0-9]+</td></tr><tr><td>SnomedCT (SCT Phenotype)</td><td>http://snomed.info/sct</td><td>http://ga4gh.org/fhir/ValueSet/phenotype</td><td>[0-9]+</td></tr></table>",
+			"name" : "Custom terminology requires a code system, valueset and valid code regular expression to be defined for disorders, phenotypes and genes.<br/>A regular expression of '.+' should be used if the code systems values are not regular.<br/>The following values are used for HPO and SCT tags:<br/><table><tr><th>Entry</th><th>Code System</th><th>Valueset</th><th>Regex</th></tr><tr><td>OMIM (HPO Disorder)</td><td>http://www.omim.org</td><td>http://www.omim.org/vs</td><td>[0-9]+</td></tr><tr><td>HPO (HPO Phenotype)</td><td>http://purl.obolibrary.org/obo/hp.owl</td><td>http://purl.obolibrary.org/obo/hp.owl?vs</td><td>^(http:\\/\\/)|(HP:)</td></tr><tr><td>Gene</td><td>http://purl.bioontology.org/ontology/HGNC/hgnc.owl</td><td>http://www.genenames.org</td><td>[0-9]+</td></tr><tr><td>SnomedCT (SCT Disorder)</td><td>http://snomed.info/sct</td><td>http://snomed.info/sct?fhir_vs=refset/32570581000036105</td><td>[0-9]+</td></tr><tr><td>SnomedCT (SCT Phenotype)</td><td>http://snomed.info/sct</td><td>http://ga4gh.org/fhir/ValueSet/phenotype</td><td>[0-9]+</td></tr></table>",
 			"type" : "descriptive",
 			"branchingLogic": {
 				"field": "system_def_terminology",
@@ -311,7 +309,7 @@
 		},
 		{
 			"key" : "project_custom_terminology_info",
-			"name" : "Custom terminology requires a code system, valueset and valid code regular expression to be defined for disorders, phenotypes and genes.<br/>A regular expression of '.+' should be used if the code systems values are not regular.<br/>The following values are used for HPO and SCT tags:<br/><table><tr><th>Entry</th><th>Code System</th><th>Valueset</th><th>Regex</th></tr><tr><td>OMIM (HPO Disorder)</td><td>http://www.omim.org</td><td>http://www.omim.org?vs</td><td>[0-9]+</td></tr><tr><td>HPO (HPO Phenotype)</td><td>http://purl.obolibrary.org/obo/hp.fhir</td><td>http://purl.obolibrary.org/obo/hp.fhir?vs</td><td>^(http:\\/\\/)|(HP:)</td></tr><tr><td>Gene</td><td>http://www.genenames.org/geneId</td><td>http://www.genenames.org/geneId?vs</td><td>^HGNC:</td></tr><tr><td>SnomedCT (SCT Disorder)</td><td>http://snomed.info/sct</td><td>http://snomed.info/sct?fhir_vs=refset/32570581000036105</td><td>[0-9]+</td></tr><tr><td>SnomedCT (SCT Phenotype)</td><td>http://snomed.info/sct</td><td>http://ga4gh.org/fhir/ValueSet/phenotype</td><td>[0-9]+</td></tr></table>",
+			"name" : "Custom terminology requires a code system, valueset and valid code regular expression to be defined for disorders, phenotypes and genes.<br/>A regular expression of '.+' should be used if the code systems values are not regular.<br/>The following values are used for HPO and SCT tags:<br/><table><tr><th>Entry</th><th>Code System</th><th>Valueset</th><th>Regex</th></tr><tr><td>OMIM (HPO Disorder)</td><td>http://www.omim.org</td><td>http://www.omim.org/vs</td><td>[0-9]+</td></tr><tr><td>HPO (HPO Phenotype)</td><td>http://purl.obolibrary.org/obo/hp.owl</td><td>http://purl.obolibrary.org/obo/hp.owl?vs</td><td>^(http:\\/\\/)|(HP:)</td></tr><tr><td>Gene</td><td>http://purl.bioontology.org/ontology/HGNC/hgnc.owl</td><td>http://www.genenames.org</td><td>[0-9]+</td></tr><tr><td>SnomedCT (SCT Disorder)</td><td>http://snomed.info/sct</td><td>http://snomed.info/sct?fhir_vs=refset/32570581000036105</td><td>[0-9]+</td></tr><tr><td>SnomedCT (SCT Phenotype)</td><td>http://snomed.info/sct</td><td>http://ga4gh.org/fhir/ValueSet/phenotype</td><td>[0-9]+</td></tr></table>",
 			"type" : "descriptive",
 			"branchingLogic": {
 				"field": "project_def_terminology",
@@ -405,8 +403,7 @@
 	],
 
   "compatibility": {
-    "php-version-min" : "5.4.0",
-    "redcap-version-min": "8.8.1",
-    "framework-version": 1
+    "php-version-min": "8.0.0",
+    "redcap-version-min": "8.8.1"
   }
 }

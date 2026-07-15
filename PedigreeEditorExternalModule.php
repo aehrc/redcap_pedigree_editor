@@ -409,7 +409,7 @@ EOD;
     {
         $ontologyServer = $this->getSystemSetting('system_ontology_server');
         if (!$ontologyServer){
-            $ontologyServer = 'https://r4.ontoserver.csiro.au/fhir'; // default
+            $ontologyServer = 'https://tx.ontoserver.csiro.au/fhir'; // default
         }
         if ($ontologyServer) {
             $strlen = strlen($ontologyServer);
