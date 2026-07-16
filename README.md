@@ -33,6 +33,9 @@ representation of the diagram, add compression for large diagrams.
 - v0.3.2 - Add new action tag **@PEDIGREE** which uses configurable terminology settings.
 - v0.4 - Add support for PED and DADA2 formats.
 - v0.5 - Bug fix in open-pedigree, change default fhir server and valuesets to use https://tx.ontoserver.csiro.au/fhir
+- v0.6 - **Breaking**: remove the **@PEDIGREE_HPO**/**@PEDIGREE_SCT** action tags. Terminology is now always taken from
+  the project/system *Default Terminology* setting — existing fields tagged **@PEDIGREE_HPO**/**@PEDIGREE_SCT** will stop
+  being recognised as pedigree fields; update them to a bare **@PEDIGREE** tag and set *Default Terminology* accordingly.
 
 # Install the distribution
 
@@ -80,9 +83,9 @@ Once installed the module has a number of system-wide options:
    - *OAuth2 token endpoint*  - The token endpoint used to obtain the access token. This is required for `Oauth2 Client Credentials` authentication type.
    - *Client Id* - The client id to use to fetch an access token. This is required for `Oauth2 Client Credentials` authentication type.
    - *Client Secret* - The client secret to use to fetch an access token. This is required for `Oauth2 Client Credentials` authentication type.
- - *Default Terminology* - This setting configures the system level default terminologies to use with the @PEDIGREE tag. It will be one of:
-   - *SNOMEDCT* - This uses the same terminology as the @PEDIGREE_SCT tag.
-   - *HPO* - This uses the same terminology as the @PEDIGREE_HPO tag.
+ - *Default Terminology* - This setting configures the system level default terminology to use with the @PEDIGREE tag. It will be one of:
+   - *SNOMEDCT* - Disorders and phenotypes are coded using SNOMED-CT.
+   - *HPO* - Disorders and phenotypes are coded using HPO and OMIM.
    - *Custom* - The terminology settings will be entered into additional fields.
      - *Disorder Code System* - The FHIR code system to use for disorders.
      - *Disorder Valueset* - The FHIR valueset to use for disorders.
@@ -101,9 +104,9 @@ Once installed the module has a number of system-wide options:
 
 Each project can override the *Allow Manual Entry*, *Storage Format* and *Compress Data* setting. If left blank then the system setting will be used.
 The project can also override the terminology to use with the @PEDIGREE action tag
-- *Default Terminology* - This setting configures the system level default terminologies to use with the @PEDIGREE tag. It will be one of:
-    - *SNOMEDCT* - This uses the same terminology as the @PEDIGREE_SCT tag.
-    - *HPO* - This uses the same terminology as the @PEDIGREE_HPO tag.
+- *Default Terminology* - This setting configures the project level default terminology to use with the @PEDIGREE tag. It will be one of:
+    - *SNOMEDCT* - Disorders and phenotypes are coded using SNOMED-CT.
+    - *HPO* - Disorders and phenotypes are coded using HPO and OMIM.
     - *System* - This uses the system default terminology settings.
     - *Custom* - The terminology settings will be entered into additional fields.
         - *Disorder Code System* - The FHIR code system to use for disorders.
@@ -120,10 +123,14 @@ The project can also override the terminology to use with the @PEDIGREE action t
 ![Configure](documentation/pedigree_v0.4_project_settings.png)
 
 ## Creating a Pedigree field
-To make use of the editor a field needs to be created in the online designer and marked with one of two action tags. Only fields of type `Notes Box` are considered.
-  - *@PEDIGREE_HPO* - Marks a field to be a pedigree editor using the HPO and OMIM coding systems for phenotypes and disorders.
-  - *@PEDIGREE_SCT* - Marks a field to be a pedigree editor using the SNOMED-CT coding system for phenotypes and disorders.
-  - *@PEDIGREE* - Marks a field to be a pedigree editor using the default coding system for phenotypes and disorders (new to version 0.3.2).
+To make use of the editor a field needs to be created in the online designer and marked with the *@PEDIGREE* action tag. Only fields of type `Notes Box` are considered.
+Terminology (SNOMED-CT / HPO+OMIM / Custom) is always taken from the project's (or, if unset, the system's) *Default Terminology*
+setting — see [System Settings](#system-settings)/[Project Settings](#project-settings) above. There is no per-field way to
+override terminology on this tag.
+
+> Versions before 0.6 supported *@PEDIGREE_HPO*/*@PEDIGREE_SCT* tag variants to force a field's terminology regardless of
+> the project/system default. These have been removed as redundant with the *Default Terminology* setting — replace them
+> with a bare *@PEDIGREE* tag and set *Default Terminology* to *HPO* or *SNOMEDCT* instead.
 
 The default 'Hide Text' and 'Compress Data' options can be overridden in the action tag by appending '=' plus a comma 
 separated list of options.
@@ -133,8 +140,8 @@ separated list of options.
   - *COMPRESS_LARGE* - Compress the data if it exceeds 65K characters.
   - *ALWAYS_COMPRESS* - Always compress the data for this field.
 
-An action tag of @PEDIGREE_HPO=HIDE_TEXT,NEVER_COMPRESS will use the HPO code system and hide the text area for the 
-field and prevent compression of the data stored in the field.
+An action tag of @PEDIGREE=HIDE_TEXT,NEVER_COMPRESS will hide the text area and prevent compression of the data stored
+in the field.
 
 ![Online Designer](documentation/pedigree_v0.2_designer.png)
 

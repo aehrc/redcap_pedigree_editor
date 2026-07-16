@@ -144,8 +144,6 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
         $sctEditorPage = 'open-pedigree/localEditor.html?mode=SCT';
         $customEditorPage = 'open-pedigree/localEditor.html?mode=CUSTOM';
         $editorPageLocal = true;
-        $hpoTag = '@PEDIGREE_HPO';
-        $sctTag = '@PEDIGREE_SCT';
         $hideTextOption = 'HIDE_TEXT';
         $showTextOption = 'SHOW_TEXT';
         $neverCompressOption = 'NEVER_COMPRESS';
@@ -205,15 +203,26 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
         foreach ($dd_array as $field_name=>$field_attributes)
         {
             if ($field_attributes['field_type'] === 'notes'){
+                // Negative lookahead (?![A-Za-z0-9_]) stops this from matching
+                // @PEDIGREE_FIELD (a distinct tag, for repeating-instrument
+                // fields - see D3) or any other future @PEDIGREE_XXX tag.
+                // Terminology mode is always the project/system default
+                // (project_def_terminology/system_def_terminology) - a
+                // per-field HPO/SCT override used to be supported here but
+                // was removed as redundant with that project setting. For a
+                // repeating-instrument-derived Questionnaire, a legend-mapped
+                // field's terminology is pinned down per-field by whatever
+                // ontology provider is bound to it (D5) regardless of this
+                // setting anyway - the override was only ever meaningful for
+                // the built-in default Questionnaire's hardcoded legend items.
                 if (preg_match(
-                    '/@PEDIGREE(_(HPO|SCT))?(=(HIDE_TEXT|SHOW_TEXT|NEVER_COMPRESS|COMPRESS_LARGE|ALWAYS_COMPRESS)(,(HIDE_TEXT|SHOW_TEXT|NEVER_COMPRESS|COMPRESS_LARGE|ALWAYS_COMPRESS))?)?/',
+                    '/@PEDIGREE(?![A-Za-z0-9_])(=(HIDE_TEXT|SHOW_TEXT|NEVER_COMPRESS|COMPRESS_LARGE|ALWAYS_COMPRESS)(,(HIDE_TEXT|SHOW_TEXT|NEVER_COMPRESS|COMPRESS_LARGE|ALWAYS_COMPRESS))?)?/',
                     $field_attributes['field_annotation'], $matches) === 1){
 
-                    $mode = $matches[2] ?: $defTerminology;
                     $hide = $hideText;
                     $fCompress = $compression;
-                    $option1 = $matches[4];
-                    $option2 = $matches[6];
+                    $option1 = $matches[2] ?? '';
+                    $option2 = $matches[4] ?? '';
                     if ($option1 === $hideTextOption || $option2 === $hideTextOption){
                         $hide = true;
                     }
@@ -233,7 +242,7 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
                     $row = array();
                     $row['field'] = $field_name;
                     $row['label'] = $field_attributes['field_label'];
-                    $row['mode'] = $mode ?: $defTerminology;
+                    $row['mode'] = $defTerminology;
                     $row['hideText'] = $hide;
                     $row['compress'] = $fCompress;
                     $fieldsOfInterest[] = $row;

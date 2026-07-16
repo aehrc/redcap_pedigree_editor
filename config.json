@@ -18,12 +18,12 @@
     "system-settings" : [
 		{
 			"key" : "action_tag_info",
-			"name" : "Three action tags will be enabled for notes<ul><li><b>'@PEDIGREE_HPO'</b> - A pedigree diagram using HPO and OMIM coding systems</li><li><b>'@PEDIGREE_SCT'</b> - A pedigree diagram using SNOMED-CT coding system</li><li><b>'@PEDIGREE'</b> - A pedigree diagram using the project configured default coding systems.</li></ul>The default 'Hide Text' flag can be overriden in the action tag by appending <ul><li><b>=HIDE_TEXT</b> - Hide the text area.</li><li><b>=SHOW_TEXT</b> - Show the text area.</li></ul>An action tag of <b>@PEDIGREE_HPO=HIDE_TEXT</b> will use the HPO code system and hide the text area for the field.",
+			"name" : "The <b>'@PEDIGREE'</b> action tag marks a notes field as a pedigree diagram, using the project (or system) configured default coding systems - see 'Default Terminology' below.<br>The default 'Hide Text' flag can be overriden in the action tag by appending <ul><li><b>=HIDE_TEXT</b> - Hide the text area.</li><li><b>=SHOW_TEXT</b> - Show the text area.</li></ul>An action tag of <b>@PEDIGREE=HIDE_TEXT</b> will hide the text area for the field.",
 			"type" : "descriptive"
 		},
 		{
 			"key" : "hide_text_info",
-			"name" : "The Hide Text flag indicates if the text area containing the FHIR representation of the diagram should be hidden.<br>The default 'Hide Text' flag can be overriden in the action tag by appending <ul><li><b>=HIDE_TEXT</b> - Hide the text area.</li><li><b>=SHOW_TEXT</b> - Show the text area.</li></ul>An action tag of <b>@PEDIGREE_HPO=HIDE_TEXT</b> will use the HPO code system and hide the text area for the field.",
+			"name" : "The Hide Text flag indicates if the text area containing the FHIR representation of the diagram should be hidden.<br>The default 'Hide Text' flag can be overriden in the action tag by appending <ul><li><b>=HIDE_TEXT</b> - Hide the text area.</li><li><b>=SHOW_TEXT</b> - Show the text area.</li></ul>An action tag of <b>@PEDIGREE=HIDE_TEXT</b> will hide the text area for the field.",
 			"type" : "descriptive"
 		},
 		{
@@ -57,7 +57,7 @@
 		},
 		{
 			"key" : "compression_info",
-			"name" : "A complicated pedigree may be large, the compress data setting indicates if the data should be compressed.<br>The default 'Compress Data' value can be overridden in the action tag by appending <ul><li><b>=NEVER_COMPRESS</b> - Never Compress.</li><li><b>=COMPRESS_LARGE</b> - Compress Large Diagrams >65K.</li><li><b>=ALWAYS_COMPRESS</b> - Always Compress</li></ul>An action tag of <b>@PEDIGREE_HPO=ALWAYS_COMPRESS</b> will always compress the data in the field.",
+			"name" : "A complicated pedigree may be large, the compress data setting indicates if the data should be compressed.<br>The default 'Compress Data' value can be overridden in the action tag by appending <ul><li><b>=NEVER_COMPRESS</b> - Never Compress.</li><li><b>=COMPRESS_LARGE</b> - Compress Large Diagrams >65K.</li><li><b>=ALWAYS_COMPRESS</b> - Always Compress</li></ul>An action tag of <b>@PEDIGREE=ALWAYS_COMPRESS</b> will always compress the data in the field.",
 			"type" : "descriptive"
 		},
 		{
