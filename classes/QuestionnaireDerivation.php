@@ -81,6 +81,63 @@ class QuestionnaireDerivation
     ];
 
     /**
+     * Resolves each `@PEDIGREE_FIELD`-tagged, supported field to its
+     * effective Questionnaire `linkId`/`type`, without building the full
+     * Questionnaire — used both by {@see derive()} and by the
+     * `RedcapInstrumentPatientProvider` import path (which needs the same
+     * linkId-resolution rules, including the legend-target `linkId`
+     * override, to correctly key the answer bag it returns).
+     *
+     * @return array Ordered list of `['redcapField', 'linkId', 'type', 'repeats', 'choices']`,
+     *   where `choices` is the field's parsed `code => display` choice map
+     *   (empty for non-choice types).
+     */
+    public static function resolveTaggedFields(array $dataDictionary, array $fieldAnswerValueSets = []): array
+    {
+        $resolved = [];
+        foreach ($dataDictionary as $fieldName => $field) {
+            $tag = PedigreeFieldTag::parse($field['field_annotation'] ?? null);
+            if (!$tag->present) {
+                continue;
+            }
+            $typeInfo = self::mapFieldType($field);
+            if ($typeInfo === null) {
+                continue;
+            }
+
+            $answerValueSet = $fieldAnswerValueSets[$fieldName] ?? null;
+            $linkId = $fieldName;
+            if ($tag->legend !== null && self::legendMappingIsValid($typeInfo, $answerValueSet, $tag->legend)) {
+                $linkId = $tag->legend;
+            }
+
+            $choices = [];
+            if (in_array($typeInfo['type'], ['choice', 'open-choice'], true)) {
+                foreach (self::parseChoices($field['select_choices_or_calculations'] ?? '') as $option) {
+                    $choices[$option['valueCoding']['code']] = $option['valueCoding']['display'];
+                }
+            }
+
+            $resolved[] = [
+                'redcapField' => $fieldName,
+                'linkId' => $linkId,
+                'type' => $typeInfo['type'],
+                'repeats' => $typeInfo['repeats'],
+                'choices' => $choices,
+            ];
+        }
+        return $resolved;
+    }
+
+    private static function legendMappingIsValid(array $typeInfo, ?string $answerValueSet, string $target): bool
+    {
+        return isset(self::RESERVED_LEGEND_TARGETS[$target])
+            && $typeInfo['type'] === 'choice'
+            && $typeInfo['repeats']
+            && !empty($answerValueSet);
+    }
+
+    /**
      * @param array $dataDictionary Field-name-keyed array as returned by
      *   `REDCap::getDataDictionary($project_id, 'array', false, null, $instrument)`.
      * @param string $instrumentName The instrument's unique name.
@@ -252,11 +309,7 @@ class QuestionnaireDerivation
 
     private static function applyLegend(array &$item, array &$extensions, string $fieldName, string $target, array $typeInfo, array &$warnings): void
     {
-        if (isset(self::RESERVED_LEGEND_TARGETS[$target])
-            && $typeInfo['type'] === 'choice'
-            && $typeInfo['repeats']
-            && !empty($item['answerValueSet'])
-        ) {
+        if (self::legendMappingIsValid($typeInfo, $item['answerValueSet'] ?? null, $target)) {
             $item['linkId'] = $target;
             $extensions[] = ['url' => self::MAPPING_EXTENSION_URL, 'valueCode' => self::RESERVED_LEGEND_TARGETS[$target]];
             return;

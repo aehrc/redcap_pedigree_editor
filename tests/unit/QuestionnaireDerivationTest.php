@@ -276,4 +276,57 @@ class QuestionnaireDerivationTest extends TestCase
         $this->assertArrayNotHasKey('enableWhen', $item);
         $this->assertNotEmpty($result['warnings']);
     }
+
+    public function testResolveTaggedFieldsUsesFieldNameAsLinkIdByDefault(): void
+    {
+        $dd = ['first_name' => $this->field(['field_annotation' => '@PEDIGREE_FIELD'])];
+        $resolved = QuestionnaireDerivation::resolveTaggedFields($dd);
+        $this->assertSame([
+            ['redcapField' => 'first_name', 'linkId' => 'first_name', 'type' => 'string', 'repeats' => false, 'choices' => []],
+        ], $resolved);
+    }
+
+    public function testResolveTaggedFieldsOverridesLinkIdForValidLegendMapping(): void
+    {
+        $dd = ['family_disorders' => $this->field([
+            'field_type' => 'checkbox',
+            'field_annotation' => '@PEDIGREE_FIELD(legend="disorders")',
+        ])];
+        $resolved = QuestionnaireDerivation::resolveTaggedFields($dd, ['family_disorders' => 'http://www.omim.org/vs']);
+        $this->assertSame('disorders', $resolved[0]['linkId']);
+        $this->assertSame('family_disorders', $resolved[0]['redcapField']);
+    }
+
+    public function testResolveTaggedFieldsKeepsFieldNameWhenLegendMappingIsInvalid(): void
+    {
+        // no answerValueSet supplied -> not ontology-backed -> legend mapping invalid
+        $dd = ['family_disorders' => $this->field([
+            'field_type' => 'checkbox',
+            'field_annotation' => '@PEDIGREE_FIELD(legend="disorders")',
+        ])];
+        $resolved = QuestionnaireDerivation::resolveTaggedFields($dd);
+        $this->assertSame('family_disorders', $resolved[0]['linkId']);
+    }
+
+    public function testResolveTaggedFieldsExcludesUntaggedAndUnsupportedFields(): void
+    {
+        $dd = [
+            'untagged' => $this->field(),
+            'unsupported' => $this->field(['field_type' => 'calc', 'field_annotation' => '@PEDIGREE_FIELD']),
+            'tagged' => $this->field(['field_annotation' => '@PEDIGREE_FIELD']),
+        ];
+        $resolved = QuestionnaireDerivation::resolveTaggedFields($dd);
+        $this->assertSame(['tagged'], array_column($resolved, 'redcapField'));
+    }
+
+    public function testResolveTaggedFieldsReturnsChoicesMapForChoiceTypes(): void
+    {
+        $dd = ['gender_field' => $this->field([
+            'field_type' => 'radio',
+            'field_annotation' => '@PEDIGREE_FIELD',
+            'select_choices_or_calculations' => '1, Male | 2, Female',
+        ])];
+        $resolved = QuestionnaireDerivation::resolveTaggedFields($dd);
+        $this->assertSame(['1' => 'Male', '2' => 'Female'], $resolved[0]['choices']);
+    }
 }

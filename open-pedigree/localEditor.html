@@ -8,6 +8,13 @@
     <!-- Open Pedigree bundle -->
     <script type="text/javascript" src="dist/pedigree.min.js"></script>
 
+    <!--
+      redcap_pedigree_editor-specific addition (see pedigree-repeating-instrument-import
+      OpenSpec change) - not part of the upstream open-pedigree-upgrade file this is
+      otherwise copied from verbatim. Preserve this block across future re-syncs.
+    -->
+    <script type="text/javascript" src="../js/RedcapInstrumentPatientProvider.js"></script>
+
   </head>
 
   <body id='body'>
@@ -176,12 +183,32 @@
 
       console.log("creating editor");
 
+      // redcap_pedigree_editor-specific addition (see pedigree-repeating-instrument-import
+      // OpenSpec change) - not part of the upstream file this is otherwise copied from
+      // verbatim. Preserve this block across future re-syncs.
+      var pedigreeImportEndpoint = getParameterByName('pedigreeImportEndpoint');
+      var patientProviderOptions = {};
+      if (pedigreeImportEndpoint && window.RedcapInstrumentPatientProvider) {
+        patientProviderOptions = {
+          patientProvider: new RedcapInstrumentPatientProvider({
+            endpoint: pedigreeImportEndpoint,
+            csrfToken: getParameterByName('pedigreeImportCsrf'),
+            configured: true
+          })
+        };
+      }
+
+      var pedigreeQuestionnaireUrl = getParameterByName('pedigreeQuestionnaireUrl');
+      var questionnaireOptions = pedigreeQuestionnaireUrl ? { questionnaireUrl: pedigreeQuestionnaireUrl } : {};
+
       var editorOptions = {
         // patientDataUrl: 'local:pedigreeData?format='+format+'&closeOnSave=true' + (qData?('&qData='+qData):''),
         patientDataUrl: 'local:pedigreeData?format='+format+'&closeOnSave=true',
         returnUrl: '#CloseWindow',
         backend: OpenPedigree.localStorageBackend,
-        ...terminologyOptions};
+        ...terminologyOptions,
+        ...patientProviderOptions,
+        ...questionnaireOptions};
 
 
       editor = OpenPedigree.initialiseEditor(editorOptions);

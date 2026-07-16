@@ -396,6 +396,22 @@
 				"field": "project_def_terminology",
 				"value": "CUSTOM"
 			}
+		},
+		{
+			"key" : "project_pedigree_import_info",
+			"name" : "Configuring a repeating instrument here lets a pedigree node be linked to a row of that instrument and have its <b>@PEDIGREE_FIELD</b>-tagged answers imported (read-only, one-time snapshot) into the node's form. See the module README for the <b>@PEDIGREE_FIELD</b> action tag syntax.",
+			"type" : "descriptive"
+		},
+		{
+			"key": "project_pedigree_import_instrument",
+			"name": "Repeating instrument to search/import from when linking a pedigree node",
+			"type": "form-list"
+		},
+		{
+			"key": "project_pedigree_import_search_fields",
+			"name": "Field used to search/display a row when linking a pedigree node (add one or more, e.g. first/last name)",
+			"type": "field-list",
+			"repeatable": true
 		}
 	],
 	"no-auth-pages": [

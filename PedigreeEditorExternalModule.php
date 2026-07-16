@@ -8,6 +8,18 @@ namespace AEHRC\PedigreeEditorExternalModule;
 
 use ExternalModules\AbstractExternalModule;
 
+// Deployed modules aren't `composer install`-ed, so classes/ can't rely on
+// the Composer autoloader (dev/test-only here, see composer.json) - require
+// each class explicitly.
+require_once __DIR__ . '/classes/PedigreeFieldTag.php';
+require_once __DIR__ . '/classes/BranchingLogicTranslator.php';
+require_once __DIR__ . '/classes/OntologyValueSetResolver.php';
+require_once __DIR__ . '/classes/QuestionnaireDerivation.php';
+require_once __DIR__ . '/classes/RedcapInstrumentReference.php';
+require_once __DIR__ . '/classes/RedcapInstrumentSearch.php';
+require_once __DIR__ . '/classes/RedcapInstrumentRowImporter.php';
+require_once __DIR__ . '/classes/RedcapInstrumentGateway.php';
+
 
 /**
  * ExternalModule class for Pedigree Editor.
@@ -247,6 +259,17 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
                 $customEditorPage = $customEditorPage . '&'.$key .'=' . urlencode($val);
             }
         }
+
+        if ($this->isPedigreeImportConfigured($project_id)) {
+            $pedigreeServiceUrl = $this->getUrl('PedigreeInstrumentService.php', false, true);
+            $pedigreeImportParams = '&pedigreeImportEndpoint=' . urlencode($pedigreeServiceUrl)
+                . '&pedigreeImportCsrf=' . urlencode($this->getCSRFToken())
+                . '&pedigreeQuestionnaireUrl=' . urlencode($pedigreeServiceUrl . '&type=questionnaire');
+            $hpoEditorPage = $hpoEditorPage . $pedigreeImportParams;
+            $sctEditorPage = $sctEditorPage . $pedigreeImportParams;
+            $customEditorPage = $customEditorPage . $pedigreeImportParams;
+        }
+
         // the local url build wants to put a '?' on the end which breaks paramaters, so add one to soak the extra
         $hpoEditorPage = $hpoEditorPage . '&broken=redcap';
         $sctEditorPage = $sctEditorPage . '&broken=redcap';
@@ -432,6 +455,138 @@ EOD;
         $params = ["url" => $valueSet, "filter" => $filter, "count" => $count];
         $fullUrl = $this->getFhirServerUri() . '/ValueSet/$expand?' . http_build_query($params);
         $this->outputGet($fullUrl);
+    }
+
+    /**
+     * Derives the effective Questionnaire from the configured repeating
+     * instrument (tasks 2-5) — backs `questionnaireUrl` fetched by
+     * `open-pedigree`'s own `_loadQuestionnaireFromUrl()`. Without this,
+     * the derivation engine and `RedcapInstrumentPatientProvider` would
+     * have no derived fields for a linked-row import to actually land on;
+     * the node menu would still show the built-in default Questionnaire.
+     *
+     * @return array|null The Questionnaire array, or null if no instrument is configured.
+     */
+    public function getPedigreeDerivedQuestionnaire($project_id)
+    {
+        $instrument = $this->getPedigreeImportInstrument($project_id);
+        if (!$instrument) {
+            return null;
+        }
+        $dataDictionary = RedcapInstrumentGateway::fetchDataDictionary($project_id, $instrument);
+        $answerValueSets = RedcapInstrumentGateway::resolveAnswerValueSets($project_id, array_keys($dataDictionary));
+        $result = QuestionnaireDerivation::derive($dataDictionary, $instrument, $answerValueSets);
+
+        foreach ($result['warnings'] as $warning) {
+            error_log('[redcap_pedigree_editor] Questionnaire derivation (project ' . $project_id . '): ' . $warning);
+        }
+
+        return $result['questionnaire'];
+    }
+
+    /**
+     * @return string|null The configured instrument name, or null if the
+     *   project hasn't configured pedigree-instrument import.
+     */
+    private function getPedigreeImportInstrument($project_id)
+    {
+        $instrument = $this->getProjectSetting('project_pedigree_import_instrument', $project_id);
+        return $instrument ?: null;
+    }
+
+    /**
+     * @return string[] Field names configured to search/display a row by.
+     */
+    private function getPedigreeImportSearchFields($project_id)
+    {
+        $fields = $this->getProjectSetting('project_pedigree_import_search_fields', $project_id);
+        return is_array($fields) ? array_values(array_filter($fields)) : [];
+    }
+
+    public function isPedigreeImportConfigured($project_id)
+    {
+        return $this->getPedigreeImportInstrument($project_id) !== null;
+    }
+
+    /**
+     * Searches the configured repeating instrument's rows (task 6.2/6.4 —
+     * backs `RedcapInstrumentPatientProvider.openPatientPickerModal`'s AJAX call).
+     *
+     * @return array List of `['record', 'instance', 'display', 'ref']`.
+     */
+    public function searchPedigreeInstrumentRows($project_id, $query)
+    {
+        $instrument = $this->getPedigreeImportInstrument($project_id);
+        if (!$instrument) {
+            return [];
+        }
+        $dataDictionary = RedcapInstrumentGateway::fetchDataDictionary($project_id, $instrument);
+        $rows = RedcapInstrumentGateway::fetchInstrumentRows($project_id, array_keys($dataDictionary));
+        $searchFields = $this->getPedigreeImportSearchFields($project_id);
+        return RedcapInstrumentSearch::search($rows, $searchFields, (string) $query);
+    }
+
+    /**
+     * Fetches one linked row's `@PEDIGREE_FIELD`-tagged answers as a
+     * `linkId`-keyed bag (task 6.5 — backs
+     * `RedcapInstrumentPatientProvider.openClinicalImportModal`'s AJAX call).
+     *
+     * @return array{linkId: string, value: mixed}[]
+     */
+    public function getPedigreeInstrumentRowAnswers($project_id, $record, $instance)
+    {
+        $row = $this->findPedigreeInstrumentRow($project_id, $record, $instance, $dataDictionary);
+        if ($row === null) {
+            return [];
+        }
+
+        $answerValueSets = RedcapInstrumentGateway::resolveAnswerValueSets($project_id, array_keys($dataDictionary));
+        $resolvedFields = QuestionnaireDerivation::resolveTaggedFields($dataDictionary, $answerValueSets);
+        return RedcapInstrumentRowImporter::buildAnswers($row['fields'], $resolvedFields);
+    }
+
+    /**
+     * Resolves a linked row's search/display name (backs
+     * `RedcapInstrumentPatientProvider.lookupPatient`) — kept separate from
+     * {@see getPedigreeInstrumentRowAnswers()} since which tagged field (if
+     * any) represents "the name" is project-specific, whereas the
+     * configured search fields already exist for exactly this purpose.
+     *
+     * @return string|null
+     */
+    public function getPedigreeInstrumentRowDisplayName($project_id, $record, $instance)
+    {
+        $row = $this->findPedigreeInstrumentRow($project_id, $record, $instance, $dataDictionary);
+        if ($row === null) {
+            return null;
+        }
+        $searchFields = $this->getPedigreeImportSearchFields($project_id);
+        $matches = RedcapInstrumentSearch::search([$row], $searchFields, '');
+        return $matches[0]['display'] ?? null;
+    }
+
+    /**
+     * @param array|null $dataDictionary Out-param: the resolved instrument's
+     *   Data Dictionary, populated whenever a row is found (or the
+     *   instrument is configured at all, even if the row itself is not
+     *   found) so callers can reuse it without re-fetching.
+     */
+    private function findPedigreeInstrumentRow($project_id, $record, $instance, &$dataDictionary)
+    {
+        $dataDictionary = [];
+        $instrument = $this->getPedigreeImportInstrument($project_id);
+        if (!$instrument) {
+            return null;
+        }
+        $dataDictionary = RedcapInstrumentGateway::fetchDataDictionary($project_id, $instrument);
+        $rows = RedcapInstrumentGateway::fetchInstrumentRows($project_id, array_keys($dataDictionary));
+
+        foreach ($rows as $row) {
+            if ($row['record'] === (string) $record && $row['instance'] === (int) $instance) {
+                return $row;
+            }
+        }
+        return null;
     }
 
 

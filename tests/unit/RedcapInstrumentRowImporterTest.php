@@ -1,0 +1,130 @@
+<?php
+
+namespace AEHRC\PedigreeEditorExternalModule\Tests;
+
+use AEHRC\PedigreeEditorExternalModule\RedcapInstrumentRowImporter;
+use PHPUnit\Framework\TestCase;
+
+class RedcapInstrumentRowImporterTest extends TestCase
+{
+    private function field(array $overrides): array
+    {
+        return array_merge([
+            'redcapField' => 'field',
+            'linkId' => 'field',
+            'type' => 'string',
+            'repeats' => false,
+            'choices' => [],
+        ], $overrides);
+    }
+
+    public function testStringFieldPassesThrough(): void
+    {
+        $answers = RedcapInstrumentRowImporter::buildAnswers(
+            ['comments' => 'Some notes'],
+            [$this->field(['redcapField' => 'comments', 'linkId' => 'comments'])]
+        );
+        $this->assertSame([['linkId' => 'comments', 'value' => 'Some notes']], $answers);
+    }
+
+    public function testMissingOrEmptyValueIsOmitted(): void
+    {
+        $answers = RedcapInstrumentRowImporter::buildAnswers(
+            ['comments' => ''],
+            [$this->field(['redcapField' => 'comments', 'linkId' => 'comments'])]
+        );
+        $this->assertSame([], $answers);
+    }
+
+    public function testBooleanFieldConvertsRedcapOneZeroToRealBoolean(): void
+    {
+        $answers = RedcapInstrumentRowImporter::buildAnswers(
+            ['adopted' => '1'],
+            [$this->field(['redcapField' => 'adopted', 'linkId' => 'adopted', 'type' => 'boolean'])]
+        );
+        $this->assertSame(true, $answers[0]['value']);
+        $this->assertNotSame('1', $answers[0]['value']);
+    }
+
+    public function testIntegerAndDecimalFieldsAreCast(): void
+    {
+        $answers = RedcapInstrumentRowImporter::buildAnswers(
+            ['age' => '42', 'height' => '1.8'],
+            [
+                $this->field(['redcapField' => 'age', 'linkId' => 'age', 'type' => 'integer']),
+                $this->field(['redcapField' => 'height', 'linkId' => 'height', 'type' => 'decimal']),
+            ]
+        );
+        $this->assertSame(42, $answers[0]['value']);
+        $this->assertSame(1.8, $answers[1]['value']);
+    }
+
+    public function testSingleChoiceFieldReturnsRawCode(): void
+    {
+        $answers = RedcapInstrumentRowImporter::buildAnswers(
+            ['gender_field' => '2'],
+            [$this->field(['redcapField' => 'gender_field', 'linkId' => 'gender_field', 'type' => 'choice', 'choices' => ['1' => 'Male', '2' => 'Female']])]
+        );
+        $this->assertSame('2', $answers[0]['value']);
+    }
+
+    public function testRepeatingChoiceFieldReturnsCheckedCodesWhenNotLegendMapped(): void
+    {
+        $answers = RedcapInstrumentRowImporter::buildAnswers(
+            ['symptoms___1' => '1', 'symptoms___2' => '0', 'symptoms___3' => '1'],
+            [$this->field([
+                'redcapField' => 'symptoms',
+                'linkId' => 'symptoms',
+                'type' => 'choice',
+                'repeats' => true,
+                'choices' => ['1' => 'Fever', '2' => 'Cough', '3' => 'Rash'],
+            ])]
+        );
+        $this->assertSame(['1', '3'], $answers[0]['value']);
+    }
+
+    public function testRepeatingChoiceFieldReturnsIdNamePairsWhenLegendMapped(): void
+    {
+        $answers = RedcapInstrumentRowImporter::buildAnswers(
+            ['family_disorders___omim1' => '1', 'family_disorders___omim2' => '0'],
+            [$this->field([
+                'redcapField' => 'family_disorders',
+                'linkId' => 'disorders',
+                'type' => 'choice',
+                'repeats' => true,
+                'choices' => ['omim1' => 'Marfan syndrome', 'omim2' => 'Some other disorder'],
+            ])]
+        );
+        $this->assertSame(
+            [['id' => 'omim1', 'name' => 'Marfan syndrome']],
+            $answers[0]['value']
+        );
+    }
+
+    public function testNoCheckedOptionsIsOmitted(): void
+    {
+        $answers = RedcapInstrumentRowImporter::buildAnswers(
+            ['symptoms___1' => '0'],
+            [$this->field(['redcapField' => 'symptoms', 'linkId' => 'symptoms', 'type' => 'choice', 'repeats' => true, 'choices' => ['1' => 'Fever']])]
+        );
+        $this->assertSame([], $answers);
+    }
+
+    public function testMultipleFieldsProduceMultipleAnswers(): void
+    {
+        $answers = RedcapInstrumentRowImporter::buildAnswers(
+            ['first_name' => 'Alice', 'age' => '30'],
+            [
+                $this->field(['redcapField' => 'first_name', 'linkId' => 'first_name']),
+                $this->field(['redcapField' => 'age', 'linkId' => 'age', 'type' => 'integer']),
+            ]
+        );
+        $this->assertSame(
+            [
+                ['linkId' => 'first_name', 'value' => 'Alice'],
+                ['linkId' => 'age', 'value' => 30],
+            ],
+            $answers
+        );
+    }
+}
