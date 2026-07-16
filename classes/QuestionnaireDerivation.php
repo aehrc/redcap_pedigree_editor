@@ -18,6 +18,7 @@ class QuestionnaireDerivation
 {
     const MAPPING_EXTENSION_URL = 'https://github.com/aehrc/open-pedigree/questionnaire-field-mapping';
     const PREDICATE_EXTENSION_URL = 'https://github.com/aehrc/open-pedigree/questionnaire-enable-predicate';
+    const ACTION_EXTENSION_URL = 'https://github.com/aehrc/open-pedigree/questionnaire-action';
     const REDCAP_SOURCE_EXTENSION_URL = 'https://github.com/aehrc/open-pedigree/questionnaire-redcap-source';
 
     const UNSUPPORTED_FIELD_TYPES = ['calc', 'sql', 'file', 'slider', 'descriptive'];
@@ -153,6 +154,7 @@ class QuestionnaireDerivation
         $warnings = [];
         $items = [];
         $itemTypesByField = [];
+        $mappedFieldNames = [];
         $order = [];
         $sectionOfField = [];
         $currentSection = null;
@@ -175,12 +177,13 @@ class QuestionnaireDerivation
 
             $item = self::buildBaseItem($fieldName, $field, $typeInfo, $fieldAnswerValueSets[$fieldName] ?? null);
             $extensions = [];
+            $isMapped = false;
 
             if ($tag->mapsTo !== null) {
-                self::applyMapsTo($item, $extensions, $fieldName, $tag->mapsTo, $typeInfo['type'], $warnings);
+                $isMapped = self::applyMapsTo($item, $extensions, $fieldName, $tag->mapsTo, $typeInfo['type'], $warnings) || $isMapped;
             }
             if ($tag->legend !== null) {
-                self::applyLegend($item, $extensions, $fieldName, $tag->legend, $typeInfo, $warnings);
+                $isMapped = self::applyLegend($item, $extensions, $fieldName, $tag->legend, $typeInfo, $warnings) || $isMapped;
             }
             if ($tag->predicate !== null) {
                 if (in_array($tag->predicate, self::KNOWN_PREDICATES, true)) {
@@ -204,17 +207,70 @@ class QuestionnaireDerivation
             $order[] = $fieldName;
             $sectionOfField[$fieldName] = $currentSection;
             $itemTypesByField[$fieldName] = $typeInfo['type'];
+            if ($isMapped) {
+                $mappedFieldNames[$fieldName] = true;
+            }
         }
 
-        self::applyBranchingLogicAndPredicates($items, $order, $dataDictionary, $itemTypesByField, $warnings);
+        self::applyBranchingLogicAndPredicates($items, $order, $dataDictionary, $itemTypesByField, $mappedFieldNames, $warnings);
+
+        $topLevelItems = self::groupIntoSections($items, $order, $sectionOfField);
+        array_unshift($topLevelItems, self::linkedRecordGroup());
 
         $questionnaire = [
             'resourceType' => 'Questionnaire',
             'status' => 'active',
-            'item' => self::groupIntoSections($items, $order, $sectionOfField),
+            'item' => $topLevelItems,
         ];
 
         return ['questionnaire' => $questionnaire, 'warnings' => $warnings];
+    }
+
+    /**
+     * A "Linked Record" tab carrying the two standard PatientProvider
+     * action buttons (`linkPatient`/`importClinicalData`), matching
+     * `open-pedigree`'s own `defaultQuestionnaire.ts` pattern exactly —
+     * without this, a project wiring a `RedcapInstrumentPatientProvider`
+     * (or any other provider) would have no button to invoke it from,
+     * since a derived Questionnaire fully replaces the built-in default
+     * rather than merging with it. Visibility is entirely self-gating via
+     * the `canLinkPatient`/`canImportClinicalData` predicates, so this is
+     * always safe to include even when no provider is configured (it just
+     * stays hidden, exactly like the default Questionnaire's own buttons).
+     */
+    private static function linkedRecordGroup(): array
+    {
+        return [
+            'linkId' => '__group_linked_record',
+            'type' => 'group',
+            'text' => 'Linked Record',
+            'item' => [
+                [
+                    'linkId' => 'link_patient',
+                    'type' => 'display',
+                    'text' => 'Link to record',
+                    'extension' => [
+                        ['url' => self::MAPPING_EXTENSION_URL, 'valueCode' => 'invokesAction'],
+                        ['url' => self::ACTION_EXTENSION_URL, 'valueCode' => 'linkPatient'],
+                    ],
+                    'enableWhen' => [
+                        ['extension' => [['url' => self::PREDICATE_EXTENSION_URL, 'valueCode' => 'canLinkPatient']]],
+                    ],
+                ],
+                [
+                    'linkId' => 'import_from_record',
+                    'type' => 'display',
+                    'text' => 'Import from linked record',
+                    'extension' => [
+                        ['url' => self::MAPPING_EXTENSION_URL, 'valueCode' => 'invokesAction'],
+                        ['url' => self::ACTION_EXTENSION_URL, 'valueCode' => 'importClinicalData'],
+                    ],
+                    'enableWhen' => [
+                        ['extension' => [['url' => self::PREDICATE_EXTENSION_URL, 'valueCode' => 'canImportClinicalData']]],
+                    ],
+                ],
+            ],
+        ];
     }
 
     private static function buildBaseItem(string $fieldName, array $field, array $typeInfo, ?string $answerValueSet): array
@@ -296,29 +352,46 @@ class QuestionnaireDerivation
         return $options;
     }
 
-    private static function applyMapsTo(array &$item, array &$extensions, string $fieldName, string $target, string $itemType, array &$warnings): void
+    private static function applyMapsTo(array &$item, array &$extensions, string $fieldName, string $target, string $itemType, array &$warnings): bool
     {
         if (isset(self::MAPS_TO_FIELD_EXPECTED_TYPES[$target]) && self::MAPS_TO_FIELD_EXPECTED_TYPES[$target] === $itemType) {
             $item['definition'] = self::MAPS_TO_FIELD_DEFINITIONS[$target];
             $extensions[] = ['url' => self::MAPPING_EXTENSION_URL, 'valueCode' => 'mapsToField'];
-            return;
+            return true;
         }
         $warnings[] = 'Field "' . $fieldName . '" has @PEDIGREE_FIELD(mapsTo="' . $target . '") but its derived type "'
             . $itemType . '" is incompatible with that target — mapping omitted, field derived as a plain item.';
+        return false;
     }
 
-    private static function applyLegend(array &$item, array &$extensions, string $fieldName, string $target, array $typeInfo, array &$warnings): void
+    private static function applyLegend(array &$item, array &$extensions, string $fieldName, string $target, array $typeInfo, array &$warnings): bool
     {
         if (self::legendMappingIsValid($typeInfo, $item['answerValueSet'] ?? null, $target)) {
             $item['linkId'] = $target;
             $extensions[] = ['url' => self::MAPPING_EXTENSION_URL, 'valueCode' => self::RESERVED_LEGEND_TARGETS[$target]];
-            return;
+            return true;
         }
         $warnings[] = 'Field "' . $fieldName . '" has @PEDIGREE_FIELD(legend="' . $target
             . '") but is not a repeating, ontology-provider-backed choice field — mapping omitted, field derived as a plain item.';
+        return false;
     }
 
-    private static function applyBranchingLogicAndPredicates(array &$items, array $order, array $dataDictionary, array $itemTypesByField, array &$warnings): void
+    /**
+     * @param array $mappedFieldNames Field names successfully mapped via
+     *   `mapsTo`/`legend` (redcap field name => true) — {@see BranchingLogicTranslator}
+     *   must reject `branching_logic` referencing these. A mapped field's
+     *   current value lives in its own dedicated property (e.g. `isAdopted`,
+     *   via `setAdopted`/`getAdopted`), not in open-pedigree's generic
+     *   per-linkId `_questionnaireAnswers` map that `enableWhen` reads from
+     *   (`view/person.ts`) — an `enableWhen` condition referencing a mapped
+     *   field's REDCap field name would silently never resolve, since that
+     *   linkId is never populated in that map. This is a limitation of
+     *   `open-pedigree`'s enableWhen evaluator (out of scope for this
+     *   change to fix), not something this derivation can safely paper
+     *   over — so it degrades gracefully instead, exactly like any other
+     *   untranslatable branching_logic.
+     */
+    private static function applyBranchingLogicAndPredicates(array &$items, array $order, array $dataDictionary, array $itemTypesByField, array $mappedFieldNames, array &$warnings): void
     {
         foreach ($order as $fieldName) {
             $branchingLogic = $dataDictionary[$fieldName]['branching_logic'] ?? '';
@@ -326,7 +399,7 @@ class QuestionnaireDerivation
             $enableWhen = [];
 
             if (!empty($branchingLogic)) {
-                $result = BranchingLogicTranslator::translate($branchingLogic, $itemTypesByField);
+                $result = BranchingLogicTranslator::translate($branchingLogic, $itemTypesByField, $mappedFieldNames);
                 if ($result['warning']) {
                     $warnings[] = 'Field "' . $fieldName . '": ' . $result['warning'];
                 }

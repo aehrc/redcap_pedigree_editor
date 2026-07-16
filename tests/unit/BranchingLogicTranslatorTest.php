@@ -97,4 +97,19 @@ class BranchingLogicTranslatorTest extends TestCase
         $this->assertNull($result['enableWhen']);
         $this->assertStringContainsString('other_field', $result['warning']);
     }
+
+    public function testReferenceToAMappedFieldIsUntranslatable(): void
+    {
+        // A mapsTo/legend-mapped field's value lives in its own dedicated
+        // property (e.g. isAdopted), not open-pedigree's generic per-linkId
+        // enableWhen-answer map - referencing it would silently never resolve.
+        $result = BranchingLogicTranslator::translate(
+            "[is_adopted] = '1'",
+            ['is_adopted' => 'boolean'],
+            ['is_adopted' => true]
+        );
+        $this->assertNull($result['enableWhen']);
+        $this->assertStringContainsString('is_adopted', $result['warning']);
+        $this->assertStringContainsString('mapsTo', $result['warning']);
+    }
 }

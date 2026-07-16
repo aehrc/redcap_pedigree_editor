@@ -32,9 +32,14 @@ class BranchingLogicTranslator
      *   Questionnaire item type (from {@see QuestionnaireDerivation}), used
      *   both to validate that a referenced field is itself derivable and to
      *   pick the correct FHIR `answer[x]` field.
+     * @param array $mappedFieldNames Field names successfully mapped via
+     *   `mapsTo`/`legend` (redcap field name => true) — referencing one of
+     *   these is also untranslatable (see {@see QuestionnaireDerivation::applyBranchingLogicAndPredicates()}
+     *   for why: a mapped field's value isn't tracked under its linkId in
+     *   open-pedigree's generic enableWhen-answer map).
      * @return array{enableWhen: array|null, warning: string|null}
      */
-    public static function translate(string $branchingLogic, array $taggedItemTypes): array
+    public static function translate(string $branchingLogic, array $taggedItemTypes, array $mappedFieldNames = []): array
     {
         $trimmed = trim($branchingLogic);
         if ($trimmed === '') {
@@ -62,6 +67,9 @@ class BranchingLogicTranslator
 
             if (!array_key_exists($fieldName, $taggedItemTypes)) {
                 return self::untranslatable($branchingLogic, 'references field "' . $fieldName . '" which is not an @PEDIGREE_FIELD-tagged field in this instrument');
+            }
+            if (isset($mappedFieldNames[$fieldName])) {
+                return self::untranslatable($branchingLogic, 'references field "' . $fieldName . '" which is mapped via mapsTo/legend — its value is not visible to enableWhen');
             }
 
             $enableWhen[] = self::buildCondition($fieldName, $operator, $rawValue, $taggedItemTypes[$fieldName]);

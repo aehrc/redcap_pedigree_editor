@@ -261,7 +261,10 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
         }
 
         if ($this->isPedigreeImportConfigured($project_id)) {
-            $pedigreeServiceUrl = $this->getUrl('PedigreeInstrumentService.php', false, true);
+            // useApiEndpoint=false (routes through ExternalModules/index.php, not api/?type=module):
+            // open-pedigree's questionnaireUrl option fetches via a plain GET, and the api/
+            // endpoint's dispatcher only accepts POST for module passthrough requests.
+            $pedigreeServiceUrl = $this->getUrl('PedigreeInstrumentService.php', false, false);
             $pedigreeImportParams = '&pedigreeImportEndpoint=' . urlencode($pedigreeServiceUrl)
                 . '&pedigreeImportCsrf=' . urlencode($this->getCSRFToken())
                 . '&pedigreeQuestionnaireUrl=' . urlencode($pedigreeServiceUrl . '&type=questionnaire');

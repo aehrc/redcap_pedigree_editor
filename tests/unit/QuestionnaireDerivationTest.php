@@ -21,16 +21,28 @@ class QuestionnaireDerivationTest extends TestCase
         ], $overrides);
     }
 
-    /** Flattens the derived Questionnaire's group items into a flat linkId => item map. */
+    /**
+     * Flattens the derived Questionnaire's REDCap-derived group items into a
+     * flat linkId => item map — excludes the always-present "Linked Record"
+     * group (the two standard PatientProvider action buttons), which isn't
+     * derived from any REDCap field and is covered by its own tests.
+     */
     private function flatten(array $questionnaire): array
     {
         $flat = [];
-        foreach ($questionnaire['item'] as $group) {
+        foreach ($this->redcapDerivedGroups($questionnaire) as $group) {
             foreach ($group['item'] as $item) {
                 $flat[$item['linkId']] = $item;
             }
         }
         return $flat;
+    }
+
+    private function redcapDerivedGroups(array $questionnaire): array
+    {
+        return array_values(array_filter($questionnaire['item'], function ($group) {
+            return $group['linkId'] !== '__group_linked_record';
+        }));
     }
 
     public function testUntaggedFieldIsExcluded(): void
@@ -124,7 +136,7 @@ class QuestionnaireDerivationTest extends TestCase
             'before' => $this->field(['field_annotation' => '@PEDIGREE_FIELD', 'field_label' => 'Before']),
             'header_field' => $this->field(['field_annotation' => '@PEDIGREE_FIELD', 'section_header' => 'Medical History', 'field_label' => 'After']),
         ];
-        $groups = QuestionnaireDerivation::derive($dd, 'family_members')['questionnaire']['item'];
+        $groups = $this->redcapDerivedGroups(QuestionnaireDerivation::derive($dd, 'family_members')['questionnaire']);
         $this->assertCount(2, $groups);
         $this->assertSame('General', $groups[0]['text']);
         $this->assertSame(['before'], array_column($groups[0]['item'], 'linkId'));
@@ -137,9 +149,41 @@ class QuestionnaireDerivationTest extends TestCase
         $dd = [
             'first' => $this->field(['field_annotation' => '@PEDIGREE_FIELD', 'section_header' => 'Section A']),
         ];
-        $groups = QuestionnaireDerivation::derive($dd, 'family_members')['questionnaire']['item'];
+        $groups = $this->redcapDerivedGroups(QuestionnaireDerivation::derive($dd, 'family_members')['questionnaire']);
         $this->assertCount(1, $groups);
         $this->assertSame('Section A', $groups[0]['text']);
+    }
+
+    public function testDerivedQuestionnaireAlwaysIncludesTheLinkedRecordActionButtons(): void
+    {
+        $dd = ['a_field' => $this->field(['field_annotation' => '@PEDIGREE_FIELD'])];
+        $questionnaire = QuestionnaireDerivation::derive($dd, 'family_members')['questionnaire'];
+
+        $linkedRecordGroup = null;
+        foreach ($questionnaire['item'] as $group) {
+            if ($group['linkId'] === '__group_linked_record') {
+                $linkedRecordGroup = $group;
+            }
+        }
+        $this->assertNotNull($linkedRecordGroup, 'Expected a __group_linked_record group');
+
+        $itemsByLinkId = [];
+        foreach ($linkedRecordGroup['item'] as $item) {
+            $itemsByLinkId[$item['linkId']] = $item;
+        }
+
+        $this->assertContains(
+            ['url' => QuestionnaireDerivation::MAPPING_EXTENSION_URL, 'valueCode' => 'invokesAction'],
+            $itemsByLinkId['link_patient']['extension']
+        );
+        $this->assertContains(
+            ['url' => QuestionnaireDerivation::ACTION_EXTENSION_URL, 'valueCode' => 'linkPatient'],
+            $itemsByLinkId['link_patient']['extension']
+        );
+        $this->assertContains(
+            ['url' => QuestionnaireDerivation::ACTION_EXTENSION_URL, 'valueCode' => 'importClinicalData'],
+            $itemsByLinkId['import_from_record']['extension']
+        );
     }
 
     public function testMapsToSetsFieldMappingExtensionAndDefinition(): void
@@ -275,6 +319,32 @@ class QuestionnaireDerivationTest extends TestCase
         $item = $this->flatten($result['questionnaire'])['dependent_field'];
         $this->assertArrayNotHasKey('enableWhen', $item);
         $this->assertNotEmpty($result['warnings']);
+    }
+
+    public function testBranchingLogicReferencingAMappedFieldIsUntranslatable(): void
+    {
+        // Regression test: found via a live end-to-end smoke test, not a unit test.
+        // A field mapped via mapsTo/legend stores its value in its own dedicated
+        // property (e.g. isAdopted via setAdopted/getAdopted), not open-pedigree's
+        // generic per-linkId _questionnaireAnswers map that enableWhen reads from
+        // (view/person.ts) - so an enableWhen condition referencing a mapped
+        // field's REDCap field name would silently never resolve (always false),
+        // regardless of the field's real value. Must degrade gracefully instead.
+        $dd = [
+            'is_adopted' => $this->field([
+                'field_type' => 'yesno',
+                'field_annotation' => '@PEDIGREE_FIELD(mapsTo="isAdopted")',
+            ]),
+            'adoption_reason' => $this->field([
+                'field_annotation' => '@PEDIGREE_FIELD',
+                'branching_logic' => "[is_adopted] = '1'",
+            ]),
+        ];
+        $result = QuestionnaireDerivation::derive($dd, 'family_members');
+        $item = $this->flatten($result['questionnaire'])['adoption_reason'];
+        $this->assertArrayNotHasKey('enableWhen', $item);
+        $this->assertNotEmpty($result['warnings']);
+        $this->assertStringContainsString('is_adopted', implode(' ', $result['warnings']));
     }
 
     public function testResolveTaggedFieldsUsesFieldNameAsLinkIdByDefault(): void
