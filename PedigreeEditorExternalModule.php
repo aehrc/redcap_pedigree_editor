@@ -111,6 +111,19 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
             }
         }
 
+        $pedigreeImportInstrument = $settings['project_pedigree_import_instrument'] ?? null;
+        if ($pedigreeImportInstrument) {
+            $projectId = $this->getProjectId();
+            if ($projectId) {
+                $isRepeating = RedcapInstrumentGateway::isRepeatingInstrument($projectId, $pedigreeImportInstrument);
+                if ($isRepeating === false) {
+                    $errors .= "The instrument selected for pedigree-instrument import (\"" . $pedigreeImportInstrument
+                        . "\") is not configured as a repeating instrument. Enable repeating instruments for it "
+                        . "(Project Setup > Enable optional modules > Repeating Instruments and Events) before selecting it here.\n";
+                }
+            }
+        }
+
         return $errors;
     }
 

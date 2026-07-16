@@ -67,23 +67,44 @@ class RedcapInstrumentGateway
      */
     public static function fetchElementEnums(int $projectId, array $fieldNames): array
     {
-        global $Proj;
-        if (!$Proj || $Proj->project_id != $projectId) {
-            try {
-                $Proj = new \Project($projectId);
-            } catch (\Exception $e) {
-                return [];
-            }
+        $proj = self::resolveProject($projectId);
+        if (!$proj) {
+            return [];
         }
 
         $result = [];
         foreach ($fieldNames as $fieldName) {
-            $enum = $Proj->metadata[$fieldName]['element_enum'] ?? null;
+            $enum = $proj->metadata[$fieldName]['element_enum'] ?? null;
             if ($enum) {
                 $result[$fieldName] = $enum;
             }
         }
         return $result;
+    }
+
+    /**
+     * @return bool|null True/false if determinable, null if the project
+     *   couldn't be resolved (validation should not block on null — it
+     *   means "couldn't check", not "invalid").
+     */
+    public static function isRepeatingInstrument(int $projectId, string $instrument): ?bool
+    {
+        $proj = self::resolveProject($projectId);
+        return $proj ? $proj->isRepeatingFormAnyEvent($instrument) : null;
+    }
+
+    private static function resolveProject(int $projectId): ?\Project
+    {
+        global $Proj;
+        if ($Proj && $Proj->project_id == $projectId) {
+            return $Proj;
+        }
+        try {
+            $Proj = new \Project($projectId);
+            return $Proj;
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
     /**
