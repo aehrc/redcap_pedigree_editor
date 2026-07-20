@@ -412,6 +412,30 @@
 			"name": "Field used to search/display a row when linking a pedigree node (add one or more, e.g. first/last name)",
 			"type": "field-list",
 			"repeatable": true
+		},
+		{
+			"key": "project_pedigree_questionnaire_mode_info",
+			"name": "Controls how the pedigree node-edit form is built for this project.<ul><li><b>Tags only</b> - the form is built entirely from @PEDIGREE_FIELD-tagged fields on the configured repeating instrument. No disorders/genes/phenotypes legend unless you tag fields for it.</li><li><b>Default + tags</b> - starts from open-pedigree's built-in default form (name, gender, disorders/genes/phenotypes legend, etc., entered directly in the editor) and adds any @PEDIGREE_FIELD-tagged fields as one extra tab.</li><li><b>Advanced</b> - you supply your own FHIR Questionnaire below. @PEDIGREE_FIELD tags are not scanned at all; link an item to a REDCap field by hand-authoring a 'questionnaire-redcap-source' extension on it (see the module README for examples).</li></ul>",
+			"type": "descriptive"
+		},
+		{
+			"key": "project_pedigree_questionnaire_mode",
+			"name": "Node-edit form source",
+			"type": "dropdown",
+			"choices": [
+				{ "value": "TAGS_ONLY", "name": "Tags only - build the form entirely from @PEDIGREE_FIELD-tagged fields" },
+				{ "value": "DEFAULT_PLUS_TAGS", "name": "Default + tags - built-in form, plus a tab for @PEDIGREE_FIELD-tagged fields" },
+				{ "value": "ADVANCED", "name": "Advanced - I will supply my own FHIR Questionnaire" }
+			]
+		},
+		{
+			"key": "project_pedigree_advanced_questionnaire",
+			"name": "Advanced: FHIR Questionnaire JSON (used verbatim; see README for examples and the 'questionnaire-redcap-source' linking pattern)",
+			"type": "textarea",
+			"branchingLogic": {
+				"field": "project_pedigree_questionnaire_mode",
+				"value": "ADVANCED"
+			}
 		}
 	],
 	"no-auth-pages": [

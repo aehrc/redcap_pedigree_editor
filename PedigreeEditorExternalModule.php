@@ -124,6 +124,20 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
             }
         }
 
+        if (($settings['project_pedigree_questionnaire_mode'] ?? null) === 'ADVANCED') {
+            $advancedJson = $settings['project_pedigree_advanced_questionnaire'] ?? '';
+            if (!$advancedJson) {
+                $errors .= "Questionnaire mode is set to \"Advanced\" but no Questionnaire JSON has been supplied.\n";
+            } else {
+                $parsed = json_decode($advancedJson, true);
+                if (!is_array($parsed)) {
+                    $errors .= "The advanced Questionnaire setting is not valid JSON.\n";
+                } elseif (($parsed['resourceType'] ?? null) !== 'Questionnaire') {
+                    $errors .= "The advanced Questionnaire setting must be a FHIR Questionnaire (resourceType: \"Questionnaire\").\n";
+                }
+            }
+        }
+
         return $errors;
     }
 
@@ -494,19 +508,76 @@ EOD;
      */
     public function getPedigreeDerivedQuestionnaire($project_id)
     {
+        $mode = $this->getPedigreeQuestionnaireMode($project_id);
+
+        if ($mode === 'ADVANCED') {
+            return $this->getPedigreeAdvancedQuestionnaire($project_id);
+        }
+
         $instrument = $this->getPedigreeImportInstrument($project_id);
         if (!$instrument) {
             return null;
         }
         $dataDictionary = RedcapInstrumentGateway::fetchDataDictionary($project_id, $instrument);
         $answerValueSets = RedcapInstrumentGateway::resolveAnswerValueSets($project_id, array_keys($dataDictionary));
-        $result = QuestionnaireDerivation::derive($dataDictionary, $instrument, $answerValueSets);
+
+        if ($mode === 'DEFAULT_PLUS_TAGS') {
+            $base = $this->loadDefaultQuestionnaire();
+            if ($base === null) {
+                error_log('[redcap_pedigree_editor] Could not load the built-in default Questionnaire for project ' . $project_id);
+                return null;
+            }
+            $result = QuestionnaireDerivation::deriveWithBaseQuestionnaire($base, $dataDictionary, $instrument, $answerValueSets);
+        } else {
+            $result = QuestionnaireDerivation::derive($dataDictionary, $instrument, $answerValueSets);
+        }
 
         foreach ($result['warnings'] as $warning) {
             error_log('[redcap_pedigree_editor] Questionnaire derivation (project ' . $project_id . '): ' . $warning);
         }
 
         return $result['questionnaire'];
+    }
+
+    /**
+     * @return string One of `TAGS_ONLY` (default) / `DEFAULT_PLUS_TAGS` / `ADVANCED`.
+     */
+    private function getPedigreeQuestionnaireMode($project_id)
+    {
+        $mode = $this->getProjectSetting('project_pedigree_questionnaire_mode', $project_id);
+        return in_array($mode, ['TAGS_ONLY', 'DEFAULT_PLUS_TAGS', 'ADVANCED'], true) ? $mode : 'TAGS_ONLY';
+    }
+
+    /**
+     * @return array|null The admin-supplied Questionnaire (mode "advanced"),
+     *   or null if unset/invalid.
+     */
+    private function getPedigreeAdvancedQuestionnaire($project_id)
+    {
+        $raw = $this->getProjectSetting('project_pedigree_advanced_questionnaire', $project_id);
+        if (!$raw) {
+            return null;
+        }
+        $parsed = json_decode($raw, true);
+        if (!is_array($parsed) || ($parsed['resourceType'] ?? null) !== 'Questionnaire') {
+            error_log('[redcap_pedigree_editor] project_pedigree_advanced_questionnaire (project ' . $project_id . ') is not valid Questionnaire JSON');
+            return null;
+        }
+        return $parsed;
+    }
+
+    /**
+     * @return array|null `open-pedigree`'s built-in default Questionnaire
+     *   (mode "default + tags"), or null if the embedded copy is missing.
+     */
+    private function loadDefaultQuestionnaire()
+    {
+        $path = __DIR__ . '/open-pedigree/dist/defaultQuestionnaire.json';
+        if (!file_exists($path)) {
+            return null;
+        }
+        $parsed = json_decode(file_get_contents($path), true);
+        return is_array($parsed) ? $parsed : null;
     }
 
     /**
@@ -564,9 +635,19 @@ EOD;
         if ($row === null) {
             return [];
         }
+        $instrument = $this->getPedigreeImportInstrument($project_id);
 
-        $answerValueSets = RedcapInstrumentGateway::resolveAnswerValueSets($project_id, array_keys($dataDictionary));
-        $resolvedFields = QuestionnaireDerivation::resolveTaggedFields($dataDictionary, $answerValueSets);
+        if ($this->getPedigreeQuestionnaireMode($project_id) === 'ADVANCED') {
+            $advanced = $this->getPedigreeAdvancedQuestionnaire($project_id);
+            if ($advanced === null) {
+                return [];
+            }
+            $resolvedFields = QuestionnaireDerivation::resolveFieldsFromQuestionnaire($advanced, $instrument, $dataDictionary);
+        } else {
+            $answerValueSets = RedcapInstrumentGateway::resolveAnswerValueSets($project_id, array_keys($dataDictionary));
+            $resolvedFields = QuestionnaireDerivation::resolveTaggedFields($dataDictionary, $answerValueSets);
+        }
+
         return RedcapInstrumentRowImporter::buildAnswers($row['fields'], $resolvedFields);
     }
 

@@ -399,4 +399,122 @@ class QuestionnaireDerivationTest extends TestCase
         $resolved = QuestionnaireDerivation::resolveTaggedFields($dd);
         $this->assertSame(['1' => 'Male', '2' => 'Female'], $resolved[0]['choices']);
     }
+
+    public function testDeriveWithoutLinkedRecordGroupOmitsIt(): void
+    {
+        $dd = ['a_field' => $this->field(['field_annotation' => '@PEDIGREE_FIELD'])];
+        $questionnaire = QuestionnaireDerivation::derive($dd, 'family_members', [], false)['questionnaire'];
+        $groupIds = array_column($questionnaire['item'], 'linkId');
+        $this->assertNotContains('__group_linked_record', $groupIds);
+    }
+
+    public function testDeriveWithBaseQuestionnaireAppendsTaggedGroupToBase(): void
+    {
+        $base = [
+            'resourceType' => 'Questionnaire',
+            'status' => 'active',
+            'item' => [
+                ['linkId' => '__group_personal', 'type' => 'group', 'text' => 'Personal', 'item' => [
+                    ['linkId' => 'link_patient', 'type' => 'display', 'text' => 'Link to record'],
+                ]],
+            ],
+        ];
+        $dd = ['a_field' => $this->field(['field_annotation' => '@PEDIGREE_FIELD', 'field_label' => 'A Field'])];
+
+        $result = QuestionnaireDerivation::deriveWithBaseQuestionnaire($base, $dd, 'family_members');
+        $groups = $result['questionnaire']['item'];
+
+        $this->assertCount(2, $groups);
+        $this->assertSame('Personal', $groups[0]['text']);
+        $this->assertSame(['link_patient'], array_column($groups[0]['item'], 'linkId'));
+        $this->assertSame(['a_field'], array_column($groups[1]['item'], 'linkId'));
+        // The base's own Linked Record content is untouched; derive() must not add its own.
+        $this->assertNotContains('__group_linked_record', array_column($groups, 'linkId'));
+    }
+
+    public function testResolveFieldsFromQuestionnaireFindsRedcapSourceExtensions(): void
+    {
+        $dd = ['first_name' => $this->field(['field_type' => 'text', 'field_label' => 'First Name'])];
+        $questionnaire = [
+            'item' => [
+                [
+                    'linkId' => '__group_a', 'type' => 'group', 'text' => 'A', 'item' => [
+                        [
+                            'linkId' => 'given_name',
+                            'type' => 'string',
+                            'extension' => [
+                                [
+                                    'url' => QuestionnaireDerivation::REDCAP_SOURCE_EXTENSION_URL,
+                                    'extension' => [
+                                        ['url' => 'instrument', 'valueString' => 'family_members'],
+                                        ['url' => 'field', 'valueString' => 'first_name'],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $resolved = QuestionnaireDerivation::resolveFieldsFromQuestionnaire($questionnaire, 'family_members', $dd);
+
+        $this->assertCount(1, $resolved);
+        $this->assertSame('first_name', $resolved[0]['redcapField']);
+        $this->assertSame('given_name', $resolved[0]['linkId']);
+        $this->assertSame('string', $resolved[0]['type']);
+    }
+
+    public function testResolveFieldsFromQuestionnaireIgnoresOtherInstruments(): void
+    {
+        $dd = ['first_name' => $this->field(['field_type' => 'text'])];
+        $questionnaire = [
+            'item' => [
+                [
+                    'linkId' => 'given_name',
+                    'type' => 'string',
+                    'extension' => [
+                        [
+                            'url' => QuestionnaireDerivation::REDCAP_SOURCE_EXTENSION_URL,
+                            'extension' => [
+                                ['url' => 'instrument', 'valueString' => 'other_instrument'],
+                                ['url' => 'field', 'valueString' => 'first_name'],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $resolved = QuestionnaireDerivation::resolveFieldsFromQuestionnaire($questionnaire, 'family_members', $dd);
+        $this->assertSame([], $resolved);
+    }
+
+    public function testResolveFieldsFromQuestionnaireDoesNotOverrideLinkId(): void
+    {
+        // Advanced mode: the admin's own linkId (e.g. the reserved "disorders"
+        // legend target) is used verbatim, no legend-override logic applies.
+        $dd = ['omim_code' => $this->field(['field_type' => 'text'])];
+        $questionnaire = [
+            'item' => [
+                [
+                    'linkId' => 'disorders',
+                    'type' => 'choice',
+                    'repeats' => true,
+                    'extension' => [
+                        [
+                            'url' => QuestionnaireDerivation::REDCAP_SOURCE_EXTENSION_URL,
+                            'extension' => [
+                                ['url' => 'instrument', 'valueString' => 'family_members'],
+                                ['url' => 'field', 'valueString' => 'omim_code'],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $resolved = QuestionnaireDerivation::resolveFieldsFromQuestionnaire($questionnaire, 'family_members', $dd);
+        $this->assertSame('disorders', $resolved[0]['linkId']);
+    }
 }

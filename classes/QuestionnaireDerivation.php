@@ -139,6 +139,107 @@ class QuestionnaireDerivation
     }
 
     /**
+     * Mode "default + tags": starts from `open-pedigree`'s own built-in
+     * default Questionnaire (already carries a working `Linked Record`
+     * experience within its own tabs, plus the standard disorders/genes/
+     * phenotypes legend, name/gender/dob, etc.) and appends the
+     * `@PEDIGREE_FIELD`-tagged groups as one additional new top-level group
+     * — the default's own content is left untouched, tags only ever add.
+     *
+     * @param array $baseQuestionnaire The default Questionnaire (e.g.
+     *   loaded from `open-pedigree/dist/defaultQuestionnaire.json`), used
+     *   as-is aside from appending to its top-level `item` array.
+     * @return array{questionnaire: array, warnings: string[]}
+     */
+    public static function deriveWithBaseQuestionnaire(array $baseQuestionnaire, array $dataDictionary, string $instrumentName, array $fieldAnswerValueSets = []): array
+    {
+        $result = self::derive($dataDictionary, $instrumentName, $fieldAnswerValueSets, false);
+        $baseQuestionnaire['item'] = array_merge($baseQuestionnaire['item'], $result['questionnaire']['item']);
+        return ['questionnaire' => $baseQuestionnaire, 'warnings' => $result['warnings']];
+    }
+
+    /**
+     * Mode "advanced": resolves the same `['redcapField', 'linkId', 'type',
+     * 'repeats', 'choices']` shape as {@see resolveTaggedFields()}, but by
+     * scanning an admin-hand-authored Questionnaire for
+     * `questionnaire-redcap-source` extensions instead of `@PEDIGREE_FIELD`
+     * tags — advanced mode never scans the Data Dictionary for tags at all,
+     * the admin's own Questionnaire item `linkId`s are used verbatim (no
+     * legend-target override), but each referenced field's REDCap type
+     * still needs to come from the real Data Dictionary to interpret its
+     * raw value correctly on import.
+     *
+     * @param array $questionnaire The admin-supplied Questionnaire (parsed JSON).
+     * @param string $instrumentName Only items sourced from this instrument are resolved.
+     * @return array Same shape as {@see resolveTaggedFields()}.
+     */
+    public static function resolveFieldsFromQuestionnaire(array $questionnaire, string $instrumentName, array $dataDictionary): array
+    {
+        $resolved = [];
+        self::walkItemsForRedcapSource($questionnaire['item'] ?? [], $instrumentName, $dataDictionary, $resolved);
+        return $resolved;
+    }
+
+    private static function walkItemsForRedcapSource(array $items, string $instrumentName, array $dataDictionary, array &$resolved): void
+    {
+        foreach ($items as $item) {
+            if (!empty($item['item'])) {
+                self::walkItemsForRedcapSource($item['item'], $instrumentName, $dataDictionary, $resolved);
+            }
+
+            $source = self::findRedcapSourceExtension($item, $instrumentName);
+            if ($source === null) {
+                continue;
+            }
+            $fieldName = $source['field'];
+            if (!isset($dataDictionary[$fieldName])) {
+                continue;
+            }
+            $typeInfo = self::mapFieldType($dataDictionary[$fieldName]);
+            if ($typeInfo === null) {
+                continue;
+            }
+
+            $choices = [];
+            if (in_array($typeInfo['type'], ['choice', 'open-choice'], true)) {
+                foreach (self::parseChoices($dataDictionary[$fieldName]['select_choices_or_calculations'] ?? '') as $option) {
+                    $choices[$option['valueCoding']['code']] = $option['valueCoding']['display'];
+                }
+            }
+
+            $resolved[] = [
+                'redcapField' => $fieldName,
+                'linkId' => $item['linkId'] ?? $fieldName,
+                'type' => $typeInfo['type'],
+                'repeats' => $typeInfo['repeats'],
+                'choices' => $choices,
+            ];
+        }
+    }
+
+    private static function findRedcapSourceExtension(array $item, string $instrumentName): ?array
+    {
+        foreach ($item['extension'] ?? [] as $ext) {
+            if (($ext['url'] ?? null) !== self::REDCAP_SOURCE_EXTENSION_URL) {
+                continue;
+            }
+            $instrument = null;
+            $field = null;
+            foreach ($ext['extension'] ?? [] as $sub) {
+                if (($sub['url'] ?? null) === 'instrument') {
+                    $instrument = $sub['valueString'] ?? null;
+                } elseif (($sub['url'] ?? null) === 'field') {
+                    $field = $sub['valueString'] ?? null;
+                }
+            }
+            if ($instrument === $instrumentName && $field !== null) {
+                return ['instrument' => $instrument, 'field' => $field];
+            }
+        }
+        return null;
+    }
+
+    /**
      * @param array $dataDictionary Field-name-keyed array as returned by
      *   `REDCap::getDataDictionary($project_id, 'array', false, null, $instrument)`.
      * @param string $instrumentName The instrument's unique name.
@@ -147,9 +248,13 @@ class QuestionnaireDerivation
      *   `advanced_fhir_ontology_provider`/`simple_ontology_provider`
      *   configuration (see D5) — omit or leave a field unset to fall back
      *   to static `answerOption` choices.
+     * @param bool $includeLinkedRecordGroup Whether to prepend the
+     *   `Linked Record` action-button group — false for mode
+     *   "default + tags", since the base Questionnaire already carries a
+     *   working `Linked Record` experience of its own.
      * @return array{questionnaire: array, warnings: string[]}
      */
-    public static function derive(array $dataDictionary, string $instrumentName, array $fieldAnswerValueSets = []): array
+    public static function derive(array $dataDictionary, string $instrumentName, array $fieldAnswerValueSets = [], bool $includeLinkedRecordGroup = true): array
     {
         $warnings = [];
         $items = [];
@@ -215,7 +320,9 @@ class QuestionnaireDerivation
         self::applyBranchingLogicAndPredicates($items, $order, $dataDictionary, $itemTypesByField, $mappedFieldNames, $warnings);
 
         $topLevelItems = self::groupIntoSections($items, $order, $sectionOfField);
-        array_unshift($topLevelItems, self::linkedRecordGroup());
+        if ($includeLinkedRecordGroup) {
+            array_unshift($topLevelItems, self::linkedRecordGroup());
+        }
 
         $questionnaire = [
             'resourceType' => 'Questionnaire',
