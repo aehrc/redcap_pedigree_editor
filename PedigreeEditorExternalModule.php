@@ -22,7 +22,7 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
             if ('/' === $systemOntologyServer[$strlen - 1]){
                 $systemOntologyServer = substr($systemOntologyServer, 0, $strlen - 1);
             }
-            $metadata = http_get($systemOntologyServer . '/metadata');
+            $metadata = http_get($systemOntologyServer . '/metadata', $this->getFhirTimeout());
             if ($metadata == false){
                 $errors .= "Failed to get metadata for fhir server at '" . $systemOntologyServer . "'/metadata\n";
             }
@@ -40,11 +40,18 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
                 $response = $this->httpPost($authEndpoint, $params, 'application/x-www-form-urlencoded', $headers);
 
                 if ($response === false) {
-                    $r = implode("", $http_response_header);
-                    $errors .= "Failed to get Authentication Token for fhir server at '" . $authEndpoint . "' response = false, r='" . $r . "'\n";
+                    // httpPost() doesn't expose response headers back to its caller
+                    // (the $http_response_header magic variable is only ever set in
+                    // the scope of the file_get_contents() call inside httpPost()
+                    // itself, and isn't even populated on the curl-backed path used
+                    // whenever curl is installed), so there is nothing more specific
+                    // to report here.
+                    $errors .= "Failed to get Authentication Token for fhir server at '" . $authEndpoint . "'\n";
                 } else {
-                    $responseJson = json_decode($response, true);
-                    if (!array_key_exists('access_token', $responseJson)) {
+                    // a false or unparseable response decodes to null, and
+                    // array_key_exists(null) is a fatal TypeError on PHP 8
+                    $responseJson = is_string($response) ? json_decode($response, true) : null;
+                    if (!is_array($responseJson) || !array_key_exists('access_token', $responseJson)) {
                         $errors .= "Failed to get Authentication Token for fhir server at '" . $authEndpoint . "'$response\n";
                     }
                 }

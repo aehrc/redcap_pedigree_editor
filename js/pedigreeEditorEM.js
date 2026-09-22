@@ -80,11 +80,17 @@ pedigreeEditorEM.sanitizeSvgElement = function(svgEl) {
 		Array.prototype.slice.call(node.attributes || []).forEach(function(attr) {
 			var name = attr.name.toLowerCase();
 			var isEventHandler = name.indexOf('on') === 0;
+			// localName (not attr.name/a fixed "xlink:href" check) so this
+			// still matches when the markup binds the XLink namespace to a
+			// prefix other than "xlink" (e.g. xmlns:foo="...1999/xlink"
+			// foo:href="javascript:...") - qualified-name matching alone
+			// missed that.
+			var localName = (attr.localName || attr.name).toLowerCase();
 			// Browsers strip ASCII tab/newline/CR from a URL before parsing its
 			// scheme (WHATWG URL spec), so a scheme check must do the same or a
 			// value like "jav\tascript:..." would slip past a literal match.
 			var strippedValue = attr.value.replace(/[\t\r\n]/g, '');
-			var isJsUri = (name === 'href' || name === 'xlink:href') && /^\s*javascript:/i.test(strippedValue);
+			var isJsUri = localName === 'href' && /^\s*javascript:/i.test(strippedValue);
 			if (isEventHandler || isJsUri) {
 				node.removeAttribute(attr.name);
 			}
