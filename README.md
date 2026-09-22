@@ -24,6 +24,10 @@ git archive --format=zip  --prefix=redcap_pedigree_editor_v0.5/ -o ../redcap_ped
 This will give you a file redcap_pedigree_editor_v0.5.zip
 
 ## Changes
+
+This section gives the full story behind each version's changes - why, not just what. For a terser,
+automatically generated commit-by-commit record going forward, see [CHANGELOG.md](./CHANGELOG.md).
+
 - v0.1 - Initial Release 
 - v0.1.1 - Allow use inside a survey
 - v0.2 - Upgrade open-pedigree version to allow use of the svg image encoded in the pedigree data to show real 
