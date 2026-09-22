@@ -264,44 +264,41 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
             $customEditorUrl = $customEditorPage;
         }
         
+        $editorUrlOrigin = '';
         if ($transportType == 'message'){
             $urlData = parse_url($hpoEditorUrl);
             $scheme   = isset($urlData['scheme']) ? $urlData['scheme'] . '://' : '';
             $host     = isset($urlData['host']) ? $urlData['host'] : '';
             $port     = isset($urlData['port']) ? ':' . $urlData['port'] : '';
             $editorUrlOrigin = $scheme . $host . $port;
-            
-            $transportOptions = <<<EOD
-    pedigreeEditorEM.sendWhenReady = false;
-    pedigreeEditorEM.messageData = null;
-    pedigreeEditorEM.editorPageOrigin = '{$editorUrlOrigin}';
-EOD;
         }
-        else {
-            $transportOptions = <<<EOD
-    pedigreeEditorEM.openPedigreeDataKey = 'pedigreeData';
-EOD;
-        }
-        
-        $dialog = <<<EOD
-        
-<script type="text/javascript">
-    var pedigreeEditorEM = pedigreeEditorEM || {};
-    pedigreeEditorEM.fieldsOfInterest = {$fieldsOfInterestJson};
-    pedigreeEditorEM.hpoEditorPage = '{$hpoEditorUrl}';
-    pedigreeEditorEM.sctEditorPage = '{$sctEditorUrl}';
-    pedigreeEditorEM.customEditorPage = '{$customEditorUrl}';
-    pedigreeEditorEM.emptyIcon = '#__pedigree_empty_svg';
-    pedigreeEditorEM.dataIcon = '#__pedigree_with_data_svg';
-    pedigreeEditorEM.windowName = 'pedigreeEditor';
-    pedigreeEditorEM.editorWindow = null;
-    pedigreeEditorEM.format = '{$format}';
-    pedigreeEditorEM.allowEdit = '{$allowEdit}';
-    pedigreeEditorEM.transportType = '{$transportType}';
-{$transportOptions}
-</script>
 
-<script id="__pedigree_empty_svg" type="text/plain">
+        // Config previously PHP-interpolated into an inline script tag's body is
+        // now passed as data-* attributes read by js/pedigree-editor-config.js (see
+        // pedigree-editor-inline-js-extraction) - each value HTML-attribute-escaped,
+        // not JS-string-escaped, since the browser decodes the attribute before
+        // js/pedigree-editor-config.js ever sees the raw string.
+        $configDataAttrs = [
+            'data-fields-of-interest' => $fieldsOfInterestJson,
+            'data-hpo-editor-page' => $hpoEditorUrl,
+            'data-sct-editor-page' => $sctEditorUrl,
+            'data-custom-editor-page' => $customEditorUrl,
+            'data-format' => $format,
+            'data-allow-edit' => $allowEdit,
+            'data-transport-type' => $transportType,
+            'data-editor-page-origin' => $editorUrlOrigin,
+        ];
+        $configDataAttrsHtml = '';
+        foreach ($configDataAttrs as $attrName => $attrValue) {
+            $configDataAttrsHtml .= ' ' . $attrName . '="' . htmlspecialchars($attrValue, ENT_QUOTES) . '"';
+        }
+        $configScriptSrc = htmlspecialchars($this->getUrl('js/pedigree-editor-config.js'), ENT_QUOTES);
+
+        $dialog = <<<EOD
+
+<script src="{$configScriptSrc}"{$configDataAttrsHtml}></script>
+
+<template id="__pedigree_empty_svg">
 <svg  version="1.1" xmlns="http://www.w3.org/2000/svg" style="overflow: hidden; position: relative; top: -0.78125px;" viewBox="-30 134 180 180" width="auto" height="200" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMinYMin">
   <defs style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
     <linearGradient id="grad1" x1="0" y1="1" x2="1" y2="0" gradientTransform="matrix(1,0,0,1,0,0)" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
@@ -317,9 +314,9 @@ EOD;
     <tspan x="60.762714" y="225.18643" style="text-align:center;text-anchor:middle">Diagram</tspan>
   </text>
 </svg>
-</script>
+</template>
 
-<script id="__pedigree_with_data_svg" type="text/plain">
+<template id="__pedigree_with_data_svg">
 <svg  version="1.1"  xmlns="http://www.w3.org/2000/svg"  style="overflow: hidden; position: relative; top: -0.78125px;" viewBox="-174 -90 468 452" width="auto" height="auto" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMinYMin">
   <defs style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
     <linearGradient id="grad1" x1="0" y1="1" x2="1" y2="0" gradientTransform="matrix(1,0,0,1,0,0)" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
@@ -349,12 +346,12 @@ EOD;
     <tspan style="stroke-width:2.35647154" y="144.3916" x="-285.4653">Placeholder</tspan>
   </text>
 </svg>
-</script>
+</template>
 
 EOD;
-        
+
         echo $dialog;
-        
+
         $this->includeJs('js/pedigreeEditorEM.js');
         $this->includeJs('js/pako.min.js');
     }
