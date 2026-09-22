@@ -60,7 +60,15 @@ pedigreeEditorEM.getIconSVG = function(selector) {
 // would let an SVG root's own onload attribute (a well-known SVG XSS vector)
 // fire as soon as it's inserted, same as innerHTML. Parsing + stripping +
 // inserting as real DOM nodes closes that off.
+//
+// Returns null (rather than the disallowed node) if the root element itself
+// is a <script>/<foreignObject> or isn't an <svg> at all - the walker below
+// only removes descendants from their parent, which doesn't stop the root
+// itself from still being returned and imported/appended by the caller.
 pedigreeEditorEM.sanitizeSvgElement = function(svgEl) {
+	if (!/^svg$/i.test(svgEl.tagName)) {
+		return null;
+	}
 	var walker = document.createTreeWalker(svgEl, NodeFilter.SHOW_ELEMENT);
 	var toRemove = [];
 	var node = svgEl;
@@ -72,7 +80,11 @@ pedigreeEditorEM.sanitizeSvgElement = function(svgEl) {
 		Array.prototype.slice.call(node.attributes || []).forEach(function(attr) {
 			var name = attr.name.toLowerCase();
 			var isEventHandler = name.indexOf('on') === 0;
-			var isJsUri = (name === 'href' || name === 'xlink:href') && /^\s*javascript:/i.test(attr.value);
+			// Browsers strip ASCII tab/newline/CR from a URL before parsing its
+			// scheme (WHATWG URL spec), so a scheme check must do the same or a
+			// value like "jav\tascript:..." would slip past a literal match.
+			var strippedValue = attr.value.replace(/[\t\r\n]/g, '');
+			var isJsUri = (name === 'href' || name === 'xlink:href') && /^\s*javascript:/i.test(strippedValue);
 			if (isEventHandler || isJsUri) {
 				node.removeAttribute(attr.name);
 			}
@@ -100,6 +112,10 @@ pedigreeEditorEM.setIconSVG = function(containerEl, svgMarkup) {
 	}
 	var svgEl = pedigreeEditorEM.sanitizeSvgElement(parsed.documentElement);
 	containerEl.textContent = '';
+	if (!svgEl) {
+		pedigreeEditorEM.log('SVG markup had a disallowed root element, leaving icon empty');
+		return;
+	}
 	containerEl.appendChild(document.importNode(svgEl, true));
 };
 
@@ -206,6 +222,12 @@ pedigreeEditorEM.render = function(fieldData) {
 	// $(...) never returns falsy, even matching nothing) mirrors jQuery
 	// .prepend()'s own silent-no-op-on-empty-collection behavior, now that
 	// insertBefore() is a plain DOM call instead (see no-jquery/no-append-html).
+	// data[0] only (not a loop over every match) is intentional, not a
+	// narrowing: imageId below is derived from fieldData.field alone, and
+	// edit() looks the icon back up via that same fixed, non-indexed id
+	// (document.getElementById(imageId)) - inserting into more than one match
+	// would create duplicate ids and silently break edit()'s update for every
+	// match after the first, which .prepend() never handled correctly either.
 	if (data.length > 0) {
 		var imageId = fieldData.field + '_pedigreeEditorEM_icon';
 		var svg = pedigreeEditorEM.getPedigreeSVG(result.val());

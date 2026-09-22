@@ -5,7 +5,9 @@ require_once __DIR__ . '/TerminologyErrorFormatter.php';
 $sendErrorResponse = function($error, $error_description){
     if(strpos($_SERVER['HTTP_ACCEPT'] ?? '', 'text/html') === 0){
         header('Content-type: text/html');
+        http_response_code(400);
         echo pedigree_editor_format_browser_error_message($error, $error_description);
+        exit();
     }
     $errorArr = ['error' => $error, 'error_description' => $error_description];
     header('Content-type: application/json');

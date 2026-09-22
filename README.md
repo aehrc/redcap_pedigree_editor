@@ -190,7 +190,7 @@ to use `https://tx.ontoserver.csiro.au/fhir` along with the corresponding code s
 |----------------------|---------------------------------------------------------|---------------------------------------------------------|
 | HPO                  |
 | Disorder CodeSystem  | http://www.omim.org                                     | http://www.omim.org                                     |
-| Disorder ValueSet    | http://www.omim.org                                     | http://www.omim.orgvs                                   |
+| Disorder ValueSet    | http://www.omim.org                                     | http://www.omim.org?vs                                  |
 | Gene CodeSystem      | http://www.genenames.org                                | http://www.genenames.org/geneId                         |
 | Gene ValueSet        | http://www.genenames.org                                | http://www.genenames.org/geneId?vs                      |
 | Phenotype CodeSystem | http://purl.obolibrary.org/obo/hp.owl                   | http://purl.obolibrary.org/obo/hp.fhir                  |
