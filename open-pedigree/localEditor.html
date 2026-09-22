@@ -51,7 +51,7 @@
               (mode === 'CUSTOM') ? new RegExp(getParameterByName('phenotypeRegex')) : /^(http:\/\/)|(HP:)/;
       const geneSystem = (mode === 'CUSTOM') ? getParameterByName('geneSystem') : 'http://purl.bioontology.org/ontology/HGNC/hgnc.owl';
       const geneValueset = (mode === 'CUSTOM') ? getParameterByName('geneValueset') : 'http://www.genenames.org';
-      const geneRegex = (mode === 'CUSTOM') ? new RegExp(getParameterByName('geneRegex')) :  /[0-9]+/;
+      const geneRegex = (mode === 'CUSTOM') ? new RegExp(getParameterByName('geneRegex')) :  /\d+/;
 
       var redcapTerminolgyUrl = getParameterByName('redcapTerminolgyUrl');
 
@@ -114,7 +114,7 @@
             'searchAjaxOptionsFn':  (search) => ({
               method: 'POST',
               contentType: 'application/x-www-form-urlencoded',
-              parameters: { type: 'query', url: disorderValueset, filter: search, count: 20 }
+              parameters: { type: 'query', url: phenotypeValueset, filter: search, count: 20 }
             })
           },
           'geneOptions': {

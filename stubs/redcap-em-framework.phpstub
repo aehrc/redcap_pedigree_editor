@@ -1,0 +1,53 @@
+<?php
+
+/**
+ * Minimal signature stubs for the REDCap External Modules framework, so that Psalm's
+ * taint analysis has enough shape to work with. This deliberately contains only public
+ * method/function SIGNATURES (no implementation) for the framework surface this module
+ * actually calls - it is not, and must not become, a copy of REDCap core source, which
+ * is proprietary. Signatures are sourced from REDCap's own published EM Framework docs,
+ * verified against this module's actual call sites (see
+ * openspec/changes/pedigree-editor-trunk-based-workflow-migration task 3.2), not copied
+ * from another module's stub - this module's own surface (getUrl/getLocalUrl-served JS,
+ * httpGet/httpPost outbound requests, system/project settings) differs from the ontology
+ * providers'.
+ */
+
+namespace ExternalModules {
+    abstract class AbstractExternalModule
+    {
+        public function __construct() {}
+
+        public function getSystemSetting($key) {}
+        public function setSystemSetting($key, $value) {}
+        public function getProjectSetting($key, $project_id = null) {}
+        public function setProjectSetting($key, $value, $project_id = null) {}
+
+        public function getProjectId() {}
+        public function getCSRFToken() {}
+
+        /** @psalm-taint-sink ssrf $path */
+        public function getUrl($path, $noAuth = false, $useApiEndpoint = false) {}
+        /** @psalm-taint-sink ssrf $path */
+        public function getLocalUrl($path) {}
+
+        /** @psalm-taint-sink sql $sql */
+        public function query($sql, $params) {}
+    }
+
+    class ExternalModules {}
+}
+
+namespace {
+
+    class REDCap
+    {
+        public static function getDataDictionary($project_id, $format = 'array', $numeric = false, $fields = null, $forms = null) {}
+    }
+
+    /** @psalm-taint-sink ssrf $url */
+    function http_get($url, $timeout = null, $content_type = '', $headers = null, $context = null) {}
+
+    /** @psalm-taint-sink ssrf $url */
+    function http_post($url, $params = [], $content_type = '', $headers = null) {}
+}

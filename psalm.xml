@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<psalm
+    errorLevel="8"
+    resolveFromConfigFile="true"
+    xmlns="https://getpsalm.org/schema/config"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+>
+    <projectFiles>
+        <directory name="."/>
+        <ignoreFiles>
+            <directory name="vendor"/>
+            <directory name="stubs"/>
+            <directory name="open-pedigree"/>
+        </ignoreFiles>
+    </projectFiles>
+
+    <stubs>
+        <file name="stubs/redcap-em-framework.phpstub"/>
+    </stubs>
+
+    <!--
+        errorLevel is deliberately very permissive (8) - this config's job is to mirror
+        the REDCap consortium's security scan, not to be a general code-quality gate.
+        The taint issue types below are pinned to "error" regardless of errorLevel, so
+        security findings always surface even though everything else is suppressed.
+    -->
+    <issueHandlers>
+        <TaintedSql errorLevel="error"/>
+        <TaintedHtml errorLevel="error"/>
+        <TaintedShell errorLevel="error"/>
+        <TaintedSSRF errorLevel="error"/>
+        <TaintedCookie errorLevel="error"/>
+        <TaintedHeader errorLevel="error"/>
+        <TaintedFile errorLevel="error"/>
+        <TaintedLdap errorLevel="error"/>
+    </issueHandlers>
+</psalm>

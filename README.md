@@ -4,7 +4,7 @@ The pedigree editor external module allows a notes field to be marked with an an
 
 The module will then hide or disable the notes field and instead spawn a new window to allow the entry of the pedigree diagram. The diagram will then be serialised as a FHIR Composition JSON string and written into the notes field. 
 The pedigree editor used is based on [https://github.com/aehrc/open-pedigree](https://github.com/aehrc/open-pedigree) which is an open version of the phenotips pedigree editor.
-The [develop_redcap_em](https://github.com/aehrc/open-pedigree/tree/develop_redcap_em) branch of this codebase is included in the module.
+The [feature/redcap_em_0.4](https://github.com/aehrc/open-pedigree/tree/feature/redcap_em_0.4) branch of this codebase is included in the module.
 The plugin also makes use of [pako](https://github.com/nodeca/pako) a javascript implementation of the Zlib library.
 
 This module will not function in Internet Explorer.
@@ -24,6 +24,10 @@ git archive --format=zip  --prefix=redcap_pedigree_editor_v0.5/ -o ../redcap_ped
 This will give you a file redcap_pedigree_editor_v0.5.zip
 
 ## Changes
+
+This section gives the full story behind each version's changes - why, not just what. For a terser,
+automatically generated commit-by-commit record going forward, see [CHANGELOG.md](./CHANGELOG.md).
+
 - v0.1 - Initial Release 
 - v0.1.1 - Allow use inside a survey
 - v0.2 - Upgrade open-pedigree version to allow use of the svg image encoded in the pedigree data to show real 
@@ -410,7 +414,7 @@ to use `https://tx.ontoserver.csiro.au/fhir` along with the corresponding code s
 |----------------------|---------------------------------------------------------|---------------------------------------------------------|
 | HPO                  |
 | Disorder CodeSystem  | http://www.omim.org                                     | http://www.omim.org                                     |
-| Disorder ValueSet    | http://www.omim.org                                     | http://www.omim.orgvs                                   |
+| Disorder ValueSet    | http://www.omim.org                                     | http://www.omim.org?vs                                  |
 | Gene CodeSystem      | http://www.genenames.org                                | http://www.genenames.org/geneId                         |
 | Gene ValueSet        | http://www.genenames.org                                | http://www.genenames.org/geneId?vs                      |
 | Phenotype CodeSystem | http://purl.obolibrary.org/obo/hp.owl                   | http://purl.obolibrary.org/obo/hp.fhir                  |

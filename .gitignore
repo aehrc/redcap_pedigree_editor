@@ -2,5 +2,5 @@
 .idea
 .project
 .settings
-/vendor/
-/composer.lock
+node_modules
+vendor

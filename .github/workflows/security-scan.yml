@@ -1,0 +1,44 @@
+name: security-scan
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  psalm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer
+
+      - run: composer install --no-interaction --no-progress
+
+      # continue-on-error so a failing scan doesn't skip the SARIF upload below -
+      # findings should reach the Security tab even when they fail the job.
+      - name: Run Psalm taint analysis
+        id: psalm
+        run: vendor/bin/psalm --taint-analysis --no-progress --report=psalm-results.sarif
+        continue-on-error: true
+
+      # continue-on-error too: GITHUB_TOKEN is forced read-only on pull_request
+      # runs triggered from forks, regardless of the security-events: write
+      # permission declared above, so this step would fail on any fork PR for a
+      # reason unrelated to Psalm's actual findings.
+      - name: Upload results to code scanning
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: psalm-results.sarif
+        continue-on-error: true
+
+      - name: Fail the job if Psalm found issues
+        if: steps.psalm.outcome == 'failure'
+        run: exit 1

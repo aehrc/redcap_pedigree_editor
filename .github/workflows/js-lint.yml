@@ -1,0 +1,32 @@
+name: js-lint
+
+on:
+  pull_request:
+    paths:
+      - 'js/**'
+      - 'eslint.config.js'
+      - '.github/workflows/js-lint.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'js/**'
+      - 'eslint.config.js'
+      - '.github/workflows/js-lint.yml'
+
+jobs:
+  eslint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '20'
+
+      # No lockfile/npm project for two lint-only dependencies - versions are
+      # pinned here instead, matching the ontology-provider repos' own
+      # js-lint.yml (see openspec/changes/ontology-provider-extract-inline-js
+      # in the workspace repo).
+      - run: npm install --no-save eslint@10.9.1 eslint-plugin-no-jquery@6.0.0
+
+      - run: npx eslint js/
