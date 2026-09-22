@@ -2,8 +2,18 @@
 
 
 $sendErrorResponse = function($error, $error_description){
-    if(strpos($_SERVER['HTTP_ACCEPT'], 'text/html') === 0){
-        echo "A browser was detected.  The OperationOutcome will be prefixed with a human readable version of the error details:\n\n$error\n\n$error_description\n\n";
+    if(strpos($_SERVER['HTTP_ACCEPT'] ?? '', 'text/html') === 0){
+        // $error_description can include request-derived content (e.g. the raw
+        // request params echoed back for a "missing required parameter" error) -
+        // HTML-escape both before this un-Content-Type'd, pre-JSON-header echo,
+        // since it would otherwise be a reflected-XSS sink (Psalm's taint
+        // analysis doesn't track this specific pattern - a variable-stored
+        // closure invoked by call - see pedigree-editor-trunk-based-workflow-
+        // migration task 3.6 for how this was actually found).
+        header('Content-type: text/html');
+        $safeError = htmlspecialchars($error, ENT_QUOTES);
+        $safeDescription = htmlspecialchars($error_description, ENT_QUOTES);
+        echo "A browser was detected.  The OperationOutcome will be prefixed with a human readable version of the error details:\n\n$safeError\n\n$safeDescription\n\n";
     }
     $errorArr = ['error' => $error, 'error_description' => $error_description];
     header('Content-type: application/json');
