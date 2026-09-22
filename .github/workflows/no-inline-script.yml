@@ -1,0 +1,34 @@
+name: no-inline-script
+
+# Guards against a <script> block creeping back into PHP (the pattern
+# js-lint.yml's ESLint job can't see, since it's path-filtered to js/**).
+# Runs on every PR/push unconditionally rather than path-filtered, since a
+# reintroduced inline script could land in any .php file, not just ones
+# already known to have had one.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Fail on inline <script> blocks in PHP
+        run: |
+          # -z reads each file as one NUL-separated record (with (?s) making
+          # . match newlines) so a <script ...> tag whose attributes wrap
+          # onto a following line is still caught. The negative lookahead
+          # checks only the tag itself (up to its own closing >) for a src=
+          # attribute - a plain `grep -v 'src='` on the whole line would
+          # wrongly clear an inline script whose body just happens to
+          # contain the substring "src=" (e.g. `element.src = '...'`).
+          FILES=$(grep -rlPz --include='*.php' --exclude-dir=tests --exclude-dir=vendor '(?s)<script(?![^>]*\bsrc=)[\s>]' . || true)
+          if [ -n "$FILES" ]; then
+            echo "$FILES"
+            echo "::error::Inline <script> block found in a PHP file above. Move the JavaScript into a real .js file under js/ and load it via \$this->getUrl('js/<file>.js') plus <script src=\"...\"></script>, matching this module's existing js/pedigree-editor-config.js pattern."
+            exit 1
+          fi

@@ -42,8 +42,91 @@ pedigreeEditorEM.start = function() {
 	});
 };
 
+// The icon markup lives in <template> elements (see
+// pedigree-editor-inline-js-extraction), not <script type="text/plain">: a
+// <template>'s content is parsed into its own .content DocumentFragment
+// rather than a normal childNode, so it's read via that instead of jQuery's
+// .html() (which would see an empty element).
+pedigreeEditorEM.getIconSVG = function(selector) {
+	return document.querySelector(selector).content.firstElementChild.outerHTML;
+};
+
+// Strips event-handler attributes (onload/onerror/onclick/...) and
+// javascript: URIs, and drops <script>/<foreignObject> elements entirely,
+// from a parsed SVG element (in place). getPedigreeSVG()'s svg markup can
+// originate from a record's own stored/imported field value (decoded from a
+// GA4GH FHIR Composition/Bundle), not just this file's own trusted <template>
+// icons - inserting it as raw HTML (jQuery .html()/.append() with a string)
+// would let an SVG root's own onload attribute (a well-known SVG XSS vector)
+// fire as soon as it's inserted, same as innerHTML. Parsing + stripping +
+// inserting as real DOM nodes closes that off.
+//
+// Returns null (rather than the disallowed node) if the root element itself
+// is a <script>/<foreignObject> or isn't an <svg> at all - the walker below
+// only removes descendants from their parent, which doesn't stop the root
+// itself from still being returned and imported/appended by the caller.
+pedigreeEditorEM.sanitizeSvgElement = function(svgEl) {
+	if (!/^svg$/i.test(svgEl.tagName)) {
+		return null;
+	}
+	var walker = document.createTreeWalker(svgEl, NodeFilter.SHOW_ELEMENT);
+	var toRemove = [];
+	var node = svgEl;
+	do {
+		if (/^(script|foreignObject)$/i.test(node.tagName)) {
+			toRemove.push(node);
+			continue;
+		}
+		Array.prototype.slice.call(node.attributes || []).forEach(function(attr) {
+			var name = attr.name.toLowerCase();
+			var isEventHandler = name.indexOf('on') === 0;
+			// localName (not attr.name/a fixed "xlink:href" check) so this
+			// still matches when the markup binds the XLink namespace to a
+			// prefix other than "xlink" (e.g. xmlns:foo="...1999/xlink"
+			// foo:href="javascript:...") - qualified-name matching alone
+			// missed that.
+			var localName = (attr.localName || attr.name).toLowerCase();
+			// Browsers strip ASCII tab/newline/CR from a URL before parsing its
+			// scheme (WHATWG URL spec), so a scheme check must do the same or a
+			// value like "jav\tascript:..." would slip past a literal match.
+			var strippedValue = attr.value.replace(/[\t\r\n]/g, '');
+			var isJsUri = localName === 'href' && /^\s*javascript:/i.test(strippedValue);
+			if (isEventHandler || isJsUri) {
+				node.removeAttribute(attr.name);
+			}
+		});
+	} while ((node = walker.nextNode()));
+	toRemove.forEach(function(n) {
+		if (n.parentNode) {
+			n.parentNode.removeChild(n);
+		}
+	});
+	return svgEl;
+};
+
+// Safely replaces containerEl's content with the given SVG markup: parses it
+// (rather than assigning via innerHTML/jQuery .html()), sanitizes it, and
+// inserts the result as real DOM nodes. Used for both this file's own
+// trusted <template> icons and svg markup recovered from a record's stored
+// value - one path, always sanitized, rather than special-casing by source.
+pedigreeEditorEM.setIconSVG = function(containerEl, svgMarkup) {
+	var parsed = new DOMParser().parseFromString(svgMarkup, 'image/svg+xml');
+	if (parsed.querySelector('parsererror')) {
+		pedigreeEditorEM.log('Failed to parse SVG markup, leaving icon empty');
+		containerEl.textContent = '';
+		return;
+	}
+	var svgEl = pedigreeEditorEM.sanitizeSvgElement(parsed.documentElement);
+	containerEl.textContent = '';
+	if (!svgEl) {
+		pedigreeEditorEM.log('SVG markup had a disallowed root element, leaving icon empty');
+		return;
+	}
+	containerEl.appendChild(document.importNode(svgEl, true));
+};
+
 pedigreeEditorEM.getPedigreeSVG = function(value) {
-	var svg = $(pedigreeEditorEM.emptyIcon).html();
+	var svg = pedigreeEditorEM.getIconSVG(pedigreeEditorEM.emptyIcon);
 	if (value && value.length > 0){
 		let foundSVG = false;
 
@@ -109,7 +192,7 @@ pedigreeEditorEM.getPedigreeSVG = function(value) {
 			console.log(e);
 		}
 		if (!foundSVG){
-			svg = $(pedigreeEditorEM.dataIcon).html();
+			svg = pedigreeEditorEM.getIconSVG(pedigreeEditorEM.dataIcon);
 		}
 	}
 	return svg;
@@ -141,15 +224,33 @@ pedigreeEditorEM.render = function(fieldData) {
 			haveData = true;
 		}
 	}
-	if (data) {
-		var onClickText = "pedigreeEditorEM.edit('" + fieldData.field + "')";
+	// data.length check (rather than the previously-always-true `if (data)` -
+	// $(...) never returns falsy, even matching nothing) mirrors jQuery
+	// .prepend()'s own silent-no-op-on-empty-collection behavior, now that
+	// insertBefore() is a plain DOM call instead (see no-jquery/no-append-html).
+	// data[0] only (not a loop over every match) is intentional, not a
+	// narrowing: imageId below is derived from fieldData.field alone, and
+	// edit() looks the icon back up via that same fixed, non-indexed id
+	// (document.getElementById(imageId)) - inserting into more than one match
+	// would create duplicate ids and silently break edit()'s update for every
+	// match after the first, which .prepend() never handled correctly either.
+	if (data.length > 0) {
 		var imageId = fieldData.field + '_pedigreeEditorEM_icon';
 		var svg = pedigreeEditorEM.getPedigreeSVG(result.val());
-		$(data).prepend(
-				'<a href="javascript:;" tabindex="-1" onclick="' + onClickText +'">'
-						+ '<div id="' + imageId + '">'
-						+ svg
-						+ '</div></a>');
+
+		var iconContainer = document.createElement('div');
+		iconContainer.id = imageId;
+		pedigreeEditorEM.setIconSVG(iconContainer, svg);
+
+		var link = document.createElement('a');
+		link.href = 'javascript:;';
+		link.tabIndex = -1;
+		link.addEventListener('click', function() {
+			pedigreeEditorEM.edit(fieldData.field);
+		});
+		link.appendChild(iconContainer);
+
+		data[0].insertBefore(link, data[0].firstChild);
 	}
 }
 
@@ -264,7 +365,7 @@ pedigreeEditorEM.save = function(field, value, svg) {
 		svg = svg.replace(/width=".*?"/, 'width="auto"')
 			.replace(/height=".*?"/, 'height="auto"');
 	}
-	$('#' + imageId).html(svg);
+	pedigreeEditorEM.setIconSVG(document.getElementById(imageId), svg);
 
 	window.focus();
 }

@@ -1,0 +1,42 @@
+name: tests
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  phpunit:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # PHPUnit 11 requires PHP >=8.2, so this can't cover the module's
+        # declared php-version-min (8.0.0) - that's checked separately below
+        # via php -l, syntax-only. 8.3 is the team's actual deployed REDCap
+        # runtime (see CLAUDE.md); 8.4 is current.
+        php-version: ['8.2', '8.3', '8.4']
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          tools: composer
+
+      - run: composer install --no-interaction --no-progress
+
+      - run: vendor/bin/phpunit --colors=never
+
+  php-min-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+
+      - run: php -l PedigreeEditorExternalModule.php
+      - run: php -l TerminologyService.php
+      - run: php -l TerminologyErrorFormatter.php

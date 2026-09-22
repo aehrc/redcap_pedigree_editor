@@ -1,13 +1,13 @@
 # Pedigree Editor External Module
 
-The pedigree editor external module allows a notes field to be marked with an anotation to indicate the field will represent a pedigree diagram.
+The pedigree editor external module allows a notes field to be marked with an annotation to indicate the field will represent a pedigree diagram.
 
 The module will then hide or disable the notes field and instead spawn a new window to allow the entry of the pedigree diagram. The diagram will then be serialised as a FHIR Composition JSON string and written into the notes field. 
 The pedigree editor used is based on [https://github.com/aehrc/open-pedigree](https://github.com/aehrc/open-pedigree) which is an open version of the phenotips pedigree editor.
 The [feature/redcap_em_0.4](https://github.com/aehrc/open-pedigree/tree/feature/redcap_em_0.4) branch of this codebase is included in the module.
 The plugin also makes use of [pako](https://github.com/nodeca/pako) a javascript implementation of the Zlib library.
 
-This module will not function in internet explorer.
+This module will not function in Internet Explorer.
 
 ## Installing the module
 
@@ -18,12 +18,16 @@ Alternatively you can clone the git repository and generate your own distributio
 ```
 git clone https://github.com/aehrc/redcap_pedigree_editor.git
 cd redcap_pedigree_editor
-git archive --format=zip  --prefix=redcap_pedigree_editor_v0.4/ -o ../redcap_pedigree_editor_v0.4.zip HEAD
+git archive --format=zip  --prefix=redcap_pedigree_editor_v0.5/ -o ../redcap_pedigree_editor_v0.5.zip HEAD
 ```
 
-This will give you a file redcap_pedigree_editor_v0.4.zip
+This will give you a file redcap_pedigree_editor_v0.5.zip
 
 ## Changes
+
+This section gives the full story behind each version's changes - why, not just what. For a terser,
+automatically generated commit-by-commit record going forward, see [CHANGELOG.md](./CHANGELOG.md).
+
 - v0.1 - Initial Release 
 - v0.1.1 - Allow use inside a survey
 - v0.2 - Upgrade open-pedigree version to allow use of the svg image encoded in the pedigree data to show real 
@@ -32,6 +36,7 @@ representation of the diagram, add compression for large diagrams.
 - v0.3.1 - Minor bug fix in open-pedigree
 - v0.3.2 - Add new action tag **@PEDIGREE** which uses configurable terminology settings.
 - v0.4 - Add support for PED and DADA2 formats.
+- v0.5 - Bug fix in open-pedigree, change default fhir server and valuesets to use https://tx.ontoserver.csiro.au/fhir
 
 # Install the distribution
 
@@ -60,18 +65,18 @@ Once installed the module has a number of system-wide options:
    It includes an extra field for life status. Finally, ***internal*** uses the openpedigree internal json model which 
    is not documented and may not be compatible with future versions of the external module but should allow the best 
    round tripping. This format, PED and DADA2 do not include a svg version of the pedigree diagram so will not show the
-   diagram except when the diagram is saved into the system. This is the system wide setting, there is also a project 
+   diagram except when the diagram is saved into the system. This is the system-wide setting, there is also a project 
    level storage format setting which can be used to override this.
  - *Compress Data* - Specifies how to deal with large diagrams. The fhir format returned from the open_pedigree editor 
    will now have a new section called 'Pedigree Diagram' which will contain a DocumentReference which will have an SVG 
    representation of the pedigree diagram. This diagram will be used by the redcap plugin to show the pedigree diagram. 
    Because there are size limitations for the text in the redcap database associated with the pedigree field the 
-   addition of the 'Pedigree Diagram' section can quite easilly exceed the limit. The 'Compress Data' options tells the
+   addition of the 'Pedigree Diagram' section can quite easily exceed the limit. The 'Compress Data' options tells the
    system how to deal with the returned text exceeding 64K. The options are:
    - *Never Compress* - (this is the default) Compression is not used. If the data exceeds 65K characters the diagram will
      be stripped from the result and any future views of the diagram inside redcap will instead show a placeholder image.
-   - *Compress Large Diagrams >65K* - The data is compressed if its over 65K. If its still too large after being 
-     compressed, the diagram is stripped and the if its greater than 65K its compressed.
+   - *Compress Large Diagrams >65K* - The data is compressed if its over 65K. If it's still too large after being 
+     compressed, the diagram is stripped and if it is greater than 65K its compressed.
    - *Always Compress* - The data is always compressed. If the compressed data is greater than 65K the diagram is stripped.
  - *Ontology Server URL* - The URL for FHIR ontology server used to lookup disorders, phenotypes and genes.
  - *Authentication Type* - The authentication to use when communicating with the FHIR server. This can be either `none`
@@ -124,7 +129,7 @@ To make use of the editor a field needs to be created in the online designer and
   - *@PEDIGREE_SCT* - Marks a field to be a pedigree editor using the SNOMED-CT coding system for phenotypes and disorders.
   - *@PEDIGREE* - Marks a field to be a pedigree editor using the default coding system for phenotypes and disorders (new to version 0.3.2).
 
-The default 'Hide Text' and 'Compress Data' options can be overriden in the action tag by appending '=' plus a comma 
+The default 'Hide Text' and 'Compress Data' options can be overridden in the action tag by appending '=' plus a comma 
 separated list of options.
   - *HIDE_TEXT* - Hide the text area.
   - *SHOW_TEXT* - Show the text area.
@@ -141,7 +146,7 @@ field and prevent compression of the data stored in the field.
 ## Data Entry
 
 In the data entry page, a notes field marked with the pedigree editor action tag will show a large image, if this is clicked 
-a new window will open and allow the pedigree diagram to be editted. 
+a new window will open and allow the pedigree diagram to be edited. 
 An empty field will appear as the words 'Create Diagram' with a single diamond.
 A field for which a diagram has been added will show the image for the diagram extracted from the data returned from the 
 editor. If this has been stripped for some reason instead a placeholder image is shown.
@@ -176,34 +181,56 @@ changed to go via redcap. This change was made to allow the use of a terminology
 authentication. Along with this change, the default Fhir server changed from 
 `https://genomics.ontoserver.csiro.au/fhir` to `https://r4.ontoserver.csiro.au/fhir`. This also meant
 some changes in the FHIR valuesets used. This may mean that opening a previously saved diagram may have
-problems reloading the disorder, genes and phenotypic features fields.
+problems reloading the disorder, genes and phenotypic features fields. In version 0.5 these defaults were changed again
+to use `https://tx.ontoserver.csiro.au/fhir` along with the corresponding code systems and value sets found on this server.
 
 ## Terminology Changes
 
-|Field               |<v0.3 Value                                            | v0.3 Value                                            |
-|--------------------|-------------------------------------------------------|-------------------------------------------------------|
-| HPO                                                                                                                                |
-|Disorder CodeSystem |http://www.omim.org                                    |http://www.omim.org                                    |
-|Disorder ValueSet   |http://www.omim.org                                    |http://www.omim.org?vs                                 |
-|Gene CodeSystem     |http://www.genenames.org                               |http://www.genenames.org/geneId                        |
-|Gene ValueSet       |http://www.genenames.org                               |http://www.genenames.org/geneId?vs                     |
-|Phenotype CodeSystem|http://purl.obolibrary.org/obo/hp.owl                  |http://purl.obolibrary.org/obo/hp.fhir                 |
-|Phenotype ValueSet  |http://purl.obolibrary.org/obo/hp.owl?vs               |http://purl.obolibrary.org/obo/hp.fhir?vs              |
-| SCT                                                                                                                                |
-|Disorder CodeSystem |http://snomed.info/sct                                 |http://snomed.info/sct                                 |
-|Disorder ValueSet   |http://snomed.info/sct?fhir_vs=refset/32570581000036105|http://snomed.info/sct?fhir_vs=refset/32570581000036105|
-|Gene CodeSystem     |http://www.genenames.org                               |http://www.genenames.org/geneId                        |
-|Gene ValueSet       |http://www.genenames.org                               |http://www.genenames.org/geneId?vs                     |
-|Phenotype CodeSystem|http://snomed.info/sct                                 |http://snomed.info/sct                                 |
-|Phenotype ValueSet  |http://ga4gh.org/fhir/ValueSet/phenotype               |http://ga4gh.org/fhir/ValueSet/phenotype               |
-|--------------------|-------------------------------------------------------|-------------------------------------------------------|
+| Field                | <v0.3 Value                                             | v0.3 Value                                              |
+|----------------------|---------------------------------------------------------|---------------------------------------------------------|
+| HPO                  |
+| Disorder CodeSystem  | http://www.omim.org                                     | http://www.omim.org                                     |
+| Disorder ValueSet    | http://www.omim.org                                     | http://www.omim.org?vs                                  |
+| Gene CodeSystem      | http://www.genenames.org                                | http://www.genenames.org/geneId                         |
+| Gene ValueSet        | http://www.genenames.org                                | http://www.genenames.org/geneId?vs                      |
+| Phenotype CodeSystem | http://purl.obolibrary.org/obo/hp.owl                   | http://purl.obolibrary.org/obo/hp.fhir                  |
+| Phenotype ValueSet   | http://purl.obolibrary.org/obo/hp.owl?vs                | http://purl.obolibrary.org/obo/hp.fhir?vs               |
+| SCT                  |
+| Disorder CodeSystem  | http://snomed.info/sct                                  | http://snomed.info/sct                                  |
+| Disorder ValueSet    | http://snomed.info/sct?fhir_vs=refset/32570581000036105 | http://snomed.info/sct?fhir_vs=refset/32570581000036105 |
+| Gene CodeSystem      | http://www.genenames.org                                | http://www.genenames.org/geneId                         |
+| Gene ValueSet        | http://www.genenames.org                                | http://www.genenames.org/geneId?vs                      |
+| Phenotype CodeSystem | http://snomed.info/sct                                  | http://snomed.info/sct                                  |
+| Phenotype ValueSet   | http://ga4gh.org/fhir/ValueSet/phenotype                | http://ga4gh.org/fhir/ValueSet/phenotype                |
+| -------------------- | ------------------------------------------------------- | ------------------------------------------------------- |
+
+This was changed again in version 0.5
+
+| Field                | v0.3 Value                                              | v0.5 Value                                              |
+|----------------------|---------------------------------------------------------|---------------------------------------------------------|
+| HPO                  |
+| Disorder CodeSystem  | http://www.omim.org                                     | http://www.omim.org                                     |
+| Disorder ValueSet    | http://www.omim.org?vs                                  | http://www.omim.org/vs                                  |
+| Gene CodeSystem      | http://www.genenames.org/geneId                         | http://purl.bioontology.org/ontology/HGNC/hgnc.owl      |
+| Gene ValueSet        | http://www.genenames.org/geneId?vs                      | http://www.genenames.org                                |
+| Phenotype CodeSystem | http://purl.obolibrary.org/obo/hp.owl                   | http://purl.obolibrary.org/obo/hp.owl                   |
+| Phenotype ValueSet   | http://purl.obolibrary.org/obo/hp.owl?vs                | http://purl.obolibrary.org/obo/hp.owl?vs                |
+| SCT                  |
+| Disorder CodeSystem  | http://snomed.info/sct                                  | http://snomed.info/sct                                  |
+| Disorder ValueSet    | http://snomed.info/sct?fhir_vs=refset/32570581000036105 | http://snomed.info/sct?fhir_vs=refset/32570581000036105 |
+| Gene CodeSystem      | http://www.genenames.org                                | http://purl.bioontology.org/ontology/HGNC/hgnc.owl      |
+| Gene ValueSet        | http://www.genenames.org                                | http://www.genenames.org                                |
+| Phenotype CodeSystem | http://snomed.info/sct                                  | http://snomed.info/sct                                  |
+| Phenotype ValueSet   | http://ga4gh.org/fhir/ValueSet/phenotype                | http://ga4gh.org/fhir/ValueSet/phenotype                |
+| -------------------- | ------------------------------------------------------- | ------------------------------------------------------- |
 
 In version 0.3.2 a new action tag **@PEDIGREE** was added, this will use the terminology configured as the default terminology.
 The default terminology may be a custom set of terminology bindings.
 
+
 # Large Data Issues
 A redcap notes field can store up to 65K of character data. This should be fine if someone was typing a note, but with
-adding an svg representation of the pedigree diagram as well as the verbose nature of FHIR a large diagram can hit this
+adding an SVG representation of the pedigree diagram as well as the verbose nature of FHIR a large diagram can hit this
 limit. The compress data option will tell the plugin how to handle large data.  
 Compressed data will be gzipped, converted to base64 and have 'GZ:' appended to the start of the text.
 
@@ -277,9 +304,9 @@ DADA2 4 3 2 2 3 1
 The open-pedigree editor which is used to create the pedigree diagram returns an SVG of the diagram to the redcap. This
 will be displayed in the form. The existing FHIR format includes this svg, but it may be removed if the fhir format with
 the diagram is larger than 65K. This allows the external module to show the diagram if the form is returned to at a
-later date. The PEDX and DADA2X format are meant to allow the same mechanism to exist but for these simplier formats.
-The PEDX format is an xml with two main elements, `<ped>` which contains the PED format of the diagram and `<image>`
-which contains the svg image of the diagram. Like the PED format, it should be possible to use `@CALCTEXT` and `@DEFAULT`
+later date. The PEDX and DADA2X format are meant to allow the same mechanism to exist but for these simpler formats.
+The PEDX format is XML with two main elements, `<ped>` which contains the PED format of the diagram and `<image>`
+which contains the SVG image of the diagram. Like the PED format, it should be possible to use `@CALCTEXT` and `@DEFAULT`
 to pipe variables into the pedigree field to prepopulate the diagram.
 
 ```xml
@@ -297,7 +324,7 @@ OPENPED Sister Father Mother 2 2
 ```
 
 ## DADAX Format
-Like the PEDX format, DADA2X is the DADA2 format inside of an xml document to allow the svg image of the pedigree diagram
+Like the PEDX format, DADA2X is the DADA2 format inside of an XML document to allow the svg image of the pedigree diagram
 to be included.
 
 ```xml
@@ -316,7 +343,7 @@ DADA2 4 3 2 2 3 1
 
 # Legacy FHIR Formation Limitations
 Unfortunately the legacy FHIR format specification does not map all the data field in the open-pedigree editor into the
-format. Additionally some aspects of the mapping do not translate directly, where possible
+format. Additionally, some aspects of the mapping do not translate directly, where possible
 naming conventions are used to try and account for these. For example the FHIR FamilyHistory resource has a single
 name field which is a string. The pedigree editor has a first name, last name and a last name at birth, this will
 be written into the FamilyHistory resource as <first name> <last name> (<last name at birth>). When importing the FHIR
@@ -327,7 +354,7 @@ Carrier Status - This can be 'Carrier' or 'Pre-symptomatic' in the editor, but i
 Evaluated - This is a checkbox in the editor, but is not currently stored on the fhir resource.
 Lost Contact - This is a checkbox in the editor, but is not currently stored on the fhir resource. 
 Multiple Sibling Nodes - In the editor you can create a single node to represent multiple siblings, at the moment these
-will be saved as a single familiy history resource with no name and the number of siblings will be lost.
+will be saved as a single family history resource with no name and the number of siblings will be lost.
 
 Phenotype and Candidate Genes are both stored as Observation Resources associated with a family history resource. The
 system uses a naming convention to distinguish the two, otherwise it tries to match the code system to try and determine

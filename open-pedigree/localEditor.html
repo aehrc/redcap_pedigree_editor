@@ -56,19 +56,19 @@
       const disorderSystem = (mode === 'SCT') ? 'http://snomed.info/sct' :
               (mode === 'CUSTOM') ? getParameterByName('disorderSystem') : 'http://www.omim.org';
       const disorderValueset = (mode === 'SCT') ? 'http://snomed.info/sct?fhir_vs=refset/32570581000036105' :
-              (mode === 'CUSTOM') ? getParameterByName('disorderValueset') : 'http://www.omim.org?vs';
+              (mode === 'CUSTOM') ? getParameterByName('disorderValueset') : 'http://www.omim.org/vs';
       const disorderRegex = (mode === 'SCT') ? /\d+/ :
               (mode === 'CUSTOM') ? new RegExp(getParameterByName('disorderRegex')) : /\d+/;
 
       const phenotypeSystem = (mode === 'SCT') ? 'http://snomed.info/sct' :
-              (mode === 'CUSTOM') ? getParameterByName('phenotypeSystem') : 'http://purl.obolibrary.org/obo/hp.fhir';
+              (mode === 'CUSTOM') ? getParameterByName('phenotypeSystem') : 'http://purl.obolibrary.org/obo/hp.owl';
       const phenotypeValueset = (mode === 'SCT') ? 'http://ga4gh.org/fhir/ValueSet/phenotype' :
-              (mode === 'CUSTOM') ? getParameterByName('phenotypeValueset') : 'http://purl.obolibrary.org/obo/hp.fhir?vs';
+              (mode === 'CUSTOM') ? getParameterByName('phenotypeValueset') : 'http://purl.obolibrary.org/obo/hp.owl?vs';
       const phenotypeRegex = (mode === 'SCT') ? /\d+/ :
               (mode === 'CUSTOM') ? new RegExp(getParameterByName('phenotypeRegex')) : /^(http:\/\/)|(HP:)/;
-      const geneSystem = (mode === 'CUSTOM') ? getParameterByName('geneSystem') : 'http://www.genenames.org/geneId';
-      const geneValueset = (mode === 'CUSTOM') ? getParameterByName('geneValueset') : 'http://www.genenames.org/geneId?vs';
-      const geneRegex = (mode === 'CUSTOM') ? new RegExp(getParameterByName('geneRegex')) :  /^HGNC:/;
+      const geneSystem = (mode === 'CUSTOM') ? getParameterByName('geneSystem') : 'http://purl.bioontology.org/ontology/HGNC/hgnc.owl';
+      const geneValueset = (mode === 'CUSTOM') ? getParameterByName('geneValueset') : 'http://www.genenames.org';
+      const geneRegex = (mode === 'CUSTOM') ? new RegExp(getParameterByName('geneRegex')) :  /\d+/;
 
       var redcapTerminolgyUrl = getParameterByName('redcapTerminolgyUrl');
 
@@ -131,7 +131,7 @@
             'searchAjaxOptionsFn':  (search) => ({
               method: 'POST',
               contentType: 'application/x-www-form-urlencoded',
-              parameters: { type: 'query', url: disorderValueset, filter: search, count: 20 }
+              parameters: { type: 'query', url: phenotypeValueset, filter: search, count: 20 }
             })
           },
           'geneOptions': {
@@ -159,7 +159,7 @@
         };
       }
       else {
-        var ontologyServer = getParameterByName('ontologyServer') || 'https://r4.ontoserver.csiro.au/fhir/';
+        var ontologyServer = getParameterByName('ontologyServer') || 'https://tx.ontoserver.csiro.au/fhir/';
 
         terminologyOptions = {
           'disorderOptions': {
