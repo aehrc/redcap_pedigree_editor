@@ -81,6 +81,17 @@
 			"type" : "text"
 		},
 		{
+			"key" : "system_ontology_timeout_info",
+			"name" : "Maximum number of seconds to wait for the Ontology Server before giving up. Leave blank to use the default of 10 seconds.",
+			"type" : "descriptive"
+		},
+		{
+			"key" : "system_ontology_timeout",
+			"name" : "Ontology Server request timeout (seconds)",
+			"type" : "text",
+			"default" : "10"
+		},
+		{
 			"key": "authentication_type_info",
 			"name": "The fhir server may require some form of authentication, currently only OAuth2 Client Credentials is supported. Communication with the FHIR server is made by the redcap server, not the users browser.",
 			"type": "descriptive"
@@ -122,7 +133,7 @@
 		{
 			"key": "cc_client_secret",
 			"name": "Client Secret",
-			"type": "text",
+			"type": "password",
 			"branchingLogic": {
 				"field": "authentication_type",
 				"value": "cc"

@@ -290,7 +290,9 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
         ];
         $configDataAttrsHtml = '';
         foreach ($configDataAttrs as $attrName => $attrValue) {
-            $configDataAttrsHtml .= ' ' . $attrName . '="' . htmlspecialchars($attrValue, ENT_QUOTES) . '"';
+            // $format/$allowEdit can be null when neither the project nor system
+            // setting is configured - htmlspecialchars(null) is deprecated on PHP 8.1+.
+            $configDataAttrsHtml .= ' ' . $attrName . '="' . htmlspecialchars((string)$attrValue, ENT_QUOTES) . '"';
         }
         $configScriptSrc = htmlspecialchars($this->getUrl('js/pedigree-editor-config.js'), ENT_QUOTES);
 
@@ -402,6 +404,14 @@ EOD;
         }
     }
 
+    // Bounds every outbound call to the ontology/FHIR server, rather than
+    // relying on http_get()/http_post()'s unbounded default ($timeout=null).
+    private function getFhirTimeout()
+    {
+        $timeout = $this->getSystemSetting('system_ontology_timeout');
+        return (is_numeric($timeout) && $timeout > 0) ? (int)$timeout : 10;
+    }
+
     private function getFhirServerUri()
     {
         $ontologyServer = $this->getSystemSetting('system_ontology_server');
@@ -436,7 +446,7 @@ EOD;
     {
         // if curl isn't install the default version of http_get in init_functions doesn't include the headers.
         if (function_exists('curl_init') || empty($headers)) {
-            return http_get($fullUrl, null, '', $headers, null);
+            return http_get($fullUrl, $this->getFhirTimeout(), '', $headers, null);
         }
         if (ini_get('allow_url_fopen')) {
             // Set http array for file_get_contents
@@ -444,7 +454,7 @@ EOD;
             foreach ($headers as $hvalue) {
                 $headerText .= $hvalue . "\r\n";
             }
-            $http_array = array('method' => 'GET', 'header' => $headerText);
+            $http_array = array('method' => 'GET', 'header' => $headerText, 'timeout' => $this->getFhirTimeout());
             // If using a proxy
             if (!sameHostUrl($fullUrl) && PROXY_HOSTNAME != '') {
                 $http_array['proxy'] = str_replace(array('http://', 'https://'), array('tcp://', 'tcp://'), PROXY_HOSTNAME);
@@ -471,7 +481,7 @@ EOD;
     {
         // if curl isn't install the default version of http_post in init_functions doesn't include the headers.
         if (function_exists('curl_init') || empty($headers)) {
-            return http_post($fullUrl, $postData, null, $contentType, '', $headers);
+            return http_post($fullUrl, $postData, $this->getFhirTimeout(), $contentType, '', $headers);
         }
         // If params are given as an array, then convert to query string format, else leave as is
         if ($contentType == 'application/json') {
@@ -494,7 +504,8 @@ EOD;
 
             $http_array = array('method' => 'POST',
                 'header' => "Content-type: $contentType" . "\r\n" . $headerText . "Content-Length: " . strlen($param_string) . "\r\n",
-                'content' => $param_string
+                'content' => $param_string,
+                'timeout' => $this->getFhirTimeout()
             );
             // If using a proxy
             if (!sameHostUrl($fullUrl) && PROXY_HOSTNAME != '') {
@@ -556,15 +567,27 @@ EOD;
         $clear = true;
         try {
             $response = $this->httpPost($tokenEndpoint, $params, 'application/x-www-form-urlencoded', $headers);
-            $responseJson = json_decode($response, true);
-            if (array_key_exists('access_token', $responseJson)) {
+            // a false or unparseable response decodes to null, and array_key_exists(null)
+            // is a fatal TypeError on PHP 8
+            $responseJson = is_string($response) ? json_decode($response, true) : null;
+            if (!is_array($responseJson)) {
+                error_log("Failed to negotiate auth token : no parseable response from " . $tokenEndpoint);
+            } elseif (array_key_exists('access_token', $responseJson)) {
                 $clear = false;
                 $_SESSION['PEDIGREE_FHIR_ONTOLOGY_TOKEN'] = $responseJson['access_token'];
-                if (array_key_exists('expires_in', $responseJson)) {
-                    $_SESSION['PEDIGREE_FHIR_ONTOLOGY_TOKEN_EXPIRES'] = $now + ($responseJson['expires_in'] * 1000);
-                } else {
-                    $_SESSION['PEDIGREE_FHIR_ONTOLOGY_TOKEN_EXPIRES'] = $now + (60 * 60 * 1000);
+                // expires_in is SECONDS (RFC 6749) and $now is seconds - the previous
+                // * 1000 cached a 3600s token for roughly 41 days. Renew early by
+                // margin = min(60, floor(lifetime / 2)): a minute early for normal
+                // lifetimes, halfway through for very short ones, and never an expiry
+                // beyond the real one.
+                $lifetime = array_key_exists('expires_in', $responseJson)
+                    ? (int)$responseJson['expires_in']
+                    : 3600;
+                if ($lifetime < 1) {
+                    $lifetime = 1;
                 }
+                $margin = (int)min(60, floor($lifetime / 2));
+                $_SESSION['PEDIGREE_FHIR_ONTOLOGY_TOKEN_EXPIRES'] = $now + $lifetime - $margin;
             } elseif (array_key_exists('error', $responseJson)) {
                 error_log("Failed to negotiate auth token : " . $responseJson['error'] . " - " . $responseJson['error_description']);
             } else {
