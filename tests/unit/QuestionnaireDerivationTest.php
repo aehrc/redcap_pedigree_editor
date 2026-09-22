@@ -23,9 +23,13 @@ class QuestionnaireDerivationTest extends TestCase
 
     /**
      * Flattens the derived Questionnaire's REDCap-derived group items into a
-     * flat linkId => item map — excludes the always-present "Linked Record"
-     * group (the two standard PatientProvider action buttons), which isn't
-     * derived from any REDCap field and is covered by its own tests.
+     * flat linkId => item map. `derive()` no longer builds any "Linked
+     * Record" group of its own (see pedigree-editor-redcap-extension-
+     * extraction - open-pedigree-upgrade's record-link-provider mechanism
+     * synthesizes an equivalent tab automatically now), so every top-level
+     * group is REDCap-derived; `redcapDerivedGroups()` is kept only as a
+     * defensive no-op filter in case a hand-authored base Questionnaire
+     * happens to reuse that legacy linkId.
      */
     private function flatten(array $questionnaire): array
     {
@@ -154,38 +158,6 @@ class QuestionnaireDerivationTest extends TestCase
         $this->assertSame('Section A', $groups[0]['text']);
     }
 
-    public function testDerivedQuestionnaireAlwaysIncludesTheLinkedRecordActionButtons(): void
-    {
-        $dd = ['a_field' => $this->field(['field_annotation' => '@PEDIGREE_FIELD'])];
-        $questionnaire = QuestionnaireDerivation::derive($dd, 'family_members')['questionnaire'];
-
-        $linkedRecordGroup = null;
-        foreach ($questionnaire['item'] as $group) {
-            if ($group['linkId'] === '__group_linked_record') {
-                $linkedRecordGroup = $group;
-            }
-        }
-        $this->assertNotNull($linkedRecordGroup, 'Expected a __group_linked_record group');
-
-        $itemsByLinkId = [];
-        foreach ($linkedRecordGroup['item'] as $item) {
-            $itemsByLinkId[$item['linkId']] = $item;
-        }
-
-        $this->assertContains(
-            ['url' => QuestionnaireDerivation::MAPPING_EXTENSION_URL, 'valueCode' => 'invokesAction'],
-            $itemsByLinkId['link_patient']['extension']
-        );
-        $this->assertContains(
-            ['url' => QuestionnaireDerivation::ACTION_EXTENSION_URL, 'valueCode' => 'linkPatient'],
-            $itemsByLinkId['link_patient']['extension']
-        );
-        $this->assertContains(
-            ['url' => QuestionnaireDerivation::ACTION_EXTENSION_URL, 'valueCode' => 'importClinicalData'],
-            $itemsByLinkId['import_from_record']['extension']
-        );
-    }
-
     public function testMapsToSetsFieldMappingExtensionAndDefinition(): void
     {
         $dd = ['gender_field' => $this->field([
@@ -273,6 +245,19 @@ class QuestionnaireDerivationTest extends TestCase
                     ['url' => 'field', 'valueString' => 'a_field'],
                 ],
             ],
+            $item['extension']
+        );
+    }
+
+    public function testEveryDerivedItemAlsoCarriesTheGenericLinkedRecordSourceExtension(): void
+    {
+        // Distinct from REDCAP_SOURCE_EXTENSION_URL (routes import) - this one drives
+        // open-pedigree-upgrade's own always-disabled/regrouped rendering and must be
+        // attached alongside it on every derived item, not independently.
+        $dd = ['a_field' => $this->field(['field_annotation' => '@PEDIGREE_FIELD'])];
+        $item = $this->flatten(QuestionnaireDerivation::derive($dd, 'family_members')['questionnaire'])['a_field'];
+        $this->assertContains(
+            ['url' => QuestionnaireDerivation::LINKED_RECORD_SOURCE_EXTENSION_URL],
             $item['extension']
         );
     }
@@ -398,14 +383,6 @@ class QuestionnaireDerivationTest extends TestCase
         ])];
         $resolved = QuestionnaireDerivation::resolveTaggedFields($dd);
         $this->assertSame(['1' => 'Male', '2' => 'Female'], $resolved[0]['choices']);
-    }
-
-    public function testDeriveWithoutLinkedRecordGroupOmitsIt(): void
-    {
-        $dd = ['a_field' => $this->field(['field_annotation' => '@PEDIGREE_FIELD'])];
-        $questionnaire = QuestionnaireDerivation::derive($dd, 'family_members', [], false)['questionnaire'];
-        $groupIds = array_column($questionnaire['item'], 'linkId');
-        $this->assertNotContains('__group_linked_record', $groupIds);
     }
 
     public function testDeriveWithBaseQuestionnaireAppendsTaggedGroupToBase(): void

@@ -1,7 +1,12 @@
 /**
- * Duck-types open-pedigree's `AbstractPatientProvider` contract against
- * REDCap repeating-instrument rows (design D6 of the
- * pedigree-repeating-instrument-import OpenSpec change), via the module's
+ * Duck-types open-pedigree's `AbstractRecordLinkProvider` contract against
+ * REDCap repeating-instrument rows (originally delivered against
+ * `AbstractPatientProvider` by `pedigree-repeating-instrument-import`;
+ * re-targeted onto `RecordLinkProvider` by
+ * `pedigree-editor-redcap-extension-extraction`, at feature parity - search
+ * a row, link it, one-time read-only import via a button. No deep-link/
+ * refresh/create-new-row behavior yet; `canCreateNew` stays `false` until
+ * `pedigree-editor-repeating-instrument-sync` adds that), via the module's
  * `PedigreeInstrumentService.php` AJAX endpoint.
  *
  * Loaded into `open-pedigree/localEditor.html`'s window (a separate
@@ -10,10 +15,15 @@
  * used by `pedigreeEditorEM.js` on the REDCap page side, and not part of
  * the `open-pedigree` TypeScript/webpack build (this class isn't
  * `import`-able there; it just needs to structurally match
- * `AbstractPatientProvider`'s method signatures at runtime).
+ * `AbstractRecordLinkProvider`'s method signatures at runtime).
  *
- * Reference pattern: `open-pedigree`'s own `FHIRPatientProvider.ts`. Reuses
- * its `msdialog-*` CSS classes (injected into the page by the bundle
+ * Reference pattern: `open-pedigree`'s own `SmartPatientProvider.ts`, which
+ * reads node state via `window.editor.getView().getNode(nodeId)` from
+ * inside a concrete provider the same way `openEditor` below does to find
+ * the record ref to edit (`AbstractRecordLinkProvider.openEditor` is
+ * nodeId-only - it doesn't receive the ref as a parameter).
+ *
+ * Reuses the `msdialog-*` CSS classes (injected into the page by the bundle
  * itself) for visually-matching modal chrome, since `NativeModal` itself
  * isn't exported on `window.OpenPedigree` and so isn't reachable from here.
  */
@@ -40,25 +50,19 @@
         return this._configured;
     };
 
-    RedcapInstrumentPatientProvider.prototype.canImportClinicalData = function () {
+    // AbstractPatientProvider's canLinkPatient(nodeId) delegated to
+    // canLinkProband()/canSearchFamilyMembers(), both hardcoded `true` -
+    // i.e. it was already unconditionally `this._configured` regardless of
+    // nodeId. RecordLinkProvider has no proband/family-member split, so
+    // that indirection is dropped rather than reimplemented.
+    RedcapInstrumentPatientProvider.prototype.canLink = function (nodeId) {
         return this._configured;
     };
 
-    // These three mirror AbstractPatientProvider's *default* (non-abstract)
-    // implementations. This class doesn't literally extend that TypeScript
-    // base class (it's duck-typed from plain JS, loaded outside the
-    // webpack build - see the file header), so the defaults aren't
-    // inherited for free and must be reimplemented here.
-    RedcapInstrumentPatientProvider.prototype.canSearchFamilyMembers = function () {
-        return true;
-    };
-
-    RedcapInstrumentPatientProvider.prototype.canLinkProband = function () {
-        return true;
-    };
-
-    RedcapInstrumentPatientProvider.prototype.canLinkPatient = function (nodeId) {
-        return this._configured && (nodeId === 0 ? this.canLinkProband() : this.canSearchFamilyMembers());
+    // No create-new-row behavior yet (pedigree-editor-repeating-instrument-sync's
+    // job, layered on top of this once it lands) - always false for now.
+    RedcapInstrumentPatientProvider.prototype.canCreateNew = function (nodeId) {
+        return false;
     };
 
     RedcapInstrumentPatientProvider.prototype._post = function (params) {
@@ -84,21 +88,6 @@
             }
             return json;
         });
-    };
-
-    RedcapInstrumentPatientProvider.prototype.lookupPatient = function (patientRef, onSuccess, onError) {
-        var ref = decodeRef(patientRef);
-        if (!ref) {
-            onError('Not a REDCap instrument reference: ' + patientRef);
-            return;
-        }
-        this._post({ type: 'lookup', record: ref.record, instance: ref.instance })
-            .then(function (result) {
-                onSuccess((result && result.displayName) || (ref.record + ' #' + ref.instance));
-            })
-            .catch(function (e) {
-                onError(String(e && e.message || e));
-            });
     };
 
     function createModal(titleText) {
@@ -134,7 +123,7 @@
         return { content: content, close: close };
     }
 
-    RedcapInstrumentPatientProvider.prototype.openPatientPickerModal = function (nodeId, onSelected) {
+    RedcapInstrumentPatientProvider.prototype.openPicker = function (nodeId, onLinked) {
         var self = this;
         var modal = createModal('Link to a family member record');
 
@@ -174,7 +163,7 @@
                         row.addEventListener('mouseleave', function () { row.style.background = ''; });
                         row.addEventListener('click', function () {
                             modal.close();
-                            onSelected(encodeRef(match.record, match.instance), { firstName: match.display });
+                            onLinked(encodeRef(match.record, match.instance), { firstName: match.display });
                         });
                         results.appendChild(row);
                     });
@@ -193,8 +182,13 @@
         doSearch();
     };
 
-    RedcapInstrumentPatientProvider.prototype.openClinicalImportModal = function (nodeId, patientRef, onImported) {
-        var ref = decodeRef(patientRef);
+    // AbstractRecordLinkProvider.openEditor is nodeId-only (no recordRef
+    // parameter - see its own header comment / record-link-provider design
+    // D2's implementation note): the ref is looked up here via the live
+    // node, the same pattern SmartPatientProvider.ts already uses.
+    RedcapInstrumentPatientProvider.prototype.openEditor = function (nodeId, onDone) {
+        var node = window.editor && window.editor.getView().getNode(nodeId);
+        var ref = decodeRef(node && node.getLinkedRecordRef && node.getLinkedRecordRef());
         var modal = createModal('Import from linked record');
         modal.content.textContent = 'Loading…';
 
@@ -228,13 +222,19 @@
                 importBtn.textContent = 'Import';
                 importBtn.addEventListener('click', function () {
                     modal.close();
-                    onImported(answers);
+                    onDone(answers);
                 });
                 modal.content.appendChild(importBtn);
             })
             .catch(function (e) {
                 modal.content.textContent = 'Import failed: ' + String(e && e.message || e);
             });
+    };
+
+    // Not supported yet - canCreateNew() always returns false, so the host
+    // never offers a "Create new" action that would reach this method.
+    RedcapInstrumentPatientProvider.prototype.createNew = function (nodeId, onCreated) {
+        console.warn('RedcapInstrumentPatientProvider.createNew() is not yet supported');
     };
 
     global.RedcapInstrumentPatientProvider = RedcapInstrumentPatientProvider;

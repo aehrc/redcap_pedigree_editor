@@ -606,7 +606,7 @@ EOD;
 
     /**
      * Searches the configured repeating instrument's rows (task 6.2/6.4 —
-     * backs `RedcapInstrumentPatientProvider.openPatientPickerModal`'s AJAX call).
+     * backs `RedcapInstrumentPatientProvider.openPicker`'s AJAX call).
      *
      * @return array List of `['record', 'instance', 'display', 'ref']`.
      */
@@ -625,7 +625,7 @@ EOD;
     /**
      * Fetches one linked row's `@PEDIGREE_FIELD`-tagged answers as a
      * `linkId`-keyed bag (task 6.5 — backs
-     * `RedcapInstrumentPatientProvider.openClinicalImportModal`'s AJAX call).
+     * `RedcapInstrumentPatientProvider.openEditor`'s AJAX call).
      *
      * @return array{linkId: string, value: mixed}[]
      */
@@ -652,11 +652,18 @@ EOD;
     }
 
     /**
-     * Resolves a linked row's search/display name (backs
-     * `RedcapInstrumentPatientProvider.lookupPatient`) — kept separate from
+     * Resolves a linked row's search/display name. Kept separate from
      * {@see getPedigreeInstrumentRowAnswers()} since which tagged field (if
      * any) represents "the name" is project-specific, whereas the
      * configured search fields already exist for exactly this purpose.
+     *
+     * Currently unused: this backed `RedcapInstrumentPatientProvider`'s old
+     * `lookupPatient` method, which `AbstractRecordLinkProvider` has no
+     * equivalent for (see pedigree-editor-redcap-extension-extraction) - the
+     * `type=lookup` AJAX endpoint in `PedigreeInstrumentService.php` that
+     * calls this is consequently also dead. Left in place rather than
+     * removed, in case a future "show linked record name" feature on the
+     * Linked Record tab wants it.
      *
      * @return string|null
      */

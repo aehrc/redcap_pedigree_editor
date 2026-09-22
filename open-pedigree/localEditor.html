@@ -184,13 +184,14 @@
       console.log("creating editor");
 
       // redcap_pedigree_editor-specific addition (see pedigree-repeating-instrument-import
-      // OpenSpec change) - not part of the upstream file this is otherwise copied from
-      // verbatim. Preserve this block across future re-syncs.
+      // and pedigree-editor-redcap-extension-extraction OpenSpec changes) - not part of
+      // the upstream file this is otherwise copied from verbatim. Preserve this block
+      // across future re-syncs.
       var pedigreeImportEndpoint = getParameterByName('pedigreeImportEndpoint');
-      var patientProviderOptions = {};
+      var recordLinkProviderOptions = {};
       if (pedigreeImportEndpoint && window.RedcapInstrumentPatientProvider) {
-        patientProviderOptions = {
-          patientProvider: new RedcapInstrumentPatientProvider({
+        recordLinkProviderOptions = {
+          recordLinkProvider: new RedcapInstrumentPatientProvider({
             endpoint: pedigreeImportEndpoint,
             csrfToken: getParameterByName('pedigreeImportCsrf'),
             configured: true
@@ -207,7 +208,7 @@
         returnUrl: '#CloseWindow',
         backend: OpenPedigree.localStorageBackend,
         ...terminologyOptions,
-        ...patientProviderOptions,
+        ...recordLinkProviderOptions,
         ...questionnaireOptions};
 
 

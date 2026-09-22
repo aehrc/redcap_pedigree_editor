@@ -190,10 +190,15 @@ Two project settings control this (see [Project Settings](#project-settings) abo
 - ***Search fields*** (`project_pedigree_import_search_fields`) - one or more fields on that instrument used to search
   for and display a row when linking a node (e.g. first name + last name).
 
-Once configured, every node's edit form gains a **Linked Record** entry with a *Link to record* button. Linking a node
-searches the configured instrument's rows (server-side - no REDCap API token is ever exposed to the browser) and, once
-linked, an *Import from linked record* button becomes available to pull that row's data into the node - a one-time,
-read-only snapshot; later changes to the REDCap row are not automatically reflected back into the pedigree.
+Once configured, every node's edit form gains a **Linked Record** tab with a *Link to existing record* button
+(automatically added by `open-pedigree`'s own `record-link-provider` mechanism - not something this module's derived
+Questionnaire builds itself, and not something you can reposition or omit from a hand-authored Questionnaire either;
+see [Advanced mode](#advanced-mode-hand-authoring-the-questionnaire) below). Linking a node searches the configured
+instrument's rows (server-side - no REDCap API token is ever exposed to the browser) and, once linked, an *Edit linked
+record* button becomes available to pull that row's data into the node - a one-time, read-only snapshot; later changes
+to the REDCap row are not automatically reflected back into the pedigree. Creating a brand-new linked row from the
+pedigree editor isn't supported yet (the *Create new linked record* button always stays hidden) - see
+`pedigree-editor-repeating-instrument-sync`.
 
 ### The `@PEDIGREE_FIELD` action tag
 
@@ -234,7 +239,7 @@ fields are never included - this is opt-in, the same way `@PEDIGREE` marks the o
 - **`@PEDIGREE_FIELD(predicate="<name>")`** - layer a graph/app-state visibility condition onto the field, for cases
   `branching_logic` has no way to express (e.g. twin-group membership). Recognised predicates: `isFetus`,
   `hasRelationships`, `isProband`, `isRelatedToProband`, `hasToBeAdopted`, `isTwin`, `isTwinWithConsistentGender`,
-  `canLinkPatient`, `canImportClinicalData`.
+  `canLinkRecord`, `canCreateNewRecord`, `canEditLinkedRecord`.
 
 `mapsTo`/`legend`/`predicate` are independent and may be combined, e.g. `@PEDIGREE_FIELD(mapsTo="gestationAge",predicate="isFetus")`.
 
@@ -342,32 +347,33 @@ A few starting examples:
 }
 ```
 
-**The Linked Record buttons**, if you want them placed somewhere specific in your own layout rather than relying on
-*Default + tags*' placement (omit these entirely and no linking/import UI will be shown at all):
+**The Linked Record tab and its Link/Create-new/Edit buttons are not part of any Questionnaire, hand-authored or
+derived.** `open-pedigree`'s own `record-link-provider` mechanism adds them automatically, entirely independent of
+Questionnaire content, whenever a `recordLinkProvider` is configured (which this module always does once the
+*Repeating instrument* setting above is set) - there is no extension to attach and no way to reposition or omit them
+from an Advanced-mode Questionnaire.
+
+To make one of your own hand-authored items render read-only and land on that same Linked Record tab (rather than
+being independently editable on whichever tab you declared it under), also attach the generic
+`questionnaire-linked-record-source` extension alongside `questionnaire-redcap-source` - the two are always attached
+together by the derived modes above and should be here too:
 
 ```json
 {
-  "linkId": "link_patient",
-  "type": "display",
-  "text": "Link to record",
+  "linkId": "external_id",
+  "type": "string",
+  "text": "Identifier",
+  "definition": "http://hl7.org/fhir/StructureDefinition/Patient#Patient.identifier",
   "extension": [
-    { "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping", "valueCode": "invokesAction" },
-    { "url": "https://github.com/aehrc/open-pedigree/questionnaire-action", "valueCode": "linkPatient" }
-  ],
-  "enableWhen": [
-    { "extension": [{ "url": "https://github.com/aehrc/open-pedigree/questionnaire-enable-predicate", "valueCode": "canLinkPatient" }] }
-  ]
-},
-{
-  "linkId": "import_from_record",
-  "type": "display",
-  "text": "Import from linked record",
-  "extension": [
-    { "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping", "valueCode": "invokesAction" },
-    { "url": "https://github.com/aehrc/open-pedigree/questionnaire-action", "valueCode": "importClinicalData" }
-  ],
-  "enableWhen": [
-    { "extension": [{ "url": "https://github.com/aehrc/open-pedigree/questionnaire-enable-predicate", "valueCode": "canImportClinicalData" }] }
+    { "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping", "valueCode": "mapsToField" },
+    { "url": "https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source" },
+    {
+      "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+      "extension": [
+        { "url": "instrument", "valueString": "family_members" },
+        { "url": "field", "valueString": "external_id" }
+      ]
+    }
   ]
 }
 ```

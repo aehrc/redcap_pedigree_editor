@@ -21,12 +21,20 @@ class QuestionnaireDerivation
     const ACTION_EXTENSION_URL = 'https://github.com/aehrc/open-pedigree/questionnaire-action';
     const REDCAP_SOURCE_EXTENSION_URL = 'https://github.com/aehrc/open-pedigree/questionnaire-redcap-source';
 
+    // Generic, non-REDCap-named marker (see record-link-provider's
+    // linked-record-questionnaire-rendering capability) attached alongside
+    // REDCAP_SOURCE_EXTENSION_URL on every derived item - drives open-
+    // pedigree-upgrade's own always-disabled/regrouped-onto-the-reserved-tab
+    // rendering, entirely independent of REDCAP_SOURCE_EXTENSION_URL (which
+    // only routes RedcapInstrumentPatientProvider's import).
+    const LINKED_RECORD_SOURCE_EXTENSION_URL = 'https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source';
+
     const UNSUPPORTED_FIELD_TYPES = ['calc', 'sql', 'file', 'slider', 'descriptive'];
 
     const KNOWN_PREDICATES = [
         'isFetus', 'hasRelationships', 'isProband', 'isRelatedToProband',
         'hasToBeAdopted', 'isTwin', 'isTwinWithConsistentGender',
-        'canLinkPatient', 'canImportClinicalData',
+        'canLinkRecord', 'canCreateNewRecord', 'canEditLinkedRecord',
     ];
 
     const MAPS_TO_FIELD_EXPECTED_TYPES = [
@@ -140,11 +148,12 @@ class QuestionnaireDerivation
 
     /**
      * Mode "default + tags": starts from `open-pedigree`'s own built-in
-     * default Questionnaire (already carries a working `Linked Record`
-     * experience within its own tabs, plus the standard disorders/genes/
-     * phenotypes legend, name/gender/dob, etc.) and appends the
-     * `@PEDIGREE_FIELD`-tagged groups as one additional new top-level group
-     * — the default's own content is left untouched, tags only ever add.
+     * default Questionnaire (plus the standard disorders/genes/phenotypes
+     * legend, name/gender/dob, etc.) and appends the `@PEDIGREE_FIELD`-tagged
+     * groups as one additional new top-level group — the default's own
+     * content is left untouched, tags only ever add. The "Linked Record" tab
+     * itself is never part of any derived/base Questionnaire content — see
+     * {@see derive()}'s docblock.
      *
      * @param array $baseQuestionnaire The default Questionnaire (e.g.
      *   loaded from `open-pedigree/dist/defaultQuestionnaire.json`), used
@@ -153,7 +162,7 @@ class QuestionnaireDerivation
      */
     public static function deriveWithBaseQuestionnaire(array $baseQuestionnaire, array $dataDictionary, string $instrumentName, array $fieldAnswerValueSets = []): array
     {
-        $result = self::derive($dataDictionary, $instrumentName, $fieldAnswerValueSets, false);
+        $result = self::derive($dataDictionary, $instrumentName, $fieldAnswerValueSets);
         $baseQuestionnaire['item'] = array_merge($baseQuestionnaire['item'], $result['questionnaire']['item']);
         return ['questionnaire' => $baseQuestionnaire, 'warnings' => $result['warnings']];
     }
@@ -248,13 +257,9 @@ class QuestionnaireDerivation
      *   `advanced_fhir_ontology_provider`/`simple_ontology_provider`
      *   configuration (see D5) — omit or leave a field unset to fall back
      *   to static `answerOption` choices.
-     * @param bool $includeLinkedRecordGroup Whether to prepend the
-     *   `Linked Record` action-button group — false for mode
-     *   "default + tags", since the base Questionnaire already carries a
-     *   working `Linked Record` experience of its own.
      * @return array{questionnaire: array, warnings: string[]}
      */
-    public static function derive(array $dataDictionary, string $instrumentName, array $fieldAnswerValueSets = [], bool $includeLinkedRecordGroup = true): array
+    public static function derive(array $dataDictionary, string $instrumentName, array $fieldAnswerValueSets = []): array
     {
         $warnings = [];
         $items = [];
@@ -306,6 +311,10 @@ class QuestionnaireDerivation
                     ['url' => 'field', 'valueString' => $fieldName],
                 ],
             ];
+            // Distinct from REDCAP_SOURCE_EXTENSION_URL above - see the
+            // constant's own doc comment. Both must be attached together,
+            // never independently (record-link-provider design's risk note).
+            $extensions[] = ['url' => self::LINKED_RECORD_SOURCE_EXTENSION_URL];
             $item['extension'] = $extensions;
 
             $items[$fieldName] = $item;
@@ -320,9 +329,6 @@ class QuestionnaireDerivation
         self::applyBranchingLogicAndPredicates($items, $order, $dataDictionary, $itemTypesByField, $mappedFieldNames, $warnings);
 
         $topLevelItems = self::groupIntoSections($items, $order, $sectionOfField);
-        if ($includeLinkedRecordGroup) {
-            array_unshift($topLevelItems, self::linkedRecordGroup());
-        }
 
         $questionnaire = [
             'resourceType' => 'Questionnaire',
@@ -333,52 +339,15 @@ class QuestionnaireDerivation
         return ['questionnaire' => $questionnaire, 'warnings' => $warnings];
     }
 
-    /**
-     * A "Linked Record" tab carrying the two standard PatientProvider
-     * action buttons (`linkPatient`/`importClinicalData`), matching
-     * `open-pedigree`'s own `defaultQuestionnaire.ts` pattern exactly —
-     * without this, a project wiring a `RedcapInstrumentPatientProvider`
-     * (or any other provider) would have no button to invoke it from,
-     * since a derived Questionnaire fully replaces the built-in default
-     * rather than merging with it. Visibility is entirely self-gating via
-     * the `canLinkPatient`/`canImportClinicalData` predicates, so this is
-     * always safe to include even when no provider is configured (it just
-     * stays hidden, exactly like the default Questionnaire's own buttons).
-     */
-    private static function linkedRecordGroup(): array
-    {
-        return [
-            'linkId' => '__group_linked_record',
-            'type' => 'group',
-            'text' => 'Linked Record',
-            'item' => [
-                [
-                    'linkId' => 'link_patient',
-                    'type' => 'display',
-                    'text' => 'Link to record',
-                    'extension' => [
-                        ['url' => self::MAPPING_EXTENSION_URL, 'valueCode' => 'invokesAction'],
-                        ['url' => self::ACTION_EXTENSION_URL, 'valueCode' => 'linkPatient'],
-                    ],
-                    'enableWhen' => [
-                        ['extension' => [['url' => self::PREDICATE_EXTENSION_URL, 'valueCode' => 'canLinkPatient']]],
-                    ],
-                ],
-                [
-                    'linkId' => 'import_from_record',
-                    'type' => 'display',
-                    'text' => 'Import from linked record',
-                    'extension' => [
-                        ['url' => self::MAPPING_EXTENSION_URL, 'valueCode' => 'invokesAction'],
-                        ['url' => self::ACTION_EXTENSION_URL, 'valueCode' => 'importClinicalData'],
-                    ],
-                    'enableWhen' => [
-                        ['extension' => [['url' => self::PREDICATE_EXTENSION_URL, 'valueCode' => 'canImportClinicalData']]],
-                    ],
-                ],
-            ],
-        ];
-    }
+    // Note: this class used to build its own "Linked Record" top-level group
+    // here, carrying `linkPatient`/`importClinicalData` action buttons
+    // (open-pedigree's old AbstractPatientProvider contract) - removed by
+    // pedigree-editor-redcap-extension-extraction. open-pedigree-upgrade's
+    // record-link-provider mechanism now synthesizes an equivalent "Linked
+    // Record" tab (with linkRecord/createNewRecord/editRecord actions)
+    // automatically whenever a recordLinkProvider is configured, regardless
+    // of which Questionnaire-derivation mode is in use - no mode needs to
+    // build its own any more.
 
     private static function buildBaseItem(string $fieldName, array $field, array $typeInfo, ?string $answerValueSet): array
     {
