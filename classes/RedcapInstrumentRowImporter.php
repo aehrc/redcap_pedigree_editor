@@ -5,9 +5,11 @@ namespace AEHRC\PedigreeEditorExternalModule;
 /**
  * Converts a single repeating-instrument row's raw REDCap data values into
  * the `{linkId, value}[]` answer bag `RedcapInstrumentPatientProvider`'s
- * `openClinicalImportModal` returns to `open-pedigree`'s generalized
- * `onImported` callback (see the `generalize-patient-provider-import`
- * companion change).
+ * `openEditor` (originally `openClinicalImportModal`, re-targeted by
+ * pedigree-editor-redcap-extension-extraction) returns to `open-pedigree`'s
+ * generalized `onDone` callback (see the `generalize-patient-provider-import`
+ * companion change - the answer-bag shape it established carries over
+ * unchanged to the new contract).
  *
  * Pure/testable: takes a plain row-data array — the per-row shape
  * `REDCap::getData($project_id, 'json-array', null, $fields)` produces
