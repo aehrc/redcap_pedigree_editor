@@ -98,6 +98,13 @@
         return this._configured;
     };
 
+    // open-pedigree's optional label hook (AbstractRecordLinkProvider.getActionLabel,
+    // from its record-link-action-labels change): the edit action opens REDCap's own
+    // form, so say so. Bundles older than that change simply don't call this.
+    RedcapInstrumentPatientProvider.prototype.getActionLabel = function (action) {
+        return action === 'editRecord' ? 'Edit in REDCap' : undefined;
+    };
+
     // No create-new-row behavior yet (pedigree-editor-repeating-instrument-sync's
     // job, layered on top of this once it lands) - always false for now.
     RedcapInstrumentPatientProvider.prototype.canCreateNew = function (nodeId) {
