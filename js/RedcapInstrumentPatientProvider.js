@@ -59,6 +59,9 @@
         // REDCap data-entry URL for this record's linked-instrument rows, minus
         // &instance= (PedigreeEditorExternalModule builds it; see _editUrlFor()).
         this._editUrl = options.editUrl || '';
+        // nodeId -> REDCap window currently open for that node's row, so a repeat
+        // click focuses it instead of opening a second window + second refresh.
+        this._editWindows = {};
     }
 
     // Linking/editing/creating a repeating-instrument row all need the current
@@ -334,22 +337,47 @@
             return;
         }
 
+        var existing = this._editWindows[nodeId];
+        if (existing && !existing.closed) {
+            existing.focus();
+            return;
+        }
+
         var editWindow = window.open(url, '_blank');
-        if (!editWindow) {
+        // Some blockers return null, others a window that is already closed.
+        if (!editWindow || editWindow.closed) {
             showMessage('Edit in REDCap', 'Your browser blocked the REDCap window. '
                 + 'Allow pop-ups for this site, then try again.');
             return;
         }
+        this._editWindows[nodeId] = editWindow;
 
         var self = this;
+        var refAtOpen = node.getLinkedRecordRef();
         var timer = setInterval(function () {
             if (!editWindow.closed) {
                 return;
             }
             clearInterval(timer);
+            if (self._editWindows[nodeId] === editWindow) {
+                delete self._editWindows[nodeId];
+            }
+            // The person may have been re-linked or deleted while the REDCap window
+            // was open - only apply the row to a node still linked to it.
+            var nodeNow = window.editor && window.editor.getView().getNode(nodeId);
+            var refNow = nodeNow && nodeNow.getLinkedRecordRef ? nodeNow.getLinkedRecordRef() : null;
+            if (refNow !== refAtOpen) {
+                return;
+            }
             self._get({ type: 'import', record: ref.record, currentRecord: self._record, instance: ref.instance })
                 .then(function (answers) {
-                    onDone(answers || []);
+                    if (!answers || answers.length === 0) {
+                        showMessage('Edit in REDCap', 'This person\'s linked REDCap row has no data any more '
+                            + '(it may have been deleted). Their details here were left unchanged - link them '
+                            + 'to another row, or remove the link.');
+                        return;
+                    }
+                    onDone(answers);
                 })
                 .catch(function (e) {
                     showMessage('Edit in REDCap', 'Couldn\'t refresh this person from REDCap: '
