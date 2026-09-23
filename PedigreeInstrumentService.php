@@ -33,6 +33,16 @@ if (!isset($_GET['pid'])) {
 }
 $project_id = (int) $_GET['pid'];
 
+// A required, non-empty, scalar query parameter, as a string (rejects `name[]=` arrays
+// too). Scalar rather than string-only: REDCap core casts some GET params before this
+// page runs - `instance` arrives as an int.
+$requireString = function ($name, $action) use ($params, $sendErrorResponse) {
+    if (!isset($params[$name]) || !is_scalar($params[$name]) || (string) $params[$name] === '') {
+        $sendErrorResponse('Invalid Request', 'Missing required parameter "' . $name . '" for ' . $action . ' action.');
+    }
+    return (string) $params[$name];
+};
+
 header('Content-type: application/json');
 
 if ('questionnaire' === $params['type']) {
@@ -43,9 +53,7 @@ if ('questionnaire' === $params['type']) {
     echo json_encode($questionnaire, JSON_UNESCAPED_SLASHES);
 } elseif ('search' === $params['type']) {
     // Required, never defaulted to "all records" - see searchPedigreeInstrumentRows().
-    if (!isset($params['record']) || !is_string($params['record']) || $params['record'] === '') {
-        $sendErrorResponse('Invalid Request', 'Missing required parameter "record" for search action.');
-    }
+    $record = $requireString('record', 'search');
     $query = $params['query'] ?? '';
     // Comma-separated allowed gender codes (e.g. "M,U") - see
     // RedcapInstrumentSearch::search()'s $allowedGenders param. Filtered to
@@ -58,26 +66,22 @@ if ('questionnaire' === $params['type']) {
             ['M', 'F', 'U']
         ));
     }
-    echo json_encode($module->searchPedigreeInstrumentRows($project_id, $params['record'], $query, $allowedGenders), JSON_UNESCAPED_SLASHES);
+    echo json_encode($module->searchPedigreeInstrumentRows($project_id, $record, $query, $allowedGenders), JSON_UNESCAPED_SLASHES);
 } elseif ('import' === $params['type']) {
-    if (!isset($params['record']) || !isset($params['instance'])) {
-        $sendErrorResponse('Invalid Request', 'Missing required parameter "record" or "instance" for import action.');
-    }
-    // Same rule as search: only rows on the record the editor was opened from.
-    if (!isset($params['currentRecord']) || !is_string($params['currentRecord']) || $params['currentRecord'] === ''
-        || $params['currentRecord'] !== $params['record']) {
+    $record = $requireString('record', 'import');
+    $instance = $requireString('instance', 'import');
+    // Same rule as search: only rows on the record the editor was opened from. A
+    // consistency check on what the editor asks for, NOT access control - both values
+    // come from the client, and the user can already read any row in their DAG
+    // through REDCap itself. The real enforcement is RedcapInstrumentPatientProvider
+    // refusing cross-record links before asking.
+    if ($requireString('currentRecord', 'import') !== $record) {
         $sendErrorResponse('Invalid Request', 'Import is only allowed from a row on the current record ("currentRecord").');
     }
     echo json_encode(
-        $module->getPedigreeInstrumentRowAnswers($project_id, $params['record'], $params['instance']),
+        $module->getPedigreeInstrumentRowAnswers($project_id, $record, $instance),
         JSON_UNESCAPED_SLASHES
     );
-} elseif ('lookup' === $params['type']) {
-    if (!isset($params['record']) || !isset($params['instance'])) {
-        $sendErrorResponse('Invalid Request', 'Missing required parameter "record" or "instance" for lookup action.');
-    }
-    $displayName = $module->getPedigreeInstrumentRowDisplayName($project_id, $params['record'], $params['instance']);
-    echo json_encode(['displayName' => $displayName], JSON_UNESCAPED_SLASHES);
 } else {
     $sendErrorResponse('Invalid Request', 'Invalid "type" parameter "' . $params['type'] . '".');
 }

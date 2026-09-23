@@ -96,7 +96,7 @@
     };
 
     // GET, not POST: every action this endpoint supports (search/import/
-    // lookup/questionnaire) only reads data, never writes - REDCap only
+    // questionnaire) only reads data, never writes - REDCap only
     // requires a `redcap_csrf_token` for POST requests to module pages, so
     // using GET here needs no token at all (avoiding an earlier version of
     // this file that carried one in the URL, where it would end up in
@@ -222,7 +222,13 @@
             hiddenNotice.textContent = 'Showing only records with a gender compatible with this position.';
         }
 
+        // Only the latest search may render: the automatic empty-query search on
+        // open (or an earlier click) can otherwise answer after a newer one and
+        // overwrite its results.
+        var latestSearch = 0;
+
         function doSearch() {
+            var thisSearch = ++latestSearch;
             results.textContent = 'Searching…';
             var searchParams = { type: 'search', record: self._record, query: input.value.trim() };
             if (isFiltering) {
@@ -230,6 +236,9 @@
             }
             self._get(searchParams)
                 .then(function (matches) {
+                    if (thisSearch !== latestSearch) {
+                        return;
+                    }
                     results.innerHTML = '';
                     if (!matches || matches.length === 0) {
                         results.textContent = 'No matches found.';
@@ -252,6 +261,9 @@
                     });
                 })
                 .catch(function (e) {
+                    if (thisSearch !== latestSearch) {
+                        return;
+                    }
                     results.textContent = 'Search failed: ' + String(e && e.message || e);
                 });
         }
@@ -286,9 +298,10 @@
         // so a link to another record's row (e.g. from an imported pedigree file)
         // is refused rather than read.
         if (ref.record !== this._record) {
-            modal.content.textContent = 'This person is linked to a row on a different REDCap record ("'
-                + ref.record + '"). Only rows on this record can be used - link the person to one of '
-                + 'this record\'s rows instead.';
+            modal.content.textContent = 'This person is linked to a row on REDCap record "' + ref.record
+                + '", not this record. Only rows on this record can be used. If this record has been '
+                + 'renamed since the link was made, or the pedigree was imported from elsewhere, link the '
+                + 'person again to one of this record\'s rows.';
             return;
         }
 
