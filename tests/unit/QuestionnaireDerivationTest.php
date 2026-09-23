@@ -365,6 +365,24 @@ class QuestionnaireDerivationTest extends TestCase
         $this->assertNull($resolved[0]['mapsTo']);
     }
 
+    public function testResolveTaggedFieldsOmitsMapsToTargetForARepeatingField(): void
+    {
+        // A checkbox field also derives to type 'choice' (matching
+        // MAPS_TO_FIELD_EXPECTED_TYPES['gender']), but it's repeating - every
+        // mapsTo target is a scalar Person property, so a repeating source
+        // field is never valid even when its base type matches. Concretely:
+        // REDCap explodes checkbox values into fieldName___code sub-keys, so
+        // a consumer resolving this field by its plain name would never find
+        // a value at all.
+        $dd = ['gender' => $this->field([
+            'field_type' => 'checkbox',
+            'field_annotation' => '@PEDIGREE_FIELD(mapsTo="gender")',
+            'select_choices_or_calculations' => 'M, Male | F, Female',
+        ])];
+        $resolved = QuestionnaireDerivation::resolveTaggedFields($dd);
+        $this->assertNull($resolved[0]['mapsTo']);
+    }
+
     public function testResolveTaggedFieldsOverridesLinkIdForValidLegendMapping(): void
     {
         $dd = ['family_disorders' => $this->field([

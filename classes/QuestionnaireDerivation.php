@@ -128,7 +128,18 @@ class QuestionnaireDerivation
             if ($tag->mapsTo !== null
                 && isset(self::MAPS_TO_FIELD_EXPECTED_TYPES[$tag->mapsTo])
                 && self::MAPS_TO_FIELD_EXPECTED_TYPES[$tag->mapsTo] === $typeInfo['type']
+                && !$typeInfo['repeats']
             ) {
+                // Every MAPS_TO_FIELD_EXPECTED_TYPES target is a scalar Person
+                // property (gender, given, family, ...) - a repeating REDCap
+                // field (checkbox) is never a valid source for one, even
+                // though its derived type ('choice') otherwise matches. A
+                // checkbox mapped to "gender" would silently make
+                // findMapsToFieldName() report it, then have its raw value
+                // never resolve at all (REDCap explodes checkbox values into
+                // fieldName___code sub-keys, not a plain fieldName key),
+                // defeating the gender-compatible-picker filter with no
+                // warning.
                 $mapsTo = $tag->mapsTo;
             }
 

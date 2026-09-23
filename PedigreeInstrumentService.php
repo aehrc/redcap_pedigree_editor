@@ -43,7 +43,18 @@ if ('questionnaire' === $params['type']) {
     echo json_encode($questionnaire, JSON_UNESCAPED_SLASHES);
 } elseif ('search' === $params['type']) {
     $query = $params['query'] ?? '';
-    echo json_encode($module->searchPedigreeInstrumentRows($project_id, $query), JSON_UNESCAPED_SLASHES);
+    // Comma-separated allowed gender codes (e.g. "M,U") - see
+    // RedcapInstrumentSearch::search()'s $allowedGenders param. Filtered to
+    // the only 3 recognized codes so an unexpected value can't be smuggled
+    // through to the in_array() comparison downstream.
+    $allowedGenders = null;
+    if (isset($params['allowedGenders']) && $params['allowedGenders'] !== '') {
+        $allowedGenders = array_values(array_intersect(
+            explode(',', $params['allowedGenders']),
+            ['M', 'F', 'U']
+        ));
+    }
+    echo json_encode($module->searchPedigreeInstrumentRows($project_id, $query, $allowedGenders), JSON_UNESCAPED_SLASHES);
 } elseif ('import' === $params['type']) {
     if (!isset($params['record']) || !isset($params['instance'])) {
         $sendErrorResponse('Invalid Request', 'Missing required parameter "record" or "instance" for import action.');

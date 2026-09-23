@@ -20,12 +20,23 @@ class RedcapInstrumentSearch
      * @param string|null $genderFieldName The REDCap field name mapped to
      *   `mapsTo="gender"` (see {@see QuestionnaireDerivation::resolveTaggedFields()}),
      *   or `null` if the instrument has none - included as each match's `gender`
-     *   so the client can filter the picker to genders the target node can
-     *   actually take (see `RedcapInstrumentPatientProvider.js`'s `openPicker`).
+     *   so the client knows what was actually matched against (see
+     *   `RedcapInstrumentPatientProvider.js`'s `openPicker`).
+     * @param string[]|null $allowedGenders Gender codes ('M'/'F'/'U') to
+     *   include, or `null` for no gender filtering. A row is excluded only
+     *   when both a gender field is configured AND its (normalized) value
+     *   isn't in this list - applied *before* `$limit`, so a caller can rely
+     *   on getting up to `$limit` gender-compatible matches rather than
+     *   incompatible rows crowding out compatible ones beyond the cutoff.
      * @return array List of `['record', 'instance', 'display', 'ref', 'gender']`
-     *   (`gender` omitted when `$genderFieldName` is `null`).
+     *   (`gender` omitted when `$genderFieldName` is `null`). A row's raw
+     *   gender value is normalized to 'U' unless it's exactly 'M' or 'F'
+     *   (including when unset/empty) - matching open-pedigree's own gender
+     *   getter and this module's README, so a project using different
+     *   REDCap choice codes degrades to "unknown" rather than silently
+     *   never matching any `$allowedGenders` filter.
      */
-    public static function search(array $rows, array $searchFieldNames, string $query, int $limit = 20, ?string $genderFieldName = null): array
+    public static function search(array $rows, array $searchFieldNames, string $query, int $limit = 20, ?string $genderFieldName = null, ?array $allowedGenders = null): array
     {
         $query = trim($query);
         $matches = [];
@@ -36,6 +47,15 @@ class RedcapInstrumentSearch
                 continue;
             }
 
+            $gender = null;
+            if ($genderFieldName !== null) {
+                $rawGender = $row['fields'][$genderFieldName] ?? null;
+                $gender = ($rawGender === 'M' || $rawGender === 'F') ? $rawGender : 'U';
+            }
+            if ($allowedGenders !== null && $gender !== null && !in_array($gender, $allowedGenders, true)) {
+                continue;
+            }
+
             $match = [
                 'record' => $row['record'],
                 'instance' => $row['instance'],
@@ -43,7 +63,7 @@ class RedcapInstrumentSearch
                 'ref' => RedcapInstrumentReference::encode($row['record'], $row['instance']),
             ];
             if ($genderFieldName !== null) {
-                $match['gender'] = $row['fields'][$genderFieldName] ?? null;
+                $match['gender'] = $gender;
             }
             $matches[] = $match;
 

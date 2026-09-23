@@ -662,11 +662,16 @@ EOD;
      * Searches the configured repeating instrument's rows (task 6.2/6.4 —
      * backs `RedcapInstrumentPatientProvider.openPicker`'s AJAX call).
      *
+     * @param string[]|null $allowedGenders Gender codes ('M'/'F'/'U') to
+     *   restrict results to, or null for no restriction - applied *before*
+     *   the result limit (see `RedcapInstrumentSearch::search()`), so an
+     *   incompatible-gender row can never crowd a compatible one out of the
+     *   returned set.
      * @return array List of `['record', 'instance', 'display', 'ref']`, plus
      *   `'gender'` per match when the instrument has a valid
      *   `mapsTo="gender"` field - see `RedcapInstrumentSearch::search()`.
      */
-    public function searchPedigreeInstrumentRows($project_id, $query)
+    public function searchPedigreeInstrumentRows($project_id, $query, $allowedGenders = null)
     {
         $instrument = $this->getPedigreeImportInstrument($project_id);
         if (!$instrument) {
@@ -676,7 +681,7 @@ EOD;
         $rows = RedcapInstrumentGateway::fetchInstrumentRows($project_id, array_keys($dataDictionary), $this->getCurrentUserGroupId($project_id));
         $searchFields = $this->getPedigreeImportSearchFields($project_id);
         $genderField = $this->findMapsToFieldName($dataDictionary, 'gender');
-        return RedcapInstrumentSearch::search($rows, $searchFields, (string) $query, 20, $genderField);
+        return RedcapInstrumentSearch::search($rows, $searchFields, (string) $query, 20, $genderField, $allowedGenders);
     }
 
     /**

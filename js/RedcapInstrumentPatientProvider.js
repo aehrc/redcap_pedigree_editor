@@ -164,10 +164,37 @@
         modal.content.appendChild(hiddenNotice);
         modal.content.appendChild(results);
 
+        // Computed once (doesn't change over the picker's lifetime) and sent
+        // to the server so it can filter *before* applying its own result
+        // limit - filtering only after a client-side fetch would let
+        // incompatible-gender rows within that limit crowd out compatible
+        // ones that exist beyond it. A result whose mapped gender field value
+        // is a gender this node cannot currently take (e.g. the node is
+        // already partnered with a known-gender person) would otherwise
+        // silently fail to import that value later (open-pedigree's own
+        // partnership-consistency rule rejects it with no feedback - see the
+        // "father" gender-import investigation). A record with no gender
+        // info at all (no mapsTo="gender" field configured) is never
+        // filtered - see RedcapInstrumentSearch::search()'s own doc comment.
+        var possibleGenders = getPossibleGenders(nodeId);
+        var allowedGendersParam = '';
+        var isFiltering = false;
+        if (possibleGenders) {
+            var allowed = ['M', 'F', 'U'].filter(function (g) { return possibleGenders[g] !== false; });
+            isFiltering = allowed.length < 3;
+            allowedGendersParam = allowed.join(',');
+        }
+        if (isFiltering) {
+            hiddenNotice.textContent = 'Showing only records with a gender compatible with this position.';
+        }
+
         function doSearch() {
             results.textContent = 'Searching…';
-            hiddenNotice.textContent = '';
-            self._get({ type: 'search', query: input.value.trim() })
+            var searchParams = { type: 'search', query: input.value.trim() };
+            if (isFiltering) {
+                searchParams.allowedGenders = allowedGendersParam;
+            }
+            self._get(searchParams)
                 .then(function (matches) {
                     results.innerHTML = '';
                     if (!matches || matches.length === 0) {
@@ -175,36 +202,7 @@
                         return;
                     }
 
-                    // A result whose mapped gender field value is a gender this
-                    // node cannot currently take (e.g. the node is already
-                    // partnered with a known-gender person) would silently fail
-                    // to import that value later (open-pedigree's own
-                    // partnership-consistency rule rejects it with no feedback -
-                    // see the "father" gender-import investigation) - filtering
-                    // here instead means the user never picks a record that
-                    // can't actually be linked meaningfully. A result with no
-                    // gender info at all (no mapsTo="gender" field configured)
-                    // is never filtered.
-                    var possibleGenders = getPossibleGenders(nodeId);
-                    var shown = matches;
-                    var hiddenCount = 0;
-                    if (possibleGenders) {
-                        shown = matches.filter(function (match) {
-                            var allowed = !match.gender || possibleGenders[match.gender] !== false;
-                            if (!allowed) { hiddenCount++; }
-                            return allowed;
-                        });
-                    }
-
-                    if (hiddenCount > 0) {
-                        hiddenNotice.textContent = hiddenCount + ' result(s) hidden - incompatible gender for this position.';
-                    }
-                    if (shown.length === 0) {
-                        results.textContent = 'No matches found.';
-                        return;
-                    }
-
-                    shown.forEach(function (match) {
+                    matches.forEach(function (match) {
                         var row = document.createElement('div');
                         row.className = 'patient-picker-result-row';
                         row.textContent = match.display;
