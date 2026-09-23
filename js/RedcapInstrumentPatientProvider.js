@@ -43,7 +43,39 @@
         options = options || {};
         this._endpoint = options.endpoint;
         this._configured = !!options.configured;
+        // Server-evaluated at page render (PedigreeEditorExternalModule::findStoredRecordName()):
+        // whether the REDCap record this editor was opened from has ever been saved.
+        // Fixed for this window's lifetime: a parent-form save doesn't re-navigate an
+        // already-open editor, so "false" can go stale until the editor is reopened
+        // from the form (which re-renders the URL) - hence the reopen hint below.
+        // Defaults to false - an absent flag means "not known to exist", which only
+        // costs a "save first" message, never a link to a record that isn't there.
+        this._recordExists = !!options.recordExists;
+        // The REDCap record this editor was opened from - the link picker only
+        // offers that record's rows (a family's person rows live on its record).
+        this._record = options.record || '';
     }
+
+    // Linking/editing/creating a repeating-instrument row all need the current
+    // REDCap record to exist first (it has no persisted identity until its first
+    // save). These actions stay offered - open-pedigree's action buttons only
+    // support shown/hidden, and a silently-missing button explains nothing - but
+    // each one stops here with an explanation instead of proceeding. Synchronous
+    // on purpose: the planned "Edit in REDCap"/"create new row" actions (later
+    // task groups of pedigree-editor-repeating-instrument-sync) must reach
+    // window.open() within the same click handler (popup blockers), so no fetch
+    // may sit between the click and this decision. Diagram-only editing never calls this.
+    RedcapInstrumentPatientProvider.prototype._requireExistingRecord = function () {
+        if (this._recordExists) {
+            return true;
+        }
+        var modal = createModal('Save this form first');
+        modal.content.textContent = 'Save this form once before linking family members to REDCap records. '
+            + 'This record hasn\'t been saved yet, so it doesn\'t exist in REDCap to link from. '
+            + 'If you have saved it since opening this editor, close the editor and reopen it from the form. '
+            + 'Drawing and saving the pedigree diagram itself works as normal in the meantime.';
+        return false;
+    };
 
     RedcapInstrumentPatientProvider.prototype.isConfigured = function () {
         return this._configured;
@@ -65,7 +97,7 @@
     };
 
     // GET, not POST: every action this endpoint supports (search/import/
-    // lookup/questionnaire) only reads data, never writes - REDCap only
+    // questionnaire) only reads data, never writes - REDCap only
     // requires a `redcap_csrf_token` for POST requests to module pages, so
     // using GET here needs no token at all (avoiding an earlier version of
     // this file that carried one in the URL, where it would end up in
@@ -139,6 +171,9 @@
     }
 
     RedcapInstrumentPatientProvider.prototype.openPicker = function (nodeId, onLinked) {
+        if (!this._requireExistingRecord()) {
+            return;
+        }
         var self = this;
         var modal = createModal('Link to a family member record');
 
@@ -188,14 +223,23 @@
             hiddenNotice.textContent = 'Showing only records with a gender compatible with this position.';
         }
 
+        // Only the latest search may render: the automatic empty-query search on
+        // open (or an earlier click) can otherwise answer after a newer one and
+        // overwrite its results.
+        var latestSearch = 0;
+
         function doSearch() {
+            var thisSearch = ++latestSearch;
             results.textContent = 'Searching…';
-            var searchParams = { type: 'search', query: input.value.trim() };
+            var searchParams = { type: 'search', record: self._record, query: input.value.trim() };
             if (isFiltering) {
                 searchParams.allowedGenders = allowedGendersParam;
             }
             self._get(searchParams)
                 .then(function (matches) {
+                    if (thisSearch !== latestSearch) {
+                        return;
+                    }
                     results.innerHTML = '';
                     if (!matches || matches.length === 0) {
                         results.textContent = 'No matches found.';
@@ -218,6 +262,9 @@
                     });
                 })
                 .catch(function (e) {
+                    if (thisSearch !== latestSearch) {
+                        return;
+                    }
                     results.textContent = 'Search failed: ' + String(e && e.message || e);
                 });
         }
@@ -236,6 +283,9 @@
     // D2's implementation note): the ref is looked up here via the live
     // node, the same pattern SmartPatientProvider.ts already uses.
     RedcapInstrumentPatientProvider.prototype.openEditor = function (nodeId, onDone) {
+        if (!this._requireExistingRecord()) {
+            return;
+        }
         var node = window.editor && window.editor.getView().getNode(nodeId);
         var ref = decodeRef(node && node.getLinkedRecordRef && node.getLinkedRecordRef());
         var modal = createModal('Import from linked record');
@@ -245,8 +295,18 @@
             modal.content.textContent = 'Not a REDCap instrument reference.';
             return;
         }
+        // Same rule as the picker: a family's person rows live on its own record,
+        // so a link to another record's row (e.g. from an imported pedigree file)
+        // is refused rather than read.
+        if (ref.record !== this._record) {
+            modal.content.textContent = 'This person is linked to a row on REDCap record "' + ref.record
+                + '", not this record. Only rows on this record can be used. If this record has been '
+                + 'renamed since the link was made, or the pedigree was imported from elsewhere, link the '
+                + 'person again to one of this record\'s rows.';
+            return;
+        }
 
-        this._get({ type: 'import', record: ref.record, instance: ref.instance })
+        this._get({ type: 'import', record: ref.record, currentRecord: this._record, instance: ref.instance })
             .then(function (answers) {
                 modal.content.innerHTML = '';
                 if (!answers || answers.length === 0) {
@@ -283,6 +343,9 @@
     // Not supported yet - canCreateNew() always returns false, so the host
     // never offers a "Create new" action that would reach this method.
     RedcapInstrumentPatientProvider.prototype.createNew = function (nodeId, onCreated) {
+        if (!this._requireExistingRecord()) {
+            return;
+        }
         console.warn('RedcapInstrumentPatientProvider.createNew() is not yet supported');
     };
 

@@ -180,7 +180,9 @@
         recordLinkProviderOptions = {
           recordLinkProvider: new RedcapInstrumentPatientProvider({
             endpoint: pedigreeImportEndpoint,
-            configured: true
+            configured: true,
+            recordExists: getParameterByName('pedigreeRecordExists') === '1',
+            record: getParameterByName('pedigreeRecord') || ''
           })
         };
       }

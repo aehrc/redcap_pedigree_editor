@@ -149,7 +149,7 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
     }
 
     function redcap_survey_page ( $project_id, $record, $instrument, $event_id, $group_id, $survey_hash, $response_id, $repeat_instance) {
-        $this->add_pedigree_to_form($project_id, $record, $instrument, $event_id, $group_id, $repeat_instance);
+        $this->add_pedigree_to_form($project_id, $record, $instrument, $event_id, $group_id, $repeat_instance, true);
     }
 
 
@@ -157,7 +157,7 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
         $this->add_pedigree_to_form($project_id, $record, $instrument, $event_id, $group_id, $repeat_instance);
     }
 
-    function add_pedigree_to_form ($project_id, $record, $instrument, $event_id, $group_id, $repeat_instance) {
+    function add_pedigree_to_form ($project_id, $record, $instrument, $event_id, $group_id, $repeat_instance, $isSurvey = false) {
 
         // At one stage these things were going to be in the settings for the editor
         // maybe in the future they will be exposed.
@@ -334,8 +334,26 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
             // Search/link/import (RedcapInstrumentPatientProvider) genuinely needs a configured
             // instrument to search/import from - unlike the Questionnaire URL above, this is not
             // meaningful in ADVANCED mode alone.
-            if ($pedigreeImportConfigured) {
+            //
+            // Never on survey pages: the endpoint needs an authenticated REDCap session, which
+            // a survey respondent doesn't have, and the record name passed below is an internal
+            // ID REDCap otherwise keeps from respondents (it would land in the popup URL,
+            // browser history and access logs).
+            if ($pedigreeImportConfigured && !$isSurvey) {
                 $pedigreeImportParams .= '&pedigreeImportEndpoint=' . urlencode($pedigreeServiceUrl);
+                // Evaluated here, from REDCap's own $record for this page, rather than via
+                // a separate AJAX check taking a client-supplied record name. Fresh each time
+                // the editor is opened from the form (REDCap reloads the form on every save);
+                // an editor window left open across a save keeps the value it opened with.
+                // It only gates UI (RedcapInstrumentPatientProvider's link/edit/create
+                // actions) - nothing server-side writes on the strength of it.
+                $storedRecord = $this->findStoredRecordName($project_id, $record);
+                $pedigreeImportParams .= '&pedigreeRecordExists=' . ($storedRecord !== null ? '1' : '0');
+                // The link picker/import only use this record's rows (see searchPedigreeInstrumentRows()).
+                // The stored spelling, not $record as typed in the URL: the data table matches
+                // record names case-insensitively, but link refs are compared exactly, so a
+                // form opened as id=abc for record "ABC" must still agree with its own rows.
+                $pedigreeImportParams .= '&pedigreeRecord=' . urlencode($storedRecord ?? (string) $record);
             }
             $hpoEditorPage = $hpoEditorPage . $pedigreeImportParams;
             $sctEditorPage = $sctEditorPage . $pedigreeImportParams;
@@ -645,6 +663,38 @@ EOD;
     }
 
     /**
+     * The record's name as stored (exact spelling from the data table), or
+     * null if it has never been saved. REDCap has no separate "record" row -
+     * a record exists only once at least one field value for it is in the
+     * data table, on any instrument/event. Checked against the data table
+     * rather than trusting `$record` being null/non-null: REDCap 16's
+     * data-entry hook does pass `null` for a never-saved record
+     * (`DataEntry/index.php`'s `$hidden_edit ? $fetched : null`), but that's
+     * a core detail this check deliberately doesn't lean on.
+     *
+     * Deliberately `REDCap::getDataTable()`, not a hardcoded `redcap_data`:
+     * REDCap 14+ spreads projects across `redcap_data`..`redcap_dataN`.
+     */
+    private function findStoredRecordName($project_id, $record)
+    {
+        if ($record === null || $record === '') {
+            return null;
+        }
+        // Every saved record has a row for its record-ID field (REDCap writes it on the
+        // first save of any instrument), so restricting to it - as core's own
+        // Records::recordExists() does - is equivalent to "any row" and lets the lookup
+        // use the data table's full proj_record_field (project_id, record, field_name) index.
+        $dataTable = \REDCap::getDataTable($project_id);
+        $result = $this->query(
+            "SELECT record FROM $dataTable WHERE project_id = ? AND record = ? AND field_name = ? LIMIT 1",
+            [$project_id, (string) $record, \REDCap::getRecordIdField($project_id)]
+        );
+        // fetch_row() is null when no row, but StatementResult can also hand back false.
+        $row = $result->fetch_row();
+        return empty($row) ? null : (string) $row[0];
+    }
+
+    /**
      * @return string|int|null The calling user's Data Access Group
      *   (`group_id`), or null if they aren't DAG-restricted. Must be passed
      *   into every `RedcapInstrumentGateway::fetchInstrumentRows()` call so
@@ -662,6 +712,11 @@ EOD;
      * Searches the configured repeating instrument's rows (task 6.2/6.4 —
      * backs `RedcapInstrumentPatientProvider.openPicker`'s AJAX call).
      *
+     * @param string $record The record the pedigree editor was opened from.
+     *   Only that record's rows are searched: a family's person rows live on
+     *   the same record as its pedigree. Client-supplied, but it can only
+     *   narrow results within what the user could already search (the DAG
+     *   restriction still applies), so it grants nothing.
      * @param string[]|null $allowedGenders Gender codes ('M'/'F'/'U') to
      *   restrict results to, or null for no restriction - applied *before*
      *   the result limit (see `RedcapInstrumentSearch::search()`), so an
@@ -671,14 +726,19 @@ EOD;
      *   `'gender'` per match when the instrument has a valid
      *   `mapsTo="gender"` field - see `RedcapInstrumentSearch::search()`.
      */
-    public function searchPedigreeInstrumentRows($project_id, $query, $allowedGenders = null)
+    public function searchPedigreeInstrumentRows($project_id, $record, $query, $allowedGenders = null)
     {
         $instrument = $this->getPedigreeImportInstrument($project_id);
         if (!$instrument) {
             return [];
         }
         $dataDictionary = RedcapInstrumentGateway::fetchDataDictionary($project_id, $instrument);
-        $rows = RedcapInstrumentGateway::fetchInstrumentRows($project_id, array_keys($dataDictionary), $this->getCurrentUserGroupId($project_id));
+        $rows = RedcapInstrumentGateway::fetchInstrumentRows(
+            $project_id,
+            array_keys($dataDictionary),
+            $this->getCurrentUserGroupId($project_id),
+            [(string) $record]
+        );
         $searchFields = $this->getPedigreeImportSearchFields($project_id);
         $genderField = $this->findMapsToFieldName($dataDictionary, 'gender');
         return RedcapInstrumentSearch::search($rows, $searchFields, (string) $query, 20, $genderField, $allowedGenders);
@@ -725,33 +785,6 @@ EOD;
         }
 
         return RedcapInstrumentRowImporter::buildAnswers($row['fields'], $resolvedFields);
-    }
-
-    /**
-     * Resolves a linked row's search/display name. Kept separate from
-     * {@see getPedigreeInstrumentRowAnswers()} since which tagged field (if
-     * any) represents "the name" is project-specific, whereas the
-     * configured search fields already exist for exactly this purpose.
-     *
-     * Currently unused: this backed `RedcapInstrumentPatientProvider`'s old
-     * `lookupPatient` method, which `AbstractRecordLinkProvider` has no
-     * equivalent for (see pedigree-editor-redcap-extension-extraction) - the
-     * `type=lookup` AJAX endpoint in `PedigreeInstrumentService.php` that
-     * calls this is consequently also dead. Left in place rather than
-     * removed, in case a future "show linked record name" feature on the
-     * Linked Record tab wants it.
-     *
-     * @return string|null
-     */
-    public function getPedigreeInstrumentRowDisplayName($project_id, $record, $instance)
-    {
-        $row = $this->findPedigreeInstrumentRow($project_id, $record, $instance, $dataDictionary);
-        if ($row === null) {
-            return null;
-        }
-        $searchFields = $this->getPedigreeImportSearchFields($project_id);
-        $matches = RedcapInstrumentSearch::search([$row], $searchFields, '');
-        return $matches[0]['display'] ?? null;
     }
 
     /**

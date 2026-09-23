@@ -40,8 +40,10 @@ class RedcapInstrumentGateway
      *   DAG-assigned user's search/import results to their own group,
      *   matching what every other export path in REDCap already enforces.
      * @param string[]|null $records Restrict to these record names, or
-     *   `null` for every record (the search flow's case - it doesn't know
-     *   the record in advance; a known-record lookup should pass this).
+     *   `null` for every record. Every current caller passes the one record
+     *   the pedigree editor was opened from - a family's person rows live on
+     *   its own record, and search/import must not reach other records'
+     *   rows. Don't pass `null` from a user-facing path.
      */
     public static function fetchInstrumentRows(int $projectId, array $fieldNames, $groupId = null, ?array $records = null): array
     {
