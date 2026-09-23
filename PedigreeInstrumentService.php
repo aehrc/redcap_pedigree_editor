@@ -35,7 +35,8 @@ $project_id = (int) $_GET['pid'];
 
 // A required, non-empty, scalar query parameter, as a string (rejects `name[]=` arrays
 // too). Scalar rather than string-only: REDCap core casts some GET params before this
-// page runs - `instance` arrives as an int.
+// page runs. `instance` in particular is always forced to an int >= 1 by core
+// (System.php), so for it this check can't fail - a missing/garbage instance means 1.
 $requireString = function ($name, $action) use ($params, $sendErrorResponse) {
     if (!isset($params[$name]) || !is_scalar($params[$name]) || (string) $params[$name] === '') {
         $sendErrorResponse('Invalid Request', 'Missing required parameter "' . $name . '" for ' . $action . ' action.');
@@ -54,13 +55,14 @@ if ('questionnaire' === $params['type']) {
 } elseif ('search' === $params['type']) {
     // Required, never defaulted to "all records" - see searchPedigreeInstrumentRows().
     $record = $requireString('record', 'search');
-    $query = $params['query'] ?? '';
+    // Optional params: an array (`query[]=`) is treated as absent rather than cast.
+    $query = isset($params['query']) && is_string($params['query']) ? $params['query'] : '';
     // Comma-separated allowed gender codes (e.g. "M,U") - see
     // RedcapInstrumentSearch::search()'s $allowedGenders param. Filtered to
     // the only 3 recognized codes so an unexpected value can't be smuggled
     // through to the in_array() comparison downstream.
     $allowedGenders = null;
-    if (isset($params['allowedGenders']) && $params['allowedGenders'] !== '') {
+    if (isset($params['allowedGenders']) && is_string($params['allowedGenders']) && $params['allowedGenders'] !== '') {
         $allowedGenders = array_values(array_intersect(
             explode(',', $params['allowedGenders']),
             ['M', 'F', 'U']

@@ -680,10 +680,14 @@ EOD;
         if ($record === null || $record === '') {
             return null;
         }
+        // Every saved record has a row for its record-ID field (REDCap writes it on the
+        // first save of any instrument), so restricting to it - as core's own
+        // Records::recordExists() does - is equivalent to "any row" and lets the lookup
+        // use the data table's full proj_record_field (project_id, record, field_name) index.
         $dataTable = \REDCap::getDataTable($project_id);
         $result = $this->query(
-            "SELECT record FROM $dataTable WHERE project_id = ? AND record = ? LIMIT 1",
-            [$project_id, (string) $record]
+            "SELECT record FROM $dataTable WHERE project_id = ? AND record = ? AND field_name = ? LIMIT 1",
+            [$project_id, (string) $record, \REDCap::getRecordIdField($project_id)]
         );
         // fetch_row() is null when no row, but StatementResult can also hand back false.
         $row = $result->fetch_row();

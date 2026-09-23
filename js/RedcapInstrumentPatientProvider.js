@@ -43,7 +43,7 @@
         options = options || {};
         this._endpoint = options.endpoint;
         this._configured = !!options.configured;
-        // Server-evaluated at page render (PedigreeEditorExternalModule::recordExists()):
+        // Server-evaluated at page render (PedigreeEditorExternalModule::findStoredRecordName()):
         // whether the REDCap record this editor was opened from has ever been saved.
         // Fixed for this window's lifetime: a parent-form save doesn't re-navigate an
         // already-open editor, so "false" can go stale until the editor is reopened
@@ -61,9 +61,10 @@
     // save). These actions stay offered - open-pedigree's action buttons only
     // support shown/hidden, and a silently-missing button explains nothing - but
     // each one stops here with an explanation instead of proceeding. Synchronous
-    // on purpose: "Edit in REDCap"/"create new row" must reach window.open()
-    // within the same click handler (popup blockers), so no fetch can sit
-    // between the click and this decision. Diagram-only editing never calls this.
+    // on purpose: the planned "Edit in REDCap"/"create new row" actions (later
+    // task groups of pedigree-editor-repeating-instrument-sync) must reach
+    // window.open() within the same click handler (popup blockers), so no fetch
+    // may sit between the click and this decision. Diagram-only editing never calls this.
     RedcapInstrumentPatientProvider.prototype._requireExistingRecord = function () {
         if (this._recordExists) {
             return true;
