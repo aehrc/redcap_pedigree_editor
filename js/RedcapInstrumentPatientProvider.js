@@ -45,6 +45,9 @@
         this._configured = !!options.configured;
         // Server-evaluated at page render (PedigreeEditorExternalModule::recordExists()):
         // whether the REDCap record this editor was opened from has ever been saved.
+        // Fixed for this window's lifetime: a parent-form save doesn't re-navigate an
+        // already-open editor, so "false" can go stale until the editor is reopened
+        // from the form (which re-renders the URL) - hence the reopen hint below.
         // Defaults to false - an absent flag means "not known to exist", which only
         // costs a "save first" message, never a link to a record that isn't there.
         this._recordExists = !!options.recordExists;
@@ -65,6 +68,7 @@
         var modal = createModal('Save this form first');
         modal.content.textContent = 'Save this form once before linking family members to REDCap records. '
             + 'This record hasn\'t been saved yet, so it doesn\'t exist in REDCap to link from. '
+            + 'If you have saved it since opening this editor, close the editor and reopen it from the form. '
             + 'Drawing and saving the pedigree diagram itself works as normal in the meantime.';
         return false;
     };
