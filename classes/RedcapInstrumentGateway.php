@@ -33,14 +33,23 @@ class RedcapInstrumentGateway
      *
      * @param string[] $fieldNames The instrument's field names (e.g.
      *   `array_keys(self::fetchDataDictionary(...))`).
+     * @param string|int|null $groupId The calling user's Data Access Group
+     *   (their `group_id` rights, or `null` if they aren't DAG-restricted).
+     *   `\REDCap::getData()`'s own `$groups` argument defaults to "all
+     *   groups" - passing this explicitly is what actually restricts a
+     *   DAG-assigned user's search/import results to their own group,
+     *   matching what every other export path in REDCap already enforces.
+     * @param string[]|null $records Restrict to these record names, or
+     *   `null` for every record (the search flow's case - it doesn't know
+     *   the record in advance; a known-record lookup should pass this).
      */
-    public static function fetchInstrumentRows(int $projectId, array $fieldNames): array
+    public static function fetchInstrumentRows(int $projectId, array $fieldNames, $groupId = null, ?array $records = null): array
     {
         $recordIdField = \REDCap::getRecordIdField($projectId);
         $fields = array_values(array_unique(array_merge([$recordIdField], $fieldNames)));
 
         try {
-            $rawRows = \REDCap::getData($projectId, 'json-array', null, $fields);
+            $rawRows = \REDCap::getData($projectId, 'json-array', $records, $fields, null, $groupId);
         } catch (\Exception $e) {
             return [];
         }
@@ -93,15 +102,30 @@ class RedcapInstrumentGateway
         return $proj ? $proj->isRepeatingFormAnyEvent($instrument) : null;
     }
 
+    private static $resolvedProjectCache = null;
+
+    /**
+     * Reuses REDCap core's own `global $Proj` opportunistically when it
+     * already matches (the common case in a real request), but never writes
+     * back to it - this gateway is called mid-request from module code, not
+     * REDCap core's own bootstrap, so overwriting core's notion of "the
+     * current project" would be a global side effect wider than this
+     * method's own concern. A resolved instance is cached locally (by
+     * project ID) instead, so a request needing this project's metadata
+     * repeatedly still only constructs `\Project` once.
+     */
     private static function resolveProject(int $projectId): ?\Project
     {
         global $Proj;
         if ($Proj && $Proj->project_id == $projectId) {
             return $Proj;
         }
+        if (self::$resolvedProjectCache && self::$resolvedProjectCache->project_id == $projectId) {
+            return self::$resolvedProjectCache;
+        }
         try {
-            $Proj = new \Project($projectId);
-            return $Proj;
+            self::$resolvedProjectCache = new \Project($projectId);
+            return self::$resolvedProjectCache;
         } catch (\Exception $e) {
             return null;
         }

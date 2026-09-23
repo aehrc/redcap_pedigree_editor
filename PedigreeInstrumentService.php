@@ -4,8 +4,12 @@
  * search/import against the project's configured repeating instrument.
  *
  * Deliberately NOT listed in config.json's `no-auth-pages` — REDCap
- * authenticates the session and enforces the standard `redcap_csrf_token`
- * check automatically for this page, same as any other module page.
+ * authenticates the session for this page like any other module page.
+ * GET-only, deliberately: every action here only reads data, never writes,
+ * and REDCap only requires a `redcap_csrf_token` for POST requests to
+ * module pages - staying GET-only means this endpoint needs no CSRF token
+ * at all (avoiding the need to hand one to the client, which would
+ * otherwise end up in server access logs and browser history via the URL).
  */
 
 $sendErrorResponse = function ($error, $error_description) {
@@ -16,11 +20,10 @@ $sendErrorResponse = function ($error, $error_description) {
     exit();
 };
 
-$method = $_SERVER['REQUEST_METHOD'];
-$params = ('POST' === $method) ? $_POST : (('GET' === $method) ? $_GET : null);
-if ($params === null) {
-    $sendErrorResponse('Invalid Method', 'Request method must be GET or POST');
+if ('GET' !== $_SERVER['REQUEST_METHOD']) {
+    $sendErrorResponse('Invalid Method', 'Request method must be GET');
 }
+$params = $_GET;
 
 if (!isset($params['type'])) {
     $sendErrorResponse('Invalid Request', 'Missing required parameter "type".');

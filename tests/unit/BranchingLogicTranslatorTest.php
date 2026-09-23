@@ -112,4 +112,50 @@ class BranchingLogicTranslatorTest extends TestCase
         $this->assertStringContainsString('is_adopted', $result['warning']);
         $this->assertStringContainsString('mapsTo', $result['warning']);
     }
+
+    public function testQuotedValueContainingTheWordAndIsNotMistakenForAnAndChain(): void
+    {
+        $result = BranchingLogicTranslator::translate("[status] = 'and'", ['status' => 'string']);
+        $this->assertNull($result['warning']);
+        $this->assertSame(
+            [['question' => 'status', 'operator' => '=', 'answerString' => 'and']],
+            $result['enableWhen']
+        );
+    }
+
+    public function testQuotedValueContainingTheWordOrIsNotMistakenForAnOrChain(): void
+    {
+        $result = BranchingLogicTranslator::translate("[status] = 'or'", ['status' => 'string']);
+        $this->assertNull($result['warning']);
+        $this->assertSame(
+            [['question' => 'status', 'operator' => '=', 'answerString' => 'or']],
+            $result['enableWhen']
+        );
+    }
+
+    public function testQuotedValueContainingAParenthesisIsNotMistakenForNestedGrouping(): void
+    {
+        $result = BranchingLogicTranslator::translate("[status] = '(pending)'", ['status' => 'string']);
+        $this->assertNull($result['warning']);
+        $this->assertSame(
+            [['question' => 'status', 'operator' => '=', 'answerString' => '(pending)']],
+            $result['enableWhen']
+        );
+    }
+
+    public function testAndChainStillSplitsCorrectlyWithAQuotedAndValuePresent(): void
+    {
+        $result = BranchingLogicTranslator::translate(
+            "[status] = 'and' and [gender] = '2'",
+            ['status' => 'string', 'gender' => 'choice']
+        );
+        $this->assertNull($result['warning']);
+        $this->assertSame(
+            [
+                ['question' => 'status', 'operator' => '=', 'answerString' => 'and'],
+                ['question' => 'gender', 'operator' => '=', 'answerCoding' => ['code' => '2']],
+            ],
+            $result['enableWhen']
+        );
+    }
 }

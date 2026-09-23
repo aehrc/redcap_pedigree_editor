@@ -449,10 +449,6 @@
 			}
 		}
 	],
-	"no-auth-pages": [
-		"TerminologyService"
-	],
-
   "compatibility": {
     "php-version-min": "8.0.0",
     "redcap-version-min": "8.8.1"

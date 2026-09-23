@@ -277,7 +277,13 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
         }
         
 
-        $ontologyServer = urlencode($this->getUrl('TerminologyService.php', false, true));
+        // useApiEndpoint=false (routes through ExternalModules/index.php, not api/?type=module):
+        // the api/ endpoint's dispatcher doesn't support GET at all ("requested method is
+        // not implemented") and unconditionally requires a redcap_csrf_token for POST
+        // regardless of no-auth-pages status - confirmed live. TerminologyService.php is
+        // GET-only (see its own doc comment), so it needs the same routing already used for
+        // PedigreeInstrumentService.php.
+        $ontologyServer = urlencode($this->getUrl('TerminologyService.php', false, false));
 
         $systemFormat = $this->getSystemSetting('system_format');
         $projectFormat = $this->getProjectSetting('project_format', $project_id);
@@ -303,14 +309,34 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
             }
         }
 
-        if ($this->isPedigreeImportConfigured($project_id)) {
+        // isPedigreeImportConfigured() (an import instrument is set) and mode === 'ADVANCED'
+        // are independent settings - an admin can select "Advanced" and supply a custom
+        // Questionnaire without configuring (or while clearing) the import instrument, since
+        // they only want a custom form, not record-linking. getPedigreeDerivedQuestionnaire()
+        // already returns the advanced Questionnaire regardless of whether an instrument is
+        // configured, so pedigreeQuestionnaireUrl must be sent whenever either is true -
+        // gating it on isPedigreeImportConfigured() alone silently dropped the admin's custom
+        // Questionnaire (falling back to open-pedigree's built-in default) whenever only mode
+        // was set to ADVANCED.
+        $pedigreeImportConfigured = $this->isPedigreeImportConfigured($project_id);
+        $pedigreeQuestionnaireConfigured = $pedigreeImportConfigured || $this->getPedigreeQuestionnaireMode($project_id) === 'ADVANCED';
+        if ($pedigreeQuestionnaireConfigured) {
             // useApiEndpoint=false (routes through ExternalModules/index.php, not api/?type=module):
             // open-pedigree's questionnaireUrl option fetches via a plain GET, and the api/
             // endpoint's dispatcher only accepts POST for module passthrough requests.
+            // No CSRF token needed here: PedigreeInstrumentService.php is GET-only
+            // (every action it supports only reads data), and REDCap only requires
+            // redcap_csrf_token for POST requests to module pages - a token embedded
+            // in this URL would otherwise end up in server access logs and browser
+            // history.
             $pedigreeServiceUrl = $this->getUrl('PedigreeInstrumentService.php', false, false);
-            $pedigreeImportParams = '&pedigreeImportEndpoint=' . urlencode($pedigreeServiceUrl)
-                . '&pedigreeImportCsrf=' . urlencode($this->getCSRFToken())
-                . '&pedigreeQuestionnaireUrl=' . urlencode($pedigreeServiceUrl . '&type=questionnaire');
+            $pedigreeImportParams = '&pedigreeQuestionnaireUrl=' . urlencode($pedigreeServiceUrl . '&type=questionnaire');
+            // Search/link/import (RedcapInstrumentPatientProvider) genuinely needs a configured
+            // instrument to search/import from - unlike the Questionnaire URL above, this is not
+            // meaningful in ADVANCED mode alone.
+            if ($pedigreeImportConfigured) {
+                $pedigreeImportParams .= '&pedigreeImportEndpoint=' . urlencode($pedigreeServiceUrl);
+            }
             $hpoEditorPage = $hpoEditorPage . $pedigreeImportParams;
             $sctEditorPage = $sctEditorPage . $pedigreeImportParams;
             $customEditorPage = $customEditorPage . $pedigreeImportParams;
@@ -619,6 +645,20 @@ EOD;
     }
 
     /**
+     * @return string|int|null The calling user's Data Access Group
+     *   (`group_id`), or null if they aren't DAG-restricted. Must be passed
+     *   into every `RedcapInstrumentGateway::fetchInstrumentRows()` call so
+     *   a DAG-assigned user's search/import results are restricted to their
+     *   own group, same as every other REDCap data-export path.
+     */
+    private function getCurrentUserGroupId($project_id)
+    {
+        $rights = $this->getUser()->getRights($project_id);
+        $groupId = $rights['group_id'] ?? null;
+        return ($groupId !== null && $groupId !== '') ? $groupId : null;
+    }
+
+    /**
      * Searches the configured repeating instrument's rows (task 6.2/6.4 —
      * backs `RedcapInstrumentPatientProvider.openPicker`'s AJAX call).
      *
@@ -631,7 +671,7 @@ EOD;
             return [];
         }
         $dataDictionary = RedcapInstrumentGateway::fetchDataDictionary($project_id, $instrument);
-        $rows = RedcapInstrumentGateway::fetchInstrumentRows($project_id, array_keys($dataDictionary));
+        $rows = RedcapInstrumentGateway::fetchInstrumentRows($project_id, array_keys($dataDictionary), $this->getCurrentUserGroupId($project_id));
         $searchFields = $this->getPedigreeImportSearchFields($project_id);
         return RedcapInstrumentSearch::search($rows, $searchFields, (string) $query);
     }
@@ -706,7 +746,12 @@ EOD;
             return null;
         }
         $dataDictionary = RedcapInstrumentGateway::fetchDataDictionary($project_id, $instrument);
-        $rows = RedcapInstrumentGateway::fetchInstrumentRows($project_id, array_keys($dataDictionary));
+        $rows = RedcapInstrumentGateway::fetchInstrumentRows(
+            $project_id,
+            array_keys($dataDictionary),
+            $this->getCurrentUserGroupId($project_id),
+            [(string) $record]
+        );
 
         foreach ($rows as $row) {
             if ($row['record'] === (string) $record && $row['instance'] === (int) $instance) {

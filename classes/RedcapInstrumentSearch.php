@@ -49,7 +49,9 @@ class RedcapInstrumentSearch
     {
         $parts = [];
         foreach ($searchFieldNames as $fieldName) {
-            if (!empty($fields[$fieldName])) {
+            // isset()+!== '' (not !empty()) - a field value of "0" (a valid,
+            // real identifier, e.g. a numeric kindred code) is not "absent".
+            if (isset($fields[$fieldName]) && $fields[$fieldName] !== '') {
                 $parts[] = $fields[$fieldName];
             }
         }

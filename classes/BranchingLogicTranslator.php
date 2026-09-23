@@ -46,17 +46,26 @@ class BranchingLogicTranslator
             return ['enableWhen' => null, 'warning' => null];
         }
 
-        if (preg_match('/\(|\)/', $trimmed)) {
+        // Quoted comparison values are opaque data, not syntax - a value that is or
+        // contains the word "and"/"or" (e.g. [status] = 'and'), or contains a literal
+        // parenthesis (e.g. [opt] = '(pending)'), must not be mistaken for the
+        // corresponding logic construct. Mask quoted literals out before any of the
+        // structural checks/splitting below, then restore them per-comparison.
+        $literals = [];
+        $masked = self::maskQuotedLiterals($trimmed, $literals);
+
+        if (preg_match('/\(|\)/', $masked)) {
             return self::untranslatable($branchingLogic, 'contains parentheses (nested grouping is not supported)');
         }
-        if (preg_match('/\bor\b/i', $trimmed)) {
+        if (preg_match('/\bor\b/i', $masked)) {
             return self::untranslatable($branchingLogic, 'contains an OR chain (only AND-chains are supported)');
         }
 
-        $comparisons = preg_split('/\band\b/i', $trimmed);
+        $maskedComparisons = preg_split('/\band\b/i', $masked);
         $enableWhen = [];
 
-        foreach ($comparisons as $comparison) {
+        foreach ($maskedComparisons as $maskedComparison) {
+            $comparison = self::unmaskQuotedLiterals($maskedComparison, $literals);
             if (!preg_match(self::COMPARISON_PATTERN, $comparison, $m)) {
                 return self::untranslatable($branchingLogic, 'contains an unsupported comparison "' . trim($comparison) . '"');
             }
@@ -104,6 +113,27 @@ class BranchingLogicTranslator
         }
 
         return $condition;
+    }
+
+    /**
+     * Replaces every `'...'`-quoted literal with a NUL-delimited placeholder
+     * (one that cannot appear in REDCap branching_logic source), appending
+     * each original literal to $literals in the order encountered so
+     * {@see unmaskQuotedLiterals()} can restore them positionally.
+     */
+    private static function maskQuotedLiterals(string $s, array &$literals): string
+    {
+        return preg_replace_callback("/'[^']*'/", function ($m) use (&$literals) {
+            $literals[] = $m[0];
+            return "\x00" . (count($literals) - 1) . "\x00";
+        }, $s);
+    }
+
+    private static function unmaskQuotedLiterals(string $s, array $literals): string
+    {
+        return preg_replace_callback('/\x00(\d+)\x00/', function ($m) use ($literals) {
+            return $literals[(int) $m[1]];
+        }, $s);
     }
 
     private static function untranslatable(string $branchingLogic, string $reason): array

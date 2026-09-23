@@ -1,5 +1,14 @@
 <?php
 
+// Deliberately NOT listed in config.json's `no-auth-pages` — REDCap
+// authenticates the session for this page like any other module page.
+// GET-only, deliberately: both actions below only read data (proxying a
+// lookup/query to the configured FHIR terminology server), never write, and
+// REDCap only requires a `redcap_csrf_token` for POST requests to module
+// pages - staying GET-only means this endpoint needs no CSRF token at all
+// (avoiding the need to hand one to the client, which would otherwise end
+// up in server access logs and browser history via the URL).
+
 require_once __DIR__ . '/TerminologyErrorFormatter.php';
 
 $sendErrorResponse = function($error, $error_description){
@@ -16,16 +25,10 @@ $sendErrorResponse = function($error, $error_description){
     exit();
 };
 
-$method = $_SERVER['REQUEST_METHOD'];
-if ('GET' === $method){
-    $params = $_GET;
+if ('GET' !== $_SERVER['REQUEST_METHOD']) {
+    $sendErrorResponse('Invalid Method', 'Request method must be GET');
 }
-elseif ('POST' === $method){
-    $params = $_POST;
-}
-else {
-    $sendErrorResponse('Invalid Method', 'Request method must be GET or POST');
-}
+$params = $_GET;
 
 //* Lookup
 // * type -> 'lookup'

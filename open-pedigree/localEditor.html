@@ -80,59 +80,46 @@
         return result;
       };
 
+      // GET, not POST: TerminologyService.php's lookup/query actions only
+      // read data, never write, and REDCap only requires a
+      // redcap_csrf_token for POST requests to module pages - staying
+      // GET-only means this never needs a CSRF token handed to the client
+      // at all (which would otherwise end up in server access logs and
+      // browser history via the URL), and lets TerminologyService leave
+      // config.json's no-auth-pages (REDCap authenticates the session for
+      // this page like any other module page).
+      const buildTerminologyUrl = (params) =>
+        redcapTerminolgyUrl + (redcapTerminolgyUrl.indexOf('?') >= 0 ? '&' : '?') + new URLSearchParams(params).toString();
+
       let terminologyOptions;
       if (redcapTerminolgyUrl){
         terminologyOptions = {
           'disorderOptions': {
             'type': 'Delegating',
-            'lookupUrlFn':  (id) => redcapTerminolgyUrl,
+            'lookupUrlFn':  (id) => buildTerminologyUrl({type: 'lookup', system: disorderSystem, code: id}),
             'processLookupResponseFn': processLookupFn,
-            'lookupAjaxOptionsFn':  (id) => ({
-              method: 'POST',
-              contentType: 'application/x-www-form-urlencoded',
-              parameters: {type: 'lookup', system: disorderSystem, code: id}
-            }),
-            'searchUrlFn': (search)=> redcapTerminolgyUrl,
+            'lookupAjaxOptionsFn':  (id) => ({ method: 'GET' }),
+            'searchUrlFn': (search) => buildTerminologyUrl({ type: 'query', url: disorderValueset, filter: search, count: 20 }),
             'processSearchResponseFn': processSearchFn,
-            'searchAjaxOptionsFn':  (search) => ({
-              method: 'POST',
-              contentType: 'application/x-www-form-urlencoded',
-              parameters: { type: 'query', url: disorderValueset, filter: search, count: 20 }
-            })
+            'searchAjaxOptionsFn':  (search) => ({ method: 'GET' })
           },
           phenotypeOptions: {
             'type': 'Delegating',
-            'lookupUrlFn':  (id) => redcapTerminolgyUrl,
+            'lookupUrlFn':  (id) => buildTerminologyUrl({type: 'lookup', system: phenotypeSystem, code: id}),
             'processLookupResponseFn': processLookupFn,
-            'lookupAjaxOptionsFn':  (id) => ({
-              method: 'POST',
-              contentType: 'application/x-www-form-urlencoded',
-              parameters: {type: 'lookup', system: phenotypeSystem, code: id}
-            }),
-            'searchUrlFn': (search)=> redcapTerminolgyUrl,
+            'lookupAjaxOptionsFn':  (id) => ({ method: 'GET' }),
+            'searchUrlFn': (search) => buildTerminologyUrl({ type: 'query', url: phenotypeValueset, filter: search, count: 20 }),
             'processSearchResponseFn': processSearchFn,
-            'searchAjaxOptionsFn':  (search) => ({
-              method: 'POST',
-              contentType: 'application/x-www-form-urlencoded',
-              parameters: { type: 'query', url: phenotypeValueset, filter: search, count: 20 }
-            })
+            'searchAjaxOptionsFn':  (search) => ({ method: 'GET' })
           },
           'geneOptions': {
             'type': 'Delegating',
-            'lookupUrlFn':  (id) => redcapTerminolgyUrl,
+            'lookupUrlFn':  (id) => buildTerminologyUrl({type: 'lookup', system: geneSystem, code: id}),
             'processLookupResponseFn': processLookupFn,
-            'lookupAjaxOptionsFn':  (id) => ({
-              method: 'POST',
-              contentType: 'application/x-www-form-urlencoded',
-              parameters: {type: 'lookup', system: geneSystem, code: id}
-            }),
-            'searchUrlFn': (search)=> redcapTerminolgyUrl,
+            'lookupAjaxOptionsFn':  (id) => ({ method: 'GET' }),
+            'searchUrlFn': (search) => buildTerminologyUrl({ type: 'query', url: geneValueset, filter: search, count: 20 }),
             'processSearchResponseFn': processSearchFn,
-            'searchAjaxOptionsFn':  (search) => ({
-              method: 'POST',
-              contentType: 'application/x-www-form-urlencoded',
-              parameters: { type: 'query', url: geneValueset, filter: search, count: 20 }
-            })
+            'searchAjaxOptionsFn':  (search) => ({ method: 'GET' })
           },
           'fhirTerminologyHelperOptions': {
             'disorderCodeSystem': disorderSystem,
@@ -193,7 +180,6 @@
         recordLinkProviderOptions = {
           recordLinkProvider: new RedcapInstrumentPatientProvider({
             endpoint: pedigreeImportEndpoint,
-            csrfToken: getParameterByName('pedigreeImportCsrf'),
             configured: true
           })
         };

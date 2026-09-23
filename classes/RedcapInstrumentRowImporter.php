@@ -61,7 +61,12 @@ class RedcapInstrumentRowImporter
             }
             // RESERVED_LEGEND_TARGETS linkIds require an array of {id, name}
             // objects; a plain repeating custom item just gets raw codes.
-            if ($field['linkId'] !== $fieldName) {
+            // Checked against the actual reserved-target set (not just
+            // linkId !== redcapField): in ADVANCED mode, an admin-authored
+            // Questionnaire item can declare any custom linkId for an
+            // ordinary (non-legend) repeating field, which is not itself a
+            // signal that legend-shaped output is expected.
+            if (array_key_exists($field['linkId'], QuestionnaireDerivation::RESERVED_LEGEND_TARGETS)) {
                 return array_map(function ($code) use ($field) {
                     return ['id' => $code, 'name' => $field['choices'][$code]];
                 }, $checkedCodes);

@@ -51,4 +51,14 @@ class RedcapInstrumentSearchTest extends TestCase
         $results = RedcapInstrumentSearch::search($this->rows(), ['first_name', 'last_name'], 'nonexistent');
         $this->assertSame([], $results);
     }
+
+    public function testFieldValueOfZeroIsNotTreatedAsAbsent(): void
+    {
+        $rows = [
+            ['record' => '1', 'instance' => 1, 'fields' => ['kindred_code' => '0', 'first_name' => 'Alice']],
+        ];
+        $results = RedcapInstrumentSearch::search($rows, ['kindred_code', 'first_name'], '0');
+        $this->assertCount(1, $results);
+        $this->assertSame('0 Alice', $results[0]['display']);
+    }
 }

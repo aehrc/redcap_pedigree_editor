@@ -101,6 +101,25 @@ class RedcapInstrumentRowImporterTest extends TestCase
         );
     }
 
+    public function testRepeatingChoiceFieldWithCustomLinkIdStillReturnsRawCodes(): void
+    {
+        // ADVANCED mode lets an admin declare any custom linkId for an
+        // ordinary field - linkId differing from redcapField must not, by
+        // itself, be mistaken for one of the three reserved legend targets
+        // (disorders/candidate_genes/hpo_positive).
+        $answers = RedcapInstrumentRowImporter::buildAnswers(
+            ['symptoms___1' => '1', 'symptoms___2' => '0'],
+            [$this->field([
+                'redcapField' => 'symptoms',
+                'linkId' => 'my_custom_linkid',
+                'type' => 'choice',
+                'repeats' => true,
+                'choices' => ['1' => 'Fever', '2' => 'Cough'],
+            ])]
+        );
+        $this->assertSame(['1'], $answers[0]['value']);
+    }
+
     public function testNoCheckedOptionsIsOmitted(): void
     {
         $answers = RedcapInstrumentRowImporter::buildAnswers(

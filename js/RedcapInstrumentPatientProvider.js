@@ -42,7 +42,6 @@
     function RedcapInstrumentPatientProvider(options) {
         options = options || {};
         this._endpoint = options.endpoint;
-        this._csrfToken = options.csrfToken;
         this._configured = !!options.configured;
     }
 
@@ -65,28 +64,31 @@
         return false;
     };
 
-    RedcapInstrumentPatientProvider.prototype._post = function (params) {
-        var body = [];
-        Object.keys(params).forEach(function (key) {
-            body.push(encodeURIComponent(key) + '=' + encodeURIComponent(params[key]));
-        });
-        body.push('redcap_csrf_token=' + encodeURIComponent(this._csrfToken));
+    // GET, not POST: every action this endpoint supports (search/import/
+    // lookup/questionnaire) only reads data, never writes - REDCap only
+    // requires a `redcap_csrf_token` for POST requests to module pages, so
+    // using GET here needs no token at all (avoiding an earlier version of
+    // this file that carried one in the URL, where it would end up in
+    // server access logs and browser history).
+    RedcapInstrumentPatientProvider.prototype._get = function (params) {
+        var query = Object.keys(params).map(function (key) {
+            return encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
+        }).join('&');
+        var url = this._endpoint + (this._endpoint.indexOf('?') >= 0 ? '&' : '?') + query;
 
-        return fetch(this._endpoint, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        return fetch(url, {
+            method: 'GET',
             credentials: 'same-origin',
-            body: body.join('&'),
         }).then(function (response) {
-            if (!response.ok) {
-                throw new Error('HTTP ' + response.status);
-            }
-            return response.json();
-        }).then(function (json) {
-            if (json && json.error) {
-                throw new Error(json.error_description || json.error);
-            }
-            return json;
+            return response.json().then(function (json) {
+                if (!response.ok) {
+                    throw new Error((json && (json.error_description || json.error)) || ('HTTP ' + response.status));
+                }
+                if (json && json.error) {
+                    throw new Error(json.error_description || json.error);
+                }
+                return json;
+            });
         });
     };
 
@@ -146,7 +148,7 @@
 
         function doSearch() {
             results.textContent = 'Searching…';
-            self._post({ type: 'search', query: input.value.trim() })
+            self._get({ type: 'search', query: input.value.trim() })
                 .then(function (matches) {
                     results.innerHTML = '';
                     if (!matches || matches.length === 0) {
@@ -197,7 +199,7 @@
             return;
         }
 
-        this._post({ type: 'import', record: ref.record, instance: ref.instance })
+        this._get({ type: 'import', record: ref.record, instance: ref.instance })
             .then(function (answers) {
                 modal.content.innerHTML = '';
                 if (!answers || answers.length === 0) {
