@@ -336,6 +336,13 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
             // meaningful in ADVANCED mode alone.
             if ($pedigreeImportConfigured) {
                 $pedigreeImportParams .= '&pedigreeImportEndpoint=' . urlencode($pedigreeServiceUrl);
+                // Evaluated here, from REDCap's own $record for this page, rather than via
+                // a separate AJAX check taking a client-supplied record name: the editor
+                // popup is (re)opened from this page, and REDCap reloads this page on every
+                // save, so a freshly-rendered value is never stale for the page it's on.
+                // It only gates UI (RedcapInstrumentPatientProvider's link/edit/create
+                // actions) - nothing server-side writes on the strength of it.
+                $pedigreeImportParams .= '&pedigreeRecordExists=' . ($this->recordExists($project_id, $record) ? '1' : '0');
             }
             $hpoEditorPage = $hpoEditorPage . $pedigreeImportParams;
             $sctEditorPage = $sctEditorPage . $pedigreeImportParams;
@@ -642,6 +649,32 @@ EOD;
     public function isPedigreeImportConfigured($project_id)
     {
         return $this->getPedigreeImportInstrument($project_id) !== null;
+    }
+
+    /**
+     * Whether the record has ever been saved: REDCap has no separate
+     * "record" row - a record exists only once at least one field value
+     * for it is in the data table, on any instrument/event. A brand-new
+     * record's data-entry form (auto-numbered or custom-numbered alike)
+     * already carries its prospective record name in `$record`, and a new
+     * public survey response carries none, so both have to be checked
+     * against the data table rather than inferred from `$record` alone.
+     *
+     * Deliberately `REDCap::getDataTable()`, not a hardcoded `redcap_data`:
+     * REDCap 14+ spreads projects across `redcap_data`..`redcap_dataN`.
+     */
+    private function recordExists($project_id, $record)
+    {
+        if ($record === null || $record === '') {
+            return false;
+        }
+        $dataTable = \REDCap::getDataTable($project_id);
+        $result = $this->query(
+            "SELECT 1 FROM $dataTable WHERE project_id = ? AND record = ? LIMIT 1",
+            [$project_id, (string) $record]
+        );
+        // fetch_row() is null when no row, but StatementResult can also hand back false.
+        return !empty($result->fetch_row());
     }
 
     /**

@@ -43,7 +43,31 @@
         options = options || {};
         this._endpoint = options.endpoint;
         this._configured = !!options.configured;
+        // Server-evaluated at page render (PedigreeEditorExternalModule::recordExists()):
+        // whether the REDCap record this editor was opened from has ever been saved.
+        // Defaults to false - an absent flag means "not known to exist", which only
+        // costs a "save first" message, never a link to a record that isn't there.
+        this._recordExists = !!options.recordExists;
     }
+
+    // Linking/editing/creating a repeating-instrument row all need the current
+    // REDCap record to exist first (it has no persisted identity until its first
+    // save). These actions stay offered - open-pedigree's action buttons only
+    // support shown/hidden, and a silently-missing button explains nothing - but
+    // each one stops here with an explanation instead of proceeding. Synchronous
+    // on purpose: "Edit in REDCap"/"create new row" must reach window.open()
+    // within the same click handler (popup blockers), so no fetch can sit
+    // between the click and this decision. Diagram-only editing never calls this.
+    RedcapInstrumentPatientProvider.prototype._requireExistingRecord = function () {
+        if (this._recordExists) {
+            return true;
+        }
+        var modal = createModal('Save this form first');
+        modal.content.textContent = 'Save this form once before linking family members to REDCap records. '
+            + 'This record hasn\'t been saved yet, so it doesn\'t exist in REDCap to link from. '
+            + 'Drawing and saving the pedigree diagram itself works as normal in the meantime.';
+        return false;
+    };
 
     RedcapInstrumentPatientProvider.prototype.isConfigured = function () {
         return this._configured;
@@ -139,6 +163,9 @@
     }
 
     RedcapInstrumentPatientProvider.prototype.openPicker = function (nodeId, onLinked) {
+        if (!this._requireExistingRecord()) {
+            return;
+        }
         var self = this;
         var modal = createModal('Link to a family member record');
 
@@ -236,6 +263,9 @@
     // D2's implementation note): the ref is looked up here via the live
     // node, the same pattern SmartPatientProvider.ts already uses.
     RedcapInstrumentPatientProvider.prototype.openEditor = function (nodeId, onDone) {
+        if (!this._requireExistingRecord()) {
+            return;
+        }
         var node = window.editor && window.editor.getView().getNode(nodeId);
         var ref = decodeRef(node && node.getLinkedRecordRef && node.getLinkedRecordRef());
         var modal = createModal('Import from linked record');
@@ -283,6 +313,9 @@
     // Not supported yet - canCreateNew() always returns false, so the host
     // never offers a "Create new" action that would reach this method.
     RedcapInstrumentPatientProvider.prototype.createNew = function (nodeId, onCreated) {
+        if (!this._requireExistingRecord()) {
+            return;
+        }
         console.warn('RedcapInstrumentPatientProvider.createNew() is not yet supported');
     };
 
