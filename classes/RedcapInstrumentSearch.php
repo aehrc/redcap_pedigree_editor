@@ -17,9 +17,15 @@ class RedcapInstrumentSearch
      *   concatenated into the searchable/displayed name for each row.
      * @param string $query Case-insensitive substring match; empty string matches every row.
      * @param int $limit Maximum number of matches returned.
-     * @return array List of `['record', 'instance', 'display', 'ref']`.
+     * @param string|null $genderFieldName The REDCap field name mapped to
+     *   `mapsTo="gender"` (see {@see QuestionnaireDerivation::resolveTaggedFields()}),
+     *   or `null` if the instrument has none - included as each match's `gender`
+     *   so the client can filter the picker to genders the target node can
+     *   actually take (see `RedcapInstrumentPatientProvider.js`'s `openPicker`).
+     * @return array List of `['record', 'instance', 'display', 'ref', 'gender']`
+     *   (`gender` omitted when `$genderFieldName` is `null`).
      */
-    public static function search(array $rows, array $searchFieldNames, string $query, int $limit = 20): array
+    public static function search(array $rows, array $searchFieldNames, string $query, int $limit = 20, ?string $genderFieldName = null): array
     {
         $query = trim($query);
         $matches = [];
@@ -30,12 +36,16 @@ class RedcapInstrumentSearch
                 continue;
             }
 
-            $matches[] = [
+            $match = [
                 'record' => $row['record'],
                 'instance' => $row['instance'],
                 'display' => $display !== '' ? $display : ($row['record'] . ' #' . $row['instance']),
                 'ref' => RedcapInstrumentReference::encode($row['record'], $row['instance']),
             ];
+            if ($genderFieldName !== null) {
+                $match['gender'] = $row['fields'][$genderFieldName] ?? null;
+            }
+            $matches[] = $match;
 
             if (count($matches) >= $limit) {
                 break;

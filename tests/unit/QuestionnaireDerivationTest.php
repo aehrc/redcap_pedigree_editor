@@ -337,8 +337,32 @@ class QuestionnaireDerivationTest extends TestCase
         $dd = ['first_name' => $this->field(['field_annotation' => '@PEDIGREE_FIELD'])];
         $resolved = QuestionnaireDerivation::resolveTaggedFields($dd);
         $this->assertSame([
-            ['redcapField' => 'first_name', 'linkId' => 'first_name', 'type' => 'string', 'repeats' => false, 'choices' => []],
+            ['redcapField' => 'first_name', 'linkId' => 'first_name', 'type' => 'string', 'repeats' => false, 'choices' => [], 'mapsTo' => null],
         ], $resolved);
+    }
+
+    public function testResolveTaggedFieldsReportsMapsToTargetWhenTypeMatches(): void
+    {
+        $dd = ['gender' => $this->field([
+            'field_type' => 'radio',
+            'field_annotation' => '@PEDIGREE_FIELD(mapsTo="gender")',
+            'select_choices_or_calculations' => 'M, Male | F, Female',
+        ])];
+        $resolved = QuestionnaireDerivation::resolveTaggedFields($dd);
+        $this->assertSame('gender', $resolved[0]['mapsTo']);
+    }
+
+    public function testResolveTaggedFieldsOmitsMapsToTargetWhenTypeMismatched(): void
+    {
+        // mapsTo="gender" expects a choice field (see MAPS_TO_FIELD_EXPECTED_TYPES) - a text
+        // field is the wrong type, so applyMapsTo() would omit the mapping in the actual
+        // derived Questionnaire too; resolveTaggedFields() must agree, not report it anyway.
+        $dd = ['gender' => $this->field([
+            'field_type' => 'text',
+            'field_annotation' => '@PEDIGREE_FIELD(mapsTo="gender")',
+        ])];
+        $resolved = QuestionnaireDerivation::resolveTaggedFields($dd);
+        $this->assertNull($resolved[0]['mapsTo']);
     }
 
     public function testResolveTaggedFieldsOverridesLinkIdForValidLegendMapping(): void

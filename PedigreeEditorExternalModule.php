@@ -662,7 +662,9 @@ EOD;
      * Searches the configured repeating instrument's rows (task 6.2/6.4 —
      * backs `RedcapInstrumentPatientProvider.openPicker`'s AJAX call).
      *
-     * @return array List of `['record', 'instance', 'display', 'ref']`.
+     * @return array List of `['record', 'instance', 'display', 'ref']`, plus
+     *   `'gender'` per match when the instrument has a valid
+     *   `mapsTo="gender"` field - see `RedcapInstrumentSearch::search()`.
      */
     public function searchPedigreeInstrumentRows($project_id, $query)
     {
@@ -673,7 +675,22 @@ EOD;
         $dataDictionary = RedcapInstrumentGateway::fetchDataDictionary($project_id, $instrument);
         $rows = RedcapInstrumentGateway::fetchInstrumentRows($project_id, array_keys($dataDictionary), $this->getCurrentUserGroupId($project_id));
         $searchFields = $this->getPedigreeImportSearchFields($project_id);
-        return RedcapInstrumentSearch::search($rows, $searchFields, (string) $query);
+        $genderField = $this->findMapsToFieldName($dataDictionary, 'gender');
+        return RedcapInstrumentSearch::search($rows, $searchFields, (string) $query, 20, $genderField);
+    }
+
+    /**
+     * @return string|null The REDCap field name whose `@PEDIGREE_FIELD`
+     *   tag has a validly-typed `mapsTo="$target"`, or null if none.
+     */
+    private function findMapsToFieldName($dataDictionary, $target)
+    {
+        foreach (QuestionnaireDerivation::resolveTaggedFields($dataDictionary) as $resolved) {
+            if ($resolved['mapsTo'] === $target) {
+                return $resolved['redcapField'];
+            }
+        }
+        return null;
     }
 
     /**

@@ -97,9 +97,13 @@ class QuestionnaireDerivation
      * linkId-resolution rules, including the legend-target `linkId`
      * override, to correctly key the answer bag it returns).
      *
-     * @return array Ordered list of `['redcapField', 'linkId', 'type', 'repeats', 'choices']`,
+     * @return array Ordered list of `['redcapField', 'linkId', 'type', 'repeats', 'choices', 'mapsTo']`,
      *   where `choices` is the field's parsed `code => display` choice map
-     *   (empty for non-choice types).
+     *   (empty for non-choice types), and `mapsTo` is the tag's validly-typed
+     *   `mapsTo=` target (e.g. `'gender'`), or `null` if untagged/invalid -
+     *   same validity rule as {@see applyMapsTo()} (kept in sync so a field
+     *   this reports as mapped to a target is the same field the actual
+     *   derived Questionnaire maps it to).
      */
     public static function resolveTaggedFields(array $dataDictionary, array $fieldAnswerValueSets = []): array
     {
@@ -120,6 +124,14 @@ class QuestionnaireDerivation
                 $linkId = $tag->legend;
             }
 
+            $mapsTo = null;
+            if ($tag->mapsTo !== null
+                && isset(self::MAPS_TO_FIELD_EXPECTED_TYPES[$tag->mapsTo])
+                && self::MAPS_TO_FIELD_EXPECTED_TYPES[$tag->mapsTo] === $typeInfo['type']
+            ) {
+                $mapsTo = $tag->mapsTo;
+            }
+
             $choices = [];
             if (in_array($typeInfo['type'], ['choice', 'open-choice'], true)) {
                 foreach (self::parseChoices($field['select_choices_or_calculations'] ?? '') as $option) {
@@ -133,6 +145,7 @@ class QuestionnaireDerivation
                 'type' => $typeInfo['type'],
                 'repeats' => $typeInfo['repeats'],
                 'choices' => $choices,
+                'mapsTo' => $mapsTo,
             ];
         }
         return $resolved;
