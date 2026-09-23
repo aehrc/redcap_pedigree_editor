@@ -1,0 +1,575 @@
+{
+  "resourceType": "Questionnaire",
+  "url": "https://github.com/aehrc/open-pedigree/Questionnaire/default",
+  "version": "1.0",
+  "title": "Open Pedigree default node-edit form",
+  "status": "active",
+  "item": [
+    {
+      "linkId": "personal_tab",
+      "type": "group",
+      "text": "Personal",
+      "item": [
+        {
+          "linkId": "gender",
+          "type": "choice",
+          "text": "Gender",
+          "answerOption": [
+            {
+              "valueCoding": {
+                "code": "M",
+                "display": "Male"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "F",
+                "display": "Female"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "U",
+                "display": "Unknown"
+              }
+            }
+          ],
+          "columns": 3,
+          "definition": "http://hl7.org/fhir/StructureDefinition/Patient#Patient.gender",
+          "extension": [
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "valueCode": "mapsToField"
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "radio-button"
+                  }
+                ]
+              }
+            }
+          ],
+          "disablingPredicate": "possibleGenders",
+          "disablingPredicateTarget": "inactive"
+        },
+        {
+          "linkId": "first_name",
+          "type": "string",
+          "text": "First name",
+          "definition": "http://hl7.org/fhir/StructureDefinition/Patient#Patient.name.given",
+          "extension": [
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "valueCode": "mapsToField"
+            }
+          ]
+        },
+        {
+          "linkId": "last_name",
+          "type": "string",
+          "text": "Last name",
+          "definition": "http://hl7.org/fhir/StructureDefinition/Patient#Patient.name.family",
+          "extension": [
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "valueCode": "mapsToField"
+            }
+          ]
+        },
+        {
+          "linkId": "link_patient",
+          "type": "display",
+          "text": "Link to patient",
+          "extension": [
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "valueCode": "invokesAction"
+            },
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-action",
+              "valueCode": "linkPatient"
+            }
+          ],
+          "enableWhen": [
+            {
+              "extension": [
+                {
+                  "url": "https://github.com/aehrc/open-pedigree/questionnaire-enable-predicate",
+                  "valueCode": "canLinkPatient"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "external_id",
+          "type": "string",
+          "text": "Identifier",
+          "definition": "http://hl7.org/fhir/StructureDefinition/Patient#Patient.identifier",
+          "extension": [
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "valueCode": "mapsToField"
+            }
+          ]
+        },
+        {
+          "linkId": "date_of_birth",
+          "type": "date",
+          "text": "Date of birth",
+          "definition": "http://hl7.org/fhir/StructureDefinition/Patient#Patient.birthDate",
+          "extension": [
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "valueCode": "mapsToField"
+            }
+          ],
+          "enableWhen": [
+            {
+              "extension": [
+                {
+                  "url": "https://github.com/aehrc/open-pedigree/questionnaire-enable-predicate",
+                  "valueCode": "isFetus"
+                }
+              ],
+              "negate": true
+            }
+          ]
+        },
+        {
+          "linkId": "date_of_death",
+          "type": "date",
+          "text": "Date of death",
+          "definition": "http://hl7.org/fhir/StructureDefinition/Patient#Patient.deceasedDateTime",
+          "extension": [
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "valueCode": "mapsToField"
+            }
+          ],
+          "enableWhen": [
+            {
+              "extension": [
+                {
+                  "url": "https://github.com/aehrc/open-pedigree/questionnaire-enable-predicate",
+                  "valueCode": "isFetus"
+                }
+              ],
+              "negate": true
+            }
+          ]
+        },
+        {
+          "linkId": "state",
+          "type": "choice",
+          "text": "Individual is",
+          "answerOption": [
+            {
+              "valueCoding": {
+                "code": "alive",
+                "display": "Alive"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "stillborn",
+                "display": "Stillborn"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "deceased",
+                "display": "Deceased"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "miscarriage",
+                "display": "Miscarriage"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "unborn",
+                "display": "Unborn"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "aborted",
+                "display": "Aborted"
+              }
+            }
+          ],
+          "columns": 3,
+          "definition": "https://github.com/aehrc/open-pedigree/StructureDefinition/PedigreeIndividual#PedigreeIndividual.lifeStatus",
+          "extension": [
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "valueCode": "mapsToField"
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "radio-button"
+                  }
+                ]
+              }
+            }
+          ],
+          "disablingPredicate": "lifeStatusAvailability",
+          "disablingPredicateTarget": "inactive"
+        },
+        {
+          "linkId": "gestation_age",
+          "type": "integer",
+          "text": "Gestation age",
+          "range": {
+            "start": 0,
+            "end": 50,
+            "item": [
+              "week",
+              "weeks"
+            ]
+          },
+          "nullValue": true,
+          "definition": "https://github.com/aehrc/open-pedigree/StructureDefinition/PedigreeIndividual#PedigreeIndividual.gestationAge",
+          "extension": [
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "valueCode": "mapsToField"
+            }
+          ],
+          "enableWhen": [
+            {
+              "extension": [
+                {
+                  "url": "https://github.com/aehrc/open-pedigree/questionnaire-enable-predicate",
+                  "valueCode": "isFetus"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "childlessSelect",
+          "type": "choice",
+          "text": "Heredity options",
+          "answerOption": [
+            {
+              "valueCoding": {
+                "code": "none",
+                "display": "None"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "childless",
+                "display": "Childless"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "infertile",
+                "display": "Infertile"
+              }
+            }
+          ],
+          "definition": "https://github.com/aehrc/open-pedigree/StructureDefinition/PedigreeIndividual#PedigreeIndividual.childlessStatus",
+          "extension": [
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "valueCode": "mapsToField"
+            }
+          ],
+          "enableWhen": [
+            {
+              "extension": [
+                {
+                  "url": "https://github.com/aehrc/open-pedigree/questionnaire-enable-predicate",
+                  "valueCode": "isFetus"
+                }
+              ],
+              "negate": true
+            }
+          ]
+        },
+        {
+          "linkId": "adopted",
+          "type": "boolean",
+          "text": "Adopted",
+          "definition": "https://github.com/aehrc/open-pedigree/StructureDefinition/PedigreeIndividual#PedigreeIndividual.isAdopted",
+          "extension": [
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "valueCode": "mapsToField"
+            }
+          ],
+          "enableWhen": [
+            {
+              "extension": [
+                {
+                  "url": "https://github.com/aehrc/open-pedigree/questionnaire-enable-predicate",
+                  "valueCode": "isFetus"
+                }
+              ],
+              "negate": true
+            },
+            {
+              "extension": [
+                {
+                  "url": "https://github.com/aehrc/open-pedigree/questionnaire-enable-predicate",
+                  "valueCode": "hasToBeAdopted"
+                }
+              ],
+              "negate": true
+            }
+          ],
+          "enableBehavior": "all"
+        },
+        {
+          "linkId": "monozygotic",
+          "type": "boolean",
+          "text": "Monozygotic twin",
+          "definition": "https://github.com/aehrc/open-pedigree/StructureDefinition/PedigreeIndividual#PedigreeIndividual.monozygotic",
+          "extension": [
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "valueCode": "mapsToField"
+            }
+          ],
+          "enableWhen": [
+            {
+              "extension": [
+                {
+                  "url": "https://github.com/aehrc/open-pedigree/questionnaire-enable-predicate",
+                  "valueCode": "isTwin"
+                }
+              ]
+            }
+          ],
+          "disabledWhen": [
+            {
+              "extension": [
+                {
+                  "url": "https://github.com/aehrc/open-pedigree/questionnaire-enable-predicate",
+                  "valueCode": "isTwinWithConsistentGender"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "nocontact",
+          "type": "boolean",
+          "text": "Not in contact with proband",
+          "definition": "https://github.com/aehrc/open-pedigree/StructureDefinition/PedigreeIndividual#PedigreeIndividual.lostContact",
+          "extension": [
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "valueCode": "mapsToField"
+            }
+          ],
+          "enableWhen": [
+            {
+              "extension": [
+                {
+                  "url": "https://github.com/aehrc/open-pedigree/questionnaire-enable-predicate",
+                  "valueCode": "isProband"
+                }
+              ],
+              "negate": true
+            },
+            {
+              "extension": [
+                {
+                  "url": "https://github.com/aehrc/open-pedigree/questionnaire-enable-predicate",
+                  "valueCode": "isRelatedToProband"
+                }
+              ]
+            }
+          ],
+          "enableBehavior": "all"
+        },
+        {
+          "linkId": "placeholder",
+          "type": "boolean",
+          "text": "Placeholder node",
+          "enableWhen": [
+            {
+              "extension": [
+                {
+                  "url": "https://github.com/aehrc/open-pedigree/questionnaire-enable-predicate",
+                  "valueCode": "isProband"
+                }
+              ]
+            },
+            {
+              "extension": [
+                {
+                  "url": "https://github.com/aehrc/open-pedigree/questionnaire-enable-predicate",
+                  "valueCode": "isProband"
+                }
+              ],
+              "negate": true
+            }
+          ],
+          "enableBehavior": "all"
+        }
+      ]
+    },
+    {
+      "linkId": "clinical_tab",
+      "type": "group",
+      "text": "Clinical",
+      "item": [
+        {
+          "linkId": "carrier",
+          "type": "choice",
+          "text": "Carrier status",
+          "answerOption": [
+            {
+              "valueCoding": {
+                "code": "",
+                "display": "Not affected"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "carrier",
+                "display": "Carrier"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "affected",
+                "display": "Affected"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "presymptomatic",
+                "display": "Pre-symptomatic"
+              }
+            }
+          ],
+          "definition": "https://github.com/aehrc/open-pedigree/StructureDefinition/PedigreeIndividual#PedigreeIndividual.carrierStatus",
+          "extension": [
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "valueCode": "mapsToField"
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "radio-button"
+                  }
+                ]
+              }
+            }
+          ],
+          "disablingPredicate": "carrierAvailability",
+          "disablingPredicateTarget": "disabled"
+        },
+        {
+          "linkId": "evaluated",
+          "type": "boolean",
+          "text": "Documented evaluation",
+          "definition": "https://github.com/aehrc/open-pedigree/StructureDefinition/PedigreeIndividual#PedigreeIndividual.evaluated",
+          "extension": [
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "valueCode": "mapsToField"
+            }
+          ]
+        },
+        {
+          "linkId": "disorders",
+          "type": "choice",
+          "text": "Disorders",
+          "repeats": true,
+          "answerValueSet": "http://purl.bioontology.org/ontology/OMIM",
+          "extension": [
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "valueCode": "mapsToLegendCondition"
+            }
+          ]
+        },
+        {
+          "linkId": "import_from_record",
+          "type": "display",
+          "text": "Import from record",
+          "extension": [
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "valueCode": "invokesAction"
+            },
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-action",
+              "valueCode": "importClinicalData"
+            }
+          ],
+          "enableWhen": [
+            {
+              "extension": [
+                {
+                  "url": "https://github.com/aehrc/open-pedigree/questionnaire-enable-predicate",
+                  "valueCode": "canImportClinicalData"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "candidate_genes",
+          "type": "choice",
+          "text": "Genes",
+          "repeats": true,
+          "answerValueSet": "http://www.genenames.org",
+          "extension": [
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "valueCode": "mapsToLegendObservation"
+            }
+          ]
+        },
+        {
+          "linkId": "hpo_positive",
+          "type": "choice",
+          "text": "Phenotypic features",
+          "repeats": true,
+          "answerValueSet": "http://purl.obolibrary.org/obo/hp.owl",
+          "extension": [
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "valueCode": "mapsToLegendObservation"
+            }
+          ]
+        },
+        {
+          "linkId": "comments",
+          "type": "text",
+          "text": "Comments",
+          "definition": "https://github.com/aehrc/open-pedigree/StructureDefinition/PedigreeIndividual#PedigreeIndividual.comments",
+          "extension": [
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "valueCode": "mapsToField"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -37,6 +37,12 @@ representation of the diagram, add compression for large diagrams.
 - v0.3.2 - Add new action tag **@PEDIGREE** which uses configurable terminology settings.
 - v0.4 - Add support for PED and DADA2 formats.
 - v0.5 - Bug fix in open-pedigree, change default fhir server and valuesets to use https://tx.ontoserver.csiro.au/fhir
+- v0.6 - Add the ability to link pedigree nodes to rows of a repeating instrument and import their data, via the new
+  **@PEDIGREE_FIELD** action tag and *Repeating instrument*/*Search fields*/*Node-edit form source* project settings —
+  see [Linking Pedigree Nodes to a Repeating Instrument](#linking-pedigree-nodes-to-a-repeating-instrument).
+  **Breaking**: remove the **@PEDIGREE_HPO**/**@PEDIGREE_SCT** action tags. Terminology is now always taken from
+  the project/system *Default Terminology* setting — existing fields tagged **@PEDIGREE_HPO**/**@PEDIGREE_SCT** will stop
+  being recognised as pedigree fields; update them to a bare **@PEDIGREE** tag and set *Default Terminology* accordingly.
 
 # Install the distribution
 
@@ -84,9 +90,9 @@ Once installed the module has a number of system-wide options:
    - *OAuth2 token endpoint*  - The token endpoint used to obtain the access token. This is required for `Oauth2 Client Credentials` authentication type.
    - *Client Id* - The client id to use to fetch an access token. This is required for `Oauth2 Client Credentials` authentication type.
    - *Client Secret* - The client secret to use to fetch an access token. This is required for `Oauth2 Client Credentials` authentication type.
- - *Default Terminology* - This setting configures the system level default terminologies to use with the @PEDIGREE tag. It will be one of:
-   - *SNOMEDCT* - This uses the same terminology as the @PEDIGREE_SCT tag.
-   - *HPO* - This uses the same terminology as the @PEDIGREE_HPO tag.
+ - *Default Terminology* - This setting configures the system level default terminology to use with the @PEDIGREE tag. It will be one of:
+   - *SNOMEDCT* - Disorders and phenotypes are coded using SNOMED-CT.
+   - *HPO* - Disorders and phenotypes are coded using HPO and OMIM.
    - *Custom* - The terminology settings will be entered into additional fields.
      - *Disorder Code System* - The FHIR code system to use for disorders.
      - *Disorder Valueset* - The FHIR valueset to use for disorders.
@@ -105,9 +111,9 @@ Once installed the module has a number of system-wide options:
 
 Each project can override the *Allow Manual Entry*, *Storage Format* and *Compress Data* setting. If left blank then the system setting will be used.
 The project can also override the terminology to use with the @PEDIGREE action tag
-- *Default Terminology* - This setting configures the system level default terminologies to use with the @PEDIGREE tag. It will be one of:
-    - *SNOMEDCT* - This uses the same terminology as the @PEDIGREE_SCT tag.
-    - *HPO* - This uses the same terminology as the @PEDIGREE_HPO tag.
+- *Default Terminology* - This setting configures the project level default terminology to use with the @PEDIGREE tag. It will be one of:
+    - *SNOMEDCT* - Disorders and phenotypes are coded using SNOMED-CT.
+    - *HPO* - Disorders and phenotypes are coded using HPO and OMIM.
     - *System* - This uses the system default terminology settings.
     - *Custom* - The terminology settings will be entered into additional fields.
         - *Disorder Code System* - The FHIR code system to use for disorders.
@@ -120,14 +126,21 @@ The project can also override the terminology to use with the @PEDIGREE action t
         - *Gene Valueset* - The FHIR valueset to use for genes.
         - *Gene Regex* - Regular expression used to test if a code could be a member of the gene code system.
 
+The project can also link pedigree nodes to rows of one of its own repeating instruments, and control how the node-edit
+form itself is built from that instrument — see [Linking Pedigree Nodes to a Repeating Instrument](#linking-pedigree-nodes-to-a-repeating-instrument)
+below for the *Repeating instrument*/*Search fields*/*Node-edit form source* settings and the *@PEDIGREE_FIELD* action tag.
 
 ![Configure](documentation/pedigree_v0.4_project_settings.png)
 
 ## Creating a Pedigree field
-To make use of the editor a field needs to be created in the online designer and marked with one of two action tags. Only fields of type `Notes Box` are considered.
-  - *@PEDIGREE_HPO* - Marks a field to be a pedigree editor using the HPO and OMIM coding systems for phenotypes and disorders.
-  - *@PEDIGREE_SCT* - Marks a field to be a pedigree editor using the SNOMED-CT coding system for phenotypes and disorders.
-  - *@PEDIGREE* - Marks a field to be a pedigree editor using the default coding system for phenotypes and disorders (new to version 0.3.2).
+To make use of the editor a field needs to be created in the online designer and marked with the *@PEDIGREE* action tag. Only fields of type `Notes Box` are considered.
+Terminology (SNOMED-CT / HPO+OMIM / Custom) is always taken from the project's (or, if unset, the system's) *Default Terminology*
+setting — see [System Settings](#system-settings)/[Project Settings](#project-settings) above. There is no per-field way to
+override terminology on this tag.
+
+> Versions before 0.6 supported *@PEDIGREE_HPO*/*@PEDIGREE_SCT* tag variants to force a field's terminology regardless of
+> the project/system default. These have been removed as redundant with the *Default Terminology* setting — replace them
+> with a bare *@PEDIGREE* tag and set *Default Terminology* to *HPO* or *SNOMEDCT* instead.
 
 The default 'Hide Text' and 'Compress Data' options can be overridden in the action tag by appending '=' plus a comma 
 separated list of options.
@@ -137,8 +150,8 @@ separated list of options.
   - *COMPRESS_LARGE* - Compress the data if it exceeds 65K characters.
   - *ALWAYS_COMPRESS* - Always compress the data for this field.
 
-An action tag of @PEDIGREE_HPO=HIDE_TEXT,NEVER_COMPRESS will use the HPO code system and hide the text area for the 
-field and prevent compression of the data stored in the field.
+An action tag of @PEDIGREE=HIDE_TEXT,NEVER_COMPRESS will hide the text area and prevent compression of the data stored
+in the field.
 
 ![Online Designer](documentation/pedigree_v0.2_designer.png)
 
@@ -161,6 +174,217 @@ editor. If this has been stripped for some reason instead a placeholder image is
 If the pedigree data does not contain an image a placeholder image is shown.
 
 ![Data Entry (Placeholder as no diagram in pedigree data)](documentation/pedigree_v0.2_data_placeholder_show.png)
+
+
+## Linking Pedigree Nodes to a Repeating Instrument
+
+Beyond the single *@PEDIGREE* field that stores the diagram itself, the module can link an individual pedigree node
+(a person in the diagram) to a row of one of the project's own **repeating instruments** — e.g. a `family_members`
+instrument with one row per relative — and import that row's data straight into the node's edit form. This needs no
+custom code: it works by deriving a FHIR Questionnaire (the node-edit form's definition) from the instrument's Data
+Dictionary, driven by action tags on the instrument's own fields.
+
+### Configuring the linked instrument
+
+Two project settings control this (see [Project Settings](#project-settings) above):
+
+- ***Repeating instrument*** (`project_pedigree_import_instrument`) - which of the project's repeating instruments to
+  search/link/import from. Must actually be configured as a repeating instrument (*Project Setup > Enable optional
+  modules > Repeating Instruments and Events*) - the module refuses to save this setting otherwise.
+- ***Search fields*** (`project_pedigree_import_search_fields`) - one or more fields on that instrument used to search
+  for and display a row when linking a node (e.g. first name + last name).
+
+Once configured, every node's edit form gains a **Linked Record** tab with a *Link to existing record* button
+(automatically added by `open-pedigree`'s own `record-link-provider` mechanism - not something this module's derived
+Questionnaire builds itself, and not something you can reposition or omit from a hand-authored Questionnaire either;
+see [Advanced mode](#advanced-mode-hand-authoring-the-questionnaire) below). Linking a node searches the configured
+instrument's rows (server-side - no REDCap API token is ever exposed to the browser) and, once linked, an *Edit linked
+record* button becomes available to pull that row's data into the node - a one-time, read-only snapshot; later changes
+to the REDCap row are not automatically reflected back into the pedigree. Creating a brand-new linked row from the
+pedigree editor isn't supported yet (the *Create new linked record* button always stays hidden) - see
+`pedigree-editor-repeating-instrument-sync`.
+
+### The `@PEDIGREE_FIELD` action tag
+
+Tag a field on the linked repeating instrument with `@PEDIGREE_FIELD` to include it in the node-edit form. Untagged
+fields are never included - this is opt-in, the same way `@PEDIGREE` marks the one field storing the diagram itself.
+`@PEDIGREE_FIELD` is a distinct tag from `@PEDIGREE`; there's no collision between the two.
+
+- **Bare `@PEDIGREE_FIELD`** - include the field as a plain custom item, labelled with its field label.
+- **`@PEDIGREE_FIELD(mapsTo="<target>")`** - map the field's answer onto one of the pedigree's own built-in properties
+  instead of a generic custom item. The field's REDCap type must match the target's expected item type, or the mapping
+  is dropped (with a logged warning) and the field falls back to a plain item:
+
+  | `mapsTo` target | expected REDCap field type | notes |
+  |---|---|---|
+  | `gender` | `radio`/`dropdown` (choice) | codes should be `M`/`F`/`U` - anything else is treated as `U` |
+  | `given` | `text` (string) | first name |
+  | `family` | `text` (string) | last name |
+  | `identifier` | `text` (string) | external ID |
+  | `birthDate` | `text`, validation `date_*` | |
+  | `deceasedDateTime` | `text`, validation `date_*` | |
+  | `lifeStatus` | `radio`/`dropdown` (choice) | codes: `alive`, `stillborn`, `deceased`, `miscarriage`, `unborn`, `aborted` |
+  | `gestationAge` | `text`, validation `integer` | |
+  | `carrierStatus` | `radio`/`dropdown` (choice) | codes: `''` (not affected), `carrier`, `affected`, `presymptomatic` |
+  | `comments` | `notes` (text) | |
+  | `childlessStatus` | `radio`/`dropdown` (choice) | codes: `childless`, `infertile` (anything else is cleared) |
+  | `isAdopted` | `yesno`/`truefalse` (boolean) | |
+  | `monozygotic` | `yesno`/`truefalse` (boolean) | |
+  | `evaluated` | `yesno`/`truefalse` (boolean) | |
+  | `lostContact` | `yesno`/`truefalse` (boolean) | |
+
+- **`@PEDIGREE_FIELD(legend="<target>")`** - map a **repeating checkbox** field, already configured against
+  `advanced_fhir_ontology_provider` (with a URL-type valueset), onto one of the three reserved legend targets:
+  `disorders`, `candidate_genes`, `hpo_positive`. A successful legend mapping sets the item's `linkId` to the target
+  name itself (not the REDCap field name) - this is required for the answer to reach the pedigree diagram's real
+  colour-coded Disorder/Gene/Phenotype legend rather than becoming an orphaned generic item. If the field isn't a
+  repeating, ontology-provider-backed choice field, the mapping is dropped (with a logged warning) and the field falls
+  back to a plain item.
+- **`@PEDIGREE_FIELD(predicate="<name>")`** - layer a graph/app-state visibility condition onto the field, for cases
+  `branching_logic` has no way to express (e.g. twin-group membership). Recognised predicates: `isFetus`,
+  `hasRelationships`, `isProband`, `isRelatedToProband`, `hasToBeAdopted`, `isTwin`, `isTwinWithConsistentGender`,
+  `canLinkRecord`, `canCreateNewRecord`, `canEditLinkedRecord`.
+
+`mapsTo`/`legend`/`predicate` are independent and may be combined, e.g. `@PEDIGREE_FIELD(mapsTo="gestationAge",predicate="isFetus")`.
+
+Field types with no reasonable mechanical translation (`calc`, `sql`, `file`, `slider`, `descriptive`) are skipped with
+a logged warning rather than blocking derivation of the rest of the form.
+
+A `section_header` on the instrument starts a new tab in the node-edit form; fields before the first section header
+land in an implicit *General* tab.
+
+Simple `branching_logic` - a single comparison or an AND-chain of comparisons against other `@PEDIGREE_FIELD`-tagged
+fields on the same instrument (`[field] = 'value'`, `[field] > 18`, ...) - is translated into the field's visibility
+condition automatically. Anything outside that (OR chains, comparisons against fields elsewhere, checkbox-option syntax,
+nested parentheses, or a comparison against a *mapped* field - a mapped field's value isn't visible to this mechanism)
+is left untranslated: the field is always shown, and a warning is logged.
+
+### Node-edit form source
+
+A third project setting, ***Node-edit form source*** (`project_pedigree_questionnaire_mode`), controls how the whole
+form is assembled from the above:
+
+- **Tags only** (default) - the form is built entirely from `@PEDIGREE_FIELD`-tagged fields, grouped into tabs as
+  described above, plus the *Linked Record* tab. Nothing else is included - no disorders/genes/phenotypes legend
+  unless you tag fields for it (and even then, cardinality is limited to whatever a single REDCap field can hold).
+- **Default + tags** - starts from `open-pedigree`'s own built-in default form (name, gender, date of birth, the full
+  disorders/genes/phenotypes legend with live terminology search, etc. - entered directly in the pedigree editor, not
+  imported from REDCap) and adds a new tab for whatever `@PEDIGREE_FIELD`-tagged fields you've configured. This is the
+  easiest way to get a fully-featured form with no manual Questionnaire authoring at all.
+- **Advanced** - you supply your own FHIR Questionnaire directly (see below). `@PEDIGREE_FIELD` tags are **not**
+  scanned in this mode at all.
+
+### Advanced mode: hand-authoring the Questionnaire
+
+In *Advanced* mode, paste a complete FHIR Questionnaire into the ***Advanced: FHIR Questionnaire JSON*** project
+setting - it's used exactly as written. This is the escape hatch for anything the derivation rules above can't
+express: richer branching logic, a genuinely multi-valued disorders list built from several REDCap fields, custom
+`enableWhen` conditions, whatever you need.
+
+To link an item in your own Questionnaire to a REDCap field so it can still be imported via *Import from linked
+record*, attach the same `questionnaire-redcap-source` extension the other two modes emit automatically:
+
+```json
+{
+  "linkId": "my_custom_linkid",
+  "type": "string",
+  "text": "Some field",
+  "extension": [
+    {
+      "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+      "extension": [
+        { "url": "instrument", "valueString": "family_members" },
+        { "url": "field", "valueString": "first_name" }
+      ]
+    }
+  ]
+}
+```
+
+`linkId` is used exactly as you write it - unlike the derived modes, nothing overrides it, so you can target a
+reserved legend `linkId` directly. The referenced field's REDCap type is still read from the Data Dictionary at import
+time (to interpret its raw value correctly), but `@PEDIGREE_FIELD` does not need to be present on it at all.
+
+A few starting examples:
+
+**A plain mapped field**, importing a REDCap text field's value as-is:
+
+```json
+{
+  "linkId": "external_id",
+  "type": "string",
+  "text": "Identifier",
+  "definition": "http://hl7.org/fhir/StructureDefinition/Patient#Patient.identifier",
+  "extension": [
+    { "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping", "valueCode": "mapsToField" },
+    {
+      "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+      "extension": [
+        { "url": "instrument", "valueString": "family_members" },
+        { "url": "field", "valueString": "external_id" }
+      ]
+    }
+  ]
+}
+```
+
+**A disorders legend field**, importing from a REDCap checkbox field configured against `advanced_fhir_ontology_provider`
+(same shape the *Default + tags*/*Tags only* modes generate for `@PEDIGREE_FIELD(legend="disorders")`):
+
+```json
+{
+  "linkId": "disorders",
+  "type": "choice",
+  "text": "Disorders",
+  "repeats": true,
+  "answerValueSet": "http://purl.bioontology.org/ontology/OMIM",
+  "extension": [
+    { "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping", "valueCode": "mapsToLegendCondition" },
+    {
+      "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+      "extension": [
+        { "url": "instrument", "valueString": "family_members" },
+        { "url": "field", "valueString": "family_disorders" }
+      ]
+    }
+  ]
+}
+```
+
+**The Linked Record tab and its Link/Create-new/Edit buttons are not part of any Questionnaire, hand-authored or
+derived.** `open-pedigree`'s own `record-link-provider` mechanism adds them automatically, entirely independent of
+Questionnaire content, whenever a `recordLinkProvider` is configured (which this module always does once the
+*Repeating instrument* setting above is set) - there is no extension to attach and no way to reposition or omit them
+from an Advanced-mode Questionnaire.
+
+To make one of your own hand-authored items render read-only and land on that same Linked Record tab (rather than
+being independently editable on whichever tab you declared it under), also attach the generic
+`questionnaire-linked-record-source` extension alongside `questionnaire-redcap-source` - the two are always attached
+together by the derived modes above and should be here too:
+
+```json
+{
+  "linkId": "external_id",
+  "type": "string",
+  "text": "Identifier",
+  "definition": "http://hl7.org/fhir/StructureDefinition/Patient#Patient.identifier",
+  "extension": [
+    { "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping", "valueCode": "mapsToField" },
+    { "url": "https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source" },
+    {
+      "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+      "extension": [
+        { "url": "instrument", "valueString": "family_members" },
+        { "url": "field", "valueString": "external_id" }
+      ]
+    }
+  ]
+}
+```
+
+The full built-in default Questionnaire (used verbatim by *Default + tags* mode) is a good, complete reference for
+everything else a Questionnaire item can do - tabs, `enableWhen`, the other `mapsTo`/legend targets, etc. It's the
+embedded module's `open-pedigree/dist/defaultQuestionnaire.json` file.
 
 
 # Upgrade Issues

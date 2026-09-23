@@ -2,6 +2,11 @@
     "name": "aehrc/redcap_pedigree_editor",
     "description": "Pedigree Editor REDCap External Module",
     "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "AEHRC\\PedigreeEditorExternalModule\\": "classes/"
+        }
+    },
     "require-dev": {
         "vimeo/psalm": "^6.16",
         "phpunit/phpunit": "^11.0"

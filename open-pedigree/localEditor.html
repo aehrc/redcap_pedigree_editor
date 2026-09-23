@@ -3,34 +3,17 @@
   <head>
     <meta charset="UTF-8">
     <title>Open Pedigree by PhenoTips&reg;</title>
-
-    <!-- Load jquery before prototype, making it available via jQuery but not $ -->
-    <script type="text/javascript" src="public/vendor/jquery-3.7.1.min.js"></script>
-
-    <!-- PrototypeJS and scriptaculous plugin -->
-    <script type="text/javascript" src="public/vendor/prototype-1.7.3.js"></script>
-    <script type="text/javascript" src="public/vendor/scriptaculous/effects.js"></script>
-    <script type="text/javascript" src="public/vendor/scriptaculous/dragdrop.js"></script>
-    <script type="text/javascript" src="public/vendor/scriptaculous/slider.js"></script>
-
-    <!-- File download -->
-    <script type="text/javascript" src="public/vendor/filesaver/Blob.js"></script>
-    <script type="text/javascript" src="public/vendor/filesaver/FileSaver.js"></script>
-    <script type="text/javascript" src="public/vendor/URI.js"></script>
-
-    <!-- PDF libraries -->
-    <script type="text/javascript" src="public/vendor/pdfkit/pdfkit.standalone.js"></script>
-    <script type="text/javascript" src="public/vendor/pdfkit/svg-to-pdfkit.js"></script>
-    <script type="text/javascript" src="public/vendor/pdfkit/blob-stream.js"></script>
-
-    <!-- XWiki REST API and widgets -->
-    <script type="text/javascript" src="public/vendor/xwiki/xwiki-min.js"></script>
-    <script type="text/javascript" src="public/vendor/phenotips/Widgets.js"></script>
-    <script type="text/javascript" src="public/vendor/phenotips/DateTimePicker.js"></script>
-    <script type="text/javascript" src="public/vendor/selectize/selectize.js"></script>
+    <link rel="icon" type="image/png" href="dist/assets/open-pedigree-icon.png">
 
     <!-- Open Pedigree bundle -->
     <script type="text/javascript" src="dist/pedigree.min.js"></script>
+
+    <!--
+      redcap_pedigree_editor-specific addition (see pedigree-repeating-instrument-import
+      OpenSpec change) - not part of the upstream open-pedigree-upgrade file this is
+      otherwise copied from verbatim. Preserve this block across future re-syncs.
+    -->
+    <script type="text/javascript" src="../js/RedcapInstrumentPatientProvider.js"></script>
 
   </head>
 
@@ -49,7 +32,7 @@
 
     var editor;
 
-    document.observe('dom:loaded',function() {
+    document.addEventListener('DOMContentLoaded', function() {
 
       const mode = getParameterByName('mode');
 
@@ -97,59 +80,46 @@
         return result;
       };
 
+      // GET, not POST: TerminologyService.php's lookup/query actions only
+      // read data, never write, and REDCap only requires a
+      // redcap_csrf_token for POST requests to module pages - staying
+      // GET-only means this never needs a CSRF token handed to the client
+      // at all (which would otherwise end up in server access logs and
+      // browser history via the URL), and lets TerminologyService leave
+      // config.json's no-auth-pages (REDCap authenticates the session for
+      // this page like any other module page).
+      const buildTerminologyUrl = (params) =>
+        redcapTerminolgyUrl + (redcapTerminolgyUrl.indexOf('?') >= 0 ? '&' : '?') + new URLSearchParams(params).toString();
+
       let terminologyOptions;
       if (redcapTerminolgyUrl){
         terminologyOptions = {
           'disorderOptions': {
             'type': 'Delegating',
-            'lookupUrlFn':  (id) => redcapTerminolgyUrl,
+            'lookupUrlFn':  (id) => buildTerminologyUrl({type: 'lookup', system: disorderSystem, code: id}),
             'processLookupResponseFn': processLookupFn,
-            'lookupAjaxOptionsFn':  (id) => ({
-              method: 'POST',
-              contentType: 'application/x-www-form-urlencoded',
-              parameters: {type: 'lookup', system: disorderSystem, code: id}
-            }),
-            'searchUrlFn': (search)=> redcapTerminolgyUrl,
+            'lookupAjaxOptionsFn':  (id) => ({ method: 'GET' }),
+            'searchUrlFn': (search) => buildTerminologyUrl({ type: 'query', url: disorderValueset, filter: search, count: 20 }),
             'processSearchResponseFn': processSearchFn,
-            'searchAjaxOptionsFn':  (search) => ({
-              method: 'POST',
-              contentType: 'application/x-www-form-urlencoded',
-              parameters: { type: 'query', url: disorderValueset, filter: search, count: 20 }
-            })
+            'searchAjaxOptionsFn':  (search) => ({ method: 'GET' })
           },
           phenotypeOptions: {
             'type': 'Delegating',
-            'lookupUrlFn':  (id) => redcapTerminolgyUrl,
+            'lookupUrlFn':  (id) => buildTerminologyUrl({type: 'lookup', system: phenotypeSystem, code: id}),
             'processLookupResponseFn': processLookupFn,
-            'lookupAjaxOptionsFn':  (id) => ({
-              method: 'POST',
-              contentType: 'application/x-www-form-urlencoded',
-              parameters: {type: 'lookup', system: phenotypeSystem, code: id}
-            }),
-            'searchUrlFn': (search)=> redcapTerminolgyUrl,
+            'lookupAjaxOptionsFn':  (id) => ({ method: 'GET' }),
+            'searchUrlFn': (search) => buildTerminologyUrl({ type: 'query', url: phenotypeValueset, filter: search, count: 20 }),
             'processSearchResponseFn': processSearchFn,
-            'searchAjaxOptionsFn':  (search) => ({
-              method: 'POST',
-              contentType: 'application/x-www-form-urlencoded',
-              parameters: { type: 'query', url: phenotypeValueset, filter: search, count: 20 }
-            })
+            'searchAjaxOptionsFn':  (search) => ({ method: 'GET' })
           },
           'geneOptions': {
             'type': 'Delegating',
-            'lookupUrlFn':  (id) => redcapTerminolgyUrl,
+            'lookupUrlFn':  (id) => buildTerminologyUrl({type: 'lookup', system: geneSystem, code: id}),
             'processLookupResponseFn': processLookupFn,
-            'lookupAjaxOptionsFn':  (id) => ({
-              method: 'POST',
-              contentType: 'application/x-www-form-urlencoded',
-              parameters: {type: 'lookup', system: geneSystem, code: id}
-            }),
-            'searchUrlFn': (search)=> redcapTerminolgyUrl,
+            'lookupAjaxOptionsFn':  (id) => ({ method: 'GET' }),
+            'searchUrlFn': (search) => buildTerminologyUrl({ type: 'query', url: geneValueset, filter: search, count: 20 }),
             'processSearchResponseFn': processSearchFn,
-            'searchAjaxOptionsFn':  (search) => ({
-              method: 'POST',
-              contentType: 'application/x-www-form-urlencoded',
-              parameters: { type: 'query', url: geneValueset, filter: search, count: 20 }
-            })
+            'searchAjaxOptionsFn':  (search) => ({ method: 'GET' })
           },
           'fhirTerminologyHelperOptions': {
             'disorderCodeSystem': disorderSystem,
@@ -164,18 +134,21 @@
         terminologyOptions = {
           'disorderOptions': {
             'type': 'FHIR',
+            'codeSystem': disorderSystem,
             'validIdRegex': disorderRegex,
             'fhirBaseUrl': ontologyServer,
             'valueSet': disorderValueset
           },
           'phenotypeOptions': {
             'type': 'FHIR',
+            'codeSystem': phenotypeSystem,
             'validIdRegex': phenotypeRegex,
             'fhirBaseUrl': ontologyServer,
             'valueSet': phenotypeValueset
           },
           'geneOptions': {
             'type': 'FHIR',
+            'codeSystem': geneSystem,
             'validIdRegex': geneRegex,
             'fhirBaseUrl': ontologyServer,
             'valueSet': geneValueset
@@ -197,12 +170,32 @@
 
       console.log("creating editor");
 
+      // redcap_pedigree_editor-specific addition (see pedigree-repeating-instrument-import
+      // and pedigree-editor-redcap-extension-extraction OpenSpec changes) - not part of
+      // the upstream file this is otherwise copied from verbatim. Preserve this block
+      // across future re-syncs.
+      var pedigreeImportEndpoint = getParameterByName('pedigreeImportEndpoint');
+      var recordLinkProviderOptions = {};
+      if (pedigreeImportEndpoint && window.RedcapInstrumentPatientProvider) {
+        recordLinkProviderOptions = {
+          recordLinkProvider: new RedcapInstrumentPatientProvider({
+            endpoint: pedigreeImportEndpoint,
+            configured: true
+          })
+        };
+      }
+
+      var pedigreeQuestionnaireUrl = getParameterByName('pedigreeQuestionnaireUrl');
+      var questionnaireOptions = pedigreeQuestionnaireUrl ? { questionnaireUrl: pedigreeQuestionnaireUrl } : {};
+
       var editorOptions = {
         // patientDataUrl: 'local:pedigreeData?format='+format+'&closeOnSave=true' + (qData?('&qData='+qData):''),
         patientDataUrl: 'local:pedigreeData?format='+format+'&closeOnSave=true',
         returnUrl: '#CloseWindow',
         backend: OpenPedigree.localStorageBackend,
-        ...terminologyOptions};
+        ...terminologyOptions,
+        ...recordLinkProviderOptions,
+        ...questionnaireOptions};
 
 
       editor = OpenPedigree.initialiseEditor(editorOptions);
