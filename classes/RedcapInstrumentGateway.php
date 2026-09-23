@@ -104,6 +104,35 @@ class RedcapInstrumentGateway
         return $proj ? $proj->isRepeatingFormAnyEvent($instrument) : null;
     }
 
+    /**
+     * The event whose repeating instances of `$instrument` "Edit in REDCap"
+     * should open: the current form's own event if the instrument repeats
+     * there, else the first event in the same arm where it does (a record
+     * belongs to an arm, so another arm's event would be the wrong record
+     * context). Null if the instrument isn't repeating in any such event, or
+     * the project couldn't be resolved.
+     */
+    public static function findRepeatingEventId(int $projectId, string $instrument, ?int $currentEventId): ?int
+    {
+        $proj = self::resolveProject($projectId);
+        if (!$proj) {
+            return null;
+        }
+        if ($currentEventId !== null && $proj->isRepeatingForm($currentEventId, $instrument)) {
+            return $currentEventId;
+        }
+        $arm = $currentEventId !== null ? ($proj->eventInfo[$currentEventId]['arm_num'] ?? null) : null;
+        foreach (array_keys($proj->eventsForms) as $eventId) {
+            if ($arm !== null && ($proj->eventInfo[$eventId]['arm_num'] ?? null) != $arm) {
+                continue;
+            }
+            if ($proj->isRepeatingForm($eventId, $instrument)) {
+                return (int) $eventId;
+            }
+        }
+        return null;
+    }
+
     private static $resolvedProjectCache = null;
 
     /**

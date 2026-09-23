@@ -182,7 +182,8 @@
             endpoint: pedigreeImportEndpoint,
             configured: true,
             recordExists: getParameterByName('pedigreeRecordExists') === '1',
-            record: getParameterByName('pedigreeRecord') || ''
+            record: getParameterByName('pedigreeRecord') || '',
+            editUrl: getParameterByName('pedigreeEditUrl') || ''
           })
         };
       }
