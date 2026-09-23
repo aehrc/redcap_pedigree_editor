@@ -59,9 +59,10 @@
         // REDCap data-entry URL for this record's linked-instrument rows, minus
         // &instance= (PedigreeEditorExternalModule builds it; see _editUrlFor()).
         this._editUrl = options.editUrl || '';
-        // nodeId -> REDCap window currently open for that node's row, so a repeat
-        // click focuses it instead of opening a second window + second refresh.
-        this._editWindows = {};
+        // One entry per open "Edit in REDCap" window: { window, node, nodeId, ref,
+        // onDone, timer } - see openEditor().
+        this._editSessions = [];
+        this._focusListenerAdded = false;
     }
 
     // Linking/editing/creating a repeating-instrument row all need the current
@@ -344,9 +345,13 @@
             return;
         }
 
-        var existing = this._editWindows[nodeId];
-        if (existing && !existing.closed) {
-            existing.focus();
+        // Keyed by the node object and the row, not the nodeId: open-pedigree
+        // renumbers node IDs when a node is deleted, and a re-linked person's
+        // open window shows the old row.
+        var refAtOpen = node.getLinkedRecordRef();
+        var existing = this._findEditSession(node, refAtOpen);
+        if (existing) {
+            existing.window.focus();
             return;
         }
 
@@ -357,40 +362,98 @@
                 + 'Allow pop-ups for this site, then try again.');
             return;
         }
-        this._editWindows[nodeId] = editWindow;
 
         var self = this;
-        var refAtOpen = node.getLinkedRecordRef();
-        var timer = setInterval(function () {
+        var session = { window: editWindow, node: node, nodeId: nodeId, ref: refAtOpen, onDone: onDone, timer: null };
+        this._editSessions.push(session);
+        this._listenForEditorFocus();
+        session.timer = setInterval(function () {
             if (!editWindow.closed) {
                 return;
             }
-            clearInterval(timer);
-            if (self._editWindows[nodeId] === editWindow) {
-                delete self._editWindows[nodeId];
+            clearInterval(session.timer);
+            self._editSessions = self._editSessions.filter(function (s) { return s !== session; });
+            self._refreshFromRedcap(session, true);
+        }, EDIT_WINDOW_POLL_MS);
+    };
+
+    RedcapInstrumentPatientProvider.prototype._findEditSession = function (node, ref) {
+        for (var i = 0; i < this._editSessions.length; i++) {
+            var s = this._editSessions[i];
+            if (s.node === node && s.ref === ref && !s.window.closed) {
+                return s;
             }
-            // The person may have been re-linked or deleted while the REDCap window
-            // was open - only apply the row to a node still linked to it.
-            var nodeNow = window.editor && window.editor.getView().getNode(nodeId);
-            var refNow = nodeNow && nodeNow.getLinkedRecordRef ? nodeNow.getLinkedRecordRef() : null;
-            if (refNow !== refAtOpen) {
-                return;
+        }
+        return null;
+    };
+
+    // Secondary trigger (design.md): coming back to the pedigree editor while a
+    // REDCap window is still open (e.g. after "Save & Stay" there) refreshes too,
+    // so saving the pedigree right afterwards doesn't store stale values. Quiet -
+    // messages are left to the final refresh on close.
+    RedcapInstrumentPatientProvider.prototype._listenForEditorFocus = function () {
+        if (this._focusListenerAdded) {
+            return;
+        }
+        this._focusListenerAdded = true;
+        var self = this;
+        window.addEventListener('focus', function () {
+            self._editSessions.forEach(function (session) {
+                if (!session.window.closed) {
+                    self._refreshFromRedcap(session, false);
+                }
+            });
+        });
+    };
+
+    // Whether the session's person is still where onDone will write: open-pedigree's
+    // own editRecord handler binds onDone to the click-time nodeId, so the node must
+    // still be at that ID (not moved by a deletion elsewhere) and still linked to
+    // the same row (not re-linked or unlinked).
+    RedcapInstrumentPatientProvider.prototype._stillTargets = function (session) {
+        var nodeNow = window.editor && window.editor.getView().getNode(session.nodeId);
+        return nodeNow === session.node && nodeNow.getLinkedRecordRef() === session.ref;
+    };
+
+    // Re-imports the session's row and applies it. `final` is the window-close
+    // refresh, which explains anything it couldn't do; focus refreshes stay quiet.
+    RedcapInstrumentPatientProvider.prototype._refreshFromRedcap = function (session, final) {
+        var self = this;
+        var changedMessage = 'The pedigree changed while the REDCap window was open (this person was '
+            + 'moved, re-linked or deleted), so they weren\'t refreshed. Use Edit in REDCap again and '
+            + 'close it to refresh them.';
+        if (!this._stillTargets(session)) {
+            if (final) {
+                showMessage('Edit in REDCap', changedMessage);
             }
-            self._get({ type: 'import', record: ref.record, currentRecord: self._record, instance: ref.instance })
-                .then(function (answers) {
-                    if (!answers || answers.length === 0) {
-                        showMessage('Edit in REDCap', 'This person\'s linked REDCap row has no data any more '
-                            + '(it may have been deleted). Their details here were left unchanged - link them '
-                            + 'to another row, or remove the link.');
-                        return;
+            return;
+        }
+        var ref = decodeRef(session.ref);
+        this._get({ type: 'import', record: ref.record, currentRecord: this._record, instance: ref.instance })
+            .then(function (answers) {
+                // Checked again here: the person may have changed during the fetch.
+                if (!self._stillTargets(session)) {
+                    if (final) {
+                        showMessage('Edit in REDCap', changedMessage);
                     }
-                    onDone(answers);
-                })
-                .catch(function (e) {
+                    return;
+                }
+                if (!answers || answers.length === 0) {
+                    if (final) {
+                        showMessage('Edit in REDCap', 'This person\'s linked REDCap row has no values to '
+                            + 'import (its fields are all empty, or the row was deleted). Their details here '
+                            + 'were left unchanged.');
+                    }
+                    return;
+                }
+                session.onDone(answers);
+            })
+            .catch(function (e) {
+                if (final) {
                     showMessage('Edit in REDCap', 'Couldn\'t refresh this person from REDCap: '
                         + String(e && e.message || e));
-                });
-        }, EDIT_WINDOW_POLL_MS);
+                }
+            });
     };
 
     // The row's data-entry URL: the server-built template (pedigreeEditUrl,

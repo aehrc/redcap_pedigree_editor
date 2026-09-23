@@ -20,6 +20,7 @@ require_once __DIR__ . '/classes/RedcapInstrumentSearch.php';
 require_once __DIR__ . '/classes/RedcapInstrumentRowImporter.php';
 require_once __DIR__ . '/classes/RedcapInstrumentGateway.php';
 require_once __DIR__ . '/classes/RedcapDataEntryUrl.php';
+require_once __DIR__ . '/classes/RedcapInstrumentEventChooser.php';
 
 
 /**

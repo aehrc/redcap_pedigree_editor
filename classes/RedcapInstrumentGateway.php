@@ -105,12 +105,10 @@ class RedcapInstrumentGateway
     }
 
     /**
-     * The event whose repeating instances of `$instrument` "Edit in REDCap"
-     * should open: the current form's own event if the instrument repeats
-     * there, else the first event in the same arm where it does (a record
-     * belongs to an arm, so another arm's event would be the wrong record
-     * context). Null if the instrument isn't repeating in any such event, or
-     * the project couldn't be resolved.
+     * The event "Edit in REDCap" opens for `$instrument` - see
+     * {@see RedcapInstrumentEventChooser::choose()} for the rule. Null if the
+     * instrument isn't repeating in a suitable event, or the project couldn't
+     * be resolved.
      */
     public static function findRepeatingEventId(int $projectId, string $instrument, ?int $currentEventId): ?int
     {
@@ -118,19 +116,16 @@ class RedcapInstrumentGateway
         if (!$proj) {
             return null;
         }
-        if ($currentEventId !== null && $proj->isRepeatingForm($currentEventId, $instrument)) {
-            return $currentEventId;
-        }
-        $arm = $currentEventId !== null ? ($proj->eventInfo[$currentEventId]['arm_num'] ?? null) : null;
-        foreach (array_keys($proj->eventsForms) as $eventId) {
-            if ($arm !== null && ($proj->eventInfo[$eventId]['arm_num'] ?? null) != $arm) {
-                continue;
-            }
+        $eventIds = array_map('intval', array_keys($proj->eventsForms ?: []));
+        $armByEvent = [];
+        $repeatingEventIds = [];
+        foreach ($eventIds as $eventId) {
+            $armByEvent[$eventId] = $proj->eventInfo[$eventId]['arm_num'] ?? '';
             if ($proj->isRepeatingForm($eventId, $instrument)) {
-                return (int) $eventId;
+                $repeatingEventIds[] = $eventId;
             }
         }
-        return null;
+        return RedcapInstrumentEventChooser::choose($eventIds, $armByEvent, $repeatingEventIds, $currentEventId);
     }
 
     private static $resolvedProjectCache = null;
