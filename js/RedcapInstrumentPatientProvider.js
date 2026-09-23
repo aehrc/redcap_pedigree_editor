@@ -51,6 +51,9 @@
         // Defaults to false - an absent flag means "not known to exist", which only
         // costs a "save first" message, never a link to a record that isn't there.
         this._recordExists = !!options.recordExists;
+        // The REDCap record this editor was opened from - the link picker only
+        // offers that record's rows (a family's person rows live on its record).
+        this._record = options.record || '';
     }
 
     // Linking/editing/creating a repeating-instrument row all need the current
@@ -221,7 +224,7 @@
 
         function doSearch() {
             results.textContent = 'Searching…';
-            var searchParams = { type: 'search', query: input.value.trim() };
+            var searchParams = { type: 'search', record: self._record, query: input.value.trim() };
             if (isFiltering) {
                 searchParams.allowedGenders = allowedGendersParam;
             }

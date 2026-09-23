@@ -343,6 +343,8 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
                 // It only gates UI (RedcapInstrumentPatientProvider's link/edit/create
                 // actions) - nothing server-side writes on the strength of it.
                 $pedigreeImportParams .= '&pedigreeRecordExists=' . ($this->recordExists($project_id, $record) ? '1' : '0');
+                // The link picker only searches this record's rows (see searchPedigreeInstrumentRows()).
+                $pedigreeImportParams .= '&pedigreeRecord=' . urlencode((string) $record);
             }
             $hpoEditorPage = $hpoEditorPage . $pedigreeImportParams;
             $sctEditorPage = $sctEditorPage . $pedigreeImportParams;
@@ -695,6 +697,11 @@ EOD;
      * Searches the configured repeating instrument's rows (task 6.2/6.4 —
      * backs `RedcapInstrumentPatientProvider.openPicker`'s AJAX call).
      *
+     * @param string $record The record the pedigree editor was opened from.
+     *   Only that record's rows are searched: a family's person rows live on
+     *   the same record as its pedigree. Client-supplied, but it can only
+     *   narrow results within what the user could already search (the DAG
+     *   restriction still applies), so it grants nothing.
      * @param string[]|null $allowedGenders Gender codes ('M'/'F'/'U') to
      *   restrict results to, or null for no restriction - applied *before*
      *   the result limit (see `RedcapInstrumentSearch::search()`), so an
@@ -704,14 +711,19 @@ EOD;
      *   `'gender'` per match when the instrument has a valid
      *   `mapsTo="gender"` field - see `RedcapInstrumentSearch::search()`.
      */
-    public function searchPedigreeInstrumentRows($project_id, $query, $allowedGenders = null)
+    public function searchPedigreeInstrumentRows($project_id, $record, $query, $allowedGenders = null)
     {
         $instrument = $this->getPedigreeImportInstrument($project_id);
         if (!$instrument) {
             return [];
         }
         $dataDictionary = RedcapInstrumentGateway::fetchDataDictionary($project_id, $instrument);
-        $rows = RedcapInstrumentGateway::fetchInstrumentRows($project_id, array_keys($dataDictionary), $this->getCurrentUserGroupId($project_id));
+        $rows = RedcapInstrumentGateway::fetchInstrumentRows(
+            $project_id,
+            array_keys($dataDictionary),
+            $this->getCurrentUserGroupId($project_id),
+            [(string) $record]
+        );
         $searchFields = $this->getPedigreeImportSearchFields($project_id);
         $genderField = $this->findMapsToFieldName($dataDictionary, 'gender');
         return RedcapInstrumentSearch::search($rows, $searchFields, (string) $query, 20, $genderField, $allowedGenders);

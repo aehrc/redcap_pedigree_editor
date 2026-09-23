@@ -42,6 +42,10 @@ if ('questionnaire' === $params['type']) {
     }
     echo json_encode($questionnaire, JSON_UNESCAPED_SLASHES);
 } elseif ('search' === $params['type']) {
+    // Required, never defaulted to "all records" - see searchPedigreeInstrumentRows().
+    if (!isset($params['record']) || !is_string($params['record']) || $params['record'] === '') {
+        $sendErrorResponse('Invalid Request', 'Missing required parameter "record" for search action.');
+    }
     $query = $params['query'] ?? '';
     // Comma-separated allowed gender codes (e.g. "M,U") - see
     // RedcapInstrumentSearch::search()'s $allowedGenders param. Filtered to
@@ -54,7 +58,7 @@ if ('questionnaire' === $params['type']) {
             ['M', 'F', 'U']
         ));
     }
-    echo json_encode($module->searchPedigreeInstrumentRows($project_id, $query, $allowedGenders), JSON_UNESCAPED_SLASHES);
+    echo json_encode($module->searchPedigreeInstrumentRows($project_id, $params['record'], $query, $allowedGenders), JSON_UNESCAPED_SLASHES);
 } elseif ('import' === $params['type']) {
     if (!isset($params['record']) || !isset($params['instance'])) {
         $sendErrorResponse('Invalid Request', 'Missing required parameter "record" or "instance" for import action.');
