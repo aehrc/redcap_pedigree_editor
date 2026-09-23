@@ -282,8 +282,17 @@
             modal.content.textContent = 'Not a REDCap instrument reference.';
             return;
         }
+        // Same rule as the picker: a family's person rows live on its own record,
+        // so a link to another record's row (e.g. from an imported pedigree file)
+        // is refused rather than read.
+        if (ref.record !== this._record) {
+            modal.content.textContent = 'This person is linked to a row on a different REDCap record ("'
+                + ref.record + '"). Only rows on this record can be used - link the person to one of '
+                + 'this record\'s rows instead.';
+            return;
+        }
 
-        this._get({ type: 'import', record: ref.record, instance: ref.instance })
+        this._get({ type: 'import', record: ref.record, currentRecord: this._record, instance: ref.instance })
             .then(function (answers) {
                 modal.content.innerHTML = '';
                 if (!answers || answers.length === 0) {

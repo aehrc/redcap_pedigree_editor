@@ -63,6 +63,11 @@ if ('questionnaire' === $params['type']) {
     if (!isset($params['record']) || !isset($params['instance'])) {
         $sendErrorResponse('Invalid Request', 'Missing required parameter "record" or "instance" for import action.');
     }
+    // Same rule as search: only rows on the record the editor was opened from.
+    if (!isset($params['currentRecord']) || !is_string($params['currentRecord']) || $params['currentRecord'] === ''
+        || $params['currentRecord'] !== $params['record']) {
+        $sendErrorResponse('Invalid Request', 'Import is only allowed from a row on the current record ("currentRecord").');
+    }
     echo json_encode(
         $module->getPedigreeInstrumentRowAnswers($project_id, $params['record'], $params['instance']),
         JSON_UNESCAPED_SLASHES
