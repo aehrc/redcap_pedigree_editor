@@ -56,6 +56,9 @@
         // The REDCap record this editor was opened from - the link picker only
         // offers that record's rows (a family's person rows live on its record).
         this._record = options.record || '';
+        // The event of the form this editor was opened from: the server reads the
+        // linked instrument's rows from the one event of that arm it repeats in.
+        this._formEvent = options.formEvent || '';
         // REDCap data-entry URL for this record's linked-instrument rows, minus
         // &instance= (PedigreeEditorExternalModule builds it; see _editUrlFor()).
         this._editUrl = options.editUrl || '';
@@ -253,7 +256,7 @@
         function doSearch() {
             var thisSearch = ++latestSearch;
             results.textContent = 'Searching…';
-            var searchParams = { type: 'search', record: self._record, query: input.value.trim() };
+            var searchParams = { type: 'search', record: self._record, formEvent: self._formEvent, query: input.value.trim() };
             if (isFiltering) {
                 searchParams.allowedGenders = allowedGendersParam;
             }
@@ -429,7 +432,7 @@
             return;
         }
         var ref = decodeRef(session.ref);
-        this._get({ type: 'import', record: ref.record, currentRecord: this._record, instance: ref.instance })
+        this._get({ type: 'import', record: ref.record, currentRecord: this._record, formEvent: this._formEvent, instance: ref.instance })
             .then(function (answers) {
                 // Checked again here: the person may have changed during the fetch.
                 if (!self._stillTargets(session)) {

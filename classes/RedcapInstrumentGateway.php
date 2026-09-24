@@ -39,32 +39,38 @@ class RedcapInstrumentGateway
      *   groups" - passing this explicitly is what actually restricts a
      *   DAG-assigned user's search/import results to their own group,
      *   matching what every other export path in REDCap already enforces.
-     * @param string[]|null $records Restrict to these record names, or
-     *   `null` for every record. Every current caller passes the one record
-     *   the pedigree editor was opened from - a family's person rows live on
-     *   its own record, and search/import must not reach other records'
-     *   rows. Don't pass `null` from a user-facing path.
+     * @param string[] $records Restrict to these record names. Every caller
+     *   passes the one record the pedigree editor was opened from - a
+     *   family's person rows live on its own record, and search/import must
+     *   not reach other records' rows.
+     * @param string $instrument Only this repeating instrument's rows are
+     *   returned (another repeating form's instances - e.g. the one holding
+     *   the record ID field - also come back from `getData()`).
+     * @param int $eventId Only this event's rows - the one
+     *   {@see self::pickRepeatingEvent()} picks, so search, import and
+     *   "Edit in REDCap" all read the same rows for a given instance.
      */
-    public static function fetchInstrumentRows(int $projectId, array $fieldNames, $groupId = null, ?array $records = null): array
+    public static function fetchInstrumentRows(int $projectId, array $fieldNames, $groupId, array $records, string $instrument, int $eventId): array
     {
         $recordIdField = \REDCap::getRecordIdField($projectId);
         $fields = array_values(array_unique(array_merge([$recordIdField], $fieldNames)));
 
         try {
-            $rawRows = \REDCap::getData($projectId, 'json-array', $records, $fields, null, $groupId);
+            $rawRows = \REDCap::getData($projectId, 'json-array', $records, $fields, [$eventId], $groupId);
         } catch (\Exception $e) {
             return [];
         }
 
         $rows = [];
         foreach ($rawRows as $rawRow) {
-            if (!isset($rawRow['redcap_repeat_instance']) || $rawRow['redcap_repeat_instance'] === '') {
-                continue; // non-repeating row for this record (e.g. the arm's first/only event) - not an instrument row
+            if (($rawRow['redcap_repeat_instrument'] ?? '') !== $instrument
+                || !isset($rawRow['redcap_repeat_instance']) || $rawRow['redcap_repeat_instance'] === '') {
+                continue; // a non-repeating row, or another repeating form's instance
             }
             $rows[] = [
                 'record' => (string) $rawRow[$recordIdField],
                 'instance' => (int) $rawRow['redcap_repeat_instance'],
-                'fields' => array_diff_key($rawRow, array_flip([$recordIdField, 'redcap_repeat_instrument', 'redcap_repeat_instance'])),
+                'fields' => array_diff_key($rawRow, array_flip([$recordIdField, 'redcap_event_name', 'redcap_repeat_instrument', 'redcap_repeat_instance'])),
             ];
         }
         return $rows;
@@ -105,27 +111,83 @@ class RedcapInstrumentGateway
     }
 
     /**
-     * The event "Edit in REDCap" opens for `$instrument` - see
-     * {@see RedcapInstrumentEventChooser::choose()} for the rule. Null if the
-     * instrument isn't repeating in a suitable event, or the project couldn't
-     * be resolved.
+     * The event link search, import and "Edit in REDCap" read `$instrument`'s
+     * rows from, or why there isn't one - see
+     * {@see RedcapInstrumentEventChooser::pick()} for the rule.
+     *
+     * @return array{eventId: int|null, reason: string|null, eventNames: string[]}|null
+     *   `eventNames` names the crowded arm's events for
+     *   {@see RedcapInstrumentEventChooser::SEVERAL}. Null if the project
+     *   couldn't be resolved.
      */
-    public static function findRepeatingEventId(int $projectId, string $instrument, ?int $currentEventId): ?int
+    public static function pickRepeatingEvent(int $projectId, string $instrument, ?int $currentEventId): ?array
+    {
+        $events = self::fetchRepeatingEvents($projectId, $instrument);
+        if (!$events) {
+            return null;
+        }
+        $picked = RedcapInstrumentEventChooser::pick($events['eventIds'], $events['armByEvent'], $events['repeatingEventIds'], $currentEventId);
+        return [
+            'eventId' => $picked['eventId'],
+            'reason' => $picked['reason'],
+            'eventNames' => self::namesOf($picked['events'], $events['eventNames']),
+        ];
+    }
+
+    /**
+     * @return array<string, string[]>|null Arm number => the names of its
+     *   events where `$instrument` repeats, for each arm with more than one
+     *   (see {@see RedcapInstrumentEventChooser::armsWithSeveralRepeatingEvents()}),
+     *   or null if the project couldn't be resolved.
+     */
+    public static function findArmsWithSeveralRepeatingEvents(int $projectId, string $instrument): ?array
+    {
+        $events = self::fetchRepeatingEvents($projectId, $instrument);
+        if (!$events) {
+            return null;
+        }
+        $result = [];
+        foreach (RedcapInstrumentEventChooser::armsWithSeveralRepeatingEvents($events['eventIds'], $events['armByEvent'], $events['repeatingEventIds']) as $arm => $eventIds) {
+            $result[(string) $arm] = self::namesOf($eventIds, $events['eventNames']);
+        }
+        return $result;
+    }
+
+    private static function namesOf(array $eventIds, array $eventNames): array
+    {
+        return array_map(function ($eventId) use ($eventNames) {
+            return $eventNames[$eventId];
+        }, $eventIds);
+    }
+
+    /**
+     * An event counts as repeating the instrument only while the instrument
+     * is also designated to it: REDCap's own "Designate Instruments for My
+     * Events" page removes the designation but leaves the event's repeat
+     * setting behind (`Design/designate_forms_ajax.php` in 16.0.32), and
+     * `\Project::isRepeatingForm()` doesn't check designation.
+     *
+     * @return array{eventIds: int[], armByEvent: array<int, int|string>, eventNames: array<int, string>, repeatingEventIds: int[]}|null
+     */
+    private static function fetchRepeatingEvents(int $projectId, string $instrument): ?array
     {
         $proj = self::resolveProject($projectId);
         if (!$proj) {
             return null;
         }
-        $eventIds = array_map('intval', array_keys($proj->eventsForms ?: []));
+        $eventsForms = $proj->eventsForms ?: [];
+        $eventIds = array_map('intval', array_keys($eventsForms));
         $armByEvent = [];
+        $eventNames = [];
         $repeatingEventIds = [];
         foreach ($eventIds as $eventId) {
             $armByEvent[$eventId] = $proj->eventInfo[$eventId]['arm_num'] ?? '';
-            if ($proj->isRepeatingForm($eventId, $instrument)) {
+            $eventNames[$eventId] = (string) ($proj->eventInfo[$eventId]['name'] ?? $eventId);
+            if ($proj->isRepeatingForm($eventId, $instrument) && in_array($instrument, $eventsForms[$eventId] ?: [], true)) {
                 $repeatingEventIds[] = $eventId;
             }
         }
-        return RedcapInstrumentEventChooser::choose($eventIds, $armByEvent, $repeatingEventIds, $currentEventId);
+        return ['eventIds' => $eventIds, 'armByEvent' => $armByEvent, 'eventNames' => $eventNames, 'repeatingEventIds' => $repeatingEventIds];
     }
 
     private static $resolvedProjectCache = null;

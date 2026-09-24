@@ -44,6 +44,23 @@ $requireString = function ($name, $action) use ($params, $sendErrorResponse) {
     return (string) $params[$name];
 };
 
+// The event to read the instrument's rows from, picked from the event of the form the editor was
+// opened from (`formEvent`, from pedigreeEvent - see resolvePedigreeInstrumentEvent()). Not
+// `event_id`, which REDCap core itself reads on module pages. Absent/empty means unknown: fine while
+// the instrument repeats in just one event of the project, e.g. any classic project. If no event can
+// be picked, say why rather than returning no rows.
+$resolveEventId = function () use ($params, $module, $project_id, $sendErrorResponse) {
+    $raw = $params['formEvent'] ?? '';
+    if (!is_string($raw) || ($raw !== '' && !ctype_digit($raw))) {
+        $sendErrorResponse('Invalid Request', 'Parameter "formEvent" must be an event ID.');
+    }
+    $resolved = $module->resolvePedigreeInstrumentEvent($project_id, $raw === '' ? null : (int) $raw);
+    if ($resolved['eventId'] === null) {
+        $sendErrorResponse('Not Configured', $resolved['problem']);
+    }
+    return $resolved['eventId'];
+};
+
 header('Content-type: application/json');
 
 if ('questionnaire' === $params['type']) {
@@ -55,6 +72,7 @@ if ('questionnaire' === $params['type']) {
 } elseif ('search' === $params['type']) {
     // Required, never defaulted to "all records" - see searchPedigreeInstrumentRows().
     $record = $requireString('record', 'search');
+    $eventId = $resolveEventId();
     // Optional params: an array (`query[]=`) is treated as absent rather than cast.
     $query = isset($params['query']) && is_string($params['query']) ? $params['query'] : '';
     // Comma-separated allowed gender codes (e.g. "M,U") - see
@@ -68,7 +86,7 @@ if ('questionnaire' === $params['type']) {
             ['M', 'F', 'U']
         ));
     }
-    echo json_encode($module->searchPedigreeInstrumentRows($project_id, $record, $query, $allowedGenders), JSON_UNESCAPED_SLASHES);
+    echo json_encode($module->searchPedigreeInstrumentRows($project_id, $record, $eventId, $query, $allowedGenders), JSON_UNESCAPED_SLASHES);
 } elseif ('import' === $params['type']) {
     $record = $requireString('record', 'import');
     $instance = $requireString('instance', 'import');
@@ -80,8 +98,9 @@ if ('questionnaire' === $params['type']) {
     if ($requireString('currentRecord', 'import') !== $record) {
         $sendErrorResponse('Invalid Request', 'Import is only allowed from a row on the current record ("currentRecord").');
     }
+    $eventId = $resolveEventId();
     echo json_encode(
-        $module->getPedigreeInstrumentRowAnswers($project_id, $record, $instance),
+        $module->getPedigreeInstrumentRowAnswers($project_id, $record, $eventId, $instance),
         JSON_UNESCAPED_SLASHES
     );
 } else {
