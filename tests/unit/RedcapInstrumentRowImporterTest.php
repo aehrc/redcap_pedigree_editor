@@ -191,7 +191,9 @@ class RedcapInstrumentRowImporterTest extends TestCase
             ['symptoms___A' => '1', 'symptoms___a' => '0'],
             [$this->field(['redcapField' => 'symptoms', 'linkId' => 'symptoms', 'type' => 'choice', 'repeats' => true, 'choices' => ['A' => 'Other']])]
         );
-        $this->assertSame([], $answers);
+        // The field is present (its export column symptoms___a is unticked), so it's sent - as
+        // null, since nothing is ticked - and the raw-case symptoms___A isn't read.
+        $this->assertSame([['linkId' => 'symptoms', 'value' => null]], $answers);
     }
 
     public function testLegendEntriesKeepOriginalCodesAndNames(): void
@@ -201,5 +203,37 @@ class RedcapInstrumentRowImporterTest extends TestCase
             [$this->field(['redcapField' => 'dx', 'linkId' => 'disorders', 'type' => 'choice', 'repeats' => true, 'choices' => ['A' => 'Disorder A']])]
         );
         $this->assertSame([['id' => 'A', 'name' => 'Disorder A']], $answers[0]['value']);
+    }
+
+    public function testFieldsSharingALinkIdAreSentAsOneAnswer(): void
+    {
+        // Two checkbox fields feeding the disorders legend, one of them empty (e.g. hidden by
+        // branching): one combined answer, not a list plus a null that reads as "emptied".
+        $disorderField = function (string $name) {
+            return $this->field(['redcapField' => $name, 'linkId' => 'disorders', 'type' => 'choice', 'repeats' => true, 'choices' => ['1' => 'One', '2' => 'Two']]);
+        };
+        $answers = RedcapInstrumentRowImporter::buildAnswers(
+            ['dx_a___1' => '1', 'dx_a___2' => '0', 'dx_b___1' => '0', 'dx_b___2' => '0'],
+            [$disorderField('dx_a'), $disorderField('dx_b')]
+        );
+        $this->assertSame([['linkId' => 'disorders', 'value' => [['id' => '1', 'name' => 'One']]]], $answers);
+
+        $both = RedcapInstrumentRowImporter::buildAnswers(
+            ['dx_a___1' => '1', 'dx_a___2' => '0', 'dx_b___1' => '1', 'dx_b___2' => '1'],
+            [$disorderField('dx_a'), $disorderField('dx_b')]
+        );
+        $this->assertSame([['linkId' => 'disorders', 'value' => [['id' => '1', 'name' => 'One'], ['id' => '2', 'name' => 'Two']]]], $both);
+    }
+
+    public function testSingleValueSharingALinkIdTakesTheFirstNonEmpty(): void
+    {
+        $answers = RedcapInstrumentRowImporter::buildAnswers(
+            ['name_a' => '', 'name_b' => 'Alice'],
+            [
+                $this->field(['redcapField' => 'name_a', 'linkId' => 'first_name']),
+                $this->field(['redcapField' => 'name_b', 'linkId' => 'first_name']),
+            ]
+        );
+        $this->assertSame([['linkId' => 'first_name', 'value' => 'Alice']], $answers);
     }
 }

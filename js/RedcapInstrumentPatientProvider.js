@@ -440,11 +440,11 @@
                 }
                 if (!answers || answers.length === 0) {
                     if (final) {
-                        // An existing row always answers (empty fields as null), so nothing at all
-                        // means the row wasn't found.
-                        showMessage('Edit in REDCap', 'This person\'s linked REDCap row couldn\'t be found '
-                            + '(it may have been deleted). Their details here were left unchanged - link '
-                            + 'them to another row, or remove the link.');
+                        // An existing row answers for every tagged field (empty ones as null), so
+                        // nothing at all means the row wasn't found - or nothing is set up to import.
+                        showMessage('Edit in REDCap', 'Nothing could be imported for this person from REDCap. '
+                            + 'Their linked row may have been deleted, or the project\'s pedigree import '
+                            + 'settings may need checking. Their details here were left unchanged.');
                     }
                     return;
                 }

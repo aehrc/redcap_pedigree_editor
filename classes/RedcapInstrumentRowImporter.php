@@ -35,14 +35,42 @@ class RedcapInstrumentRowImporter
      */
     public static function buildAnswers(array $rowData, array $resolvedFields): array
     {
-        $answers = [];
+        // One answer per linkId: two tagged fields can share one (e.g. two checkbox fields both
+        // legend="disorders", shown alternately by branching), and sending both - one of them
+        // null - would make the receiver treat the list as emptied. Lists are combined (by entry
+        // ID); a single value takes the first non-empty field.
+        $byLinkId = [];
         foreach ($resolvedFields as $field) {
             if (!self::isPresent($rowData, $field)) {
                 continue;
             }
-            $answers[] = ['linkId' => $field['linkId'], 'value' => self::extractValue($rowData, $field)];
+            $linkId = $field['linkId'];
+            $value = self::extractValue($rowData, $field);
+            if (!array_key_exists($linkId, $byLinkId) || $byLinkId[$linkId] === null) {
+                $byLinkId[$linkId] = $value;
+            } elseif (is_array($byLinkId[$linkId]) && is_array($value)) {
+                $byLinkId[$linkId] = self::combineLists($byLinkId[$linkId], $value);
+            }
+        }
+        $answers = [];
+        foreach ($byLinkId as $linkId => $value) {
+            $answers[] = ['linkId' => (string) $linkId, 'value' => $value];
         }
         return $answers;
+    }
+
+    private static function combineLists(array $a, array $b): array
+    {
+        $seen = [];
+        $combined = [];
+        foreach (array_merge($a, $b) as $entry) {
+            $key = is_array($entry) ? (string) ($entry['id'] ?? json_encode($entry)) : (string) $entry;
+            if (!isset($seen[$key])) {
+                $seen[$key] = true;
+                $combined[] = $entry;
+            }
+        }
+        return $combined;
     }
 
     private static function isPresent(array $rowData, array $field): bool
