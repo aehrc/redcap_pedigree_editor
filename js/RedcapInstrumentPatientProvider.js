@@ -3,11 +3,13 @@
  * REDCap repeating-instrument rows (originally delivered against
  * `AbstractPatientProvider` by `pedigree-repeating-instrument-import`;
  * re-targeted onto `RecordLinkProvider` by
- * `pedigree-editor-redcap-extension-extraction`, at feature parity - search
- * a row, link it, one-time read-only import via a button. No deep-link/
- * refresh/create-new-row behavior yet; `canCreateNew` stays `false` until
- * `pedigree-editor-repeating-instrument-sync` adds that), via the module's
- * `PedigreeInstrumentService.php` AJAX endpoint.
+ * `pedigree-editor-redcap-extension-extraction`), via the module's
+ * `PedigreeInstrumentService.php` AJAX endpoint. `pedigree-editor-repeating-
+ * instrument-sync` adds: link/edit only once the record exists and only
+ * against this record's rows, and "Edit in REDCap" (`openEditor`) opening
+ * REDCap's own form for the row and re-importing when that window closes.
+ * No create-new-row yet - `canCreateNew` stays `false` until that change's
+ * task group 4.
  *
  * Loaded into `open-pedigree/localEditor.html`'s window (a separate
  * document from the main REDCap data-entry page), which is why this is
@@ -54,6 +56,13 @@
         // The REDCap record this editor was opened from - the link picker only
         // offers that record's rows (a family's person rows live on its record).
         this._record = options.record || '';
+        // REDCap data-entry URL for this record's linked-instrument rows, minus
+        // &instance= (PedigreeEditorExternalModule builds it; see _editUrlFor()).
+        this._editUrl = options.editUrl || '';
+        // One entry per open "Edit in REDCap" window: { window, node, nodeId, ref,
+        // onDone, timer } - see openEditor().
+        this._editSessions = [];
+        this._focusListenerAdded = false;
     }
 
     // Linking/editing/creating a repeating-instrument row all need the current
@@ -88,6 +97,13 @@
     // that indirection is dropped rather than reimplemented.
     RedcapInstrumentPatientProvider.prototype.canLink = function (nodeId) {
         return this._configured;
+    };
+
+    // open-pedigree's optional label hook (AbstractRecordLinkProvider.getActionLabel,
+    // from its record-link-action-labels change): the edit action opens REDCap's own
+    // form, so say so. Bundles older than that change simply don't call this.
+    RedcapInstrumentPatientProvider.prototype.getActionLabel = function (action) {
+        return action === 'editRecord' ? 'Edit in REDCap' : undefined;
     };
 
     // No create-new-row behavior yet (pedigree-editor-repeating-instrument-sync's
@@ -155,6 +171,12 @@
 
         document.body.appendChild(overlay);
         return { content: content, close: close };
+    }
+
+    function showMessage(titleText, text) {
+        var modal = createModal(titleText);
+        modal.content.textContent = text;
+        return modal;
     }
 
     // Returns { M, F, U } -> allowed(bool) for the node, per open-pedigree's
@@ -278,66 +300,181 @@
         doSearch();
     };
 
+    // How often to check whether the REDCap window has been closed. Short enough
+    // that the refresh feels immediate, long enough to be negligible work.
+    var EDIT_WINDOW_POLL_MS = 500;
+
+    // "Edit in REDCap": opens REDCap's own data-entry form for the linked row in
+    // a new window and, once that window closes, re-imports the row onto the node
+    // - REDCap's form is the only editor of linked fields. No preview or confirm
+    // step: closing the window is the trigger, whether the user saved, cancelled
+    // or changed nothing (the re-import is read-only and idempotent).
+    //
     // AbstractRecordLinkProvider.openEditor is nodeId-only (no recordRef
     // parameter - see its own header comment / record-link-provider design
     // D2's implementation note): the ref is looked up here via the live
     // node, the same pattern SmartPatientProvider.ts already uses.
+    //
+    // Everything up to window.open() is synchronous: this runs inside the node
+    // menu button's click handler, and a window.open() after any async hop would
+    // lose the user gesture and be popup-blocked.
     RedcapInstrumentPatientProvider.prototype.openEditor = function (nodeId, onDone) {
         if (!this._requireExistingRecord()) {
             return;
         }
         var node = window.editor && window.editor.getView().getNode(nodeId);
         var ref = decodeRef(node && node.getLinkedRecordRef && node.getLinkedRecordRef());
-        var modal = createModal('Import from linked record');
-        modal.content.textContent = 'Loading…';
-
         if (!ref) {
-            modal.content.textContent = 'Not a REDCap instrument reference.';
+            showMessage('Edit in REDCap', 'Not a REDCap instrument reference.');
             return;
         }
         // Same rule as the picker: a family's person rows live on its own record,
         // so a link to another record's row (e.g. from an imported pedigree file)
-        // is refused rather than read.
+        // is refused rather than opened.
         if (ref.record !== this._record) {
-            modal.content.textContent = 'This person is linked to a row on REDCap record "' + ref.record
+            showMessage('Edit in REDCap', 'This person is linked to a row on REDCap record "' + ref.record
                 + '", not this record. Only rows on this record can be used. If this record has been '
                 + 'renamed since the link was made, or the pedigree was imported from elsewhere, link the '
-                + 'person again to one of this record\'s rows.';
+                + 'person again to one of this record\'s rows.');
+            return;
+        }
+        var url = this._editUrlFor(ref.instance);
+        if (!url) {
+            showMessage('Edit in REDCap', 'Editing in REDCap isn\'t available for this project '
+                + '(the linked instrument isn\'t set up as repeating in this record\'s arm).');
             return;
         }
 
+        // Keyed by the node object and the row, not the nodeId: open-pedigree
+        // renumbers node IDs when a node is deleted, and a re-linked person's
+        // open window shows the old row.
+        var refAtOpen = node.getLinkedRecordRef();
+        var existing = this._findEditSession(node, refAtOpen);
+        if (existing) {
+            existing.window.focus();
+            return;
+        }
+
+        var editWindow = window.open(url, '_blank');
+        // Some blockers return null, others a window that is already closed.
+        if (!editWindow || editWindow.closed) {
+            showMessage('Edit in REDCap', 'Your browser blocked the REDCap window. '
+                + 'Allow pop-ups for this site, then try again.');
+            return;
+        }
+
+        var self = this;
+        var session = { window: editWindow, node: node, nodeId: nodeId, ref: refAtOpen, onDone: onDone, timer: null };
+        this._editSessions.push(session);
+        this._listenForEditorFocus();
+        session.timer = setInterval(function () {
+            if (!editWindow.closed) {
+                return;
+            }
+            clearInterval(session.timer);
+            self._editSessions = self._editSessions.filter(function (s) { return s !== session; });
+            self._refreshFromRedcap(session, true);
+        }, EDIT_WINDOW_POLL_MS);
+    };
+
+    RedcapInstrumentPatientProvider.prototype._findEditSession = function (node, ref) {
+        for (var i = 0; i < this._editSessions.length; i++) {
+            var s = this._editSessions[i];
+            if (s.node === node && s.ref === ref && !s.window.closed) {
+                return s;
+            }
+        }
+        return null;
+    };
+
+    // Secondary trigger (design.md): coming back to the pedigree editor while a
+    // REDCap window is still open (e.g. after "Save & Stay" there) refreshes too,
+    // so saving the pedigree right afterwards doesn't store stale values. Quiet -
+    // messages are left to the final refresh on close.
+    RedcapInstrumentPatientProvider.prototype._listenForEditorFocus = function () {
+        if (this._focusListenerAdded) {
+            return;
+        }
+        this._focusListenerAdded = true;
+        var self = this;
+        window.addEventListener('focus', function () {
+            self._editSessions.forEach(function (session) {
+                if (!session.window.closed) {
+                    self._refreshFromRedcap(session, false);
+                }
+            });
+        });
+    };
+
+    // Whether the session's person is still where onDone will write: open-pedigree's
+    // own editRecord handler binds onDone to the click-time nodeId, so the node must
+    // still be at that ID (not moved by a deletion elsewhere) and still linked to
+    // the same row (not re-linked or unlinked).
+    RedcapInstrumentPatientProvider.prototype._stillTargets = function (session) {
+        var nodeNow = window.editor && window.editor.getView().getNode(session.nodeId);
+        return nodeNow === session.node && nodeNow.getLinkedRecordRef() === session.ref;
+    };
+
+    // Re-imports the session's row and applies it. `final` is the window-close
+    // refresh, which explains anything it couldn't do; focus refreshes stay quiet.
+    RedcapInstrumentPatientProvider.prototype._refreshFromRedcap = function (session, final) {
+        var self = this;
+        var changedMessage = 'The pedigree changed while the REDCap window was open (this person was '
+            + 'moved, re-linked or deleted), so they weren\'t refreshed. Use Edit in REDCap again and '
+            + 'close it to refresh them.';
+        if (!this._stillTargets(session)) {
+            if (final) {
+                showMessage('Edit in REDCap', changedMessage);
+            }
+            return;
+        }
+        var ref = decodeRef(session.ref);
         this._get({ type: 'import', record: ref.record, currentRecord: this._record, instance: ref.instance })
             .then(function (answers) {
-                modal.content.innerHTML = '';
-                if (!answers || answers.length === 0) {
-                    modal.content.textContent = 'No importable answers found on the linked record.';
+                // Checked again here: the person may have changed during the fetch.
+                if (!self._stillTargets(session)) {
+                    if (final) {
+                        showMessage('Edit in REDCap', changedMessage);
+                    }
                     return;
                 }
-
-                var intro = document.createElement('p');
-                intro.textContent = 'Import the following ' + answers.length + ' answer(s) from the linked record:';
-                modal.content.appendChild(intro);
-
-                var list = document.createElement('ul');
-                answers.forEach(function (answer) {
-                    var li = document.createElement('li');
-                    li.textContent = answer.linkId + ': ' + JSON.stringify(answer.value);
-                    list.appendChild(li);
-                });
-                modal.content.appendChild(list);
-
-                var importBtn = document.createElement('button');
-                importBtn.type = 'button';
-                importBtn.textContent = 'Import';
-                importBtn.addEventListener('click', function () {
-                    modal.close();
-                    onDone(answers);
-                });
-                modal.content.appendChild(importBtn);
+                if (!answers || answers.length === 0) {
+                    if (final) {
+                        showMessage('Edit in REDCap', 'This person\'s linked REDCap row has no values to '
+                            + 'import (its fields are all empty, or the row was deleted). Their details here '
+                            + 'were left unchanged.');
+                    }
+                    return;
+                }
+                session.onDone(answers);
             })
             .catch(function (e) {
-                modal.content.textContent = 'Import failed: ' + String(e && e.message || e);
+                if (final) {
+                    showMessage('Edit in REDCap', 'Couldn\'t refresh this person from REDCap: '
+                        + String(e && e.message || e));
+                }
             });
+    };
+
+    // The row's data-entry URL: the server-built template (pedigreeEditUrl,
+    // everything but the instance) plus &instance=N. Only ever same-origin
+    // http(s) - the template arrives via this window's own query string, so a
+    // crafted link must not be able to turn it into e.g. a javascript: URL.
+    RedcapInstrumentPatientProvider.prototype._editUrlFor = function (instance) {
+        if (!this._editUrl) {
+            return null;
+        }
+        var url;
+        try {
+            url = new URL(this._editUrl, window.location.href);
+        } catch (e) {
+            return null;
+        }
+        if (url.origin !== window.location.origin || (url.protocol !== 'http:' && url.protocol !== 'https:')) {
+            return null;
+        }
+        url.searchParams.set('instance', String(instance));
+        return url.toString();
     };
 
     // Not supported yet - canCreateNew() always returns false, so the host

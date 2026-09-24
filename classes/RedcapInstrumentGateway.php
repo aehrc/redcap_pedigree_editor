@@ -104,6 +104,30 @@ class RedcapInstrumentGateway
         return $proj ? $proj->isRepeatingFormAnyEvent($instrument) : null;
     }
 
+    /**
+     * The event "Edit in REDCap" opens for `$instrument` - see
+     * {@see RedcapInstrumentEventChooser::choose()} for the rule. Null if the
+     * instrument isn't repeating in a suitable event, or the project couldn't
+     * be resolved.
+     */
+    public static function findRepeatingEventId(int $projectId, string $instrument, ?int $currentEventId): ?int
+    {
+        $proj = self::resolveProject($projectId);
+        if (!$proj) {
+            return null;
+        }
+        $eventIds = array_map('intval', array_keys($proj->eventsForms ?: []));
+        $armByEvent = [];
+        $repeatingEventIds = [];
+        foreach ($eventIds as $eventId) {
+            $armByEvent[$eventId] = $proj->eventInfo[$eventId]['arm_num'] ?? '';
+            if ($proj->isRepeatingForm($eventId, $instrument)) {
+                $repeatingEventIds[] = $eventId;
+            }
+        }
+        return RedcapInstrumentEventChooser::choose($eventIds, $armByEvent, $repeatingEventIds, $currentEventId);
+    }
+
     private static $resolvedProjectCache = null;
 
     /**

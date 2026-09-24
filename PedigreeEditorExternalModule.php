@@ -19,6 +19,8 @@ require_once __DIR__ . '/classes/RedcapInstrumentReference.php';
 require_once __DIR__ . '/classes/RedcapInstrumentSearch.php';
 require_once __DIR__ . '/classes/RedcapInstrumentRowImporter.php';
 require_once __DIR__ . '/classes/RedcapInstrumentGateway.php';
+require_once __DIR__ . '/classes/RedcapDataEntryUrl.php';
+require_once __DIR__ . '/classes/RedcapInstrumentEventChooser.php';
 
 
 /**
@@ -354,6 +356,26 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
                 // record names case-insensitively, but link refs are compared exactly, so a
                 // form opened as id=abc for record "ABC" must still agree with its own rows.
                 $pedigreeImportParams .= '&pedigreeRecord=' . urlencode($storedRecord ?? (string) $record);
+                // "Edit in REDCap" opens this row's native data-entry form; the client adds
+                // &instance=. Only for a saved record (the guard refuses the action otherwise),
+                // and only if the instrument is actually repeating in an event of this arm.
+                if ($storedRecord !== null) {
+                    $instrumentEventId = RedcapInstrumentGateway::findRepeatingEventId(
+                        (int) $project_id,
+                        $this->getPedigreeImportInstrument($project_id),
+                        $event_id !== null ? (int) $event_id : null
+                    );
+                    if ($instrumentEventId !== null) {
+                        $editUrl = RedcapDataEntryUrl::build(
+                            APP_PATH_WEBROOT,
+                            (int) $project_id,
+                            $this->getPedigreeImportInstrument($project_id),
+                            $storedRecord,
+                            $instrumentEventId
+                        );
+                        $pedigreeImportParams .= '&pedigreeEditUrl=' . urlencode($editUrl);
+                    }
+                }
             }
             $hpoEditorPage = $hpoEditorPage . $pedigreeImportParams;
             $sctEditorPage = $sctEditorPage . $pedigreeImportParams;
