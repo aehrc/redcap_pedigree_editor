@@ -371,6 +371,11 @@
         this._editSessions.push(session);
         this._listenForEditorFocus();
         session.timer = setInterval(function () {
+            // Saved and done: close it for the user (closed is true straight away, so the
+            // refresh below runs in this same tick).
+            if (!editWindow.closed && self._savedAndExited(editWindow)) {
+                editWindow.close();
+            }
             if (!editWindow.closed) {
                 return;
             }
@@ -378,6 +383,48 @@
             self._editSessions = self._editSessions.filter(function (s) { return s !== session; });
             self._refreshFromRedcap(session, true);
         }, EDIT_WINDOW_POLL_MS);
+    };
+
+    // Whether the REDCap window has just saved this record and left the form
+    // (pedigree-editor-repeating-instrument-sync group 3). A clean "Save & Exit
+    // Form" lands on Record Home with id=<record>&msg=edit, "Save & Exit Record"
+    // with edit_id=<record>&msg=edit, and msg=add for a record's first save
+    // (DataEntry/index.php:520-569, REDCap 16.0.32 - tied to those redirects; the
+    // e2e suite checks them). A save with validation problems goes
+    // back to the form instead, as do "Save & Stay" and "Save & Go to Next Form" /
+    // "Add New Instance": the user is still working. "Save & Go to Next Record"
+    // lands on Record Home too, but with both edit_id and id (the next record), and
+    // a save of another record the user moved to in the window names that record -
+    // neither closes the window. Checked here rather than by a script in REDCap's
+    // page, so it only happens while this editor is still there to refresh.
+    // Record Home's msg= after a clean save: an edit, a record's first save, or any
+    // save while the project is in Draft Preview. Not __rename_failed__ - the user
+    // should see why.
+    var SAVED_AND_EXITED_MESSAGES = ['edit', 'add', 'draft-preview'];
+
+    RedcapInstrumentPatientProvider.prototype._savedAndExited = function (editWindow) {
+        var landed;
+        try {
+            // The URL the page was loaded with: Record Home drops msg= from the address
+            // bar straight after loading (modifyURL() in Classes/DataEntry.php), which a
+            // poll could otherwise see first.
+            var navigation = editWindow.performance.getEntriesByType('navigation')[0];
+            landed = new URL(navigation ? navigation.name : editWindow.location.href);
+        } catch (e) {
+            return false; // another origin, or not loaded yet
+        }
+        // The edit window was opened from _editUrlFor(), so the template parses.
+        var editUrl = this._parsedEditUrl || (this._parsedEditUrl = new URL(this._editUrl, window.location.href));
+        if (landed.origin !== editUrl.origin || landed.pathname.indexOf('/DataEntry/record_home.php') === -1) {
+            return false;
+        }
+        var params = landed.searchParams;
+        if (SAVED_AND_EXITED_MESSAGES.indexOf(params.get('msg')) === -1
+            || params.get('pid') !== editUrl.searchParams.get('pid')) {
+            return false;
+        }
+        var saved = params.has('edit_id') ? (params.has('id') ? null : params.get('edit_id')) : params.get('id');
+        return saved === this._record;
     };
 
     RedcapInstrumentPatientProvider.prototype._findEditSession = function (node, ref) {
