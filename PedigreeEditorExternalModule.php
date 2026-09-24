@@ -367,7 +367,10 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
                 $pedigreeImportParams .= '&pedigreeRecord=' . urlencode($storedRecord ?? (string) $record);
                 // The form's event: search/import pick the instrument's event in its arm from it,
                 // exactly as the edit URL below does (RedcapInstrumentGateway::findRepeatingEventId()).
-                $pedigreeImportParams .= '&pedigreeEvent=' . (int) $event_id;
+                $formEventId = $event_id !== null ? (int) $event_id : null;
+                if ($formEventId !== null) {
+                    $pedigreeImportParams .= '&pedigreeEvent=' . $formEventId;
+                }
                 // "Edit in REDCap" opens this row's native data-entry form; the client adds
                 // &instance=. Only for a saved record (the guard refuses the action otherwise),
                 // and only if the instrument repeats in exactly one event of this arm.
@@ -375,7 +378,7 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
                     $instrumentEventId = RedcapInstrumentGateway::findRepeatingEventId(
                         (int) $project_id,
                         $this->getPedigreeImportInstrument($project_id),
-                        $event_id !== null ? (int) $event_id : null
+                        $formEventId
                     );
                     if ($instrumentEventId !== null) {
                         $editUrl = RedcapDataEntryUrl::build(
@@ -751,10 +754,10 @@ EOD;
      *   the same record as its pedigree. Client-supplied, but it can only
      *   narrow results within what the user could already search (the DAG
      *   restriction still applies), so it grants nothing.
-     * @param int $formEventId The event of the form the editor was opened
-     *   from. Only the instrument's rows in the event
+     * @param int|null $formEventId The event of the form the editor was
+     *   opened from (null if unknown). Only the instrument's rows in the event
      *   `RedcapInstrumentGateway::findRepeatingEventId()` picks from it are
-     *   searched - none if it picks none.
+     *   searched - none if it picks none (see findPedigreeInstrumentEventProblem()).
      * @param string[]|null $allowedGenders Gender codes ('M'/'F'/'U') to
      *   restrict results to, or null for no restriction - applied *before*
      *   the result limit (see `RedcapInstrumentSearch::search()`), so an
@@ -770,7 +773,7 @@ EOD;
         if (!$instrument) {
             return [];
         }
-        $eventId = RedcapInstrumentGateway::findRepeatingEventId((int) $project_id, $instrument, (int) $formEventId);
+        $eventId = RedcapInstrumentGateway::findRepeatingEventId((int) $project_id, $instrument, $formEventId);
         if ($eventId === null) {
             return [];
         }
@@ -786,6 +789,32 @@ EOD;
         $searchFields = $this->getPedigreeImportSearchFields($project_id);
         $genderField = $this->findMapsToFieldName($dataDictionary, 'gender');
         return RedcapInstrumentSearch::search($rows, $searchFields, (string) $query, 20, $genderField, $allowedGenders);
+    }
+
+    /**
+     * Why search/import can't read the linked instrument's rows from the
+     * form's event, for the editor to show - or null if they can. Settings
+     * validation normally prevents this, but a project's events can change
+     * after the setting was saved.
+     *
+     * @param int|null $formEventId See searchPedigreeInstrumentRows().
+     */
+    public function findPedigreeInstrumentEventProblem($project_id, $formEventId)
+    {
+        $instrument = $this->getPedigreeImportInstrument($project_id);
+        if (!$instrument || RedcapInstrumentGateway::findRepeatingEventId((int) $project_id, $instrument, $formEventId) !== null) {
+            return null;
+        }
+        $arm = $formEventId !== null ? RedcapInstrumentGateway::findArmOfEvent((int) $project_id, $formEventId) : null;
+        $crowdedArms = RedcapInstrumentGateway::findArmsWithSeveralRepeatingEvents((int) $project_id, $instrument) ?? [];
+        if ($arm !== null && isset($crowdedArms[$arm])) {
+            return 'The linked instrument ("' . $instrument . '") repeats in more than one event of this arm ('
+                . implode(', ', $crowdedArms[$arm]) . '), so a pedigree link can\'t say which row it means. '
+                . 'Ask the project designer to make it repeat in only one event per arm.';
+        }
+        return 'Can\'t tell where to read the linked instrument ("' . $instrument . '") from: it needs to repeat in '
+            . 'exactly one event of this form\'s arm. Reopen the pedigree editor from the form, or ask the project '
+            . 'designer to check its repeating instruments.';
     }
 
     /**
@@ -807,7 +836,7 @@ EOD;
      * `linkId`-keyed bag (task 6.5 — backs
      * `RedcapInstrumentPatientProvider.openEditor`'s AJAX call).
      *
-     * @param int $formEventId See searchPedigreeInstrumentRows().
+     * @param int|null $formEventId See searchPedigreeInstrumentRows().
      * @return array{linkId: string, value: mixed}[]
      */
     public function getPedigreeInstrumentRowAnswers($project_id, $record, $formEventId, $instance)
@@ -846,7 +875,7 @@ EOD;
             return null;
         }
         $dataDictionary = RedcapInstrumentGateway::fetchDataDictionary($project_id, $instrument);
-        $eventId = RedcapInstrumentGateway::findRepeatingEventId((int) $project_id, $instrument, (int) $formEventId);
+        $eventId = RedcapInstrumentGateway::findRepeatingEventId((int) $project_id, $instrument, $formEventId);
         if ($eventId === null) {
             return null;
         }

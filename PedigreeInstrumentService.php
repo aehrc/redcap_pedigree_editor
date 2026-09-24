@@ -46,13 +46,20 @@ $requireString = function ($name, $action) use ($params, $sendErrorResponse) {
 
 // The event of the form the editor was opened from (`formEvent`, from pedigreeEvent) - the
 // instrument's rows are read from the event it picks (RedcapInstrumentGateway::findRepeatingEventId()).
-// Not `event_id`, which REDCap core itself reads on module pages.
-$requireEventId = function ($action) use ($requireString, $sendErrorResponse) {
-    $eventId = $requireString('formEvent', $action);
-    if (!ctype_digit($eventId)) {
+// Not `event_id`, which REDCap core itself reads on module pages. Absent/empty means unknown (null):
+// fine while the instrument repeats in just one event of the project, e.g. any classic project.
+// If no event can be picked, say why rather than returning no rows.
+$findEventId = function () use ($params, $module, $project_id, $sendErrorResponse) {
+    $raw = $params['formEvent'] ?? '';
+    if (!is_string($raw) || ($raw !== '' && !ctype_digit($raw))) {
         $sendErrorResponse('Invalid Request', 'Parameter "formEvent" must be an event ID.');
     }
-    return (int) $eventId;
+    $eventId = $raw === '' ? null : (int) $raw;
+    $problem = $module->findPedigreeInstrumentEventProblem($project_id, $eventId);
+    if ($problem !== null) {
+        $sendErrorResponse('Not Configured', $problem);
+    }
+    return $eventId;
 };
 
 header('Content-type: application/json');
@@ -66,7 +73,7 @@ if ('questionnaire' === $params['type']) {
 } elseif ('search' === $params['type']) {
     // Required, never defaulted to "all records" - see searchPedigreeInstrumentRows().
     $record = $requireString('record', 'search');
-    $formEventId = $requireEventId('search');
+    $formEventId = $findEventId();
     // Optional params: an array (`query[]=`) is treated as absent rather than cast.
     $query = isset($params['query']) && is_string($params['query']) ? $params['query'] : '';
     // Comma-separated allowed gender codes (e.g. "M,U") - see
@@ -84,7 +91,7 @@ if ('questionnaire' === $params['type']) {
 } elseif ('import' === $params['type']) {
     $record = $requireString('record', 'import');
     $instance = $requireString('instance', 'import');
-    $formEventId = $requireEventId('import');
+    $formEventId = $findEventId();
     // Same rule as search: only rows on the record the editor was opened from. A
     // consistency check on what the editor asks for, NOT access control - both values
     // come from the client, and the user can already read any row in their DAG

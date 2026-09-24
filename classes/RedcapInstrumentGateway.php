@@ -134,18 +134,26 @@ class RedcapInstrumentGateway
         if (!$events) {
             return null;
         }
-        $proj = self::resolveProject($projectId);
         $result = [];
         foreach (RedcapInstrumentEventChooser::armsWithSeveralRepeatingEvents($events['eventIds'], $events['armByEvent'], $events['repeatingEventIds']) as $arm => $eventIds) {
-            $result[(string) $arm] = array_map(function ($eventId) use ($proj) {
-                return (string) ($proj->eventInfo[$eventId]['name'] ?? $eventId);
+            $result[(string) $arm] = array_map(function ($eventId) use ($events) {
+                return $events['eventNames'][$eventId];
             }, $eventIds);
         }
         return $result;
     }
 
     /**
-     * @return array{eventIds: int[], armByEvent: array<int, int|string>, repeatingEventIds: int[]}|null
+     * @return string|null The event's arm number, or null if it isn't one of the project's events.
+     */
+    public static function findArmOfEvent(int $projectId, int $eventId): ?string
+    {
+        $events = self::fetchRepeatingEvents($projectId, '');
+        return $events && isset($events['armByEvent'][$eventId]) ? (string) $events['armByEvent'][$eventId] : null;
+    }
+
+    /**
+     * @return array{eventIds: int[], armByEvent: array<int, int|string>, eventNames: array<int, string>, repeatingEventIds: int[]}|null
      */
     private static function fetchRepeatingEvents(int $projectId, string $instrument): ?array
     {
@@ -155,14 +163,16 @@ class RedcapInstrumentGateway
         }
         $eventIds = array_map('intval', array_keys($proj->eventsForms ?: []));
         $armByEvent = [];
+        $eventNames = [];
         $repeatingEventIds = [];
         foreach ($eventIds as $eventId) {
             $armByEvent[$eventId] = $proj->eventInfo[$eventId]['arm_num'] ?? '';
+            $eventNames[$eventId] = (string) ($proj->eventInfo[$eventId]['name'] ?? $eventId);
             if ($proj->isRepeatingForm($eventId, $instrument)) {
                 $repeatingEventIds[] = $eventId;
             }
         }
-        return ['eventIds' => $eventIds, 'armByEvent' => $armByEvent, 'repeatingEventIds' => $repeatingEventIds];
+        return ['eventIds' => $eventIds, 'armByEvent' => $armByEvent, 'eventNames' => $eventNames, 'repeatingEventIds' => $repeatingEventIds];
     }
 
     private static $resolvedProjectCache = null;
