@@ -195,7 +195,7 @@ Two project settings control this (see [Project Settings](#project-settings) abo
   modules > Repeating Instruments and Events*) - the module refuses to save this setting otherwise. In a longitudinal
   project it may repeat in only one event per arm (links don't record an event); nodes are linked to rows in that
   event, whichever of the arm's events the pedigree form is opened from. The module refuses to save the setting if an
-  arm has several, and linking reads no rows in an arm that gains a second one later.
+  arm has several; if an arm gains a second one later, linking in that arm stops and says why.
 - ***Search fields*** (`project_pedigree_import_search_fields`) - one or more fields on that instrument used to search
   for and display a row when linking a node (e.g. first name + last name).
 

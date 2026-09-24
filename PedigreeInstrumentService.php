@@ -44,22 +44,21 @@ $requireString = function ($name, $action) use ($params, $sendErrorResponse) {
     return (string) $params[$name];
 };
 
-// The event of the form the editor was opened from (`formEvent`, from pedigreeEvent) - the
-// instrument's rows are read from the event it picks (RedcapInstrumentGateway::findRepeatingEventId()).
-// Not `event_id`, which REDCap core itself reads on module pages. Absent/empty means unknown (null):
-// fine while the instrument repeats in just one event of the project, e.g. any classic project.
-// If no event can be picked, say why rather than returning no rows.
-$findEventId = function () use ($params, $module, $project_id, $sendErrorResponse) {
+// The event to read the instrument's rows from, picked from the event of the form the editor was
+// opened from (`formEvent`, from pedigreeEvent - see resolvePedigreeInstrumentEvent()). Not
+// `event_id`, which REDCap core itself reads on module pages. Absent/empty means unknown: fine while
+// the instrument repeats in just one event of the project, e.g. any classic project. If no event can
+// be picked, say why rather than returning no rows.
+$resolveEventId = function () use ($params, $module, $project_id, $sendErrorResponse) {
     $raw = $params['formEvent'] ?? '';
     if (!is_string($raw) || ($raw !== '' && !ctype_digit($raw))) {
         $sendErrorResponse('Invalid Request', 'Parameter "formEvent" must be an event ID.');
     }
-    $eventId = $raw === '' ? null : (int) $raw;
-    $problem = $module->findPedigreeInstrumentEventProblem($project_id, $eventId);
-    if ($problem !== null) {
-        $sendErrorResponse('Not Configured', $problem);
+    $resolved = $module->resolvePedigreeInstrumentEvent($project_id, $raw === '' ? null : (int) $raw);
+    if ($resolved['eventId'] === null) {
+        $sendErrorResponse('Not Configured', $resolved['problem']);
     }
-    return $eventId;
+    return $resolved['eventId'];
 };
 
 header('Content-type: application/json');
@@ -73,7 +72,7 @@ if ('questionnaire' === $params['type']) {
 } elseif ('search' === $params['type']) {
     // Required, never defaulted to "all records" - see searchPedigreeInstrumentRows().
     $record = $requireString('record', 'search');
-    $formEventId = $findEventId();
+    $eventId = $resolveEventId();
     // Optional params: an array (`query[]=`) is treated as absent rather than cast.
     $query = isset($params['query']) && is_string($params['query']) ? $params['query'] : '';
     // Comma-separated allowed gender codes (e.g. "M,U") - see
@@ -87,11 +86,10 @@ if ('questionnaire' === $params['type']) {
             ['M', 'F', 'U']
         ));
     }
-    echo json_encode($module->searchPedigreeInstrumentRows($project_id, $record, $formEventId, $query, $allowedGenders), JSON_UNESCAPED_SLASHES);
+    echo json_encode($module->searchPedigreeInstrumentRows($project_id, $record, $eventId, $query, $allowedGenders), JSON_UNESCAPED_SLASHES);
 } elseif ('import' === $params['type']) {
     $record = $requireString('record', 'import');
     $instance = $requireString('instance', 'import');
-    $formEventId = $findEventId();
     // Same rule as search: only rows on the record the editor was opened from. A
     // consistency check on what the editor asks for, NOT access control - both values
     // come from the client, and the user can already read any row in their DAG
@@ -100,8 +98,9 @@ if ('questionnaire' === $params['type']) {
     if ($requireString('currentRecord', 'import') !== $record) {
         $sendErrorResponse('Invalid Request', 'Import is only allowed from a row on the current record ("currentRecord").');
     }
+    $eventId = $resolveEventId();
     echo json_encode(
-        $module->getPedigreeInstrumentRowAnswers($project_id, $record, $formEventId, $instance),
+        $module->getPedigreeInstrumentRowAnswers($project_id, $record, $eventId, $instance),
         JSON_UNESCAPED_SLASHES
     );
 } else {
