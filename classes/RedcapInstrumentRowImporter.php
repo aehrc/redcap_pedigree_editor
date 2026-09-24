@@ -27,19 +27,65 @@ class RedcapInstrumentRowImporter
      * @param array $rowData Field-name-keyed raw values for one record
      *   (checkbox options as `fieldName___optionCode` keys).
      * @param array $resolvedFields {@see QuestionnaireDerivation::resolveTaggedFields()}'s output.
-     * @return array{linkId: string, value: mixed}[]
+     * @return array{linkId: string, value: mixed}[] One answer per tagged field present in the
+     *   row. An empty field's value is `null`: the answers are the row's full state, and
+     *   open-pedigree's linked-record refresh clears a value the record emptied (only while the
+     *   node still holds the record's value - see its linked-record-round-trip change). A field
+     *   absent from `$rowData` (not fetched) is left out: that's unknown, not empty.
      */
     public static function buildAnswers(array $rowData, array $resolvedFields): array
     {
-        $answers = [];
+        // One answer per linkId: two tagged fields can share one (e.g. two checkbox fields both
+        // legend="disorders", shown alternately by branching), and sending both - one of them
+        // null - would make the receiver treat the list as emptied. Lists are combined (by entry
+        // ID); a single value takes the first non-empty field.
+        $byLinkId = [];
         foreach ($resolvedFields as $field) {
-            $value = self::extractValue($rowData, $field);
-            if ($value === null) {
+            if (!self::isPresent($rowData, $field)) {
                 continue;
             }
-            $answers[] = ['linkId' => $field['linkId'], 'value' => $value];
+            $linkId = $field['linkId'];
+            $value = self::extractValue($rowData, $field);
+            if (!array_key_exists($linkId, $byLinkId) || $byLinkId[$linkId] === null) {
+                $byLinkId[$linkId] = $value;
+            } elseif (is_array($byLinkId[$linkId]) && is_array($value)) {
+                $byLinkId[$linkId] = self::combineLists($byLinkId[$linkId], $value);
+            }
+        }
+        $answers = [];
+        foreach ($byLinkId as $linkId => $value) {
+            $answers[] = ['linkId' => (string) $linkId, 'value' => $value];
         }
         return $answers;
+    }
+
+    private static function combineLists(array $a, array $b): array
+    {
+        $seen = [];
+        $combined = [];
+        foreach (array_merge($a, $b) as $entry) {
+            $key = is_array($entry) ? (string) ($entry['id'] ?? json_encode($entry)) : (string) $entry;
+            if (!isset($seen[$key])) {
+                $seen[$key] = true;
+                $combined[] = $entry;
+            }
+        }
+        return $combined;
+    }
+
+    private static function isPresent(array $rowData, array $field): bool
+    {
+        $fieldName = $field['redcapField'];
+        if ($field['type'] === 'choice' && $field['repeats']) {
+            // Checkbox options are exploded into fieldName___<code> columns.
+            foreach (array_keys($rowData) as $key) {
+                if (strpos((string) $key, $fieldName . '___') === 0) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        return array_key_exists($fieldName, $rowData);
     }
 
     private static function extractValue(array $rowData, array $field): mixed

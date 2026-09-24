@@ -440,9 +440,11 @@
                 }
                 if (!answers || answers.length === 0) {
                     if (final) {
-                        showMessage('Edit in REDCap', 'This person\'s linked REDCap row has no values to '
-                            + 'import (its fields are all empty, or the row was deleted). Their details here '
-                            + 'were left unchanged.');
+                        // An existing row answers for every tagged field (empty ones as null), so
+                        // nothing at all means the row wasn't found - or nothing is set up to import.
+                        showMessage('Edit in REDCap', 'Nothing could be imported for this person from REDCap. '
+                            + 'Their linked row may have been deleted, or the project\'s pedigree import '
+                            + 'settings may need checking. Their details here were left unchanged.');
                     }
                     return;
                 }
