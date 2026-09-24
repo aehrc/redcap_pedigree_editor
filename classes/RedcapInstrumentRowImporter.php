@@ -52,7 +52,7 @@ class RedcapInstrumentRowImporter
                 // PHP coerces numeric string array keys to int; REDCap
                 // choice codes are conventionally treated as strings.
                 $code = (string) $code;
-                if (($rowData[$fieldName . '___' . $code] ?? '0') === '1') {
+                if (($rowData[$fieldName . '___' . self::checkboxExportCode($code)] ?? '0') === '1') {
                     $checkedCodes[] = $code;
                 }
             }
@@ -89,5 +89,19 @@ class RedcapInstrumentRowImporter
             default:
                 return $raw;
         }
+    }
+
+    /**
+     * The form REDCap gives a checkbox option's code in export column names
+     * (`field___<code>`): `-` and `.` become `_`, the code is lowercased, and
+     * anything else outside `[a-z0-9_]` is dropped. So code `A` exports as
+     * `field___a`, and `-1` as `field____1`. Mirrors REDCap core's
+     * `Project::getExtendedCheckboxCodeFormatted()` (checked against 16.0.32);
+     * copied rather than called so this class stays free of REDCap classes.
+     */
+    private static function checkboxExportCode(string $code): string
+    {
+        $code = str_replace(['-', '.'], '_', $code);
+        return preg_replace('/[^a-z_0-9]/', '', strtolower($code));
     }
 }

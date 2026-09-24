@@ -146,4 +146,21 @@ class RedcapInstrumentRowImporterTest extends TestCase
             $answers
         );
     }
+
+    public function testCheckboxCodesMatchRedcapExportColumnNames(): void
+    {
+        // REDCap lowercases checkbox codes and turns '-'/'.' into '_' in export
+        // column names; the original codes must still come back as the answer.
+        $answers = RedcapInstrumentRowImporter::buildAnswers(
+            ['symptoms___1' => '0', 'symptoms___a' => '1', 'symptoms____2' => '1', 'symptoms___1_5' => '1'],
+            [$this->field([
+                'redcapField' => 'symptoms',
+                'linkId' => 'symptoms',
+                'type' => 'choice',
+                'repeats' => true,
+                'choices' => ['1' => 'Fever', 'A' => 'Other', '-2' => 'Negative code', '1.5' => 'Decimal code'],
+            ])]
+        );
+        $this->assertSame(['A', '-2', '1.5'], $answers[0]['value']);
+    }
 }
