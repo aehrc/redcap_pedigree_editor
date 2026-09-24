@@ -163,4 +163,23 @@ class RedcapInstrumentRowImporterTest extends TestCase
         );
         $this->assertSame(['A', '-2', '1.5'], $answers[0]['value']);
     }
+
+    public function testRawCaseCheckboxKeyIsNotRead(): void
+    {
+        // Only REDCap's export form counts; a raw-case key must not be read as well.
+        $answers = RedcapInstrumentRowImporter::buildAnswers(
+            ['symptoms___A' => '1', 'symptoms___a' => '0'],
+            [$this->field(['redcapField' => 'symptoms', 'linkId' => 'symptoms', 'type' => 'choice', 'repeats' => true, 'choices' => ['A' => 'Other']])]
+        );
+        $this->assertSame([], $answers);
+    }
+
+    public function testLegendEntriesKeepOriginalCodesAndNames(): void
+    {
+        $answers = RedcapInstrumentRowImporter::buildAnswers(
+            ['dx___a' => '1'],
+            [$this->field(['redcapField' => 'dx', 'linkId' => 'disorders', 'type' => 'choice', 'repeats' => true, 'choices' => ['A' => 'Disorder A']])]
+        );
+        $this->assertSame([['id' => 'A', 'name' => 'Disorder A']], $answers[0]['value']);
+    }
 }

@@ -98,6 +98,10 @@ class RedcapInstrumentRowImporter
      * `field___a`, and `-1` as `field____1`. Mirrors REDCap core's
      * `Project::getExtendedCheckboxCodeFormatted()` (checked against 16.0.32);
      * copied rather than called so this class stays free of REDCap classes.
+     *
+     * Limitation: two codes that format the same (e.g. `A` and `a`, `1.5` and
+     * `1_5`) share one export column in REDCap itself, so they can't be told
+     * apart and read as ticked or unticked together.
      */
     private static function checkboxExportCode(string $code): string
     {
