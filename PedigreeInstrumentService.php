@@ -44,6 +44,17 @@ $requireString = function ($name, $action) use ($params, $sendErrorResponse) {
     return (string) $params[$name];
 };
 
+// The event of the form the editor was opened from (`formEvent`, from pedigreeEvent) - the
+// instrument's rows are read from the event it picks (RedcapInstrumentGateway::findRepeatingEventId()).
+// Not `event_id`, which REDCap core itself reads on module pages.
+$requireEventId = function ($action) use ($requireString, $sendErrorResponse) {
+    $eventId = $requireString('formEvent', $action);
+    if (!ctype_digit($eventId)) {
+        $sendErrorResponse('Invalid Request', 'Parameter "formEvent" must be an event ID.');
+    }
+    return (int) $eventId;
+};
+
 header('Content-type: application/json');
 
 if ('questionnaire' === $params['type']) {
@@ -55,6 +66,7 @@ if ('questionnaire' === $params['type']) {
 } elseif ('search' === $params['type']) {
     // Required, never defaulted to "all records" - see searchPedigreeInstrumentRows().
     $record = $requireString('record', 'search');
+    $formEventId = $requireEventId('search');
     // Optional params: an array (`query[]=`) is treated as absent rather than cast.
     $query = isset($params['query']) && is_string($params['query']) ? $params['query'] : '';
     // Comma-separated allowed gender codes (e.g. "M,U") - see
@@ -68,10 +80,11 @@ if ('questionnaire' === $params['type']) {
             ['M', 'F', 'U']
         ));
     }
-    echo json_encode($module->searchPedigreeInstrumentRows($project_id, $record, $query, $allowedGenders), JSON_UNESCAPED_SLASHES);
+    echo json_encode($module->searchPedigreeInstrumentRows($project_id, $record, $formEventId, $query, $allowedGenders), JSON_UNESCAPED_SLASHES);
 } elseif ('import' === $params['type']) {
     $record = $requireString('record', 'import');
     $instance = $requireString('instance', 'import');
+    $formEventId = $requireEventId('import');
     // Same rule as search: only rows on the record the editor was opened from. A
     // consistency check on what the editor asks for, NOT access control - both values
     // come from the client, and the user can already read any row in their DAG
@@ -81,7 +94,7 @@ if ('questionnaire' === $params['type']) {
         $sendErrorResponse('Invalid Request', 'Import is only allowed from a row on the current record ("currentRecord").');
     }
     echo json_encode(
-        $module->getPedigreeInstrumentRowAnswers($project_id, $record, $instance),
+        $module->getPedigreeInstrumentRowAnswers($project_id, $record, $formEventId, $instance),
         JSON_UNESCAPED_SLASHES
     );
 } else {

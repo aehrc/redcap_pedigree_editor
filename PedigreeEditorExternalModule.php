@@ -130,6 +130,15 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
                         . "\") is not configured as a repeating instrument. Enable repeating instruments for it "
                         . "(Project Setup > Enable optional modules > Repeating Instruments and Events) before selecting it here.\n";
                 }
+                // Link refs carry no event, so each arm may repeat the instrument in only one
+                // event - otherwise one ref could mean a different row per event.
+                $crowdedArms = RedcapInstrumentGateway::findArmsWithSeveralRepeatingEvents($projectId, $pedigreeImportInstrument) ?? [];
+                foreach ($crowdedArms as $arm => $eventNames) {
+                    $errors .= "The instrument selected for pedigree-instrument import (\"" . $pedigreeImportInstrument
+                        . "\") repeats in more than one event of arm " . $arm . " (" . implode(', ', $eventNames) . "). "
+                        . "Pedigree links can't say which event a row is in, so make it repeat in only one event per arm "
+                        . "(Project Setup > Repeating Instruments and Events).\n";
+                }
             }
         }
 
@@ -356,9 +365,12 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
                 // record names case-insensitively, but link refs are compared exactly, so a
                 // form opened as id=abc for record "ABC" must still agree with its own rows.
                 $pedigreeImportParams .= '&pedigreeRecord=' . urlencode($storedRecord ?? (string) $record);
+                // The form's event: search/import pick the instrument's event in its arm from it,
+                // exactly as the edit URL below does (RedcapInstrumentGateway::findRepeatingEventId()).
+                $pedigreeImportParams .= '&pedigreeEvent=' . (int) $event_id;
                 // "Edit in REDCap" opens this row's native data-entry form; the client adds
                 // &instance=. Only for a saved record (the guard refuses the action otherwise),
-                // and only if the instrument is actually repeating in an event of this arm.
+                // and only if the instrument repeats in exactly one event of this arm.
                 if ($storedRecord !== null) {
                     $instrumentEventId = RedcapInstrumentGateway::findRepeatingEventId(
                         (int) $project_id,
@@ -739,6 +751,10 @@ EOD;
      *   the same record as its pedigree. Client-supplied, but it can only
      *   narrow results within what the user could already search (the DAG
      *   restriction still applies), so it grants nothing.
+     * @param int $formEventId The event of the form the editor was opened
+     *   from. Only the instrument's rows in the event
+     *   `RedcapInstrumentGateway::findRepeatingEventId()` picks from it are
+     *   searched - none if it picks none.
      * @param string[]|null $allowedGenders Gender codes ('M'/'F'/'U') to
      *   restrict results to, or null for no restriction - applied *before*
      *   the result limit (see `RedcapInstrumentSearch::search()`), so an
@@ -748,10 +764,14 @@ EOD;
      *   `'gender'` per match when the instrument has a valid
      *   `mapsTo="gender"` field - see `RedcapInstrumentSearch::search()`.
      */
-    public function searchPedigreeInstrumentRows($project_id, $record, $query, $allowedGenders = null)
+    public function searchPedigreeInstrumentRows($project_id, $record, $formEventId, $query, $allowedGenders = null)
     {
         $instrument = $this->getPedigreeImportInstrument($project_id);
         if (!$instrument) {
+            return [];
+        }
+        $eventId = RedcapInstrumentGateway::findRepeatingEventId((int) $project_id, $instrument, (int) $formEventId);
+        if ($eventId === null) {
             return [];
         }
         $dataDictionary = RedcapInstrumentGateway::fetchDataDictionary($project_id, $instrument);
@@ -759,7 +779,9 @@ EOD;
             $project_id,
             array_keys($dataDictionary),
             $this->getCurrentUserGroupId($project_id),
-            [(string) $record]
+            [(string) $record],
+            $instrument,
+            $eventId
         );
         $searchFields = $this->getPedigreeImportSearchFields($project_id);
         $genderField = $this->findMapsToFieldName($dataDictionary, 'gender');
@@ -785,11 +807,12 @@ EOD;
      * `linkId`-keyed bag (task 6.5 — backs
      * `RedcapInstrumentPatientProvider.openEditor`'s AJAX call).
      *
+     * @param int $formEventId See searchPedigreeInstrumentRows().
      * @return array{linkId: string, value: mixed}[]
      */
-    public function getPedigreeInstrumentRowAnswers($project_id, $record, $instance)
+    public function getPedigreeInstrumentRowAnswers($project_id, $record, $formEventId, $instance)
     {
-        $row = $this->findPedigreeInstrumentRow($project_id, $record, $instance, $dataDictionary);
+        $row = $this->findPedigreeInstrumentRow($project_id, $record, $formEventId, $instance, $dataDictionary);
         if ($row === null) {
             return [];
         }
@@ -815,7 +838,7 @@ EOD;
      *   instrument is configured at all, even if the row itself is not
      *   found) so callers can reuse it without re-fetching.
      */
-    private function findPedigreeInstrumentRow($project_id, $record, $instance, &$dataDictionary)
+    private function findPedigreeInstrumentRow($project_id, $record, $formEventId, $instance, &$dataDictionary)
     {
         $dataDictionary = [];
         $instrument = $this->getPedigreeImportInstrument($project_id);
@@ -823,11 +846,17 @@ EOD;
             return null;
         }
         $dataDictionary = RedcapInstrumentGateway::fetchDataDictionary($project_id, $instrument);
+        $eventId = RedcapInstrumentGateway::findRepeatingEventId((int) $project_id, $instrument, (int) $formEventId);
+        if ($eventId === null) {
+            return null;
+        }
         $rows = RedcapInstrumentGateway::fetchInstrumentRows(
             $project_id,
             array_keys($dataDictionary),
             $this->getCurrentUserGroupId($project_id),
-            [(string) $record]
+            [(string) $record],
+            $instrument,
+            $eventId
         );
 
         foreach ($rows as $row) {
