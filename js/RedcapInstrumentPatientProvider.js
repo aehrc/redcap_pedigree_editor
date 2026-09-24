@@ -440,9 +440,11 @@
                 }
                 if (!answers || answers.length === 0) {
                     if (final) {
-                        showMessage('Edit in REDCap', 'This person\'s linked REDCap row has no values to '
-                            + 'import (its fields are all empty, or the row was deleted). Their details here '
-                            + 'were left unchanged.');
+                        // An existing row always answers (empty fields as null), so nothing at all
+                        // means the row wasn't found.
+                        showMessage('Edit in REDCap', 'This person\'s linked REDCap row couldn\'t be found '
+                            + '(it may have been deleted). Their details here were left unchanged - link '
+                            + 'them to another row, or remove the link.');
                     }
                     return;
                 }

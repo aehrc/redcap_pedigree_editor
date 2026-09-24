@@ -27,10 +27,21 @@ class RedcapInstrumentRowImporterTest extends TestCase
         $this->assertSame([['linkId' => 'comments', 'value' => 'Some notes']], $answers);
     }
 
-    public function testMissingOrEmptyValueIsOmitted(): void
+    public function testEmptyValueIsSentAsNull(): void
     {
+        // The answers are the row's full state: open-pedigree clears a value the record emptied.
         $answers = RedcapInstrumentRowImporter::buildAnswers(
             ['comments' => ''],
+            [$this->field(['redcapField' => 'comments', 'linkId' => 'comments'])]
+        );
+        $this->assertSame([['linkId' => 'comments', 'value' => null]], $answers);
+    }
+
+    public function testFieldAbsentFromRowIsOmitted(): void
+    {
+        // Not fetched at all is "unknown", not "empty".
+        $answers = RedcapInstrumentRowImporter::buildAnswers(
+            [],
             [$this->field(['redcapField' => 'comments', 'linkId' => 'comments'])]
         );
         $this->assertSame([], $answers);
@@ -120,10 +131,19 @@ class RedcapInstrumentRowImporterTest extends TestCase
         $this->assertSame(['1'], $answers[0]['value']);
     }
 
-    public function testNoCheckedOptionsIsOmitted(): void
+    public function testNoCheckedOptionsIsSentAsNull(): void
     {
         $answers = RedcapInstrumentRowImporter::buildAnswers(
             ['symptoms___1' => '0'],
+            [$this->field(['redcapField' => 'symptoms', 'linkId' => 'symptoms', 'type' => 'choice', 'repeats' => true, 'choices' => ['1' => 'Fever']])]
+        );
+        $this->assertSame([['linkId' => 'symptoms', 'value' => null]], $answers);
+    }
+
+    public function testCheckboxAbsentFromRowIsOmitted(): void
+    {
+        $answers = RedcapInstrumentRowImporter::buildAnswers(
+            ['other___1' => '1'],
             [$this->field(['redcapField' => 'symptoms', 'linkId' => 'symptoms', 'type' => 'choice', 'repeats' => true, 'choices' => ['1' => 'Fever']])]
         );
         $this->assertSame([], $answers);

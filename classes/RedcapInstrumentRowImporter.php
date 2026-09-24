@@ -27,19 +27,37 @@ class RedcapInstrumentRowImporter
      * @param array $rowData Field-name-keyed raw values for one record
      *   (checkbox options as `fieldName___optionCode` keys).
      * @param array $resolvedFields {@see QuestionnaireDerivation::resolveTaggedFields()}'s output.
-     * @return array{linkId: string, value: mixed}[]
+     * @return array{linkId: string, value: mixed}[] One answer per tagged field present in the
+     *   row. An empty field's value is `null`: the answers are the row's full state, and
+     *   open-pedigree's linked-record refresh clears a value the record emptied (only while the
+     *   node still holds the record's value - see its linked-record-round-trip change). A field
+     *   absent from `$rowData` (not fetched) is left out: that's unknown, not empty.
      */
     public static function buildAnswers(array $rowData, array $resolvedFields): array
     {
         $answers = [];
         foreach ($resolvedFields as $field) {
-            $value = self::extractValue($rowData, $field);
-            if ($value === null) {
+            if (!self::isPresent($rowData, $field)) {
                 continue;
             }
-            $answers[] = ['linkId' => $field['linkId'], 'value' => $value];
+            $answers[] = ['linkId' => $field['linkId'], 'value' => self::extractValue($rowData, $field)];
         }
         return $answers;
+    }
+
+    private static function isPresent(array $rowData, array $field): bool
+    {
+        $fieldName = $field['redcapField'];
+        if ($field['type'] === 'choice' && $field['repeats']) {
+            // Checkbox options are exploded into fieldName___<code> columns.
+            foreach (array_keys($rowData) as $key) {
+                if (strpos((string) $key, $fieldName . '___') === 0) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        return array_key_exists($fieldName, $rowData);
     }
 
     private static function extractValue(array $rowData, array $field): mixed
