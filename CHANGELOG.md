@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.0.0](https://github.com/aehrc/redcap_pedigree_editor/compare/v0.4.1...v1.0.0) (2026-09-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* removes the `@PEDIGREE_HPO`/`@PEDIGREE_SCT` action tags. Terminology is now always taken from the project/system *Default Terminology* setting - existing fields tagged `@PEDIGREE_HPO`/`@PEDIGREE_SCT` will stop being recognised as pedigree fields; update them to a bare `@PEDIGREE` tag and set *Default Terminology* accordingly.
+
+### Features
+
+* add repeating-instrument linking, re-targeted onto RecordLinkProvider ([#9](https://github.com/aehrc/redcap_pedigree_editor/issues/9)) ([a1a8566](https://github.com/aehrc/redcap_pedigree_editor/commit/a1a85668735820676629d5597e76a28473d7da5b))
+* close the Edit in REDCap window after its row is saved ([#19](https://github.com/aehrc/redcap_pedigree_editor/issues/19)) ([d274c95](https://github.com/aehrc/redcap_pedigree_editor/commit/d274c95802f302137ed8854d14d1adc26ad71c91))
+* edit linked rows in REDCap's own form, re-importing on close ([#14](https://github.com/aehrc/redcap_pedigree_editor/issues/14)) ([b97f823](https://github.com/aehrc/redcap_pedigree_editor/commit/b97f823dc0d1eb2189f680d0daec4231ede626b0))
+* gate record linking on record existence and scope it to the current record ([#13](https://github.com/aehrc/redcap_pedigree_editor/issues/13)) ([1651213](https://github.com/aehrc/redcap_pedigree_editor/commit/165121333f25aa1e5cf8afba2dbb9557b646119d))
+
+
+### Bug Fixes
+
+* add CI/CD pipeline; fix reflected XSS in TerminologyService ([#10](https://github.com/aehrc/redcap_pedigree_editor/issues/10)) ([412a73a](https://github.com/aehrc/redcap_pedigree_editor/commit/412a73abb737a945af9811bd28e54c8178ee78ff))
+* read checkbox options whose codes REDCap renames in exports ([#15](https://github.com/aehrc/redcap_pedigree_editor/issues/15)) ([80f2f30](https://github.com/aehrc/redcap_pedigree_editor/commit/80f2f30b4a66e2a4d7807a45ad709f4905ab6940))
+* read the linked instrument from one event per arm in longitudinal projects ([#18](https://github.com/aehrc/redcap_pedigree_editor/issues/18)) ([8346839](https://github.com/aehrc/redcap_pedigree_editor/commit/83468392b6c8a2de260f71d206bad60e6ad8a14d))
+* send cleared REDCap fields to the pedigree so re-import clears them ([#16](https://github.com/aehrc/redcap_pedigree_editor/issues/16)) ([dd6ca77](https://github.com/aehrc/redcap_pedigree_editor/commit/dd6ca7718e10f0db7236e9ccf5bbea3e15a3fd6f))
+
 ## [0.4.1] - 2025-07-31
 - Fix a bug in project settings
 
