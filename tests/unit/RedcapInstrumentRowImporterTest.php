@@ -146,4 +146,40 @@ class RedcapInstrumentRowImporterTest extends TestCase
             $answers
         );
     }
+
+    public function testCheckboxCodesMatchRedcapExportColumnNames(): void
+    {
+        // REDCap lowercases checkbox codes and turns '-'/'.' into '_' in export
+        // column names; the original codes must still come back as the answer.
+        $answers = RedcapInstrumentRowImporter::buildAnswers(
+            ['symptoms___1' => '0', 'symptoms___a' => '1', 'symptoms____2' => '1', 'symptoms___1_5' => '1'],
+            [$this->field([
+                'redcapField' => 'symptoms',
+                'linkId' => 'symptoms',
+                'type' => 'choice',
+                'repeats' => true,
+                'choices' => ['1' => 'Fever', 'A' => 'Other', '-2' => 'Negative code', '1.5' => 'Decimal code'],
+            ])]
+        );
+        $this->assertSame(['A', '-2', '1.5'], $answers[0]['value']);
+    }
+
+    public function testRawCaseCheckboxKeyIsNotRead(): void
+    {
+        // Only REDCap's export form counts; a raw-case key must not be read as well.
+        $answers = RedcapInstrumentRowImporter::buildAnswers(
+            ['symptoms___A' => '1', 'symptoms___a' => '0'],
+            [$this->field(['redcapField' => 'symptoms', 'linkId' => 'symptoms', 'type' => 'choice', 'repeats' => true, 'choices' => ['A' => 'Other']])]
+        );
+        $this->assertSame([], $answers);
+    }
+
+    public function testLegendEntriesKeepOriginalCodesAndNames(): void
+    {
+        $answers = RedcapInstrumentRowImporter::buildAnswers(
+            ['dx___a' => '1'],
+            [$this->field(['redcapField' => 'dx', 'linkId' => 'disorders', 'type' => 'choice', 'repeats' => true, 'choices' => ['A' => 'Disorder A']])]
+        );
+        $this->assertSame([['id' => 'A', 'name' => 'Disorder A']], $answers[0]['value']);
+    }
 }
