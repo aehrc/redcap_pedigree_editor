@@ -836,6 +836,44 @@ EOD;
     }
 
     /**
+     * The instance number "Create in REDCap" opens a new linked row at
+     * (pedigree-editor-repeating-instrument-sync task 4.1): one past this
+     * record's highest saved instance in `$eventId`. REDCap creates the row
+     * when the user saves it there.
+     *
+     * Checks the record exists here rather than trusting the editor's
+     * pedigreeRecordExists flag: an auto-numbered record's ID is only a guess
+     * until its first save, and a row created on a guess could end up on another
+     * record. Checked for the project, not the arm: once saved, the record's ID
+     * is fixed, and a row in the form's arm is what REDCap's own "Add new" there
+     * would create.
+     *
+     * @param int $eventId See searchPedigreeInstrumentRows().
+     * @return array{instance: int|null, problem: string|null} The instance, or
+     *   why there isn't one, for the editor to show.
+     */
+    public function getNextPedigreeInstrumentInstance($project_id, $record, $eventId)
+    {
+        $instrument = $this->getPedigreeImportInstrument($project_id);
+        if (!$instrument) {
+            return ['instance' => null, 'problem' => 'No repeating instrument is configured for pedigree import on this project.'];
+        }
+        $storedRecord = $this->findStoredRecordName($project_id, $record);
+        if ($storedRecord === null) {
+            return ['instance' => null, 'problem' => 'This record hasn\'t been saved yet, so a family member row can\'t '
+                . 'be added to it. Save the form once, then reopen the pedigree editor from it.'];
+        }
+        $groupId = $this->getCurrentUserGroupId($project_id);
+        if ($groupId !== null && !RedcapInstrumentGateway::isRecordInGroup((int) $project_id, $storedRecord, $groupId)) {
+            return ['instance' => null, 'problem' => 'This record isn\'t in your Data Access Group, so rows can\'t be added to it.'];
+        }
+        $instance = RedcapInstrumentGateway::findNextInstance((int) $project_id, $storedRecord, (int) $eventId, $instrument);
+        return $instance === null
+            ? ['instance' => null, 'problem' => 'REDCap couldn\'t work out the next row number for this record. Try again.']
+            : ['instance' => $instance, 'problem' => null];
+    }
+
+    /**
      * Fetches one linked row's `@PEDIGREE_FIELD`-tagged answers as a
      * `linkId`-keyed bag (task 6.5 — backs
      * `RedcapInstrumentPatientProvider.openEditor`'s AJAX call).

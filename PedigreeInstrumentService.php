@@ -1,7 +1,8 @@
 <?php
 /**
  * AJAX endpoint backing `RedcapInstrumentPatientProvider` (task 6.2):
- * search/import against the project's configured repeating instrument.
+ * search/import against the project's configured repeating instrument, and
+ * the instance number for a new row (nextInstance).
  *
  * Deliberately NOT listed in config.json's `no-auth-pages` — REDCap
  * authenticates the session for this page like any other module page.
@@ -103,6 +104,16 @@ if ('questionnaire' === $params['type']) {
         $module->getPedigreeInstrumentRowAnswers($project_id, $record, $eventId, $instance),
         JSON_UNESCAPED_SLASHES
     );
+} elseif ('nextInstance' === $params['type']) {
+    // "Create in REDCap": where a new linked row on this record goes. Still read-only - REDCap
+    // itself creates the row, when the user saves it in its own form.
+    $record = $requireString('record', 'nextInstance');
+    $eventId = $resolveEventId();
+    $next = $module->getNextPedigreeInstrumentInstance($project_id, $record, $eventId);
+    if ($next['instance'] === null) {
+        $sendErrorResponse('Not Available', $next['problem']);
+    }
+    echo json_encode(['instance' => $next['instance']]);
 } else {
     $sendErrorResponse('Invalid Request', 'Invalid "type" parameter "' . $params['type'] . '".');
 }
