@@ -100,10 +100,13 @@ if ('questionnaire' === $params['type']) {
         $sendErrorResponse('Invalid Request', 'Import is only allowed from a row on the current record ("currentRecord").');
     }
     $eventId = $resolveEventId();
-    echo json_encode(
-        $module->getPedigreeInstrumentRowAnswers($project_id, $record, $eventId, $instance),
-        JSON_UNESCAPED_SLASHES
-    );
+    $answers = $module->getPedigreeInstrumentRowAnswers($project_id, $record, $eventId, $instance, $rowFound);
+    // requireRow=1 (the link picker): say when the row doesn't exist, rather than answer [] as for
+    // a row with nothing tagged to import - the refresh and Create in REDCap rely on that [].
+    if (!$rowFound && isset($params['requireRow']) && $params['requireRow'] === '1') {
+        $sendErrorResponse('Not Found', 'That row no longer exists in REDCap.');
+    }
+    echo json_encode($answers, JSON_UNESCAPED_SLASHES);
 } elseif ('nextInstance' === $params['type']) {
     // "Create in REDCap": where a new linked row on this record goes. Still read-only - REDCap
     // itself creates the row, when the user saves it in its own form.

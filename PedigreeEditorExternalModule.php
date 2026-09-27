@@ -881,9 +881,10 @@ EOD;
      * @param int $eventId See searchPedigreeInstrumentRows().
      * @return array{linkId: string, value: mixed}[]
      */
-    public function getPedigreeInstrumentRowAnswers($project_id, $record, $eventId, $instance)
+    public function getPedigreeInstrumentRowAnswers($project_id, $record, $eventId, $instance, &$rowFound = null)
     {
         $row = $this->findPedigreeInstrumentRow($project_id, $record, $eventId, $instance, $dataDictionary);
+        $rowFound = $row !== null;
         if ($row === null) {
             return [];
         }
