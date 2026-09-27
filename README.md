@@ -39,7 +39,8 @@ representation of the diagram, add compression for large diagrams.
 - v0.3.2 - Add new action tag **@PEDIGREE** which uses configurable terminology settings.
 - v0.4 - Add support for PED and DADA2 formats.
 - v0.5 - Bug fix in open-pedigree, change default fhir server and valuesets to use https://tx.ontoserver.csiro.au/fhir
-- v0.6 - Add the ability to link pedigree nodes to rows of a repeating instrument and import their data, via the new
+- v0.6 - Add the ability to link pedigree nodes to rows of a repeating instrument, edit those rows (or add new ones) in
+  REDCap's own form from the pedigree editor, and bring their data into the nodes, via the new
   **@PEDIGREE_FIELD** action tag and *Repeating instrument*/*Search fields*/*Node-edit form source* project settings —
   see [Linking Pedigree Nodes to a Repeating Instrument](#linking-pedigree-nodes-to-a-repeating-instrument).
   **Breaking**: remove the **@PEDIGREE_HPO**/**@PEDIGREE_SCT** action tags. Terminology is now always taken from
@@ -182,9 +183,10 @@ If the pedigree data does not contain an image a placeholder image is shown.
 
 Beyond the single *@PEDIGREE* field that stores the diagram itself, the module can link an individual pedigree node
 (a person in the diagram) to a row of one of the project's own **repeating instruments** — e.g. a `family_members`
-instrument with one row per relative — and import that row's data straight into the node's edit form. This needs no
-custom code: it works by deriving a FHIR Questionnaire (the node-edit form's definition) from the instrument's Data
-Dictionary, driven by action tags on the instrument's own fields.
+instrument with one row per relative — and show that row's data in the node's edit form. The row itself is always
+edited in REDCap's own form, opened from the pedigree editor, and the node refreshes from it when you're done. This
+needs no custom code: it works by deriving a FHIR Questionnaire (the node-edit form's definition) from the
+instrument's Data Dictionary, driven by action tags on the instrument's own fields.
 
 ### Configuring the linked instrument
 
@@ -199,15 +201,48 @@ Two project settings control this (see [Project Settings](#project-settings) abo
 - ***Search fields*** (`project_pedigree_import_search_fields`) - one or more fields on that instrument used to search
   for and display a row when linking a node (e.g. first name + last name).
 
-Once configured, every node's edit form gains a **Linked Record** tab with a *Link to existing record* button
-(automatically added by `open-pedigree`'s own `record-link-provider` mechanism - not something this module's derived
-Questionnaire builds itself, and not something you can reposition or omit from a hand-authored Questionnaire either;
-see [Advanced mode](#advanced-mode-hand-authoring-the-questionnaire) below). Linking a node searches the configured
-instrument's rows (server-side - no REDCap API token is ever exposed to the browser) and, once linked, an *Edit linked
-record* button becomes available to pull that row's data into the node - a one-time, read-only snapshot; later changes
-to the REDCap row are not automatically reflected back into the pedigree. Creating a brand-new linked row from the
-pedigree editor isn't supported yet (the *Create new linked record* button always stays hidden) - see
-`pedigree-editor-repeating-instrument-sync`.
+### Linking, editing and adding rows
+
+Once configured, every node's edit form gains a **Linked Record** tab (added automatically by `open-pedigree`'s own
+`record-link-provider` mechanism - not something this module's derived Questionnaire builds itself, and not something
+you can reposition or omit from a hand-authored Questionnaire either; see
+[Advanced mode](#advanced-mode-hand-authoring-the-questionnaire) below). The linked row's `@PEDIGREE_FIELD`-tagged
+fields are shown there read-only: REDCap's own data-entry form is the only place they're edited, so the pedigree never
+writes to REDCap.
+The tab offers:
+
+- ***Link to existing record*** - searches this record's rows of the configured instrument by the *Search fields*
+  (server-side - no REDCap API token is ever exposed to the browser) and links the person to the row you pick. A
+  family's person rows live on the same REDCap record as its pedigree, so only this record's rows are offered. If the
+  person's position fixes their gender (e.g. they already have a partner), only rows with a compatible gender are
+  shown, and the picker says so. Linking alone doesn't bring the row's values in: use *Edit in REDCap* and close the
+  window (no need to change anything) to fill them in.
+- ***Edit in REDCap*** (once linked) - opens the row in REDCap's own data-entry form, in a new window. When that window
+  closes, the person is refreshed from the row, including any values cleared in REDCap. After *Save & Exit Form* or
+  *Save & Exit Record* the window closes itself. *Save & Stay* and the *Save & Go to...* buttons leave it open for you
+  to carry on; switching back to the pedigree editor refreshes the person anyway. Closing it without saving changes
+  nothing.
+- ***Create in REDCap*** (for a person not linked yet) - opens REDCap's form for a new row, the next instance on this
+  record, in the same way. Save it with *Save & Exit Form*, *Save & Exit Record* or *Save & Stay*; when the window
+  closes, the person is linked to the new row and its values are brought in. Close it without saving and nothing is
+  created. The *Save & Go to...* buttons still save the row, but the editor doesn't count that as this window's save,
+  so it only tells you the row is there - link the person to it with *Link to existing record*. One new row at a
+  time: while one is open, the button brings that window back to the front.
+
+A few rules apply:
+
+- **Save the form once first.** A record doesn't exist in REDCap until its first save (an auto-numbered one's ID is
+  only a guess until then), so on a new record these actions explain that and do nothing. Drawing and saving the
+  diagram itself works as normal. If you save the form with the pedigree editor still open, close the editor and
+  reopen it from the form.
+- **Only this record's rows.** A person linked to another record's row (e.g. in a pedigree imported from elsewhere) is
+  refused rather than opened; link them again to one of this record's rows.
+- **Pop-ups.** The REDCap windows are pop-ups opened by your click. If the browser blocks one, the editor says so -
+  allow pop-ups for your REDCap site.
+- **Not on surveys.** Linking needs a logged-in REDCap user, so it isn't offered when the pedigree field is on a
+  survey page.
+- **Changes while a window is open.** If a person is moved, re-linked or deleted in the pedigree while their REDCap
+  window is open, closing the window doesn't overwrite them, and the editor explains why.
 
 ### The `@PEDIGREE_FIELD` action tag
 
@@ -286,8 +321,9 @@ setting - it's used exactly as written. This is the escape hatch for anything th
 express: richer branching logic, a genuinely multi-valued disorders list built from several REDCap fields, custom
 `enableWhen` conditions, whatever you need.
 
-To link an item in your own Questionnaire to a REDCap field so it can still be imported via *Import from linked
-record*, attach the same `questionnaire-redcap-source` extension the other two modes emit automatically:
+To link an item in your own Questionnaire to a REDCap field so it's still brought in from the linked row (by *Edit in
+REDCap* and *Create in REDCap*), attach the same `questionnaire-redcap-source` extension the other two modes emit
+automatically:
 
 ```json
 {
