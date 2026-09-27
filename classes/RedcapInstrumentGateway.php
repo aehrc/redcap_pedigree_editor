@@ -135,6 +135,37 @@ class RedcapInstrumentGateway
     }
 
     /**
+     * The instance number a new row of `$instrument` on `$record` in `$eventId`
+     * gets: one past the highest saved instance, from REDCap core's own max
+     * (keyed on each instance's `<form>_complete` value, which every saved
+     * instance has - so an instance with nothing but a status still counts).
+     * Null if the project couldn't be resolved.
+     */
+    public static function findNextInstance(int $projectId, string $record, int $eventId, string $instrument): ?int
+    {
+        $proj = self::resolveProject($projectId);
+        if (!$proj) {
+            return null;
+        }
+        return (int) \RepeatInstance::getRepeatFormInstanceMaxCountOnly($record, $eventId, $instrument, $proj) + 1;
+    }
+
+    /**
+     * @param string|int $groupId The user's Data Access Group.
+     * @return bool Whether `$record` is in that group - REDCap's own export
+     *   filter, so it matches what the user can see anywhere else.
+     */
+    public static function isRecordInGroup(int $projectId, string $record, $groupId): bool
+    {
+        try {
+            $rows = \REDCap::getData($projectId, 'array', [$record], [\REDCap::getRecordIdField($projectId)], null, $groupId);
+        } catch (\Exception $e) {
+            return false;
+        }
+        return !empty($rows);
+    }
+
+    /**
      * @return array<string, string[]>|null Arm number => the names of its
      *   events where `$instrument` repeats, for each arm with more than one
      *   (see {@see RedcapInstrumentEventChooser::armsWithSeveralRepeatingEvents()}),

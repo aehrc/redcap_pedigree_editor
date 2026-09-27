@@ -7,9 +7,9 @@
  * `PedigreeInstrumentService.php` AJAX endpoint. `pedigree-editor-repeating-
  * instrument-sync` adds: link/edit only once the record exists and only
  * against this record's rows, and "Edit in REDCap" (`openEditor`) opening
- * REDCap's own form for the row and re-importing when that window closes.
- * No create-new-row yet - `canCreateNew` stays `false` until that change's
- * task group 4.
+ * REDCap's own form for the row and re-importing when that window closes,
+ * and "Create in REDCap" (`createNew`) doing the same for a new row, then
+ * linking the person to it.
  *
  * Loaded into `open-pedigree/localEditor.html`'s window (a separate
  * document from the main REDCap data-entry page), which is why this is
@@ -62,9 +62,12 @@
         // REDCap data-entry URL for this record's linked-instrument rows, minus
         // &instance= (PedigreeEditorExternalModule builds it; see _editUrlFor()).
         this._editUrl = options.editUrl || '';
-        // One entry per open "Edit in REDCap" window: { window, node, nodeId, ref,
-        // onDone, timer } - see openEditor().
+        // One entry per open REDCap window: { window, node, nodeId, ref, onDone, timer }
+        // for "Edit in REDCap" (openEditor()), and { window, node, nodeId, ref, create:
+        // true, createUrl, saved, onCreated, timer } for "Create in REDCap" (createNew()).
         this._editSessions = [];
+        // The "Create in REDCap" session until its row is linked (or not) - see createNew().
+        this._createInProgress = null;
         this._focusListenerAdded = false;
     }
 
@@ -105,18 +108,20 @@
     // open-pedigree's optional label hook (AbstractRecordLinkProvider.getActionLabel,
     // from its record-link-action-labels change): the edit action opens REDCap's own
     // form, so say so. Bundles older than that change simply don't call this.
+    var ACTION_LABELS = { editRecord: 'Edit in REDCap', createNewRecord: 'Create in REDCap' };
+
     RedcapInstrumentPatientProvider.prototype.getActionLabel = function (action) {
-        return action === 'editRecord' ? 'Edit in REDCap' : undefined;
+        return ACTION_LABELS[action];
     };
 
-    // No create-new-row behavior yet (pedigree-editor-repeating-instrument-sync's
-    // job, layered on top of this once it lands) - always false for now.
+    // Only for a person not linked yet - one who is already has their row.
     RedcapInstrumentPatientProvider.prototype.canCreateNew = function (nodeId) {
-        return false;
+        var node = window.editor && window.editor.getView().getNode(nodeId);
+        return this._configured && !!node && !node.getLinkedRecordRef();
     };
 
     // GET, not POST: every action this endpoint supports (search/import/
-    // questionnaire) only reads data, never writes - REDCap only
+    // questionnaire/nextInstance) only reads data, never writes - REDCap only
     // requires a `redcap_csrf_token` for POST requests to module pages, so
     // using GET here needs no token at all (avoiding an earlier version of
     // this file that carried one in the URL, where it would end up in
@@ -366,23 +371,41 @@
             return;
         }
 
-        var self = this;
         var session = { window: editWindow, node: node, nodeId: nodeId, ref: refAtOpen, onDone: onDone, timer: null };
         this._editSessions.push(session);
         this._listenForEditorFocus();
+        this._watchEditWindow(session);
+    };
+
+    // Waits for the session's REDCap window to close - closing it for the user once
+    // they've saved and left the form - then finishes the session: a refresh for
+    // "Edit in REDCap", linking the new row for "Create in REDCap".
+    RedcapInstrumentPatientProvider.prototype._watchEditWindow = function (session) {
+        var self = this;
         session.timer = setInterval(function () {
-            // Saved and done: close it for the user (closed is true straight away, so the
-            // refresh below runs in this same tick).
-            if (!editWindow.closed && self._savedAndExited(editWindow)) {
-                editWindow.close();
+            if (session.create && !session.window.closed && self._landedAfterSave(session.window)) {
+                session.saved = true;
             }
-            if (!editWindow.closed) {
+            // Saved and done: close it for the user (closed is true straight away, so the
+            // session finishes in this same tick).
+            if (!session.window.closed && self._savedAndExited(session.window)) {
+                session.window.close();
+            }
+            if (!session.window.closed) {
                 return;
             }
-            clearInterval(session.timer);
-            self._editSessions = self._editSessions.filter(function (s) { return s !== session; });
-            self._refreshFromRedcap(session, true);
+            self._endSession(session);
+            if (session.create) {
+                self._linkCreatedRow(session);
+            } else {
+                self._refreshFromRedcap(session, true);
+            }
         }, EDIT_WINDOW_POLL_MS);
+    };
+
+    RedcapInstrumentPatientProvider.prototype._endSession = function (session) {
+        clearInterval(session.timer);
+        this._editSessions = this._editSessions.filter(function (s) { return s !== session; });
     };
 
     // Whether the REDCap window has just saved this record and left the form
@@ -397,21 +420,38 @@
     // a save of another record the user moved to in the window names that record -
     // neither closes the window. Checked here rather than by a script in REDCap's
     // page, so it only happens while this editor is still there to refresh.
+    // The URL the window's page was loaded with, or null (another origin, or not
+    // loaded yet). Not location.href: Record Home drops msg= from the address bar
+    // straight after loading (modifyURL() in Classes/DataEntry.php), which a poll
+    // could otherwise see first.
+    function landedUrl(editWindow) {
+        try {
+            var navigation = editWindow.performance.getEntriesByType('navigation')[0];
+            return new URL(navigation ? navigation.name : editWindow.location.href);
+        } catch (e) {
+            return null;
+        }
+    }
+
+    // Whether the window has landed on a page REDCap shows after a save: msg=edit
+    // (or add/draft-preview) on Record Home ("Save & Exit") or on the form itself
+    // ("Save & Stay"). "Create in REDCap" links a new row only after seeing this,
+    // so a row someone else saved at the same instance number isn't taken for it.
+    RedcapInstrumentPatientProvider.prototype._landedAfterSave = function (editWindow) {
+        var landed = landedUrl(editWindow);
+        return !!landed && landed.origin === window.location.origin
+            && SAVED_AND_EXITED_MESSAGES.indexOf(landed.searchParams.get('msg')) !== -1;
+    };
+
     // Record Home's msg= after a clean save: an edit, a record's first save, or any
     // save while the project is in Draft Preview. Not __rename_failed__ - the user
     // should see why.
     var SAVED_AND_EXITED_MESSAGES = ['edit', 'add', 'draft-preview'];
 
     RedcapInstrumentPatientProvider.prototype._savedAndExited = function (editWindow) {
-        var landed;
-        try {
-            // The URL the page was loaded with: Record Home drops msg= from the address
-            // bar straight after loading (modifyURL() in Classes/DataEntry.php), which a
-            // poll could otherwise see first.
-            var navigation = editWindow.performance.getEntriesByType('navigation')[0];
-            landed = new URL(navigation ? navigation.name : editWindow.location.href);
-        } catch (e) {
-            return false; // another origin, or not loaded yet
+        var landed = landedUrl(editWindow);
+        if (!landed) {
+            return false;
         }
         // The edit window was opened from _editUrlFor(), so the template parses.
         var editUrl = this._parsedEditUrl || (this._parsedEditUrl = new URL(this._editUrl, window.location.href));
@@ -430,7 +470,7 @@
     RedcapInstrumentPatientProvider.prototype._findEditSession = function (node, ref) {
         for (var i = 0; i < this._editSessions.length; i++) {
             var s = this._editSessions[i];
-            if (s.node === node && s.ref === ref && !s.window.closed) {
+            if (!s.create && s.node === node && s.ref === ref && !s.window.closed) {
                 return s;
             }
         }
@@ -449,7 +489,8 @@
         var self = this;
         window.addEventListener('focus', function () {
             self._editSessions.forEach(function (session) {
-                if (!session.window.closed) {
+                // A new row is linked once, when its window closes.
+                if (!session.create && !session.window.closed) {
                     self._refreshFromRedcap(session, false);
                 }
             });
@@ -529,13 +570,132 @@
         return url.toString();
     };
 
-    // Not supported yet - canCreateNew() always returns false, so the host
-    // never offers a "Create new" action that would reach this method.
+    // "Create in REDCap" (pedigree-editor-repeating-instrument-sync group 4): opens
+    // REDCap's own form for a new row of the linked instrument - the next instance
+    // on this record - in the same kind of window as "Edit in REDCap". REDCap
+    // creates the row when the user saves it; once the window closes, the person
+    // is linked to it and its values applied. Closed without saving, nothing
+    // changes.
+    //
+    // The window opens synchronously (popup blockers), blank, and is pointed at the
+    // form once the server says which instance is next - checking there, not just
+    // here, that the record has been saved. One new row at a time: a second would
+    // be given the same instance number while the first is still unsaved.
     RedcapInstrumentPatientProvider.prototype.createNew = function (nodeId, onCreated) {
         if (!this._requireExistingRecord()) {
             return;
         }
-        console.warn('RedcapInstrumentPatientProvider.createNew() is not yet supported');
+        var node = window.editor && window.editor.getView().getNode(nodeId);
+        if (!node) {
+            return;
+        }
+        if (!this._editUrl) {
+            showMessage('Create in REDCap', 'Adding rows in REDCap isn\'t available for this project '
+                + '(the linked instrument isn\'t set up as repeating in this record\'s arm).');
+            return;
+        }
+        // Also while a closed window's row is still being linked - the person may be
+        // about to get it.
+        if (this._createInProgress) {
+            if (!this._createInProgress.window.closed) {
+                this._createInProgress.window.focus();
+            }
+            return;
+        }
+
+        var createWindow = window.open('', '_blank');
+        if (!createWindow || createWindow.closed) {
+            showMessage('Create in REDCap', 'Your browser blocked the REDCap window. '
+                + 'Allow pop-ups for this site, then try again.');
+            return;
+        }
+        try {
+            createWindow.document.title = 'REDCap';
+            createWindow.document.body.textContent = 'Opening REDCap…';
+        } catch (e) { /* cosmetic only */ }
+
+        var self = this;
+        // ref is set once the instance is known; until then the window can only be closed.
+        var session = {
+            window: createWindow, node: node, nodeId: nodeId, ref: '', create: true,
+            createUrl: '', saved: false, onCreated: onCreated, timer: null
+        };
+        this._editSessions.push(session);
+        this._createInProgress = session;
+        this._watchEditWindow(session);
+        this._get({ type: 'nextInstance', record: this._record, formEvent: this._formEvent })
+            .then(function (json) {
+                var url = json && self._editUrlFor(json.instance);
+                if (!url) {
+                    throw new Error('REDCap didn\'t say where the new row goes.');
+                }
+                if (createWindow.closed) {
+                    return;
+                }
+                session.ref = encodeRef(self._record, json.instance);
+                session.createUrl = url;
+                createWindow.location.href = url;
+            })
+            .catch(function (e) {
+                var closedByUser = createWindow.closed;
+                self._endSession(session);
+                self._createInProgress = null;
+                if (closedByUser) {
+                    return; // the user already gave up on it
+                }
+                createWindow.close();
+                showMessage('Create in REDCap', 'Couldn\'t open a new row in REDCap: ' + String(e && e.message || e));
+            });
+    };
+
+    // After a "Create in REDCap" window closes: if it was seen saving the row, link
+    // the person to it and apply its values (open-pedigree's onCreated does both).
+    RedcapInstrumentPatientProvider.prototype._linkCreatedRow = function (session) {
+        var self = this;
+        var done = function () {
+            self._createInProgress = null;
+        };
+        if (!session.ref) {
+            done();
+            return; // closed before the form opened
+        }
+        var ref = decodeRef(session.ref);
+        var notLinked = 'Use Link to existing record to link this person to it.';
+        this._get({ type: 'import', record: ref.record, currentRecord: this._record, formEvent: this._formEvent, instance: ref.instance })
+            .then(function (answers) {
+                // A saved row answers for every tagged field (empty ones as null).
+                var found = !!answers && answers.length > 0;
+                if (!session.saved) {
+                    // Closed without saving - unless a row turned up at this instance anyway,
+                    // saved some other way or by someone else, which may not be this person.
+                    if (found) {
+                        showMessage('Create in REDCap', 'REDCap has a row at instance ' + ref.instance
+                            + ', but it wasn\'t saved from this window, so it may belong to someone else. '
+                            + 'If it\'s this person, ' + notLinked.charAt(0).toLowerCase() + notLinked.slice(1));
+                    }
+                    return;
+                }
+                // As for editing: onCreated writes to the click-time nodeId, so the person must
+                // still be there, and still unlinked.
+                var nodeNow = window.editor && window.editor.getView().getNode(session.nodeId);
+                if (nodeNow !== session.node || nodeNow.getLinkedRecordRef()) {
+                    showMessage('Create in REDCap', 'The new REDCap row was saved, but the pedigree changed while '
+                        + 'its window was open (this person was moved, linked or deleted), so they weren\'t linked '
+                        + 'to it. ' + notLinked);
+                    return;
+                }
+                session.onCreated(session.ref, found ? answers : []);
+                if (!found) {
+                    showMessage('Create in REDCap', 'This person is now linked to the new REDCap row, but none '
+                        + 'of its values could be brought in. The project\'s pedigree import settings may need '
+                        + 'checking (no fields tagged @PEDIGREE_FIELD?).');
+                }
+            })
+            .catch(function (e) {
+                showMessage('Create in REDCap', 'The new row couldn\'t be read back from REDCap, so this person '
+                    + 'wasn\'t linked to it: ' + String(e && e.message || e) + '. ' + notLinked);
+            })
+            .then(done);
     };
 
     global.RedcapInstrumentPatientProvider = RedcapInstrumentPatientProvider;

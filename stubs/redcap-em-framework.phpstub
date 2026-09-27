@@ -45,6 +45,12 @@ namespace {
         public static function getDataDictionary($project_id, $format = 'array', $numeric = false, $fields = null, $forms = null) {}
     }
 
+    class RepeatInstance
+    {
+        /** @return int|string The highest saved instance number (0 if none). */
+        public static function getRepeatFormInstanceMaxCountOnly($record, $event_id, $form, $Proj) {}
+    }
+
     /** @psalm-taint-sink ssrf $url */
     function http_get($url, $timeout = null, $content_type = '', $headers = null, $context = null) {}
 
