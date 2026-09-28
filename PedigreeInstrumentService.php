@@ -13,10 +13,10 @@
  * otherwise end up in server access logs and browser history via the URL).
  */
 
-$sendErrorResponse = function ($error, $error_description) {
+$sendErrorResponse = function ($error, $error_description, $status = 400) {
     $errorArr = ['error' => $error, 'error_description' => $error_description];
     header('Content-type: application/json');
-    http_response_code(400);
+    http_response_code($status);
     echo json_encode($errorArr, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
     exit();
 };
@@ -101,10 +101,11 @@ if ('questionnaire' === $params['type']) {
     }
     $eventId = $resolveEventId();
     $answers = $module->getPedigreeInstrumentRowAnswers($project_id, $record, $eventId, $instance, $rowFound);
-    // requireRow=1 (the link picker): say when the row doesn't exist, rather than answer [] as for
-    // a row with nothing tagged to import - the refresh and Create in REDCap rely on that [].
+    // requireRow=1 (what RedcapInstrumentPatientProvider always sends): say when the row doesn't
+    // exist, rather than answer [] as for a row with nothing tagged to import. Without it (an editor
+    // window from before this was added), a missing row still answers [].
     if (!$rowFound && isset($params['requireRow']) && $params['requireRow'] === '1') {
-        $sendErrorResponse('Not Found', 'That row no longer exists in REDCap.');
+        $sendErrorResponse('Not Found', 'That row no longer exists in REDCap', 404);
     }
     echo json_encode($answers, JSON_UNESCAPED_SLASHES);
 } elseif ('nextInstance' === $params['type']) {

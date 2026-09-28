@@ -879,6 +879,8 @@ EOD;
      * `RedcapInstrumentPatientProvider.openEditor`'s AJAX call).
      *
      * @param int $eventId See searchPedigreeInstrumentRows().
+     * @param bool|null $rowFound Out-param: whether the row exists. [] is returned both for a
+     *   missing row and for one with nothing tagged to import; this tells them apart.
      * @return array{linkId: string, value: mixed}[]
      */
     public function getPedigreeInstrumentRowAnswers($project_id, $record, $eventId, $instance, &$rowFound = null)
