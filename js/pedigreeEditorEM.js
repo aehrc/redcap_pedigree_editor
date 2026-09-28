@@ -298,8 +298,8 @@ pedigreeEditorEM.edit = function(field) {
 /**
  * REDCap's data import - a project's XML file, the Data Import Tool, the API -
  * turns every \" in an imported value into " (Records::saveData), which breaks a
- * JSON pedigree: a linked person's snapshot, the embedded SVG and any text with a
- * quote in it all hold escaped quotes. So a JSON pedigree is stored with its escaped
+ * JSON pedigree: a linked person's snapshot, and any text with a quote in it, hold
+ * escaped quotes. So a JSON pedigree is stored with its escaped
  * quotes and backslashes written as \u0022 and \u005c instead, which JSON.parse
  * reads the same. (A backslash too: an escaped one before a closing quote would
  * leave a \" behind.) Other formats (PED, DADA2) are returned unchanged.
