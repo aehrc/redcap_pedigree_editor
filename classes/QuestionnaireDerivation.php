@@ -433,7 +433,12 @@ class QuestionnaireDerivation
         }
     }
 
-    private static function parseChoices(string $raw): array
+    /**
+     * Parses a Data Dictionary `select_choices_or_calculations` string
+     * (`code, label | code, label`) into `answerOption` entries. Also used by
+     * {@see RedcapInstrumentSearch::choiceLabels()}.
+     */
+    public static function parseChoices(string $raw): array
     {
         $options = [];
         if (trim($raw) === '') {
