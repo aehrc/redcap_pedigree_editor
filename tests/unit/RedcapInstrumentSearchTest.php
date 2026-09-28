@@ -174,4 +174,17 @@ class RedcapInstrumentSearchTest extends TestCase
             'confirmed' => ['1' => 'True', '0' => 'False'],
         ], RedcapInstrumentSearch::choiceLabels($dataDictionary, ['first_name', 'relationship', 'side', 'tested', 'confirmed', 'missing_field']));
     }
+
+    public function testChoiceLabelsDropHtmlFromTheLabel(): void
+    {
+        // REDCap lets a choice label carry HTML, stored as-is or entity-encoded.
+        $dataDictionary = [
+            'relationship' => ['field_type' => 'dropdown', 'select_choices_or_calculations' =>
+                '1, <span style="color:red">Mother</span> | 2, &lt;b&gt;Father&lt;/b&gt; | 3, Aunt &amp; uncle | 4, <i></i>'],
+        ];
+        $this->assertSame(
+            ['relationship' => ['1' => 'Mother', '2' => 'Father', '3' => 'Aunt & uncle', '4' => '4']],
+            RedcapInstrumentSearch::choiceLabels($dataDictionary, ['relationship'])
+        );
+    }
 }

@@ -81,8 +81,10 @@ class RedcapInstrumentSearch
 
     /**
      * The code => label map for each search field that stores a code: radio,
-     * dropdown, yes/no and true/false fields. Other fields (and names not in
-     * the Data Dictionary) are left out, so they're shown as stored.
+     * dropdown, yes/no and true/false fields, with labels as plain text (see
+     * {@see plainText()}). Other fields (and names not in the Data Dictionary)
+     * are left out, so they're shown as stored - including checkbox and SQL
+     * fields, which aren't a single stored code.
      *
      * @param array $dataDictionary Field-name-keyed, as from
      *   `REDCap::getDataDictionary($project_id, 'array', ...)`.
@@ -99,7 +101,8 @@ class RedcapInstrumentSearch
                 case 'dropdown':
                     $labels[$fieldName] = [];
                     foreach (QuestionnaireDerivation::parseChoices($field['select_choices_or_calculations'] ?? '') as $option) {
-                        $labels[$fieldName][$option['valueCoding']['code']] = $option['valueCoding']['display'];
+                        $code = $option['valueCoding']['code'];
+                        $labels[$fieldName][$code] = self::plainText($option['valueCoding']['display'], $code);
                     }
                     break;
                 case 'yesno':
@@ -111,6 +114,19 @@ class RedcapInstrumentSearch
             }
         }
         return $labels;
+    }
+
+    /**
+     * A choice label as plain text: REDCap lets a label carry HTML, stored as-is
+     * or entity-encoded, and the picker shows (and searches) text. Piping such
+     * as `[proband_name]` is left as written - there's no record context to
+     * fill it in. A label with no text left falls back to the code.
+     */
+    private static function plainText(string $label, string $code): string
+    {
+        $decode = fn (string $s): string => html_entity_decode($s, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $text = trim((string) preg_replace('/\s+/u', ' ', $decode(strip_tags($decode($label)))));
+        return $text !== '' ? $text : $code;
     }
 
     private static function buildDisplay(array $fields, array $searchFieldNames, array $choiceLabels): string
