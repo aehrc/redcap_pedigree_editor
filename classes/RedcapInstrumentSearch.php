@@ -83,8 +83,10 @@ class RedcapInstrumentSearch
      * The code => label map for each search field that stores a code: radio,
      * dropdown, yes/no and true/false fields, with labels as plain text (see
      * {@see plainText()}). Other fields (and names not in the Data Dictionary)
-     * are left out, so they're shown as stored - including checkbox and SQL
-     * fields, which aren't a single stored code.
+     * are left out, so they're shown as stored - including SQL fields. (A
+     * checkbox field has no value under its own name in the rows - REDCap
+     * exports one `field___code` key per option - so it never reaches the
+     * display at all.)
      *
      * @param array $dataDictionary Field-name-keyed, as from
      *   `REDCap::getDataDictionary($project_id, 'array', ...)`.

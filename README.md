@@ -205,8 +205,8 @@ Two project settings control this (see [Project Settings](#project-settings) abo
   arm has several; if an arm gains a second one later, linking in that arm stops and says why.
 - ***Search fields*** (`project_pedigree_import_search_fields`) - one or more fields on that instrument used to search
   for and display a row when linking a node (e.g. first name + last name). A radio, dropdown, yes/no or true/false
-  field is shown and searched by its choice label (e.g. "Mother"), not its stored code; checkbox and SQL fields are
-  shown as stored.
+  field is shown and searched by its choice label (e.g. "Mother"), not its stored code, and an SQL field by its
+  stored value. A checkbox field can't be used: it's left out of the search.
 
 ### Linking, editing and adding rows
 
