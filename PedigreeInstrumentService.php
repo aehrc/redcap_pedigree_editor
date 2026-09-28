@@ -13,10 +13,10 @@
  * otherwise end up in server access logs and browser history via the URL).
  */
 
-$sendErrorResponse = function ($error, $error_description) {
+$sendErrorResponse = function ($error, $error_description, $status = 400) {
     $errorArr = ['error' => $error, 'error_description' => $error_description];
     header('Content-type: application/json');
-    http_response_code(400);
+    http_response_code($status);
     echo json_encode($errorArr, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
     exit();
 };
@@ -100,10 +100,14 @@ if ('questionnaire' === $params['type']) {
         $sendErrorResponse('Invalid Request', 'Import is only allowed from a row on the current record ("currentRecord").');
     }
     $eventId = $resolveEventId();
-    echo json_encode(
-        $module->getPedigreeInstrumentRowAnswers($project_id, $record, $eventId, $instance),
-        JSON_UNESCAPED_SLASHES
-    );
+    $answers = $module->getPedigreeInstrumentRowAnswers($project_id, $record, $eventId, $instance, $rowFound);
+    // requireRow=1 (what RedcapInstrumentPatientProvider always sends): say when the row doesn't
+    // exist, rather than answer [] as for a row with nothing tagged to import. Without it (an editor
+    // window from before this was added), a missing row still answers [].
+    if (!$rowFound && isset($params['requireRow']) && $params['requireRow'] === '1') {
+        $sendErrorResponse('Not Found', 'That row no longer exists in REDCap', 404);
+    }
+    echo json_encode($answers, JSON_UNESCAPED_SLASHES);
 } elseif ('nextInstance' === $params['type']) {
     // "Create in REDCap": where a new linked row on this record goes. Still read-only - REDCap
     // itself creates the row, when the user saves it in its own form.

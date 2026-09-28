@@ -137,16 +137,36 @@
             credentials: 'same-origin',
         }).then(function (response) {
             return response.json().then(function (json) {
-                if (!response.ok) {
-                    throw new Error((json && (json.error_description || json.error)) || ('HTTP ' + response.status));
-                }
-                if (json && json.error) {
-                    throw new Error(json.error_description || json.error);
+                if (!response.ok || (json && json.error)) {
+                    var error = new Error((json && (json.error_description || json.error)) || ('HTTP ' + response.status));
+                    // The server's error name (e.g. 'Not Found'), for callers that treat one differently.
+                    error.code = json && json.error;
+                    throw error;
                 }
                 return json;
             });
         });
     };
+
+    // One linked row's answers, from the server (type=import) - for linking, the
+    // "Edit in REDCap" refresh and "Create in REDCap" alike. A row that doesn't exist is
+    // an error with code ROW_NOT_FOUND (requireRow - see PedigreeInstrumentService.php),
+    // so [] only ever means a row with nothing set up to import.
+    RedcapInstrumentPatientProvider.prototype._importRow = function (record, instance) {
+        return this._get({
+            type: 'import', record: record, currentRecord: this._record, formEvent: this._formEvent,
+            instance: instance, requireRow: '1'
+        });
+    };
+
+    var ROW_NOT_FOUND = 'Not Found';
+    function isRowNotFound(e) {
+        return !!e && e.code === ROW_NOT_FOUND;
+    }
+
+    // Shown when a row answers nothing: nothing is set up to import from it.
+    var NOTHING_TO_IMPORT = 'The project\'s pedigree import settings may need checking (no fields tagged '
+        + '@PEDIGREE_FIELD or, in Advanced mode, no Questionnaire items linked to this instrument?).';
 
     function createModal(titleText) {
         var overlay = document.createElement('div');
@@ -178,7 +198,7 @@
         }
 
         document.body.appendChild(overlay);
-        return { content: content, close: close };
+        return { content: content, close: close, isOpen: function () { return !!overlay.parentNode; } };
     }
 
     function showMessage(titleText, text) {
@@ -205,7 +225,11 @@
             return;
         }
         var self = this;
-        var modal = createModal('Link to a family member record');
+        var modal = createModal(LINK_TITLE);
+        // The person, and their link, as the picker opens: anything that changes them before a row
+        // is linked (a Create in REDCap window closing, a refresh) is caught, not overwritten.
+        var nodeAtOpen = window.editor && window.editor.getView().getNode(nodeId);
+        var refAtOpen = nodeAtOpen ? nodeAtOpen.getLinkedRecordRef() : '';
 
         var searchRow = document.createElement('div');
         searchRow.className = 'patient-picker-search-row';
@@ -285,8 +309,7 @@
                         row.addEventListener('mouseenter', function () { row.style.background = '#e8f0fe'; });
                         row.addEventListener('mouseleave', function () { row.style.background = ''; });
                         row.addEventListener('click', function () {
-                            modal.close();
-                            onLinked(encodeRef(match.record, match.instance), { firstName: match.display });
+                            self._linkPickedRow(modal, { nodeId: nodeId, node: nodeAtOpen, ref: refAtOpen }, match, onLinked);
                         });
                         results.appendChild(row);
                     });
@@ -306,6 +329,58 @@
             }
         });
         doSearch();
+    };
+
+    var LINK_TITLE = 'Link to a family member record';
+
+    // Links the person to the row picked in the picker, bringing the row's values
+    // with it (onLinked's third argument, from open-pedigree 1.4.0; older bundles
+    // ignore it and only store the ref). The picker stays open, showing
+    // "Linking…", while the row is fetched; closing it meanwhile cancels the link,
+    // and so does a failed fetch. `target` is the person as the picker opened
+    // ({ nodeId, node, ref }): if they've changed since, nothing is linked over them.
+    RedcapInstrumentPatientProvider.prototype._linkPickedRow = function (modal, target, match, onLinked) {
+        var ref = encodeRef(match.record, match.instance);
+        var details = { firstName: match.display };
+        modal.content.textContent = 'Linking…';
+        var self = this;
+        // then(ok, failed), so an error from onLinked itself isn't reported as a failed
+        // fetch - the final catch reports it.
+        this._importRow(match.record, match.instance).then(function (answers) {
+            if (!modal.isOpen()) {
+                return;
+            }
+            modal.close();
+            if (!target.node || !self._stillTargets(target)) {
+                showMessage(LINK_TITLE, 'This person wasn\'t linked: the pedigree changed while the picker was '
+                    + 'open (this person was moved, linked or deleted). Try again.');
+                return;
+            }
+            if (Array.isArray(answers) && answers.length > 0) {
+                onLinked(ref, details, answers);
+                return;
+            }
+            // The row exists but answers nothing. A new link still applies the empty list, so the
+            // previous row's values don't linger; re-picking the same row changes nothing.
+            if (target.ref !== ref) {
+                onLinked(ref, details, []);
+            }
+            showMessage(LINK_TITLE, 'This person is linked to the row, but none of its values could be brought '
+                + 'in. ' + NOTHING_TO_IMPORT);
+        }, function (e) {
+            if (!modal.isOpen()) {
+                return;
+            }
+            modal.close();
+            showMessage(LINK_TITLE, isRowNotFound(e)
+                ? 'This person wasn\'t linked: that row no longer exists in REDCap (it may have been deleted since '
+                    + 'the search).'
+                : 'This person wasn\'t linked: the row couldn\'t be read from REDCap (' + String(e && e.message || e)
+                    + '). Try again.');
+        }).catch(function (e) {
+            console.error('Linking to ' + ref + ' failed', e);
+            showMessage(LINK_TITLE, 'Something went wrong linking this person: ' + String(e && e.message || e));
+        });
     };
 
     // How often to check whether the REDCap window has been closed. Short enough
@@ -520,7 +595,7 @@
             return;
         }
         var ref = decodeRef(session.ref);
-        this._get({ type: 'import', record: ref.record, currentRecord: this._record, formEvent: this._formEvent, instance: ref.instance })
+        this._importRow(ref.record, ref.instance)
             .then(function (answers) {
                 // Checked again here: the person may have changed during the fetch.
                 if (!self._stillTargets(session)) {
@@ -531,11 +606,8 @@
                 }
                 if (!answers || answers.length === 0) {
                     if (final) {
-                        // An existing row answers for every tagged field (empty ones as null), so
-                        // nothing at all means the row wasn't found - or nothing is set up to import.
-                        showMessage('Edit in REDCap', 'Nothing could be imported for this person from REDCap. '
-                            + 'Their linked row may have been deleted, or the project\'s pedigree import '
-                            + 'settings may need checking. Their details here were left unchanged.');
+                        showMessage('Edit in REDCap', 'Nothing could be imported for this person from REDCap, '
+                            + 'so their details here were left unchanged. ' + NOTHING_TO_IMPORT);
                     }
                     return;
                 }
@@ -543,8 +615,10 @@
             })
             .catch(function (e) {
                 if (final) {
-                    showMessage('Edit in REDCap', 'Couldn\'t refresh this person from REDCap: '
-                        + String(e && e.message || e));
+                    showMessage('Edit in REDCap', isRowNotFound(e)
+                        ? 'This person\'s linked row no longer exists in REDCap (it may have been deleted), so '
+                            + 'their details here were left unchanged.'
+                        : 'Couldn\'t refresh this person from REDCap: ' + String(e && e.message || e));
                 }
             });
     };
@@ -661,18 +735,16 @@
         }
         var ref = decodeRef(session.ref);
         var notLinked = 'Use Link to existing record to link this person to it.';
-        this._get({ type: 'import', record: ref.record, currentRecord: this._record, formEvent: this._formEvent, instance: ref.instance })
+        this._importRow(ref.record, ref.instance)
             .then(function (answers) {
-                // A saved row answers for every tagged field (empty ones as null).
-                var found = !!answers && answers.length > 0;
+                // The row exists (a missing one is ROW_NOT_FOUND, below); it may answer nothing.
+                var hasValues = Array.isArray(answers) && answers.length > 0;
                 if (!session.saved) {
-                    // Closed without saving - unless a row turned up at this instance anyway,
-                    // saved some other way or by someone else, which may not be this person.
-                    if (found) {
-                        showMessage('Create in REDCap', 'REDCap has a row at instance ' + ref.instance
-                            + ', but it wasn\'t saved from this window, so it may belong to someone else. '
-                            + 'If it\'s this person, ' + notLinked.charAt(0).toLowerCase() + notLinked.slice(1));
-                    }
+                    // Closed without saving - yet a row is at this instance, saved some other way
+                    // or by someone else, which may not be this person.
+                    showMessage('Create in REDCap', 'REDCap has a row at instance ' + ref.instance
+                        + ', but it wasn\'t saved from this window, so it may belong to someone else. '
+                        + 'If it\'s this person, ' + notLinked.charAt(0).toLowerCase() + notLinked.slice(1));
                     return;
                 }
                 // As for editing: onCreated writes to the click-time nodeId, so the person must
@@ -684,16 +756,29 @@
                         + 'to it. ' + notLinked);
                     return;
                 }
-                session.onCreated(session.ref, found ? answers : []);
-                if (!found) {
+                session.onCreated(session.ref, hasValues ? answers : []);
+                if (!hasValues) {
                     showMessage('Create in REDCap', 'This person is now linked to the new REDCap row, but none '
-                        + 'of its values could be brought in. The project\'s pedigree import settings may need '
-                        + 'checking (no fields tagged @PEDIGREE_FIELD?).');
+                        + 'of its values could be brought in. ' + NOTHING_TO_IMPORT);
                 }
-            })
-            .catch(function (e) {
+            }, function (e) {
+                if (isRowNotFound(e)) {
+                    // Nothing at the instance: closed without saving (quiet), or a save that didn't
+                    // land where expected.
+                    if (session.saved) {
+                        showMessage('Create in REDCap', 'The new row wasn\'t found in REDCap at instance '
+                            + ref.instance + ' after saving, so this person wasn\'t linked. If it was saved as '
+                            + 'another row, ' + notLinked.charAt(0).toLowerCase() + notLinked.slice(1));
+                    }
+                    return;
+                }
                 showMessage('Create in REDCap', 'The new row couldn\'t be read back from REDCap, so this person '
                     + 'wasn\'t linked to it: ' + String(e && e.message || e) + '. ' + notLinked);
+            })
+            .catch(function (e) {
+                console.error('Linking the new row ' + session.ref + ' failed', e);
+                showMessage('Create in REDCap', 'Something went wrong linking this person to the new REDCap row: '
+                    + String(e && e.message || e) + '. Use Link to existing record to link them.');
             })
             .then(done);
     };

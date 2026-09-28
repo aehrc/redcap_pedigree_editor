@@ -4,7 +4,7 @@ The pedigree editor external module allows a notes field to be marked with an an
 
 The module will then hide or disable the notes field and instead spawn a new window to allow the entry of the pedigree diagram. The diagram will then be serialised as a FHIR Composition JSON string and written into the notes field. 
 The pedigree editor used is based on [https://github.com/aehrc/open-pedigree](https://github.com/aehrc/open-pedigree) which is an open version of the phenotips pedigree editor.
-The module bundles a build of an open-pedigree release (currently [1.3.0](https://github.com/aehrc/open-pedigree/releases/tag/open-pedigree-v1.3.0)) in `open-pedigree/dist/`.
+The module bundles a build of an open-pedigree release (currently [1.4.0](https://github.com/aehrc/open-pedigree/releases/tag/open-pedigree-v1.4.0)) in `open-pedigree/dist/`.
 
 **[Try the pedigree editor in the live demo](https://aehrc.github.io/open-pedigree/)**: the stand-alone editor, running in your browser with no REDCap. Linking pedigree people to REDCap records, and saving diagrams into REDCap fields, needs this module.
 The plugin also makes use of [pako](https://github.com/nodeca/pako) a javascript implementation of the Zlib library.
@@ -215,8 +215,7 @@ The tab offers:
   (server-side - no REDCap API token is ever exposed to the browser) and links the person to the row you pick. A
   family's person rows live on the same REDCap record as its pedigree, so only this record's rows are offered. If the
   person's position fixes their gender (e.g. they already have a partner), only rows with a compatible gender are
-  shown, and the picker says so. Linking alone doesn't bring the row's values in: use *Edit in REDCap* and close the
-  window (no need to change anything) to fill them in.
+  shown, and the picker says so. The row's values come in with the link.
 - ***Edit in REDCap*** (once linked) - opens the row in REDCap's own data-entry form, in a new window. When that window
   closes, the person is refreshed from the row, including any values cleared in REDCap. After *Save & Exit Form* or
   *Save & Exit Record* the window closes itself. *Save & Stay* and the *Save & Go to...* buttons leave it open for you
