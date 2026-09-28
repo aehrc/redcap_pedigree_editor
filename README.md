@@ -39,10 +39,15 @@ representation of the diagram, add compression for large diagrams.
 - v0.3.2 - Add new action tag **@PEDIGREE** which uses configurable terminology settings.
 - v0.4 - Add support for PED and DADA2 formats.
 - v0.5 - Bug fix in open-pedigree, change default fhir server and valuesets to use https://tx.ontoserver.csiro.au/fhir
-- v0.6 - Add the ability to link pedigree nodes to rows of a repeating instrument, edit those rows (or add new ones) in
+- v1.0.0 - Add the ability to link pedigree nodes to rows of a repeating instrument, edit those rows (or add new ones) in
   REDCap's own form from the pedigree editor, and bring their data into the nodes, via the new
   **@PEDIGREE_FIELD** action tag and *Repeating instrument*/*Search fields*/*Node-edit form source* project settings —
   see [Linking Pedigree Nodes to a Repeating Instrument](#linking-pedigree-nodes-to-a-repeating-instrument).
+  In a longitudinal project the linked instrument may repeat in only one event per arm; the module refuses to save the
+  setting otherwise (see [Configuring the linked instrument](#configuring-the-linked-instrument)).
+  **Security**: fix two cross-site scripting holes - the terminology service echoed request parameters unescaped
+  into an HTML error response, and a record's saved pedigree SVG was inserted into the form as raw HTML (it is now
+  sanitised first).
   **Breaking**: remove the **@PEDIGREE_HPO**/**@PEDIGREE_SCT** action tags. Terminology is now always taken from
   the project/system *Default Terminology* setting — existing fields tagged **@PEDIGREE_HPO**/**@PEDIGREE_SCT** will stop
   being recognised as pedigree fields; update them to a bare **@PEDIGREE** tag and set *Default Terminology* accordingly.
@@ -141,7 +146,7 @@ Terminology (SNOMED-CT / HPO+OMIM / Custom) is always taken from the project's (
 setting — see [System Settings](#system-settings)/[Project Settings](#project-settings) above. There is no per-field way to
 override terminology on this tag.
 
-> Versions before 0.6 supported *@PEDIGREE_HPO*/*@PEDIGREE_SCT* tag variants to force a field's terminology regardless of
+> Versions before 1.0.0 supported *@PEDIGREE_HPO*/*@PEDIGREE_SCT* tag variants to force a field's terminology regardless of
 > the project/system default. These have been removed as redundant with the *Default Terminology* setting — replace them
 > with a bare *@PEDIGREE* tag and set *Default Terminology* to *HPO* or *SNOMEDCT* instead.
 
