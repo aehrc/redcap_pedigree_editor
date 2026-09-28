@@ -43,6 +43,11 @@ representation of the diagram, add compression for large diagrams.
   REDCap's own form from the pedigree editor, and bring their data into the nodes, via the new
   **@PEDIGREE_FIELD** action tag and *Repeating instrument*/*Search fields*/*Node-edit form source* project settings —
   see [Linking Pedigree Nodes to a Repeating Instrument](#linking-pedigree-nodes-to-a-repeating-instrument).
+  In a longitudinal project the linked instrument may repeat in only one event per arm; the module refuses to save the
+  setting otherwise (see [Configuring the linked instrument](#configuring-the-linked-instrument)).
+  **Security**: fix two cross-site scripting holes - the terminology service echoed request parameters unescaped
+  into an HTML error response, and a record's saved pedigree SVG was inserted into the form as raw HTML (it is now
+  sanitised first).
   **Breaking**: remove the **@PEDIGREE_HPO**/**@PEDIGREE_SCT** action tags. Terminology is now always taken from
   the project/system *Default Terminology* setting — existing fields tagged **@PEDIGREE_HPO**/**@PEDIGREE_SCT** will stop
   being recognised as pedigree fields; update them to a bare **@PEDIGREE** tag and set *Default Terminology* accordingly.
