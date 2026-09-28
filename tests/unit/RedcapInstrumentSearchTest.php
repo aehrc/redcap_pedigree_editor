@@ -120,4 +120,58 @@ class RedcapInstrumentSearchTest extends TestCase
         $results = RedcapInstrumentSearch::search($rows, ['first_name'], '', 1, 'gender', ['M']);
         $this->assertSame(['CompatibleC'], array_column($results, 'display'));
     }
+
+    private function relativeRows(): array
+    {
+        return [
+            ['record' => '1', 'instance' => 1, 'fields' => ['first_name' => 'Grace', 'relationship' => 'mother']],
+            ['record' => '1', 'instance' => 2, 'fields' => ['first_name' => 'Arthur', 'relationship' => 'grandparent_paternal']],
+            ['record' => '1', 'instance' => 3, 'fields' => ['first_name' => 'Pat', 'relationship' => 'unlisted_code']],
+        ];
+    }
+
+    private function relationshipLabels(): array
+    {
+        return ['relationship' => ['mother' => 'Mother', 'grandparent_paternal' => "Grandparent (father's side)"]];
+    }
+
+    public function testACodedFieldIsDisplayedByItsLabel(): void
+    {
+        $results = RedcapInstrumentSearch::search($this->relativeRows(), ['first_name', 'relationship'], '', 20, null, null, $this->relationshipLabels());
+        $this->assertSame(['Grace Mother', "Arthur Grandparent (father's side)", 'Pat unlisted_code'], array_column($results, 'display'));
+    }
+
+    public function testASearchMatchesTheLabelNotTheCode(): void
+    {
+        $labels = $this->relationshipLabels();
+        $this->assertSame([], RedcapInstrumentSearch::search($this->relativeRows(), ['first_name', 'relationship'], 'paternal', 20, null, null, $labels));
+        $this->assertSame(['Arthur'], array_map(
+            fn ($r) => explode(' ', $r['display'])[0],
+            RedcapInstrumentSearch::search($this->relativeRows(), ['first_name', 'relationship'], "father's", 20, null, null, $labels)
+        ));
+    }
+
+    public function testWithoutLabelsTheStoredValueIsDisplayed(): void
+    {
+        $results = RedcapInstrumentSearch::search($this->relativeRows(), ['first_name', 'relationship'], 'mother');
+        $this->assertSame(['Grace mother'], array_column($results, 'display'));
+    }
+
+    public function testChoiceLabelsComeFromTheDataDictionary(): void
+    {
+        $dataDictionary = [
+            'first_name' => ['field_type' => 'text', 'select_choices_or_calculations' => ''],
+            'relationship' => ['field_type' => 'dropdown', 'select_choices_or_calculations' => "mother, Mother | grandparent_paternal, Grandparent (father's side) | 0, None, not related"],
+            'side' => ['field_type' => 'radio', 'select_choices_or_calculations' => '1, Maternal | 2, Paternal'],
+            'tested' => ['field_type' => 'yesno', 'select_choices_or_calculations' => ''],
+            'confirmed' => ['field_type' => 'truefalse', 'select_choices_or_calculations' => ''],
+            'not_searched' => ['field_type' => 'radio', 'select_choices_or_calculations' => '1, One'],
+        ];
+        $this->assertSame([
+            'relationship' => ['mother' => 'Mother', 'grandparent_paternal' => "Grandparent (father's side)", '0' => 'None, not related'],
+            'side' => ['1' => 'Maternal', '2' => 'Paternal'],
+            'tested' => ['1' => 'Yes', '0' => 'No'],
+            'confirmed' => ['1' => 'True', '0' => 'False'],
+        ], RedcapInstrumentSearch::choiceLabels($dataDictionary, ['first_name', 'relationship', 'side', 'tested', 'confirmed', 'missing_field']));
+    }
 }

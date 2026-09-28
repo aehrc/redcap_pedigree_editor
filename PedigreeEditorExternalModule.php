@@ -778,7 +778,8 @@ EOD;
         );
         $searchFields = $this->getPedigreeImportSearchFields($project_id);
         $genderField = $this->findMapsToFieldName($dataDictionary, 'gender');
-        return RedcapInstrumentSearch::search($rows, $searchFields, (string) $query, 20, $genderField, $allowedGenders);
+        return RedcapInstrumentSearch::search($rows, $searchFields, (string) $query, 20, $genderField, $allowedGenders,
+            RedcapInstrumentSearch::choiceLabels($dataDictionary, $searchFields));
     }
 
     /**

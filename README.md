@@ -204,7 +204,8 @@ Two project settings control this (see [Project Settings](#project-settings) abo
   event, whichever of the arm's events the pedigree form is opened from. The module refuses to save the setting if an
   arm has several; if an arm gains a second one later, linking in that arm stops and says why.
 - ***Search fields*** (`project_pedigree_import_search_fields`) - one or more fields on that instrument used to search
-  for and display a row when linking a node (e.g. first name + last name).
+  for and display a row when linking a node (e.g. first name + last name). A radio, dropdown, yes/no or true/false
+  field is shown and searched by its choice label (e.g. "Mother"), not its stored code.
 
 ### Linking, editing and adding rows
 

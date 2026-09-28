@@ -28,6 +28,10 @@ class RedcapInstrumentSearch
      *   isn't in this list - applied *before* `$limit`, so a caller can rely
      *   on getting up to `$limit` gender-compatible matches rather than
      *   incompatible rows crowding out compatible ones beyond the cutoff.
+     * @param array $choiceLabels Search field name => (stored code => label),
+     *   from {@see choiceLabels()}. A coded field (e.g. a dropdown) is shown,
+     *   and matched, by its label rather than its code; a value with no label
+     *   is shown as stored.
      * @return array List of `['record', 'instance', 'display', 'ref', 'gender']`
      *   (`gender` omitted when `$genderFieldName` is `null`). A row's raw
      *   gender value is normalized to 'U' unless it's exactly 'M' or 'F'
@@ -36,13 +40,13 @@ class RedcapInstrumentSearch
      *   REDCap choice codes degrades to "unknown" rather than silently
      *   never matching any `$allowedGenders` filter.
      */
-    public static function search(array $rows, array $searchFieldNames, string $query, int $limit = 20, ?string $genderFieldName = null, ?array $allowedGenders = null): array
+    public static function search(array $rows, array $searchFieldNames, string $query, int $limit = 20, ?string $genderFieldName = null, ?array $allowedGenders = null, array $choiceLabels = []): array
     {
         $query = trim($query);
         $matches = [];
 
         foreach ($rows as $row) {
-            $display = self::buildDisplay($row['fields'], $searchFieldNames);
+            $display = self::buildDisplay($row['fields'], $searchFieldNames, $choiceLabels);
             if ($query !== '' && stripos($display, $query) === false) {
                 continue;
             }
@@ -75,14 +79,49 @@ class RedcapInstrumentSearch
         return $matches;
     }
 
-    private static function buildDisplay(array $fields, array $searchFieldNames): string
+    /**
+     * The code => label map for each search field that stores a code: radio,
+     * dropdown, yes/no and true/false fields. Other fields (and names not in
+     * the Data Dictionary) are left out, so they're shown as stored.
+     *
+     * @param array $dataDictionary Field-name-keyed, as from
+     *   `REDCap::getDataDictionary($project_id, 'array', ...)`.
+     * @param string[] $searchFieldNames
+     * @return array Field name => (code => label).
+     */
+    public static function choiceLabels(array $dataDictionary, array $searchFieldNames): array
+    {
+        $labels = [];
+        foreach ($searchFieldNames as $fieldName) {
+            $field = $dataDictionary[$fieldName] ?? null;
+            switch ($field['field_type'] ?? null) {
+                case 'radio':
+                case 'dropdown':
+                    $labels[$fieldName] = [];
+                    foreach (QuestionnaireDerivation::parseChoices($field['select_choices_or_calculations'] ?? '') as $option) {
+                        $labels[$fieldName][$option['valueCoding']['code']] = $option['valueCoding']['display'];
+                    }
+                    break;
+                case 'yesno':
+                    $labels[$fieldName] = ['1' => 'Yes', '0' => 'No'];
+                    break;
+                case 'truefalse':
+                    $labels[$fieldName] = ['1' => 'True', '0' => 'False'];
+                    break;
+            }
+        }
+        return $labels;
+    }
+
+    private static function buildDisplay(array $fields, array $searchFieldNames, array $choiceLabels): string
     {
         $parts = [];
         foreach ($searchFieldNames as $fieldName) {
             // isset()+!== '' (not !empty()) - a field value of "0" (a valid,
             // real identifier, e.g. a numeric kindred code) is not "absent".
             if (isset($fields[$fieldName]) && $fields[$fieldName] !== '') {
-                $parts[] = $fields[$fieldName];
+                $value = (string) $fields[$fieldName];
+                $parts[] = $choiceLabels[$fieldName][$value] ?? $value;
             }
         }
         return implode(' ', $parts);
