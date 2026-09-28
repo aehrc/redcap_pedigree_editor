@@ -187,4 +187,18 @@ class RedcapInstrumentSearchTest extends TestCase
             RedcapInstrumentSearch::choiceLabels($dataDictionary, ['relationship'])
         );
     }
+
+    public function testChoiceLabelsKeepComparisonSignsAndSeparateWordsAroundTags(): void
+    {
+        // Age and value bands use < and > as text; only a real tag is removed,
+        // and it leaves a space so the words either side stay apart.
+        $dataDictionary = [
+            'band' => ['field_type' => 'radio', 'select_choices_or_calculations' =>
+                '1, <5 years | 2, Age &amp;lt;18 | 3, <18 or >65 | 4, 1 <= 2 | 5, Weight 2&lt;x&lt;5 | 6, Mother<br>Father | 7, <p>One</p><p>Two</p>'],
+        ];
+        $this->assertSame(
+            ['band' => ['1' => '<5 years', '2' => 'Age <18', '3' => '<18 or >65', '4' => '1 <= 2', '5' => 'Weight 2<x<5', '6' => 'Mother Father', '7' => 'One Two']],
+            RedcapInstrumentSearch::choiceLabels($dataDictionary, ['band'])
+        );
+    }
 }

@@ -118,14 +118,19 @@ class RedcapInstrumentSearch
 
     /**
      * A choice label as plain text: REDCap lets a label carry HTML, stored as-is
-     * or entity-encoded, and the picker shows (and searches) text. Piping such
-     * as `[proband_name]` is left as written - there's no record context to
-     * fill it in. A label with no text left falls back to the code.
+     * or entity-encoded, and the picker shows (and searches) text. Only what a
+     * browser would take for a tag (`<` then a letter, `/`, `!` or `?`, up to the
+     * next `>`) is removed, each leaving a space - not `strip_tags()`, which also
+     * eats comparison signs in labels like "<5 years" or "Age <18". The picker
+     * sets the text with `textContent`, so a `<` left in is harmless. Piping such
+     * as `[proband_name]` is left as written - there's no record context to fill
+     * it in. A label with no text left falls back to the code.
      */
     private static function plainText(string $label, string $code): string
     {
         $decode = fn (string $s): string => html_entity_decode($s, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-        $text = trim((string) preg_replace('/\s+/u', ' ', $decode(strip_tags($decode($label)))));
+        $withoutTags = (string) preg_replace('~<[a-z/!?][^>]*>~i', ' ', $decode($label));
+        $text = trim((string) preg_replace('/\s+/u', ' ', $decode($withoutTags)));
         return $text !== '' ? $text : $code;
     }
 
