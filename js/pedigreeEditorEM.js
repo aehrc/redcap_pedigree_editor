@@ -321,6 +321,16 @@ pedigreeEditorEM.importSafeJson = function(value) {
 	});
 };
 
+/**
+ * How many bytes a value takes once stored: the browser submits a textarea with CRLF
+ * line breaks, and REDCap's data table holds UTF-8 in a MySQL TEXT column (65,535
+ * bytes), which cuts anything longer short without an error. So the size limit is
+ * checked against this, not the value's length in characters.
+ */
+pedigreeEditorEM.storedLength = function(value) {
+	return new TextEncoder().encode(value.replace(/\r?\n/g, '\r\n')).length;
+};
+
 pedigreeEditorEM.save = function(field, value, svg) {
 	var fieldData;
 
@@ -340,9 +350,9 @@ pedigreeEditorEM.save = function(field, value, svg) {
 
 	if (fieldData.compress === 'always'){
 		let compressedValue = 'GZ:' + btoa(pako.gzip(value,{ to: 'string' }))
-		if (compressedValue.length > 65300) {
+		if (pedigreeEditorEM.storedLength(compressedValue) > 65300) {
 			compressedValue = 'GZ:' + btoa(pako.gzip(pedigreeEditorEM.removeDiagramFromFhir(value),{ to: 'string' }));
-			if (compressedValue.length > 65300) {
+			if (pedigreeEditorEM.storedLength(compressedValue) > 65300) {
 				alert('Pedigree Diagram is too large, even when compressed, not updating');
 				window.focus();
 				return;
@@ -351,13 +361,13 @@ pedigreeEditorEM.save = function(field, value, svg) {
 		$('textarea[name="' + fieldData.field + '"]', tr).val(compressedValue);
 	}
 	else if (fieldData.compress === 'large'){
-		if (value.length > 65300) {
+		if (pedigreeEditorEM.storedLength(value) > 65300) {
 			var compressedValue = 'GZ:' + btoa(pako.gzip(value,{ to: 'string' }))
-			if (compressedValue.length > 65300) {
+			if (pedigreeEditorEM.storedLength(compressedValue) > 65300) {
 				compressedValue = pedigreeEditorEM.removeDiagramFromFhir(value);
-				if (compressedValue.length > 65300) {
+				if (pedigreeEditorEM.storedLength(compressedValue) > 65300) {
 					compressedValue = 'GZ:' + btoa(pako.gzip(compressedValue,{ to: 'string' }));
-					if (compressedValue.length > 65300) {
+					if (pedigreeEditorEM.storedLength(compressedValue) > 65300) {
 						alert('Pedigree Diagram is too large, even when compressed, not updating');
 						window.focus();
 						return;
@@ -371,9 +381,9 @@ pedigreeEditorEM.save = function(field, value, svg) {
 		}
 	}
 	else {
-		if (value.length > 65300) {
+		if (pedigreeEditorEM.storedLength(value) > 65300) {
 			var compressedValue = pedigreeEditorEM.removeDiagramFromFhir(value);
-			if (compressedValue.length > 65300) {
+			if (pedigreeEditorEM.storedLength(compressedValue) > 65300) {
 				alert('Pedigree Diagram is too large, not updating');
 				window.focus();
 				return;
