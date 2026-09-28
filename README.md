@@ -4,7 +4,7 @@ The pedigree editor external module allows a notes field to be marked with an an
 
 The module will then hide or disable the notes field and instead spawn a new window to allow the entry of the pedigree diagram. The diagram will then be serialised as a FHIR Composition JSON string and written into the notes field. 
 The pedigree editor used is based on [https://github.com/aehrc/open-pedigree](https://github.com/aehrc/open-pedigree) which is an open version of the phenotips pedigree editor.
-The module bundles a build of an open-pedigree release (currently [1.3.0](https://github.com/aehrc/open-pedigree/releases/tag/open-pedigree-v1.3.0)) in `open-pedigree/dist/`.
+The module bundles a build of an open-pedigree release (currently [1.4.0](https://github.com/aehrc/open-pedigree/releases/tag/open-pedigree-v1.4.0)) in `open-pedigree/dist/`.
 
 **[Try the pedigree editor in the live demo](https://aehrc.github.io/open-pedigree/)**: the stand-alone editor, running in your browser with no REDCap. Linking pedigree people to REDCap records, and saving diagrams into REDCap fields, needs this module.
 The plugin also makes use of [pako](https://github.com/nodeca/pako) a javascript implementation of the Zlib library.
