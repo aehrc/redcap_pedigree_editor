@@ -1,0 +1,36 @@
+Variable / Field Name,Form Name,Section Header,Field Type,Field Label,"Choices, Calculations, OR Slider Labels",Field Note,Text Validation Type OR Show Slider Number,Text Validation Min,Text Validation Max,Identifier?,Branching Logic (Show field only if...),Required Field?,Custom Alignment,Question Number (surveys only),Matrix Group Name,Matrix Ranking?,Field Annotation
+record_id,participant_enrolment,,text,Record ID,,,,,,,,,,,,,
+enrolment_date,participant_enrolment,,text,Date of enrolment,,,date_ymd,,,,,y,,,,,
+completed_by,participant_enrolment,,radio,Who is completing this registration?,"self, The participant | parent, A parent or guardian of the participant | relative, Another relative or carer",,,,,,,y,,,,,
+participant_first_name,participant_enrolment,Participant,text,Participant first name,,,,,,y,,y,,,,,
+participant_last_name,participant_enrolment,,text,Participant last name,,,,,,y,,y,,,,,
+participant_dob,participant_enrolment,,text,Participant date of birth,,,date_ymd,,,y,,,,,,,
+participant_sex,participant_enrolment,,radio,Participant sex,"1, Female | 2, Male | 3, Unknown or not stated",,,,,,,,,,,,
+diagnosis_status,participant_enrolment,Diagnosis,radio,ADA2 deficiency status at enrolment,"confirmed, Confirmed diagnosis (two variants, or absent enzyme activity) | suspected, Suspected, testing in progress | carrier, Known carrier (one variant)",,,,,,,y,,,,,
+age_at_first_symptoms,participant_enrolment,,text,Age at first symptoms (years),,,integer,,,,[diagnosis_status] = 'confirmed' or [diagnosis_status] = 'suspected',,,,,,
+enrolment_notes,participant_enrolment,,notes,Enrolment notes,,,,,,,,,,,,,
+family_history_date,family_history,,text,Date family history taken,,,date_ymd,,,,,,,,,,
+pedigree_diagram,family_history,,notes,Family pedigree,,Draw the family here. Link each person to their row on the Family members form.,,,,,,,,,,,@PEDIGREE
+parents_related,family_history,,radio,Are the participant's biological parents related to each other by blood?,"1, Yes | 0, No | unknown, Don't know",,,,,,,,,,,,
+family_history_notes,family_history,,notes,Family history notes,,,,,,,,,,,,,
+first_name,family_members,Person,text,First name,,,,,,y,,,,,,,"@PEDIGREE_FIELD(mapsTo=""given"")"
+last_name,family_members,,text,Last name,,,,,,y,,,,,,,"@PEDIGREE_FIELD(mapsTo=""family"")"
+relationship,family_members,,dropdown,Relationship to the participant,"participant, Participant | mother, Mother | father, Father | sibling, Full brother or sister | half_sibling_maternal, Half brother or sister (same mother) | half_sibling_paternal, Half brother or sister (same father) | child, Son or daughter | partner, Partner (other parent of a child) | grandparent_maternal, Grandparent (mother's side) | grandparent_paternal, Grandparent (father's side) | aunt_uncle_maternal, Aunt or uncle (mother's side) | aunt_uncle_paternal, Aunt or uncle (father's side) | cousin_maternal, Cousin (mother's side) | cousin_paternal, Cousin (father's side) | niece_nephew, Niece or nephew | grandchild, Grandchild | other, Other relative",,,,,,,,,,,,@PEDIGREE_FIELD
+sex,family_members,,radio,Sex,"F, Female | M, Male | U, Unknown",,,,,,,,,,,,"@PEDIGREE_FIELD(mapsTo=""gender"")"
+dob,family_members,,text,Date of birth,,,date_ymd,,,y,,,,,,,"@PEDIGREE_FIELD(mapsTo=""birthDate"")"
+adopted,family_members,,yesno,Adopted?,,Answer yes if this person was adopted into or out of the family.,,,,,,,,,,,"@PEDIGREE_FIELD(mapsTo=""isAdopted"")"
+life_status,family_members,,radio,Vital status,"alive, Alive | deceased, Deceased | unborn, Pregnancy in progress | stillborn, Stillborn | miscarriage, Miscarriage | aborted, Terminated pregnancy",,,,,,,,,,,,"@PEDIGREE_FIELD(mapsTo=""lifeStatus"")"
+dod,family_members,,text,Date of death,,,date_ymd,,,,[life_status] = 'deceased',,,,,,"@PEDIGREE_FIELD(mapsTo=""deceasedDateTime"")"
+carrier_status,family_members,ADA2 findings,radio,ADA2 deficiency status,"affected, Affected: has symptoms of ADA2 deficiency | carrier, Carrier: one ADA2 variant, no symptoms | presymptomatic, Pre-symptomatic: two ADA2 variants, no symptoms yet",Leave blank if this person is not affected and not a known carrier.,,,,,,,,,,,"@PEDIGREE_FIELD(mapsTo=""carrierStatus"")"
+ada2_tested,family_members,,yesno,Has this person had ADA2 testing (genetic or enzyme)?,,,,,,,,,,,,,"@PEDIGREE_FIELD(mapsTo=""evaluated"")"
+ada2_variants,family_members,,radio,ADA2 variants found,"0, None | 1, One variant | 2, Two variants | not_tested, Not tested | unknown, Don't know",,,,,,,,,,,,@PEDIGREE_FIELD
+ada2_level,family_members,,radio,ADA2 enzyme activity,"normal, Normal | low, Low | absent, Absent | not_tested, Not tested | unknown, Don't know",,,,,,,,,,,,@PEDIGREE_FIELD
+notes,family_members,Notes,notes,Notes,,,,,,,,,,,,,@PEDIGREE_FIELD
+internal_contact_notes,family_members,,notes,Contact notes (registry staff only),,Not shown in the pedigree editor: this field has no @PEDIGREE_FIELD tag.,,,,,,,,,,,
+visit_date,clinical_follow_up,,text,Date of review,,,date_ymd,,,,,y,,,,,
+symptom_course,clinical_follow_up,,radio,"Since the last review, symptoms have","improved, Improved | stable, Stayed the same | worse, Got worse | none, No symptoms",,,,,,,,,,,,
+stroke_since_last,clinical_follow_up,,yesno,Any stroke or suspected stroke since the last review?,,,,,,,,,,,,,
+current_treatment,clinical_follow_up,,checkbox,Current treatment,"none, None | tnf_inhibitor, TNF inhibitor | hsct, Stem cell transplant (HSCT) | other, Other",,,,,,,,,,,,
+treatment_other,clinical_follow_up,,text,Other treatment,,,,,,,"[current_treatment(other)] = ""1""",,,,,,
+ada2_activity_result,clinical_follow_up,,text,Latest ADA2 enzyme activity result,,"As reported by the lab, with units.",,,,,,,,,,,
+follow_up_notes,clinical_follow_up,,notes,Follow-up notes,,,,,,,,,,,,,
