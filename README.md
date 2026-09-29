@@ -48,6 +48,8 @@ representation of the diagram, add compression for large diagrams.
   **Security**: fix two cross-site scripting holes - the terminology service echoed request parameters unescaped
   into an HTML error response, and a record's saved pedigree SVG was inserted into the form as raw HTML (it is now
   sanitised first).
+  An importable [example project](#example-project) shows it all in a longitudinal registry with three fictional
+  families.
   JSON pedigrees are stored so they survive moving a project by XML or re-importing its data (see
   [Moving a project](#moving-a-project)), and the size limit is checked in stored bytes, so a large pedigree is no
   longer cut short.
@@ -208,6 +210,8 @@ instrument with one row per relative — and show that row's data in the node's 
 edited in REDCap's own form, opened from the pedigree editor, and the node refreshes from it when you're done. This
 needs no custom code: it works by deriving a FHIR Questionnaire (the node-edit form's definition) from the
 instrument's Data Dictionary, driven by action tags on the instrument's own fields.
+
+To see it working, import the [example project](#example-project).
 
 ### Configuring the linked instrument
 
@@ -449,6 +453,52 @@ The full built-in default Questionnaire (used verbatim by *Default + tags* mode)
 everything else a Questionnaire item can do - tabs, `enableWhen`, the other `mapsTo`/legend targets, etc. It's the
 embedded module's `open-pedigree/dist/defaultQuestionnaire.json` file.
 
+
+## Example project
+
+[`documentation/example-project/`](documentation/example-project/) holds a project you can import to see the linking
+at work: an illustrative registry for a rare inherited condition (ADA2 deficiency), with three fictional families. The
+people, and the registry itself, are made up for this example; it's modelled on the kind of data a rare-disease registry
+collects, and isn't any organisation's project.
+
+**What it shows**
+
+- A longitudinal project. The *Enrolment* event holds *Participant enrolment*, *Family history* (with the `@PEDIGREE`
+  diagram field) and *Family members*, which repeats in that event only, as linking requires. *Follow up 12m* and
+  *Follow up 24m* hold a *Clinical follow-up* form.
+- *Family members* uses `@PEDIGREE_FIELD` with `mapsTo` for first and last name, sex, date of birth, adopted, vital
+  status, date of death, ADA2 status (carrier status: affected / carrier / pre-symptomatic) and tested. Relationship,
+  ADA2 variants, ADA2 enzyme activity and notes are linked but unmapped, and *Contact notes* has no tag, so it never
+  reaches the diagram.
+- Three families, one per record:
+  - **Record 1, the Example family** - complete. All nine people are linked to their rows, including two grandparents
+    whose rows were made with *Create in REDCap*.
+  - **Record 2, the Sample family** - rows entered, no pedigree yet: draw one and link each person.
+  - **Record 3, the Demo family** - a partial pedigree. Noah's older sister is drawn but has no row yet (try *Create in
+    REDCap*), and aunt Beth has a row but isn't drawn.
+
+![The Example family's pedigree: three generations, every person linked to their Family members row](documentation/example-project/pedigree-example-family.png)
+
+Maya's (the participant's) *Linked Record* tab, with the values from her row:
+
+![Maya's Linked Record tab: the actions, then her row's fields under the instrument's section headers](documentation/example-project/linked-record-tab.png)
+
+**Importing it**
+
+1. *New Project* > *Upload a REDCap project XML file (CDISC ODM format)*, and choose
+   `documentation/example-project/pedigree-editor-example.REDCap.xml`.
+2. On the new project's *External Modules* page, enable the Pedigree Editor module (unless it's enabled for all
+   projects).
+3. Configure the module - REDCap's project XML doesn't carry module settings:
+   - *Repeating instrument*: `family_members`
+   - *Search fields*: `first_name`, `last_name`, `relationship`
+   - *Node-edit form source*: *Tags only*
+
+   Leave the other settings at their defaults.
+
+The XML was exported from REDCap 16.0.32 and hasn't been tested on earlier versions. `data-dictionary.csv` beside it
+holds the instruments alone, e.g. to add them to an existing project (the events and the repeating setup then need
+setting up by hand). Record 1's pedigree is stored compressed, since it's over the field's size limit.
 
 # Upgrade Issues
 

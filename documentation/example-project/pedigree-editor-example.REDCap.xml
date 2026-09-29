@@ -1,0 +1,1843 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" FileOID="000-00-0000" FileType="Snapshot" Description="Pedigree Editor example: family registry" AsOfDateTime="2026-09-29T12:59:52" CreationDateTime="2026-09-29T12:59:52" SourceSystem="REDCap" SourceSystemVersion="16.0.32">
+<Study OID="Project.PedigreeEditorExampleFamilyReg">
+<GlobalVariables>
+	<StudyName>Pedigree Editor example: family registry</StudyName>
+	<StudyDescription>This file contains the metadata, events, and data for REDCap project "Pedigree Editor example: family registry".</StudyDescription>
+	<ProtocolName>Pedigree Editor example: family registry</ProtocolName>
+	<redcap:RecordAutonumberingEnabled>1</redcap:RecordAutonumberingEnabled>
+	<redcap:CustomRecordLabel></redcap:CustomRecordLabel>
+	<redcap:SecondaryUniqueField></redcap:SecondaryUniqueField>
+	<redcap:SecondaryUniqueFieldDisplayValue>1</redcap:SecondaryUniqueFieldDisplayValue>
+	<redcap:SecondaryUniqueFieldDisplayLabel>1</redcap:SecondaryUniqueFieldDisplayLabel>
+	<redcap:SchedulingEnabled>0</redcap:SchedulingEnabled>
+	<redcap:SurveysEnabled>0</redcap:SurveysEnabled>
+	<redcap:SurveyInvitationEmailField></redcap:SurveyInvitationEmailField>
+	<redcap:SurveyParticipantIdentifiers>0</redcap:SurveyParticipantIdentifiers>
+	<redcap:RandomizationEnabled>0</redcap:RandomizationEnabled>
+	<redcap:DisplayTodayNowButton>1</redcap:DisplayTodayNowButton>
+	<redcap:PreventBranchingEraseValues>0</redcap:PreventBranchingEraseValues>
+	<redcap:RequireChangeReason>0</redcap:RequireChangeReason>
+	<redcap:DataHistoryPopup>1</redcap:DataHistoryPopup>
+	<redcap:OrderRecordsByField></redcap:OrderRecordsByField>
+	<redcap:taskCompleteStatus>0</redcap:taskCompleteStatus>
+	<redcap:DataResolutionWorkflowEnabled>1</redcap:DataResolutionWorkflowEnabled>
+	<redcap:FieldCommentLogOptionEditDelete>1</redcap:FieldCommentLogOptionEditDelete>
+	<redcap:DataResolutionWorkflowHideClosedQueries>1</redcap:DataResolutionWorkflowHideClosedQueries>
+	<redcap:MyCapEnabled>0</redcap:MyCapEnabled>
+	<redcap:Purpose>0</redcap:Purpose>
+	<redcap:PurposeOther></redcap:PurposeOther>
+	<redcap:ProjectNotes></redcap:ProjectNotes>
+	<redcap:SurveyQueueCustomText></redcap:SurveyQueueCustomText>
+	<redcap:SurveyQueueHide>0</redcap:SurveyQueueHide>
+	<redcap:SurveyAuthEnabled>0</redcap:SurveyAuthEnabled>
+	<redcap:SurveyAuthField1></redcap:SurveyAuthField1>
+	<redcap:SurveyAuthEvent1></redcap:SurveyAuthEvent1>
+	<redcap:SurveyAuthField2></redcap:SurveyAuthField2>
+	<redcap:SurveyAuthEvent2></redcap:SurveyAuthEvent2>
+	<redcap:SurveyAuthField3></redcap:SurveyAuthField3>
+	<redcap:SurveyAuthEvent3></redcap:SurveyAuthEvent3>
+	<redcap:SurveyAuthMinFields></redcap:SurveyAuthMinFields>
+	<redcap:SurveyAuthApplyAllSurveys>1</redcap:SurveyAuthApplyAllSurveys>
+	<redcap:SurveyAuthCustomMessage></redcap:SurveyAuthCustomMessage>
+	<redcap:SurveyAuthFailLimit></redcap:SurveyAuthFailLimit>
+	<redcap:SurveyAuthFailWindow></redcap:SurveyAuthFailWindow>
+	<redcap:DataMartProjectEnabled>0</redcap:DataMartProjectEnabled>
+	<redcap:DatamartAllowRepeatRevision>0</redcap:DatamartAllowRepeatRevision>
+	<redcap:DatamartAllowCreateRevision>0</redcap:DatamartAllowCreateRevision>
+	<redcap:DatamartCronEnabled>0</redcap:DatamartCronEnabled>
+	<redcap:HideFilledForms>1</redcap:HideFilledForms>
+	<redcap:HideDisabledForms>0</redcap:HideDisabledForms>
+	<redcap:MissingDataCodes></redcap:MissingDataCodes>
+	<redcap:ProtectedEmailMode>0</redcap:ProtectedEmailMode>
+	<redcap:ProtectedEmailModeCustomText></redcap:ProtectedEmailModeCustomText>
+	<redcap:ProtectedEmailModeTrigger>ALL</redcap:ProtectedEmailModeTrigger>
+	<redcap:ProtectedEmailModeLogo></redcap:ProtectedEmailModeLogo>
+	<redcap:RepeatingInstrumentsAndEvents>
+		<redcap:RepeatingInstruments>
+			<redcap:RepeatingInstrument redcap:UniqueEventName="enrolment_arm_1" redcap:RepeatInstrument="family_members" redcap:CustomLabel="[first_name] [last_name]"/>
+		</redcap:RepeatingInstruments>
+	</redcap:RepeatingInstrumentsAndEvents>
+	<redcap:MycapProjectsGroup>
+		<redcap:MycapProjects/>
+	</redcap:MycapProjectsGroup>
+	<redcap:MycapThemesGroup>
+		<redcap:MycapThemes/>
+	</redcap:MycapThemesGroup>
+	<redcap:MultilanguageSettingsGroup>
+		<redcap:MultilanguageSettings settings="YToyMzp7czo3OiJ2ZXJzaW9uIjtzOjc6IjE2LjAuMzIiO3M6NToibGFuZ3MiO2E6MDp7fXM6OToicHJvamVjdElkIjtzOjI6IjIyIjtzOjE1OiJkZXNpZ25hdGVkRmllbGQiO3M6MDoiIjtzOjY6InN0YXR1cyI7czozOiJkZXYiO3M6NToiZGVidWciO2I6MDtzOjEzOiJhZG1pbi1lbmFibGVkIjtiOjA7czoxNDoiYWRtaW4tZGlzYWJsZWQiO2I6MDtzOjE1OiJhbGxvdy1mcm9tLWZpbGUiO2I6MDtzOjE4OiJhbGxvdy1mcm9tLXNjcmF0Y2giO2I6MDtzOjIxOiJvcHRpb25hbC1zdWJzY3JpcHRpb24iO2I6MDtzOjE4OiJhbGxvdy11aS1vdmVycmlkZXMiO2I6MDtzOjc6InJlZkxhbmciO3M6MDoiIjtzOjEyOiJmYWxsYmFja0xhbmciO3M6MDoiIjtzOjg6ImRpc2FibGVkIjtiOjA7czoyNToiaGlnaGxpZ2h0TWlzc2luZ0RhdGFlbnRyeSI7YjowO3M6MjI6ImhpZ2hsaWdodE1pc3NpbmdTdXJ2ZXkiO2I6MDtzOjIxOiJhdXRvRGV0ZWN0QnJvd3NlckxhbmciO2I6MDtzOjEyOiJhbGVydFNvdXJjZXMiO2E6MDp7fXM6MTA6ImFzaVNvdXJjZXMiO2E6MDp7fXM6MTQ6ImV4Y2x1ZGVkQWxlcnRzIjthOjA6e31zOjE0OiJleGNsdWRlZEZpZWxkcyI7YTowOnt9czoxNjoiZXhjbHVkZWRTZXR0aW5ncyI7YTowOnt9fQ=="/>
+	</redcap:MultilanguageSettingsGroup>
+</GlobalVariables>
+<MetaDataVersion OID="Metadata.PedigreeEditorExampleFamilyReg_2026-09-29_1259" Name="Pedigree Editor example: family registry" redcap:RecordIdField="record_id">
+	<Protocol>
+		<StudyEventRef StudyEventOID="Event.enrolment_arm_1" OrderNumber="1" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.follow_up_12m_arm_1" OrderNumber="2" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.follow_up_24m_arm_1" OrderNumber="3" Mandatory="No"/>
+	</Protocol>
+	<StudyEventDef OID="Event.enrolment_arm_1" Name="Enrolment" Type="Common" Repeating="No" redcap:EventName="Enrolment" redcap:CustomEventLabel="" redcap:UniqueEventName="enrolment_arm_1" redcap:ArmNum="1" redcap:ArmName="Arm 1" redcap:DayOffset="1" redcap:OffsetMin="0" redcap:OffsetMax="0">
+		<FormRef FormOID="Form.participant_enrolment" OrderNumber="1" Mandatory="No" redcap:FormName="participant_enrolment"/>
+		<FormRef FormOID="Form.family_history" OrderNumber="2" Mandatory="No" redcap:FormName="family_history"/>
+		<FormRef FormOID="Form.family_members" OrderNumber="3" Mandatory="No" redcap:FormName="family_members"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.follow_up_12m_arm_1" Name="Follow up 12m" Type="Common" Repeating="No" redcap:EventName="Follow up 12m" redcap:CustomEventLabel="" redcap:UniqueEventName="follow_up_12m_arm_1" redcap:ArmNum="1" redcap:ArmName="Arm 1" redcap:DayOffset="2" redcap:OffsetMin="0" redcap:OffsetMax="0">
+		<FormRef FormOID="Form.clinical_follow_up" OrderNumber="1" Mandatory="No" redcap:FormName="clinical_follow_up"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.follow_up_24m_arm_1" Name="Follow up 24m" Type="Common" Repeating="No" redcap:EventName="Follow up 24m" redcap:CustomEventLabel="" redcap:UniqueEventName="follow_up_24m_arm_1" redcap:ArmNum="1" redcap:ArmName="Arm 1" redcap:DayOffset="3" redcap:OffsetMin="0" redcap:OffsetMax="0">
+		<FormRef FormOID="Form.clinical_follow_up" OrderNumber="1" Mandatory="No" redcap:FormName="clinical_follow_up"/>
+	</StudyEventDef>
+	<FormDef OID="Form.participant_enrolment" Name="Participant Enrolment" Repeating="No" redcap:FormName="participant_enrolment">
+		<ItemGroupRef ItemGroupOID="participant_enrolment.record_id" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="participant_enrolment.participant_first_name" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="participant_enrolment.participant_last_name" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="participant_enrolment.diagnosis_status" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="participant_enrolment.age_at_first_symptoms" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="participant_enrolment.participant_enrolment_complete" Mandatory="No"/>
+	</FormDef>
+	<FormDef OID="Form.family_history" Name="Family History" Repeating="No" redcap:FormName="family_history">
+		<ItemGroupRef ItemGroupOID="family_history.family_history_date" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="family_history.family_history_complete" Mandatory="No"/>
+	</FormDef>
+	<FormDef OID="Form.family_members" Name="Family Members" Repeating="No" redcap:FormName="family_members">
+		<ItemGroupRef ItemGroupOID="family_members.first_name" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="family_members.last_name" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="family_members.carrier_status" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="family_members.ada2_tested" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="family_members.notes" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="family_members.internal_contact_notes" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="family_members.family_members_complete" Mandatory="No"/>
+	</FormDef>
+	<FormDef OID="Form.clinical_follow_up" Name="Clinical Follow Up" Repeating="No" redcap:FormName="clinical_follow_up">
+		<ItemGroupRef ItemGroupOID="clinical_follow_up.visit_date" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="clinical_follow_up.clinical_follow_up_complete" Mandatory="No"/>
+	</FormDef>
+	<ItemGroupDef OID="participant_enrolment.record_id" Name="Participant Enrolment" Repeating="No">
+		<ItemRef ItemOID="record_id" Mandatory="No" redcap:Variable="record_id"/>
+		<ItemRef ItemOID="enrolment_date" Mandatory="Yes" redcap:Variable="enrolment_date"/>
+		<ItemRef ItemOID="completed_by" Mandatory="Yes" redcap:Variable="completed_by"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="participant_enrolment.participant_first_name" Name="Participant" Repeating="No">
+		<ItemRef ItemOID="participant_first_name" Mandatory="Yes" redcap:Variable="participant_first_name"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="participant_enrolment.participant_last_name" Name="Participant Enrolment" Repeating="No">
+		<ItemRef ItemOID="participant_last_name" Mandatory="Yes" redcap:Variable="participant_last_name"/>
+		<ItemRef ItemOID="participant_dob" Mandatory="No" redcap:Variable="participant_dob"/>
+		<ItemRef ItemOID="participant_sex" Mandatory="No" redcap:Variable="participant_sex"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="participant_enrolment.diagnosis_status" Name="Diagnosis" Repeating="No">
+		<ItemRef ItemOID="diagnosis_status" Mandatory="Yes" redcap:Variable="diagnosis_status"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="participant_enrolment.age_at_first_symptoms" Name="Participant Enrolment" Repeating="No">
+		<ItemRef ItemOID="age_at_first_symptoms" Mandatory="No" redcap:Variable="age_at_first_symptoms"/>
+		<ItemRef ItemOID="enrolment_notes" Mandatory="No" redcap:Variable="enrolment_notes"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="participant_enrolment.participant_enrolment_complete" Name="Form Status" Repeating="No">
+		<ItemRef ItemOID="participant_enrolment_complete" Mandatory="No" redcap:Variable="participant_enrolment_complete"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="family_history.family_history_date" Name="Family History" Repeating="No">
+		<ItemRef ItemOID="family_history_date" Mandatory="No" redcap:Variable="family_history_date"/>
+		<ItemRef ItemOID="pedigree_diagram" Mandatory="No" redcap:Variable="pedigree_diagram"/>
+		<ItemRef ItemOID="parents_related" Mandatory="No" redcap:Variable="parents_related"/>
+		<ItemRef ItemOID="family_history_notes" Mandatory="No" redcap:Variable="family_history_notes"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="family_history.family_history_complete" Name="Form Status" Repeating="No">
+		<ItemRef ItemOID="family_history_complete" Mandatory="No" redcap:Variable="family_history_complete"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="family_members.first_name" Name="Person" Repeating="No">
+		<ItemRef ItemOID="first_name" Mandatory="No" redcap:Variable="first_name"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="family_members.last_name" Name="Family Members" Repeating="No">
+		<ItemRef ItemOID="last_name" Mandatory="No" redcap:Variable="last_name"/>
+		<ItemRef ItemOID="relationship" Mandatory="No" redcap:Variable="relationship"/>
+		<ItemRef ItemOID="sex" Mandatory="No" redcap:Variable="sex"/>
+		<ItemRef ItemOID="dob" Mandatory="No" redcap:Variable="dob"/>
+		<ItemRef ItemOID="adopted" Mandatory="No" redcap:Variable="adopted"/>
+		<ItemRef ItemOID="life_status" Mandatory="No" redcap:Variable="life_status"/>
+		<ItemRef ItemOID="dod" Mandatory="No" redcap:Variable="dod"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="family_members.carrier_status" Name="ADA2 findings" Repeating="No">
+		<ItemRef ItemOID="carrier_status" Mandatory="No" redcap:Variable="carrier_status"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="family_members.ada2_tested" Name="Family Members" Repeating="No">
+		<ItemRef ItemOID="ada2_tested" Mandatory="No" redcap:Variable="ada2_tested"/>
+		<ItemRef ItemOID="ada2_variants" Mandatory="No" redcap:Variable="ada2_variants"/>
+		<ItemRef ItemOID="ada2_level" Mandatory="No" redcap:Variable="ada2_level"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="family_members.notes" Name="Notes" Repeating="No">
+		<ItemRef ItemOID="notes" Mandatory="No" redcap:Variable="notes"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="family_members.internal_contact_notes" Name="Family Members" Repeating="No">
+		<ItemRef ItemOID="internal_contact_notes" Mandatory="No" redcap:Variable="internal_contact_notes"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="family_members.family_members_complete" Name="Form Status" Repeating="No">
+		<ItemRef ItemOID="family_members_complete" Mandatory="No" redcap:Variable="family_members_complete"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="clinical_follow_up.visit_date" Name="Clinical Follow Up" Repeating="No">
+		<ItemRef ItemOID="visit_date" Mandatory="Yes" redcap:Variable="visit_date"/>
+		<ItemRef ItemOID="symptom_course" Mandatory="No" redcap:Variable="symptom_course"/>
+		<ItemRef ItemOID="stroke_since_last" Mandatory="No" redcap:Variable="stroke_since_last"/>
+		<ItemRef ItemOID="current_treatment___none" Mandatory="No" redcap:Variable="current_treatment"/>
+		<ItemRef ItemOID="current_treatment___tnf_inhibitor" Mandatory="No" redcap:Variable="current_treatment"/>
+		<ItemRef ItemOID="current_treatment___hsct" Mandatory="No" redcap:Variable="current_treatment"/>
+		<ItemRef ItemOID="current_treatment___other" Mandatory="No" redcap:Variable="current_treatment"/>
+		<ItemRef ItemOID="treatment_other" Mandatory="No" redcap:Variable="treatment_other"/>
+		<ItemRef ItemOID="ada2_activity_result" Mandatory="No" redcap:Variable="ada2_activity_result"/>
+		<ItemRef ItemOID="follow_up_notes" Mandatory="No" redcap:Variable="follow_up_notes"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="clinical_follow_up.clinical_follow_up_complete" Name="Form Status" Repeating="No">
+		<ItemRef ItemOID="clinical_follow_up_complete" Mandatory="No" redcap:Variable="clinical_follow_up_complete"/>
+	</ItemGroupDef>
+	<ItemDef OID="record_id" Name="record_id" DataType="text" Length="999" redcap:Variable="record_id" redcap:FieldType="text">
+		<Question><TranslatedText>Record ID</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="enrolment_date" Name="enrolment_date" DataType="date" Length="999" redcap:Variable="enrolment_date" redcap:FieldType="text" redcap:TextValidationType="date_ymd" redcap:RequiredField="y">
+		<Question><TranslatedText>Date of enrolment</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="completed_by" Name="completed_by" DataType="text" Length="8" redcap:Variable="completed_by" redcap:FieldType="radio" redcap:RequiredField="y">
+		<Question><TranslatedText>Who is completing this registration?</TranslatedText></Question>
+		<CodeListRef CodeListOID="completed_by.choices"/>
+	</ItemDef>
+	<ItemDef OID="participant_first_name" Name="participant_first_name" DataType="text" Length="999" redcap:Variable="participant_first_name" redcap:FieldType="text" redcap:SectionHeader="Participant" redcap:Identifier="y" redcap:RequiredField="y">
+		<Question><TranslatedText>Participant first name</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="participant_last_name" Name="participant_last_name" DataType="text" Length="999" redcap:Variable="participant_last_name" redcap:FieldType="text" redcap:Identifier="y" redcap:RequiredField="y">
+		<Question><TranslatedText>Participant last name</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="participant_dob" Name="participant_dob" DataType="date" Length="999" redcap:Variable="participant_dob" redcap:FieldType="text" redcap:TextValidationType="date_ymd" redcap:Identifier="y">
+		<Question><TranslatedText>Participant date of birth</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="participant_sex" Name="participant_sex" DataType="text" Length="1" redcap:Variable="participant_sex" redcap:FieldType="radio">
+		<Question><TranslatedText>Participant sex</TranslatedText></Question>
+		<CodeListRef CodeListOID="participant_sex.choices"/>
+	</ItemDef>
+	<ItemDef OID="diagnosis_status" Name="diagnosis_status" DataType="text" Length="9" redcap:Variable="diagnosis_status" redcap:FieldType="radio" redcap:SectionHeader="Diagnosis" redcap:RequiredField="y">
+		<Question><TranslatedText>ADA2 deficiency status at enrolment</TranslatedText></Question>
+		<CodeListRef CodeListOID="diagnosis_status.choices"/>
+	</ItemDef>
+	<ItemDef OID="age_at_first_symptoms" Name="age_at_first_symptoms" DataType="integer" Length="999" redcap:Variable="age_at_first_symptoms" redcap:FieldType="text" redcap:TextValidationType="int" redcap:BranchingLogic="[diagnosis_status] = &#039;confirmed&#039; or [diagnosis_status] = &#039;suspected&#039;">
+		<Question><TranslatedText>Age at first symptoms (years)</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="enrolment_notes" Name="enrolment_notes" DataType="text" Length="999" redcap:Variable="enrolment_notes" redcap:FieldType="textarea">
+		<Question><TranslatedText>Enrolment notes</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="participant_enrolment_complete" Name="participant_enrolment_complete" DataType="text" Length="1" redcap:Variable="participant_enrolment_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+		<Question><TranslatedText>Complete?</TranslatedText></Question>
+		<CodeListRef CodeListOID="participant_enrolment_complete.choices"/>
+	</ItemDef>
+	<ItemDef OID="family_history_date" Name="family_history_date" DataType="date" Length="999" redcap:Variable="family_history_date" redcap:FieldType="text" redcap:TextValidationType="date_ymd">
+		<Question><TranslatedText>Date family history taken</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="pedigree_diagram" Name="pedigree_diagram" DataType="text" Length="999" redcap:Variable="pedigree_diagram" redcap:FieldType="textarea" redcap:FieldNote="Draw the family here. Link each person to their row on the Family members form." redcap:FieldAnnotation="@PEDIGREE">
+		<Question><TranslatedText>Family pedigree</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="parents_related" Name="parents_related" DataType="text" Length="7" redcap:Variable="parents_related" redcap:FieldType="radio">
+		<Question><TranslatedText>Are the participant&#039;s biological parents related to each other by blood?</TranslatedText></Question>
+		<CodeListRef CodeListOID="parents_related.choices"/>
+	</ItemDef>
+	<ItemDef OID="family_history_notes" Name="family_history_notes" DataType="text" Length="999" redcap:Variable="family_history_notes" redcap:FieldType="textarea">
+		<Question><TranslatedText>Family history notes</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="family_history_complete" Name="family_history_complete" DataType="text" Length="1" redcap:Variable="family_history_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+		<Question><TranslatedText>Complete?</TranslatedText></Question>
+		<CodeListRef CodeListOID="family_history_complete.choices"/>
+	</ItemDef>
+	<ItemDef OID="first_name" Name="first_name" DataType="text" Length="999" redcap:Variable="first_name" redcap:FieldType="text" redcap:SectionHeader="Person" redcap:Identifier="y" redcap:FieldAnnotation="@PEDIGREE_FIELD(mapsTo=&quot;given&quot;)">
+		<Question><TranslatedText>First name</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="last_name" Name="last_name" DataType="text" Length="999" redcap:Variable="last_name" redcap:FieldType="text" redcap:Identifier="y" redcap:FieldAnnotation="@PEDIGREE_FIELD(mapsTo=&quot;family&quot;)">
+		<Question><TranslatedText>Last name</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="relationship" Name="relationship" DataType="text" Length="21" redcap:Variable="relationship" redcap:FieldType="select" redcap:FieldAnnotation="@PEDIGREE_FIELD">
+		<Question><TranslatedText>Relationship to the participant</TranslatedText></Question>
+		<CodeListRef CodeListOID="relationship.choices"/>
+	</ItemDef>
+	<ItemDef OID="sex" Name="sex" DataType="text" Length="1" redcap:Variable="sex" redcap:FieldType="radio" redcap:FieldAnnotation="@PEDIGREE_FIELD(mapsTo=&quot;gender&quot;)">
+		<Question><TranslatedText>Sex</TranslatedText></Question>
+		<CodeListRef CodeListOID="sex.choices"/>
+	</ItemDef>
+	<ItemDef OID="dob" Name="dob" DataType="date" Length="999" redcap:Variable="dob" redcap:FieldType="text" redcap:TextValidationType="date_ymd" redcap:Identifier="y" redcap:FieldAnnotation="@PEDIGREE_FIELD(mapsTo=&quot;birthDate&quot;)">
+		<Question><TranslatedText>Date of birth</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="adopted" Name="adopted" DataType="boolean" Length="1" redcap:Variable="adopted" redcap:FieldType="yesno" redcap:FieldNote="Answer yes if this person was adopted into or out of the family." redcap:FieldAnnotation="@PEDIGREE_FIELD(mapsTo=&quot;isAdopted&quot;)">
+		<Question><TranslatedText>Adopted?</TranslatedText></Question>
+		<CodeListRef CodeListOID="adopted.choices"/>
+	</ItemDef>
+	<ItemDef OID="life_status" Name="life_status" DataType="text" Length="11" redcap:Variable="life_status" redcap:FieldType="radio" redcap:FieldAnnotation="@PEDIGREE_FIELD(mapsTo=&quot;lifeStatus&quot;)">
+		<Question><TranslatedText>Vital status</TranslatedText></Question>
+		<CodeListRef CodeListOID="life_status.choices"/>
+	</ItemDef>
+	<ItemDef OID="dod" Name="dod" DataType="date" Length="999" redcap:Variable="dod" redcap:FieldType="text" redcap:TextValidationType="date_ymd" redcap:BranchingLogic="[life_status] = &#039;deceased&#039;" redcap:FieldAnnotation="@PEDIGREE_FIELD(mapsTo=&quot;deceasedDateTime&quot;)">
+		<Question><TranslatedText>Date of death</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="carrier_status" Name="carrier_status" DataType="text" Length="14" redcap:Variable="carrier_status" redcap:FieldType="radio" redcap:FieldNote="Leave blank if this person is not affected and not a known carrier." redcap:SectionHeader="ADA2 findings" redcap:FieldAnnotation="@PEDIGREE_FIELD(mapsTo=&quot;carrierStatus&quot;)">
+		<Question><TranslatedText>ADA2 deficiency status</TranslatedText></Question>
+		<CodeListRef CodeListOID="carrier_status.choices"/>
+	</ItemDef>
+	<ItemDef OID="ada2_tested" Name="ada2_tested" DataType="boolean" Length="1" redcap:Variable="ada2_tested" redcap:FieldType="yesno" redcap:FieldAnnotation="@PEDIGREE_FIELD(mapsTo=&quot;evaluated&quot;)">
+		<Question><TranslatedText>Has this person had ADA2 testing (genetic or enzyme)?</TranslatedText></Question>
+		<CodeListRef CodeListOID="ada2_tested.choices"/>
+	</ItemDef>
+	<ItemDef OID="ada2_variants" Name="ada2_variants" DataType="text" Length="10" redcap:Variable="ada2_variants" redcap:FieldType="radio" redcap:FieldAnnotation="@PEDIGREE_FIELD">
+		<Question><TranslatedText>ADA2 variants found</TranslatedText></Question>
+		<CodeListRef CodeListOID="ada2_variants.choices"/>
+	</ItemDef>
+	<ItemDef OID="ada2_level" Name="ada2_level" DataType="text" Length="10" redcap:Variable="ada2_level" redcap:FieldType="radio" redcap:FieldAnnotation="@PEDIGREE_FIELD">
+		<Question><TranslatedText>ADA2 enzyme activity</TranslatedText></Question>
+		<CodeListRef CodeListOID="ada2_level.choices"/>
+	</ItemDef>
+	<ItemDef OID="notes" Name="notes" DataType="text" Length="999" redcap:Variable="notes" redcap:FieldType="textarea" redcap:SectionHeader="Notes" redcap:FieldAnnotation="@PEDIGREE_FIELD">
+		<Question><TranslatedText>Notes</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="internal_contact_notes" Name="internal_contact_notes" DataType="text" Length="999" redcap:Variable="internal_contact_notes" redcap:FieldType="textarea" redcap:FieldNote="Not shown in the pedigree editor: this field has no @PEDIGREE_FIELD tag.">
+		<Question><TranslatedText>Contact notes (registry staff only)</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="family_members_complete" Name="family_members_complete" DataType="text" Length="1" redcap:Variable="family_members_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+		<Question><TranslatedText>Complete?</TranslatedText></Question>
+		<CodeListRef CodeListOID="family_members_complete.choices"/>
+	</ItemDef>
+	<ItemDef OID="visit_date" Name="visit_date" DataType="date" Length="999" redcap:Variable="visit_date" redcap:FieldType="text" redcap:TextValidationType="date_ymd" redcap:RequiredField="y">
+		<Question><TranslatedText>Date of review</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="symptom_course" Name="symptom_course" DataType="text" Length="8" redcap:Variable="symptom_course" redcap:FieldType="radio">
+		<Question><TranslatedText>Since the last review, symptoms have</TranslatedText></Question>
+		<CodeListRef CodeListOID="symptom_course.choices"/>
+	</ItemDef>
+	<ItemDef OID="stroke_since_last" Name="stroke_since_last" DataType="boolean" Length="1" redcap:Variable="stroke_since_last" redcap:FieldType="yesno">
+		<Question><TranslatedText>Any stroke or suspected stroke since the last review?</TranslatedText></Question>
+		<CodeListRef CodeListOID="stroke_since_last.choices"/>
+	</ItemDef>
+	<ItemDef OID="current_treatment___none" Name="current_treatment___none" DataType="boolean" Length="1" redcap:Variable="current_treatment" redcap:FieldType="checkbox">
+		<Question><TranslatedText>Current treatment</TranslatedText></Question>
+		<CodeListRef CodeListOID="current_treatment___none.choices"/>
+	</ItemDef>
+	<ItemDef OID="current_treatment___tnf_inhibitor" Name="current_treatment___tnf_inhibitor" DataType="boolean" Length="1" redcap:Variable="current_treatment" redcap:FieldType="checkbox">
+		<Question><TranslatedText>Current treatment</TranslatedText></Question>
+		<CodeListRef CodeListOID="current_treatment___tnf_inhibitor.choices"/>
+	</ItemDef>
+	<ItemDef OID="current_treatment___hsct" Name="current_treatment___hsct" DataType="boolean" Length="1" redcap:Variable="current_treatment" redcap:FieldType="checkbox">
+		<Question><TranslatedText>Current treatment</TranslatedText></Question>
+		<CodeListRef CodeListOID="current_treatment___hsct.choices"/>
+	</ItemDef>
+	<ItemDef OID="current_treatment___other" Name="current_treatment___other" DataType="boolean" Length="1" redcap:Variable="current_treatment" redcap:FieldType="checkbox">
+		<Question><TranslatedText>Current treatment</TranslatedText></Question>
+		<CodeListRef CodeListOID="current_treatment___other.choices"/>
+	</ItemDef>
+	<ItemDef OID="treatment_other" Name="treatment_other" DataType="text" Length="999" redcap:Variable="treatment_other" redcap:FieldType="text" redcap:BranchingLogic="[current_treatment(other)] = &quot;1&quot;">
+		<Question><TranslatedText>Other treatment</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="ada2_activity_result" Name="ada2_activity_result" DataType="text" Length="999" redcap:Variable="ada2_activity_result" redcap:FieldType="text" redcap:FieldNote="As reported by the lab, with units.">
+		<Question><TranslatedText>Latest ADA2 enzyme activity result</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="follow_up_notes" Name="follow_up_notes" DataType="text" Length="999" redcap:Variable="follow_up_notes" redcap:FieldType="textarea">
+		<Question><TranslatedText>Follow-up notes</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="clinical_follow_up_complete" Name="clinical_follow_up_complete" DataType="text" Length="1" redcap:Variable="clinical_follow_up_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+		<Question><TranslatedText>Complete?</TranslatedText></Question>
+		<CodeListRef CodeListOID="clinical_follow_up_complete.choices"/>
+	</ItemDef>
+	<CodeList OID="completed_by.choices" Name="completed_by" DataType="text" redcap:Variable="completed_by">
+		<CodeListItem CodedValue="self"><Decode><TranslatedText>The participant</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="parent"><Decode><TranslatedText>A parent or guardian of the participant</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="relative"><Decode><TranslatedText>Another relative or carer</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="participant_sex.choices" Name="participant_sex" DataType="text" redcap:Variable="participant_sex">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Female</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Male</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>Unknown or not stated</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="diagnosis_status.choices" Name="diagnosis_status" DataType="text" redcap:Variable="diagnosis_status">
+		<CodeListItem CodedValue="confirmed"><Decode><TranslatedText>Confirmed diagnosis (two variants, or absent enzyme activity)</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="suspected"><Decode><TranslatedText>Suspected, testing in progress</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="carrier"><Decode><TranslatedText>Known carrier (one variant)</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="participant_enrolment_complete.choices" Name="participant_enrolment_complete" DataType="text" redcap:Variable="participant_enrolment_complete">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="parents_related.choices" Name="parents_related" DataType="text" redcap:Variable="parents_related">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Yes</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>No</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="unknown"><Decode><TranslatedText>Don&#039;t know</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="family_history_complete.choices" Name="family_history_complete" DataType="text" redcap:Variable="family_history_complete">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="relationship.choices" Name="relationship" DataType="text" redcap:Variable="relationship">
+		<CodeListItem CodedValue="participant"><Decode><TranslatedText>Participant</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="mother"><Decode><TranslatedText>Mother</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="father"><Decode><TranslatedText>Father</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="sibling"><Decode><TranslatedText>Full brother or sister</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="half_sibling_maternal"><Decode><TranslatedText>Half brother or sister (same mother)</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="half_sibling_paternal"><Decode><TranslatedText>Half brother or sister (same father)</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="child"><Decode><TranslatedText>Son or daughter</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="partner"><Decode><TranslatedText>Partner (other parent of a child)</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="grandparent_maternal"><Decode><TranslatedText>Grandparent (mother&#039;s side)</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="grandparent_paternal"><Decode><TranslatedText>Grandparent (father&#039;s side)</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="aunt_uncle_maternal"><Decode><TranslatedText>Aunt or uncle (mother&#039;s side)</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="aunt_uncle_paternal"><Decode><TranslatedText>Aunt or uncle (father&#039;s side)</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="cousin_maternal"><Decode><TranslatedText>Cousin (mother&#039;s side)</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="cousin_paternal"><Decode><TranslatedText>Cousin (father&#039;s side)</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="niece_nephew"><Decode><TranslatedText>Niece or nephew</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="grandchild"><Decode><TranslatedText>Grandchild</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="other"><Decode><TranslatedText>Other relative</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="sex.choices" Name="sex" DataType="text" redcap:Variable="sex">
+		<CodeListItem CodedValue="F"><Decode><TranslatedText>Female</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="M"><Decode><TranslatedText>Male</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="U"><Decode><TranslatedText>Unknown</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="adopted.choices" Name="adopted" DataType="boolean" redcap:Variable="adopted">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Yes</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>No</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="life_status.choices" Name="life_status" DataType="text" redcap:Variable="life_status">
+		<CodeListItem CodedValue="alive"><Decode><TranslatedText>Alive</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="deceased"><Decode><TranslatedText>Deceased</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="unborn"><Decode><TranslatedText>Pregnancy in progress</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="stillborn"><Decode><TranslatedText>Stillborn</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="miscarriage"><Decode><TranslatedText>Miscarriage</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="aborted"><Decode><TranslatedText>Terminated pregnancy</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="carrier_status.choices" Name="carrier_status" DataType="text" redcap:Variable="carrier_status">
+		<CodeListItem CodedValue="affected"><Decode><TranslatedText>Affected: has symptoms of ADA2 deficiency</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="carrier"><Decode><TranslatedText>Carrier: one ADA2 variant, no symptoms</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="presymptomatic"><Decode><TranslatedText>Pre-symptomatic: two ADA2 variants, no symptoms yet</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="ada2_tested.choices" Name="ada2_tested" DataType="boolean" redcap:Variable="ada2_tested">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Yes</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>No</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="ada2_variants.choices" Name="ada2_variants" DataType="text" redcap:Variable="ada2_variants">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>None</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>One variant</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Two variants</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="not_tested"><Decode><TranslatedText>Not tested</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="unknown"><Decode><TranslatedText>Don&#039;t know</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="ada2_level.choices" Name="ada2_level" DataType="text" redcap:Variable="ada2_level">
+		<CodeListItem CodedValue="normal"><Decode><TranslatedText>Normal</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="low"><Decode><TranslatedText>Low</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="absent"><Decode><TranslatedText>Absent</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="not_tested"><Decode><TranslatedText>Not tested</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="unknown"><Decode><TranslatedText>Don&#039;t know</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="family_members_complete.choices" Name="family_members_complete" DataType="text" redcap:Variable="family_members_complete">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="symptom_course.choices" Name="symptom_course" DataType="text" redcap:Variable="symptom_course">
+		<CodeListItem CodedValue="improved"><Decode><TranslatedText>Improved</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="stable"><Decode><TranslatedText>Stayed the same</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="worse"><Decode><TranslatedText>Got worse</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="none"><Decode><TranslatedText>No symptoms</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="stroke_since_last.choices" Name="stroke_since_last" DataType="boolean" redcap:Variable="stroke_since_last">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Yes</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>No</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="current_treatment___none.choices" Name="current_treatment___none" DataType="boolean" redcap:Variable="current_treatment" redcap:CheckboxChoices="none, None | tnf_inhibitor, TNF inhibitor | hsct, Stem cell transplant (HSCT) | other, Other">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="current_treatment___tnf_inhibitor.choices" Name="current_treatment___tnf_inhibitor" DataType="boolean" redcap:Variable="current_treatment" redcap:CheckboxChoices="none, None | tnf_inhibitor, TNF inhibitor | hsct, Stem cell transplant (HSCT) | other, Other">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="current_treatment___hsct.choices" Name="current_treatment___hsct" DataType="boolean" redcap:Variable="current_treatment" redcap:CheckboxChoices="none, None | tnf_inhibitor, TNF inhibitor | hsct, Stem cell transplant (HSCT) | other, Other">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="current_treatment___other.choices" Name="current_treatment___other" DataType="boolean" redcap:Variable="current_treatment" redcap:CheckboxChoices="none, None | tnf_inhibitor, TNF inhibitor | hsct, Stem cell transplant (HSCT) | other, Other">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="clinical_follow_up_complete.choices" Name="clinical_follow_up_complete" DataType="text" redcap:Variable="clinical_follow_up_complete">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+</MetaDataVersion>
+</Study>
+<ClinicalData StudyOID="Project.PedigreeEditorExampleFamilyReg" MetaDataVersionOID="Metadata.PedigreeEditorExampleFamilyReg_2026-09-29_1259">
+	<SubjectData SubjectKey="1" redcap:RecordIdField="record_id">
+		<StudyEventData StudyEventOID="Event.enrolment_arm_1" StudyEventRepeatKey="1" redcap:UniqueEventName="enrolment_arm_1">
+			<FormData FormOID="Form.participant_enrolment" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="participant_enrolment.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1"/>
+					<ItemData ItemOID="enrolment_date" Value="2025-03-04"/>
+					<ItemData ItemOID="completed_by" Value="parent"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="participant_enrolment.participant_first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="participant_first_name" Value="Maya"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="participant_enrolment.participant_last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="participant_last_name" Value="Example"/>
+					<ItemData ItemOID="participant_dob" Value="2016-07-12"/>
+					<ItemData ItemOID="participant_sex" Value="1"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="participant_enrolment.diagnosis_status" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="diagnosis_status" Value="confirmed"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="participant_enrolment.age_at_first_symptoms" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="age_at_first_symptoms" Value="3"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="participant_enrolment.participant_enrolment_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="participant_enrolment_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.family_history" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="family_history.family_history_date" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="family_history_date" Value="2025-03-04"/>
+					<ItemData ItemOID="pedigree_diagram" Value="GZ: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"/>
+					<ItemData ItemOID="parents_related" Value="0"/>
+					<ItemData ItemOID="family_history_notes" Value="Illustrative example family. Both parents are carriers; Maya and her brother Leo have two variants."/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_history.family_history_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="family_history_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+		</StudyEventData>
+		<StudyEventData StudyEventOID="Event.follow_up_12m_arm_1" StudyEventRepeatKey="1" redcap:UniqueEventName="follow_up_12m_arm_1">
+			<FormData FormOID="Form.clinical_follow_up" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="clinical_follow_up.visit_date" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="visit_date" Value="2026-03-10"/>
+					<ItemData ItemOID="symptom_course" Value="improved"/>
+					<ItemData ItemOID="stroke_since_last" Value="0"/>
+					<ItemData ItemOID="current_treatment___none" Value="0"/>
+					<ItemData ItemOID="current_treatment___tnf_inhibitor" Value="1"/>
+					<ItemData ItemOID="current_treatment___hsct" Value="0"/>
+					<ItemData ItemOID="current_treatment___other" Value="0"/>
+					<ItemData ItemOID="ada2_activity_result" Value="Not detected"/>
+					<ItemData ItemOID="follow_up_notes" Value="No fevers since starting treatment."/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="clinical_follow_up.clinical_follow_up_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="clinical_follow_up_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+		</StudyEventData>
+		<StudyEventData StudyEventOID="Event.enrolment_arm_1" StudyEventRepeatKey="1" redcap:UniqueEventName="enrolment_arm_1">
+			<FormData FormOID="Form.family_members" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="family_members.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Maya"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Example"/>
+					<ItemData ItemOID="relationship" Value="participant"/>
+					<ItemData ItemOID="sex" Value="F"/>
+					<ItemData ItemOID="dob" Value="2016-07-12"/>
+					<ItemData ItemOID="adopted" Value="0"/>
+					<ItemData ItemOID="life_status" Value="alive"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.carrier_status" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="carrier_status" Value="affected"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.ada2_tested" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="ada2_tested" Value="1"/>
+					<ItemData ItemOID="ada2_variants" Value="2"/>
+					<ItemData ItemOID="ada2_level" Value="absent"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.notes" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="notes" Value="Recurrent fevers and rash from age 3. Started a TNF inhibitor at diagnosis."/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.internal_contact_notes" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="internal_contact_notes" Value="Contact via parent (Grace)."/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.family_members_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="family_members_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.family_members" FormRepeatKey="2">
+				<ItemGroupData ItemGroupOID="family_members.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Grace"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Example"/>
+					<ItemData ItemOID="relationship" Value="mother"/>
+					<ItemData ItemOID="sex" Value="F"/>
+					<ItemData ItemOID="dob" Value="1986-02-19"/>
+					<ItemData ItemOID="adopted" Value="0"/>
+					<ItemData ItemOID="life_status" Value="alive"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.carrier_status" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="carrier_status" Value="carrier"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.ada2_tested" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="ada2_tested" Value="1"/>
+					<ItemData ItemOID="ada2_variants" Value="1"/>
+					<ItemData ItemOID="ada2_level" Value="low"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.family_members_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="family_members_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.family_members" FormRepeatKey="3">
+				<ItemGroupData ItemGroupOID="family_members.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Tom"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Example"/>
+					<ItemData ItemOID="relationship" Value="father"/>
+					<ItemData ItemOID="sex" Value="M"/>
+					<ItemData ItemOID="dob" Value="1984-11-02"/>
+					<ItemData ItemOID="adopted" Value="0"/>
+					<ItemData ItemOID="life_status" Value="alive"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.carrier_status" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="carrier_status" Value="carrier"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.ada2_tested" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="ada2_tested" Value="1"/>
+					<ItemData ItemOID="ada2_variants" Value="1"/>
+					<ItemData ItemOID="ada2_level" Value="low"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.family_members_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="family_members_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.family_members" FormRepeatKey="4">
+				<ItemGroupData ItemGroupOID="family_members.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Leo"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Example"/>
+					<ItemData ItemOID="relationship" Value="sibling"/>
+					<ItemData ItemOID="sex" Value="M"/>
+					<ItemData ItemOID="dob" Value="2019-05-30"/>
+					<ItemData ItemOID="adopted" Value="0"/>
+					<ItemData ItemOID="life_status" Value="alive"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.carrier_status" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="carrier_status" Value="presymptomatic"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.ada2_tested" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="ada2_tested" Value="1"/>
+					<ItemData ItemOID="ada2_variants" Value="2"/>
+					<ItemData ItemOID="ada2_level" Value="absent"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.notes" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="notes" Value="Tested after his sister&#039;s diagnosis. No symptoms so far; reviewed yearly."/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.family_members_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="family_members_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.family_members" FormRepeatKey="5">
+				<ItemGroupData ItemGroupOID="family_members.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Ruby"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Example"/>
+					<ItemData ItemOID="relationship" Value="sibling"/>
+					<ItemData ItemOID="sex" Value="F"/>
+					<ItemData ItemOID="dob" Value="2013-09-08"/>
+					<ItemData ItemOID="adopted" Value="0"/>
+					<ItemData ItemOID="life_status" Value="alive"/>
+					<ItemData ItemOID="ada2_tested" Value="1"/>
+					<ItemData ItemOID="ada2_variants" Value="0"/>
+					<ItemData ItemOID="ada2_level" Value="normal"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.family_members_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="family_members_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.family_members" FormRepeatKey="6">
+				<ItemGroupData ItemGroupOID="family_members.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Arthur"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Example"/>
+					<ItemData ItemOID="relationship" Value="grandparent_paternal"/>
+					<ItemData ItemOID="sex" Value="M"/>
+					<ItemData ItemOID="dob" Value="1950-01-15"/>
+					<ItemData ItemOID="adopted" Value="0"/>
+					<ItemData ItemOID="life_status" Value="deceased"/>
+					<ItemData ItemOID="dod" Value="2012-06-21"/>
+					<ItemData ItemOID="ada2_tested" Value="0"/>
+					<ItemData ItemOID="ada2_variants" Value="not_tested"/>
+					<ItemData ItemOID="ada2_level" Value="not_tested"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.notes" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="notes" Value="Had strokes in his fifties; never tested."/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.family_members_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="family_members_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.family_members" FormRepeatKey="7">
+				<ItemGroupData ItemGroupOID="family_members.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="June"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Hartley"/>
+					<ItemData ItemOID="relationship" Value="grandparent_maternal"/>
+					<ItemData ItemOID="sex" Value="F"/>
+					<ItemData ItemOID="dob" Value="1958-04-27"/>
+					<ItemData ItemOID="adopted" Value="0"/>
+					<ItemData ItemOID="life_status" Value="alive"/>
+					<ItemData ItemOID="ada2_tested" Value="0"/>
+					<ItemData ItemOID="ada2_variants" Value="unknown"/>
+					<ItemData ItemOID="ada2_level" Value="unknown"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.family_members_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="family_members_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.family_members" FormRepeatKey="8">
+				<ItemGroupData ItemGroupOID="family_members.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Edith"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Example"/>
+					<ItemData ItemOID="relationship" Value="grandparent_paternal"/>
+					<ItemData ItemOID="sex" Value="F"/>
+					<ItemData ItemOID="dob" Value="1953-08-30"/>
+					<ItemData ItemOID="adopted" Value="0"/>
+					<ItemData ItemOID="life_status" Value="alive"/>
+					<ItemData ItemOID="ada2_tested" Value="0"/>
+					<ItemData ItemOID="ada2_variants" Value="not_tested"/>
+					<ItemData ItemOID="ada2_level" Value="not_tested"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.family_members_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="family_members_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.family_members" FormRepeatKey="9">
+				<ItemGroupData ItemGroupOID="family_members.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Ray"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Hartley"/>
+					<ItemData ItemOID="relationship" Value="grandparent_maternal"/>
+					<ItemData ItemOID="sex" Value="M"/>
+					<ItemData ItemOID="dob" Value="1955-03-11"/>
+					<ItemData ItemOID="adopted" Value="0"/>
+					<ItemData ItemOID="life_status" Value="alive"/>
+					<ItemData ItemOID="ada2_tested" Value="0"/>
+					<ItemData ItemOID="ada2_variants" Value="unknown"/>
+					<ItemData ItemOID="ada2_level" Value="unknown"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.family_members_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="family_members_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+		</StudyEventData>
+	</SubjectData>
+	<SubjectData SubjectKey="2" redcap:RecordIdField="record_id">
+		<StudyEventData StudyEventOID="Event.enrolment_arm_1" StudyEventRepeatKey="1" redcap:UniqueEventName="enrolment_arm_1">
+			<FormData FormOID="Form.participant_enrolment" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="participant_enrolment.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="2"/>
+					<ItemData ItemOID="enrolment_date" Value="2025-08-19"/>
+					<ItemData ItemOID="completed_by" Value="self"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="participant_enrolment.participant_first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="participant_first_name" Value="Sam"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="participant_enrolment.participant_last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="participant_last_name" Value="Sample"/>
+					<ItemData ItemOID="participant_dob" Value="1998-12-01"/>
+					<ItemData ItemOID="participant_sex" Value="2"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="participant_enrolment.diagnosis_status" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="diagnosis_status" Value="confirmed"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="participant_enrolment.age_at_first_symptoms" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="age_at_first_symptoms" Value="14"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="participant_enrolment.participant_enrolment_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="participant_enrolment_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.family_history" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="family_history.family_history_date" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="family_history_date" Value="2025-08-19"/>
+					<ItemData ItemOID="parents_related" Value="unknown"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_history.family_history_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="family_history_complete" Value="0"/>
+				</ItemGroupData>
+			</FormData>
+		</StudyEventData>
+		<StudyEventData StudyEventOID="Event.follow_up_12m_arm_1" StudyEventRepeatKey="1" redcap:UniqueEventName="follow_up_12m_arm_1">
+			<FormData FormOID="Form.clinical_follow_up" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="clinical_follow_up.visit_date" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="visit_date" Value="2026-08-25"/>
+					<ItemData ItemOID="symptom_course" Value="stable"/>
+					<ItemData ItemOID="stroke_since_last" Value="0"/>
+					<ItemData ItemOID="current_treatment___none" Value="0"/>
+					<ItemData ItemOID="current_treatment___tnf_inhibitor" Value="1"/>
+					<ItemData ItemOID="current_treatment___hsct" Value="0"/>
+					<ItemData ItemOID="current_treatment___other" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="clinical_follow_up.clinical_follow_up_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="clinical_follow_up_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+		</StudyEventData>
+		<StudyEventData StudyEventOID="Event.enrolment_arm_1" StudyEventRepeatKey="1" redcap:UniqueEventName="enrolment_arm_1">
+			<FormData FormOID="Form.family_members" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="family_members.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Sam"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Sample"/>
+					<ItemData ItemOID="relationship" Value="participant"/>
+					<ItemData ItemOID="sex" Value="M"/>
+					<ItemData ItemOID="dob" Value="1998-12-01"/>
+					<ItemData ItemOID="adopted" Value="0"/>
+					<ItemData ItemOID="life_status" Value="alive"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.carrier_status" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="carrier_status" Value="affected"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.ada2_tested" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="ada2_tested" Value="1"/>
+					<ItemData ItemOID="ada2_variants" Value="2"/>
+					<ItemData ItemOID="ada2_level" Value="low"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.notes" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="notes" Value="Diagnosed at 24 after a stroke. Awaiting assessment for stem cell transplant."/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.family_members_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="family_members_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.family_members" FormRepeatKey="2">
+				<ItemGroupData ItemGroupOID="family_members.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Priya"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Sample"/>
+					<ItemData ItemOID="relationship" Value="mother"/>
+					<ItemData ItemOID="sex" Value="F"/>
+					<ItemData ItemOID="dob" Value="1971-03-14"/>
+					<ItemData ItemOID="adopted" Value="0"/>
+					<ItemData ItemOID="life_status" Value="alive"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.carrier_status" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="carrier_status" Value="carrier"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.ada2_tested" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="ada2_tested" Value="1"/>
+					<ItemData ItemOID="ada2_variants" Value="1"/>
+					<ItemData ItemOID="ada2_level" Value="low"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.family_members_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="family_members_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.family_members" FormRepeatKey="3">
+				<ItemGroupData ItemGroupOID="family_members.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Dev"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Sample"/>
+					<ItemData ItemOID="relationship" Value="father"/>
+					<ItemData ItemOID="sex" Value="M"/>
+					<ItemData ItemOID="dob" Value="1969-10-05"/>
+					<ItemData ItemOID="adopted" Value="0"/>
+					<ItemData ItemOID="life_status" Value="alive"/>
+					<ItemData ItemOID="ada2_tested" Value="0"/>
+					<ItemData ItemOID="ada2_variants" Value="not_tested"/>
+					<ItemData ItemOID="ada2_level" Value="not_tested"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.family_members_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="family_members_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.family_members" FormRepeatKey="4">
+				<ItemGroupData ItemGroupOID="family_members.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Asha"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Sample"/>
+					<ItemData ItemOID="relationship" Value="sibling"/>
+					<ItemData ItemOID="sex" Value="F"/>
+					<ItemData ItemOID="dob" Value="2001-06-22"/>
+					<ItemData ItemOID="adopted" Value="1"/>
+					<ItemData ItemOID="life_status" Value="alive"/>
+					<ItemData ItemOID="ada2_tested" Value="0"/>
+					<ItemData ItemOID="ada2_variants" Value="not_tested"/>
+					<ItemData ItemOID="ada2_level" Value="not_tested"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.notes" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="notes" Value="Adopted into the family as a baby."/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.family_members_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="family_members_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+		</StudyEventData>
+	</SubjectData>
+	<SubjectData SubjectKey="3" redcap:RecordIdField="record_id">
+		<StudyEventData StudyEventOID="Event.enrolment_arm_1" StudyEventRepeatKey="1" redcap:UniqueEventName="enrolment_arm_1">
+			<FormData FormOID="Form.participant_enrolment" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="participant_enrolment.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="3"/>
+					<ItemData ItemOID="enrolment_date" Value="2026-01-27"/>
+					<ItemData ItemOID="completed_by" Value="parent"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="participant_enrolment.participant_first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="participant_first_name" Value="Noah"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="participant_enrolment.participant_last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="participant_last_name" Value="Demo"/>
+					<ItemData ItemOID="participant_dob" Value="2020-02-11"/>
+					<ItemData ItemOID="participant_sex" Value="2"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="participant_enrolment.diagnosis_status" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="diagnosis_status" Value="suspected"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="participant_enrolment.age_at_first_symptoms" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="age_at_first_symptoms" Value="4"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="participant_enrolment.participant_enrolment_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="participant_enrolment_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.family_history" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="family_history.family_history_date" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="family_history_date" Value="2026-01-27"/>
+					<ItemData ItemOID="pedigree_diagram" Value="{
+  &quot;resourceType&quot;: &quot;Bundle&quot;,
+  &quot;identifier&quot;: {
+    &quot;system&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig&quot;,
+    &quot;value&quot;: &quot;urn:uuid:66f92242-d5d5-48a4-a74f-b5e73a2f00b0&quot;
+  },
+  &quot;type&quot;: &quot;document&quot;,
+  &quot;timestamp&quot;: &quot;2026-09-29T11:13:19-10:00&quot;,
+  &quot;entry&quot;: [
+    {
+      &quot;link&quot;: [
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:6974085a-e6a4-4d6d-a56b-983b3c80e417&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:04fffad7-9d2e-4954-8b9f-a1906c06d35e&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:552aabfa-a57b-4859-9ddb-fda1b6c580c5&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:a604c7ee-e189-4280-ab66-8000c32ac876&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:65d70ca7-188a-45c8-aebd-a936d433fd2a&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:f6d7ffec-7a91-4f56-b45e-087e96f9a655&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:6b4c7e43-b535-491b-8d31-ca6ba1c15fd1&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:95538f0f-bac0-45fa-8796-190a7a3e3fdd&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:533a3d0d-7c7e-40a7-b0c9-a0207f9d3a94&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:0cc343fb-1788-4765-867a-7a90e7ebd256&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:9240deb7-8980-460d-8b26-c1b828811eec&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:481f5239-cbbc-464a-8de0-4df861441f20&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:981b8414-0485-4014-8c0b-94393c0f29a0&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:d24e443c-507b-4f6b-a2f9-db85efed882f&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:4eda5cf9-5f7c-47ec-be60-23595f0ad2b2&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:ad9f4d38-a2e5-489c-a677-8bac37609eae&quot;
+        }
+      ],
+      &quot;fullUrl&quot;: &quot;urn:uuid:10ae2109-e0e2-4673-832c-76efc0d58722&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;Composition&quot;,
+        &quot;id&quot;: &quot;urn:uuid:10ae2109-e0e2-4673-832c-76efc0d58722&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/Pedigree&quot;
+          ]
+        },
+        &quot;status&quot;: &quot;final&quot;,
+        &quot;type&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://snomed.info/sct&quot;,
+              &quot;code&quot;: &quot;422432008&quot;
+            }
+          ]
+        },
+        &quot;subject&quot;: {
+          &quot;type&quot;: &quot;Patient&quot;,
+          &quot;reference&quot;: &quot;urn:uuid:04fffad7-9d2e-4954-8b9f-a1906c06d35e&quot;
+        },
+        &quot;date&quot;: &quot;2026-09-29T11:13:19-10:00&quot;,
+        &quot;author&quot;: {
+          &quot;type&quot;: &quot;Organization&quot;,
+          &quot;reference&quot;: &quot;urn:uuid:6974085a-e6a4-4d6d-a56b-983b3c80e417&quot;
+        },
+        &quot;title&quot;: &quot;Pedigree&quot;,
+        &quot;section&quot;: [
+          {
+            &quot;title&quot;: &quot;Proband&quot;,
+            &quot;code&quot;: {
+              &quot;coding&quot;: [
+                {
+                  &quot;system&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/CodeSystem/SectionType&quot;,
+                  &quot;code&quot;: &quot;proband&quot;
+                }
+              ]
+            },
+            &quot;entry&quot;: [
+              {
+                &quot;type&quot;: &quot;Patient&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:04fffad7-9d2e-4954-8b9f-a1906c06d35e&quot;
+              }
+            ]
+          },
+          {
+            &quot;title&quot;: &quot;Reason&quot;,
+            &quot;code&quot;: {
+              &quot;coding&quot;: [
+                {
+                  &quot;system&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/CodeSystem/SectionType&quot;,
+                  &quot;code&quot;: &quot;reason&quot;
+                }
+              ]
+            },
+            &quot;entry&quot;: [
+              {
+                &quot;type&quot;: &quot;Condition&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:9240deb7-8980-460d-8b26-c1b828811eec&quot;
+              }
+            ]
+          },
+          {
+            &quot;title&quot;: &quot;Individuals&quot;,
+            &quot;code&quot;: {
+              &quot;coding&quot;: [
+                {
+                  &quot;system&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/CodeSystem/SectionType&quot;,
+                  &quot;code&quot;: &quot;individuals&quot;
+                }
+              ]
+            },
+            &quot;entry&quot;: [
+              {
+                &quot;type&quot;: &quot;Patient&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:04fffad7-9d2e-4954-8b9f-a1906c06d35e&quot;
+              },
+              {
+                &quot;type&quot;: &quot;Patient&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:552aabfa-a57b-4859-9ddb-fda1b6c580c5&quot;
+              },
+              {
+                &quot;type&quot;: &quot;Patient&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:a604c7ee-e189-4280-ab66-8000c32ac876&quot;
+              },
+              {
+                &quot;type&quot;: &quot;Patient&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:65d70ca7-188a-45c8-aebd-a936d433fd2a&quot;
+              }
+            ]
+          },
+          {
+            &quot;title&quot;: &quot;Relationships&quot;,
+            &quot;code&quot;: {
+              &quot;coding&quot;: [
+                {
+                  &quot;system&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/CodeSystem/SectionType&quot;,
+                  &quot;code&quot;: &quot;relationships&quot;
+                }
+              ]
+            },
+            &quot;entry&quot;: [
+              {
+                &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:f6d7ffec-7a91-4f56-b45e-087e96f9a655&quot;
+              },
+              {
+                &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:6b4c7e43-b535-491b-8d31-ca6ba1c15fd1&quot;
+              },
+              {
+                &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:95538f0f-bac0-45fa-8796-190a7a3e3fdd&quot;
+              },
+              {
+                &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:533a3d0d-7c7e-40a7-b0c9-a0207f9d3a94&quot;
+              },
+              {
+                &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:0cc343fb-1788-4765-867a-7a90e7ebd256&quot;
+              }
+            ]
+          },
+          {
+            &quot;title&quot;: &quot;Other&quot;,
+            &quot;code&quot;: {
+              &quot;coding&quot;: [
+                {
+                  &quot;system&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/CodeSystem/SectionType&quot;,
+                  &quot;code&quot;: &quot;other&quot;
+                }
+              ]
+            },
+            &quot;entry&quot;: [
+              {
+                &quot;type&quot;: &quot;Condition&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:9240deb7-8980-460d-8b26-c1b828811eec&quot;
+              },
+              {
+                &quot;type&quot;: &quot;Observation&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:481f5239-cbbc-464a-8de0-4df861441f20&quot;
+              }
+            ]
+          },
+          {
+            &quot;title&quot;: &quot;Questionnaire Responses&quot;,
+            &quot;code&quot;: {
+              &quot;coding&quot;: [
+                {
+                  &quot;system&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/CodeSystem/SectionType&quot;,
+                  &quot;code&quot;: &quot;questionnaire-responses&quot;
+                }
+              ]
+            },
+            &quot;entry&quot;: [
+              {
+                &quot;type&quot;: &quot;QuestionnaireResponse&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:981b8414-0485-4014-8c0b-94393c0f29a0&quot;
+              },
+              {
+                &quot;type&quot;: &quot;QuestionnaireResponse&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:d24e443c-507b-4f6b-a2f9-db85efed882f&quot;
+              },
+              {
+                &quot;type&quot;: &quot;QuestionnaireResponse&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:4eda5cf9-5f7c-47ec-be60-23595f0ad2b2&quot;
+              },
+              {
+                &quot;type&quot;: &quot;QuestionnaireResponse&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:ad9f4d38-a2e5-489c-a677-8bac37609eae&quot;
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:6974085a-e6a4-4d6d-a56b-983b3c80e417&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;Organization&quot;,
+        &quot;id&quot;: &quot;urn:uuid:6974085a-e6a4-4d6d-a56b-983b3c80e417&quot;,
+        &quot;name&quot;: &quot;open-pedigree unknown author&quot;
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:04fffad7-9d2e-4954-8b9f-a1906c06d35e&quot;,
+      &quot;resource&quot;: {
+        &quot;id&quot;: &quot;urn:uuid:04fffad7-9d2e-4954-8b9f-a1906c06d35e&quot;,
+        &quot;resourceType&quot;: &quot;Patient&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeIndividual&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/patient-unborn&quot;,
+            &quot;valueBoolean&quot;: false
+          },
+          {
+            &quot;url&quot;: &quot;https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-ref&quot;,
+            &quot;valueString&quot;: &quot;record:3/instance:1&quot;
+          },
+          {
+            &quot;url&quot;: &quot;https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-snapshot&quot;,
+            &quot;valueString&quot;: &quot;{\u0022first_name\u0022:\u0022Noah\u0022,\u0022last_name\u0022:\u0022Demo\u0022,\u0022relationship\u0022:\u0022participant\u0022,\u0022sex\u0022:\u0022M\u0022,\u0022dob\u0022:\u00222020-02-11\u0022,\u0022adopted\u0022:false,\u0022life_status\u0022:\u0022alive\u0022,\u0022carrier_status\u0022:\u0022affected\u0022,\u0022ada2_tested\u0022:true,\u0022ada2_variants\u0022:\u0022unknown\u0022,\u0022ada2_level\u0022:\u0022low\u0022,\u0022notes\u0022:\u0022Genetic testing in progress.\u0022}&quot;
+          }
+        ],
+        &quot;gender&quot;: &quot;male&quot;,
+        &quot;birthDate&quot;: &quot;2020-02-11&quot;,
+        &quot;name&quot;: [
+          {
+            &quot;family&quot;: &quot;Demo&quot;,
+            &quot;given&quot;: [
+              &quot;Noah&quot;
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:552aabfa-a57b-4859-9ddb-fda1b6c580c5&quot;,
+      &quot;resource&quot;: {
+        &quot;id&quot;: &quot;urn:uuid:552aabfa-a57b-4859-9ddb-fda1b6c580c5&quot;,
+        &quot;resourceType&quot;: &quot;Patient&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeIndividual&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/patient-unborn&quot;,
+            &quot;valueBoolean&quot;: false
+          },
+          {
+            &quot;url&quot;: &quot;https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-ref&quot;,
+            &quot;valueString&quot;: &quot;record:3/instance:3&quot;
+          },
+          {
+            &quot;url&quot;: &quot;https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-snapshot&quot;,
+            &quot;valueString&quot;: &quot;{\u0022first_name\u0022:\u0022Ivan\u0022,\u0022last_name\u0022:\u0022Demo\u0022,\u0022relationship\u0022:\u0022father\u0022,\u0022sex\u0022:\u0022M\u0022,\u0022dob\u0022:\u00221988-05-17\u0022,\u0022adopted\u0022:false,\u0022life_status\u0022:\u0022alive\u0022,\u0022ada2_tested\u0022:false,\u0022ada2_variants\u0022:\u0022not_tested\u0022,\u0022ada2_level\u0022:\u0022not_tested\u0022}&quot;
+          }
+        ],
+        &quot;gender&quot;: &quot;male&quot;,
+        &quot;birthDate&quot;: &quot;1988-05-17&quot;,
+        &quot;name&quot;: [
+          {
+            &quot;family&quot;: &quot;Demo&quot;,
+            &quot;given&quot;: [
+              &quot;Ivan&quot;
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:a604c7ee-e189-4280-ab66-8000c32ac876&quot;,
+      &quot;resource&quot;: {
+        &quot;id&quot;: &quot;urn:uuid:a604c7ee-e189-4280-ab66-8000c32ac876&quot;,
+        &quot;resourceType&quot;: &quot;Patient&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeIndividual&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/patient-unborn&quot;,
+            &quot;valueBoolean&quot;: false
+          },
+          {
+            &quot;url&quot;: &quot;https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-ref&quot;,
+            &quot;valueString&quot;: &quot;record:3/instance:2&quot;
+          },
+          {
+            &quot;url&quot;: &quot;https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-snapshot&quot;,
+            &quot;valueString&quot;: &quot;{\u0022first_name\u0022:\u0022Clare\u0022,\u0022last_name\u0022:\u0022Demo\u0022,\u0022relationship\u0022:\u0022mother\u0022,\u0022sex\u0022:\u0022F\u0022,\u0022dob\u0022:\u00221990-08-03\u0022,\u0022adopted\u0022:false,\u0022life_status\u0022:\u0022alive\u0022,\u0022ada2_tested\u0022:false,\u0022ada2_variants\u0022:\u0022not_tested\u0022,\u0022ada2_level\u0022:\u0022not_tested\u0022}&quot;
+          }
+        ],
+        &quot;gender&quot;: &quot;female&quot;,
+        &quot;birthDate&quot;: &quot;1990-08-03&quot;,
+        &quot;name&quot;: [
+          {
+            &quot;family&quot;: &quot;Demo&quot;,
+            &quot;given&quot;: [
+              &quot;Clare&quot;
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:65d70ca7-188a-45c8-aebd-a936d433fd2a&quot;,
+      &quot;resource&quot;: {
+        &quot;id&quot;: &quot;urn:uuid:65d70ca7-188a-45c8-aebd-a936d433fd2a&quot;,
+        &quot;resourceType&quot;: &quot;Patient&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeIndividual&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/patient-unborn&quot;,
+            &quot;valueBoolean&quot;: false
+          }
+        ],
+        &quot;gender&quot;: &quot;female&quot;
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:f6d7ffec-7a91-4f56-b45e-087e96f9a655&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+        &quot;id&quot;: &quot;urn:uuid:f6d7ffec-7a91-4f56-b45e-087e96f9a655&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeRelationship&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/familymemberhistory-patient-record&quot;,
+            &quot;valueReference&quot;: {
+              &quot;reference&quot;: &quot;urn:uuid:a604c7ee-e189-4280-ab66-8000c32ac876&quot;
+            }
+          }
+        ],
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;patient&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:552aabfa-a57b-4859-9ddb-fda1b6c580c5&quot;
+        },
+        &quot;relationship&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+              &quot;code&quot;: &quot;KIN:026&quot;,
+              &quot;display&quot;: &quot;isPartner&quot;
+            }
+          ]
+        }
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:6b4c7e43-b535-491b-8d31-ca6ba1c15fd1&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+        &quot;id&quot;: &quot;urn:uuid:6b4c7e43-b535-491b-8d31-ca6ba1c15fd1&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeRelationship&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/familymemberhistory-patient-record&quot;,
+            &quot;valueReference&quot;: {
+              &quot;reference&quot;: &quot;urn:uuid:552aabfa-a57b-4859-9ddb-fda1b6c580c5&quot;
+            }
+          }
+        ],
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;patient&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:04fffad7-9d2e-4954-8b9f-a1906c06d35e&quot;
+        },
+        &quot;relationship&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+              &quot;code&quot;: &quot;KIN:028&quot;,
+              &quot;display&quot;: &quot;isBiologicalFather&quot;
+            }
+          ]
+        }
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:95538f0f-bac0-45fa-8796-190a7a3e3fdd&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+        &quot;id&quot;: &quot;urn:uuid:95538f0f-bac0-45fa-8796-190a7a3e3fdd&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeRelationship&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/familymemberhistory-patient-record&quot;,
+            &quot;valueReference&quot;: {
+              &quot;reference&quot;: &quot;urn:uuid:a604c7ee-e189-4280-ab66-8000c32ac876&quot;
+            }
+          }
+        ],
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;patient&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:04fffad7-9d2e-4954-8b9f-a1906c06d35e&quot;
+        },
+        &quot;relationship&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+              &quot;code&quot;: &quot;KIN:027&quot;,
+              &quot;display&quot;: &quot;isBiologicalMother&quot;
+            }
+          ]
+        }
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:533a3d0d-7c7e-40a7-b0c9-a0207f9d3a94&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+        &quot;id&quot;: &quot;urn:uuid:533a3d0d-7c7e-40a7-b0c9-a0207f9d3a94&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeRelationship&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/familymemberhistory-patient-record&quot;,
+            &quot;valueReference&quot;: {
+              &quot;reference&quot;: &quot;urn:uuid:552aabfa-a57b-4859-9ddb-fda1b6c580c5&quot;
+            }
+          }
+        ],
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;patient&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:65d70ca7-188a-45c8-aebd-a936d433fd2a&quot;
+        },
+        &quot;relationship&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+              &quot;code&quot;: &quot;KIN:028&quot;,
+              &quot;display&quot;: &quot;isBiologicalFather&quot;
+            }
+          ]
+        }
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:0cc343fb-1788-4765-867a-7a90e7ebd256&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+        &quot;id&quot;: &quot;urn:uuid:0cc343fb-1788-4765-867a-7a90e7ebd256&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeRelationship&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/familymemberhistory-patient-record&quot;,
+            &quot;valueReference&quot;: {
+              &quot;reference&quot;: &quot;urn:uuid:a604c7ee-e189-4280-ab66-8000c32ac876&quot;
+            }
+          }
+        ],
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;patient&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:65d70ca7-188a-45c8-aebd-a936d433fd2a&quot;
+        },
+        &quot;relationship&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+              &quot;code&quot;: &quot;KIN:027&quot;,
+              &quot;display&quot;: &quot;isBiologicalMother&quot;
+            }
+          ]
+        }
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:9240deb7-8980-460d-8b26-c1b828811eec&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;Condition&quot;,
+        &quot;id&quot;: &quot;urn:uuid:9240deb7-8980-460d-8b26-c1b828811eec&quot;,
+        &quot;subject&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:04fffad7-9d2e-4954-8b9f-a1906c06d35e&quot;
+        },
+        &quot;code&quot;: {
+          &quot;text&quot;: &quot;affected&quot;
+        }
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:481f5239-cbbc-464a-8de0-4df861441f20&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;Observation&quot;,
+        &quot;id&quot;: &quot;urn:uuid:481f5239-cbbc-464a-8de0-4df861441f20&quot;,
+        &quot;status&quot;: &quot;preliminary&quot;,
+        &quot;code&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://loinc.org&quot;,
+              &quot;code&quot;: &quot;96172-2&quot;,
+              &quot;display&quot;: &quot;Clinical genetics Evaluation note&quot;
+            }
+          ]
+        },
+        &quot;subject&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:04fffad7-9d2e-4954-8b9f-a1906c06d35e&quot;
+        },
+        &quot;valueBoolean&quot;: true
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:981b8414-0485-4014-8c0b-94393c0f29a0&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;QuestionnaireResponse&quot;,
+        &quot;id&quot;: &quot;urn:uuid:981b8414-0485-4014-8c0b-94393c0f29a0&quot;,
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;subject&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:04fffad7-9d2e-4954-8b9f-a1906c06d35e&quot;
+        },
+        &quot;item&quot;: [
+          {
+            &quot;linkId&quot;: &quot;first_name&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Noah&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;last_name&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Demo&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;relationship&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;participant&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;sex&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;M&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;dob&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueDate&quot;: &quot;Tue Feb 11 2020&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;carrier_status&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;affected&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;ada2_tested&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueBoolean&quot;: true
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;ada2_variants&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;unknown&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;ada2_level&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;low&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;notes&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Genetic testing in progress.&quot;
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:d24e443c-507b-4f6b-a2f9-db85efed882f&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;QuestionnaireResponse&quot;,
+        &quot;id&quot;: &quot;urn:uuid:d24e443c-507b-4f6b-a2f9-db85efed882f&quot;,
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;subject&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:552aabfa-a57b-4859-9ddb-fda1b6c580c5&quot;
+        },
+        &quot;item&quot;: [
+          {
+            &quot;linkId&quot;: &quot;first_name&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Ivan&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;last_name&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Demo&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;relationship&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;father&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;sex&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;M&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;dob&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueDate&quot;: &quot;Tue May 17 1988&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;ada2_variants&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;not_tested&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;ada2_level&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;not_tested&quot;
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:4eda5cf9-5f7c-47ec-be60-23595f0ad2b2&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;QuestionnaireResponse&quot;,
+        &quot;id&quot;: &quot;urn:uuid:4eda5cf9-5f7c-47ec-be60-23595f0ad2b2&quot;,
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;subject&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:a604c7ee-e189-4280-ab66-8000c32ac876&quot;
+        },
+        &quot;item&quot;: [
+          {
+            &quot;linkId&quot;: &quot;first_name&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Clare&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;last_name&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Demo&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;relationship&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;mother&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;sex&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;F&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;dob&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueDate&quot;: &quot;Fri Aug 03 1990&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;ada2_variants&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;not_tested&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;ada2_level&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;not_tested&quot;
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:ad9f4d38-a2e5-489c-a677-8bac37609eae&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;QuestionnaireResponse&quot;,
+        &quot;id&quot;: &quot;urn:uuid:ad9f4d38-a2e5-489c-a677-8bac37609eae&quot;,
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;subject&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:65d70ca7-188a-45c8-aebd-a936d433fd2a&quot;
+        },
+        &quot;item&quot;: [
+          {
+            &quot;linkId&quot;: &quot;sex&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;F&quot;
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}"/>
+					<ItemData ItemOID="parents_related" Value="1"/>
+					<ItemData ItemOID="family_history_notes" Value="Parents are first cousins. An older sister has not been entered on the Family members form yet."/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_history.family_history_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="family_history_complete" Value="0"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.family_members" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="family_members.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Noah"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Demo"/>
+					<ItemData ItemOID="relationship" Value="participant"/>
+					<ItemData ItemOID="sex" Value="M"/>
+					<ItemData ItemOID="dob" Value="2020-02-11"/>
+					<ItemData ItemOID="adopted" Value="0"/>
+					<ItemData ItemOID="life_status" Value="alive"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.carrier_status" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="carrier_status" Value="affected"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.ada2_tested" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="ada2_tested" Value="1"/>
+					<ItemData ItemOID="ada2_variants" Value="unknown"/>
+					<ItemData ItemOID="ada2_level" Value="low"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.notes" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="notes" Value="Genetic testing in progress."/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.family_members_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="family_members_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.family_members" FormRepeatKey="2">
+				<ItemGroupData ItemGroupOID="family_members.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Clare"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Demo"/>
+					<ItemData ItemOID="relationship" Value="mother"/>
+					<ItemData ItemOID="sex" Value="F"/>
+					<ItemData ItemOID="dob" Value="1990-08-03"/>
+					<ItemData ItemOID="adopted" Value="0"/>
+					<ItemData ItemOID="life_status" Value="alive"/>
+					<ItemData ItemOID="ada2_tested" Value="0"/>
+					<ItemData ItemOID="ada2_variants" Value="not_tested"/>
+					<ItemData ItemOID="ada2_level" Value="not_tested"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.family_members_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="family_members_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.family_members" FormRepeatKey="3">
+				<ItemGroupData ItemGroupOID="family_members.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Ivan"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Demo"/>
+					<ItemData ItemOID="relationship" Value="father"/>
+					<ItemData ItemOID="sex" Value="M"/>
+					<ItemData ItemOID="dob" Value="1988-05-17"/>
+					<ItemData ItemOID="adopted" Value="0"/>
+					<ItemData ItemOID="life_status" Value="alive"/>
+					<ItemData ItemOID="ada2_tested" Value="0"/>
+					<ItemData ItemOID="ada2_variants" Value="not_tested"/>
+					<ItemData ItemOID="ada2_level" Value="not_tested"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.family_members_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="family_members_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.family_members" FormRepeatKey="4">
+				<ItemGroupData ItemGroupOID="family_members.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Beth"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Lowe"/>
+					<ItemData ItemOID="relationship" Value="aunt_uncle_maternal"/>
+					<ItemData ItemOID="sex" Value="F"/>
+					<ItemData ItemOID="dob" Value="1987-12-09"/>
+					<ItemData ItemOID="adopted" Value="0"/>
+					<ItemData ItemOID="life_status" Value="alive"/>
+					<ItemData ItemOID="ada2_tested" Value="0"/>
+					<ItemData ItemOID="ada2_variants" Value="unknown"/>
+					<ItemData ItemOID="ada2_level" Value="unknown"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.notes" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="notes" Value="Not yet drawn on the pedigree."/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_members.family_members_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="family_members_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+		</StudyEventData>
+	</SubjectData>
+</ClinicalData>
+</ODM>
