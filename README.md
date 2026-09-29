@@ -4,7 +4,7 @@ The pedigree editor external module allows a notes field to be marked with an an
 
 The module will then hide or disable the notes field and instead spawn a new window to allow the entry of the pedigree diagram. The diagram will then be serialised as a FHIR Composition JSON string and written into the notes field. 
 The pedigree editor used is based on [https://github.com/aehrc/open-pedigree](https://github.com/aehrc/open-pedigree) which is an open version of the phenotips pedigree editor.
-The module bundles a build of an open-pedigree release (currently [1.4.4](https://github.com/aehrc/open-pedigree/releases/tag/open-pedigree-v1.4.4)) in `open-pedigree/dist/`.
+The module bundles a build of an open-pedigree release (currently [1.4.5](https://github.com/aehrc/open-pedigree/releases/tag/open-pedigree-v1.4.5)) in `open-pedigree/dist/`.
 
 **[Try the pedigree editor in the live demo](https://aehrc.github.io/open-pedigree/)**: the stand-alone editor, running in your browser with no REDCap. Linking pedigree people to REDCap records, and saving diagrams into REDCap fields, needs this module.
 The plugin also makes use of [pako](https://github.com/nodeca/pako) a javascript implementation of the Zlib library.
@@ -53,6 +53,8 @@ representation of the diagram, add compression for large diagrams.
   JSON pedigrees are stored so they survive moving a project by XML or re-importing its data (see
   [Moving a project](#moving-a-project)), and the size limit is checked in stored bytes, so a large pedigree is no
   longer cut short.
+  Pedigrees saved in the legacy FHIR format (by versions before v0.3) open again, and are saved in the GA4GH format:
+  the *fhir_v1* storage format is now read only (see [Upgrade Issues](#upgrade-issues)).
   **Breaking**: remove the **@PEDIGREE_HPO**/**@PEDIGREE_SCT** action tags. Terminology is now always taken from
   the project/system *Default Terminology* setting — existing fields tagged **@PEDIGREE_HPO**/**@PEDIGREE_SCT** will stop
   being recognised as pedigree fields; update them to a bare **@PEDIGREE** tag and set *Default Terminology* accordingly.
@@ -84,8 +86,8 @@ Once installed the module has a number of system-wide options:
    diagram will likely not make sense to anyone so this option should probably set to true.
  - *Allow Manual Entry* - Normal if the text area is shown it is made readonly to prevent accidental entry. This option
    allow manual entry into the field (it is recommended not to enable this).
- - *Storage Format* - Allows the selection of which Storage format to use. This is to allow the legacy FHIR format used for 
-   version prior to v0.3 to continue to be used. The GA4GH format is recommended. In version 0.4 five new formats were 
+ - *Storage Format* - Allows the selection of which Storage format to use. The *fhir_v1* option is for projects that used the
+   legacy FHIR format of versions before v0.3. The GA4GH format is recommended. In version 0.4 five new formats were 
    added, ***PED***, ***PEDX***, ***DADA2***, ***DADA2X*** and ***internal***. ***PED*** is a very simple format that 
    only captures the base structure of the pedigree, it was added to allow piping to construct a basic pedigree. 
    ***PEDX*** is an extension to this that wraps the ***PED*** format in an XML document to allow the resulting SVG image
@@ -94,7 +96,8 @@ Once installed the module has a number of system-wide options:
    is not documented and may not be compatible with future versions of the external module but should allow the best 
    round tripping. This format, PED and DADA2 do not include a svg version of the pedigree diagram so will not show the
    diagram except when the diagram is saved into the system. This is the system-wide setting, there is also a project 
-   level storage format setting which can be used to override this.
+   level storage format setting which can be used to override this. Since 1.0.0 the legacy FHIR format is read but no
+   longer written: a pedigree saved in it opens when *fhir_v1* or *GA4GH* is selected, and *fhir_v1* saves in the GA4GH format.
  - *Compress Data* - Specifies how to deal with large diagrams. The fhir format returned from the open_pedigree editor 
    will now have a new section called 'Pedigree Diagram' which will contain a DocumentReference which will have an SVG 
    representation of the pedigree diagram. This diagram will be used by the redcap plugin to show the pedigree diagram. 
@@ -509,10 +512,10 @@ Version 0.3 of this plugin stores data using the fhir format developed by GA4GH 
 Information on the proposed format can be found https://github.com/GA4GH-Pedigree-Standard/pedigree-fhir-ig
 This is a different format to ealier version of the plugin.
 
-Versions of the module before v0.3 use a different FHIR based representation. The open-pedigree editor can read both formats,
-the old format is referred to as `Legacy FHIR` in the editor. If you have an existing project and wish to
-move existing pedigree diagrams to use the new format, it will be necessary to open the diagrams in the editor and resave
-the diagram to move it into the new format.
+Versions of the module before v0.3 use a different FHIR based representation, referred to as `Legacy FHIR` (*fhir_v1*).
+The open-pedigree editor reads both formats when *Storage Format* is *fhir_v1* or *GA4GH* (the PED, DADA2 and internal
+formats can't read it), and saves a pedigree opened from the old format in the new one, so opening and saving a diagram moves it into the new format. (From v0.4 until 1.0.0 the
+bundled editor could neither read nor write the old format.)
 
 The open-pedigree editor has three different lookups which are queried from a FHIR terminology server.
 These are in the clinical tab of a person and are disorders, genes and phenotypic features. For versions
@@ -682,11 +685,12 @@ DADA2 4 3 2 2 3 1
 ```
 
 # Legacy FHIR Formation Limitations
-Unfortunately the legacy FHIR format specification does not map all the data field in the open-pedigree editor into the
+Since 1.0.0 the legacy FHIR format is only read, never written; this section describes pedigrees saved in it by earlier
+versions. Unfortunately the legacy FHIR format specification does not map all the data field in the open-pedigree editor into the
 format. Additionally, some aspects of the mapping do not translate directly, where possible
 naming conventions are used to try and account for these. For example the FHIR FamilyHistory resource has a single
-name field which is a string. The pedigree editor has a first name, last name and a last name at birth, this will
-be written into the FamilyHistory resource as <first name> <last name> (<last name at birth>). When importing the FHIR
+name field which is a string. The pedigree editor has a first name, last name and a last name at birth, these were
+written into the FamilyHistory resource as <first name> <last name> (<last name at birth>). When importing the FHIR
 resource everything but the last word is the first name a trailing '(name)' will be taken as last name at birth.
 
 Heredity options - This can be 'Childless' or 'Infertile' in the editor, but is not currently stored on the fhir resource.
