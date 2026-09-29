@@ -225,6 +225,50 @@ class RedcapInstrumentRowImporterTest extends TestCase
         $this->assertSame([['linkId' => 'disorders', 'value' => [['id' => '1', 'name' => 'One'], ['id' => '2', 'name' => 'Two']]]], $both);
     }
 
+    public function testASingleValueFieldFeedingALegendGivesItOneEntry(): void
+    {
+        $legendField = function (string $name) {
+            return $this->field(['redcapField' => $name, 'linkId' => 'disorders']);
+        };
+        // redcap_fhir_ontology_provider stores code|system
+        $answers = RedcapInstrumentRowImporter::buildAnswers(['dx' => 'C0000001|http://example.org/cs'], [$legendField('dx')]);
+        $this->assertSame([['linkId' => 'disorders', 'value' => [['id' => 'C0000001', 'name' => 'C0000001']]]], $answers);
+        // advanced_fhir_ontology_provider stores a bare code
+        $answers = RedcapInstrumentRowImporter::buildAnswers(['dx' => '71641006'], [$legendField('dx')]);
+        $this->assertSame([['id' => '71641006', 'name' => '71641006']], $answers[0]['value']);
+        // empty is null, like any empty field
+        $answers = RedcapInstrumentRowImporter::buildAnswers(['dx' => ''], [$legendField('dx')]);
+        $this->assertSame([['linkId' => 'disorders', 'value' => null]], $answers);
+    }
+
+    public function testSeveralSingleValueFieldsFeedingALegendAreCombined(): void
+    {
+        $legendField = function (string $name) {
+            return $this->field(['redcapField' => $name, 'linkId' => 'disorders']);
+        };
+        $fields = [$legendField('primary'), $legendField('secondary'), $legendField('third')];
+        $answers = RedcapInstrumentRowImporter::buildAnswers(
+            ['primary' => '111|http://snomed.info/sct', 'secondary' => '', 'third' => '222|http://snomed.info/sct'],
+            $fields
+        );
+        $this->assertSame([['linkId' => 'disorders', 'value' => [['id' => '111', 'name' => '111'], ['id' => '222', 'name' => '222']]]], $answers);
+        // the same code twice is one entry; none filled is null
+        $answers = RedcapInstrumentRowImporter::buildAnswers(['primary' => '111', 'secondary' => '111|http://snomed.info/sct', 'third' => ''], $fields);
+        $this->assertSame([['id' => '111', 'name' => '111']], $answers[0]['value']);
+        $answers = RedcapInstrumentRowImporter::buildAnswers(['primary' => '', 'secondary' => '', 'third' => ''], $fields);
+        $this->assertSame([['linkId' => 'disorders', 'value' => null]], $answers);
+    }
+
+    public function testASingleChoiceFeedingALegendUsesItsLabel(): void
+    {
+        // e.g. an ADVANCED-mode Questionnaire item "disorders" sourced from a dropdown
+        $answers = RedcapInstrumentRowImporter::buildAnswers(
+            ['dx' => '615688'],
+            [$this->field(['redcapField' => 'dx', 'linkId' => 'disorders', 'type' => 'choice', 'choices' => ['615688' => 'ADA2 deficiency']])]
+        );
+        $this->assertSame([['id' => '615688', 'name' => 'ADA2 deficiency']], $answers[0]['value']);
+    }
+
     public function testSingleValueSharingALinkIdTakesTheFirstNonEmpty(): void
     {
         $answers = RedcapInstrumentRowImporter::buildAnswers(

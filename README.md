@@ -53,6 +53,9 @@ representation of the diagram, add compression for large diagrams.
   JSON pedigrees are stored so they survive moving a project by XML or re-importing its data (see
   [Moving a project](#moving-a-project)), and the size limit is checked in stored bytes, so a large pedigree is no
   longer cut short.
+  `@PEDIGREE_FIELD(legend=...)` works: an ontology field (either FHIR ontology provider) can put a disorder, gene or
+  phenotype on the pedigree's legend, and several fields can feed one legend. Before, it required a field shape REDCap
+  can't produce.
   Pedigrees saved in the legacy FHIR format (by versions before v0.3) open again, and are saved in the GA4GH format:
   the *fhir_v1* storage format is now read only (see [Upgrade Issues](#upgrade-issues)).
   **Breaking**: remove the **@PEDIGREE_HPO**/**@PEDIGREE_SCT** action tags. Terminology is now always taken from
@@ -302,13 +305,27 @@ fields are never included - this is opt-in, the same way `@PEDIGREE` marks the o
   | `evaluated` | `yesno`/`truefalse` (boolean) | |
   | `lostContact` | `yesno`/`truefalse` (boolean) | |
 
-- **`@PEDIGREE_FIELD(legend="<target>")`** - map a **repeating checkbox** field, already configured against
-  `advanced_fhir_ontology_provider` (with a URL-type valueset), onto one of the three reserved legend targets:
-  `disorders`, `candidate_genes`, `hpo_positive`. A successful legend mapping sets the item's `linkId` to the target
-  name itself (not the REDCap field name) - this is required for the answer to reach the pedigree diagram's real
-  colour-coded Disorder/Gene/Phenotype legend rather than becoming an orphaned generic item. If the field isn't a
-  repeating, ontology-provider-backed choice field, the mapping is dropped (with a logged warning) and the field falls
-  back to a plain item.
+- **`@PEDIGREE_FIELD(legend="<target>")`** - put the field's value on one of the pedigree's three colour-coded
+  legends: `disorders`, `candidate_genes` or `hpo_positive`. The field must be a REDCap **ontology field**: a *Text Box*
+  whose ontology search is set to a FHIR value set, through either
+  [redcap_fhir_ontology_provider](https://github.com/aehrc/redcap_fhir_ontology_provider) or
+  [advanced_fhir_ontology_provider](https://github.com/aehrc/redcap_advanced_fhir_ontology) (with a URL-type
+  valueset). Each field gives the legend one entry, and several fields can feed the same legend - e.g. a
+  *Primary condition* and an *Other condition* field, both `legend="disorders"`. If the field isn't an ontology field
+  bound to a value set, the mapping is dropped (with a logged warning) and the field falls back to a plain item.
+
+  Only the code is taken from the field: the pedigree editor looks the name up itself, through the module's
+  terminology server (CSIRO Ontoserver, `https://tx.ontoserver.csiro.au/fhir`, by default), and the GA4GH export
+  writes the code in the editor's code system for that legend. So **bind the field to a value set in that same code
+  system**, which depends on *Default Terminology*:
+
+  | Legend | *SnomedCT* | *HPO + omim* | *Custom* |
+  |---|---|---|---|
+  | `disorders` | SNOMED CT (`http://snomed.info/sct`) | OMIM (`http://www.omim.org`) | the custom disorder system |
+  | `hpo_positive` | SNOMED CT (`http://snomed.info/sct`) | HPO (`http://purl.obolibrary.org/obo/hp.owl`) | the custom phenotype system |
+  | `candidate_genes` | HGNC (`http://purl.bioontology.org/ontology/HGNC/hgnc.owl`) | HGNC (same) | the custom gene system |
+
+  A code from another system gets no name (it's shown as the code) and is exported under the wrong system.
 - **`@PEDIGREE_FIELD(predicate="<name>")`** - layer a graph/app-state visibility condition onto the field, for cases
   `branching_logic` has no way to express (e.g. twin-group membership). Recognised predicates: `isFetus`,
   `hasRelationships`, `isProband`, `isRelatedToProband`, `hasToBeAdopted`, `isTwin`, `isTwinWithConsistentGender`,
@@ -335,11 +352,13 @@ form is assembled from the above:
 
 - **Tags only** (default) - the form is built entirely from `@PEDIGREE_FIELD`-tagged fields, grouped into tabs as
   described above, plus the *Linked Record* tab. Nothing else is included - no disorders/genes/phenotypes legend
-  unless you tag fields for it (and even then, cardinality is limited to whatever a single REDCap field can hold).
+  unless you tag fields for it (each tagged field adds one entry).
 - **Default + tags** - starts from `open-pedigree`'s own built-in default form (name, gender, date of birth, the full
   disorders/genes/phenotypes legend with live terminology search, etc. - entered directly in the pedigree editor, not
   imported from REDCap) and adds a new tab for whatever `@PEDIGREE_FIELD`-tagged fields you've configured. This is the
-  easiest way to get a fully-featured form with no manual Questionnaire authoring at all.
+  easiest way to get a fully-featured form with no manual Questionnaire authoring at all. The built-in legends stay
+  editable for everyone, so a `legend=` tag is ignored in this mode (with a logged warning) and the field shows as a
+  plain linked item.
 - **Advanced** - you supply your own FHIR Questionnaire directly (see below). `@PEDIGREE_FIELD` tags are **not**
   scanned in this mode at all.
 
@@ -398,8 +417,9 @@ A few starting examples:
 }
 ```
 
-**A disorders legend field**, importing from a REDCap checkbox field configured against `advanced_fhir_ontology_provider`
-(same shape the *Default + tags*/*Tags only* modes generate for `@PEDIGREE_FIELD(legend="disorders")`):
+**A disorders legend**, fed by a REDCap ontology field (the shape *Tags only* mode generates for
+`@PEDIGREE_FIELD(legend="disorders")`; add a `questionnaire-redcap-source` extension for each further field that
+should feed it):
 
 ```json
 {
@@ -501,6 +521,13 @@ Maya's (the participant's) *Linked Record* tab, with the values from her row:
      limit, so without compression its diagram would be dropped the next time it's saved.
 
    Set the last two here rather than relying on the system settings, which may be unset.
+
+**Adding a legend.** The example doesn't need an ontology provider, so it has no legend fields. To try them, enable
+[redcap_fhir_ontology_provider](https://github.com/aehrc/redcap_fhir_ontology_provider) on the project, add a *Text
+Box* to *Family members* with its ontology search set to a SNOMED CT value set (e.g. `http://snomed.info/sct?fhir_vs=refset/32570581000036105`)
+and the annotation `@PEDIGREE_FIELD(legend="disorders")`, and set *Default Terminology* to *SnomedCT*. A condition entered on
+a person's row then shows on the pedigree's disorders legend once the person is linked (see
+[the `@PEDIGREE_FIELD` action tag](#the-pedigree_field-action-tag)).
 
 The XML was exported from REDCap 16.0.32 and hasn't been tested on earlier versions. `data-dictionary.csv` beside it
 holds the instruments alone, e.g. to add them to an existing project (the events and the repeating setup then need

@@ -125,6 +125,19 @@ class RedcapInstrumentRowImporter
         }
         $raw = $rowData[$fieldName];
 
+        if (array_key_exists($field['linkId'], QuestionnaireDerivation::RESERVED_LEGEND_TARGETS)) {
+            // A single-value field feeding a legend gives it one entry: typically an ontology
+            // field, stored as `code|system` (redcap_fhir_ontology_provider) or a bare code
+            // (advanced_fhir_ontology_provider). Only the code is kept - open-pedigree keeps just
+            // a legend entry's id, and looks its name up in the editor's code system for that
+            // legend - so the name is the choice label if there is one, else the code.
+            $code = trim(explode('|', (string) $raw, 2)[0]);
+            if ($code === '') {
+                return null;
+            }
+            return [['id' => $code, 'name' => (string) ($field['choices'][$code] ?? $code)]];
+        }
+
         switch ($field['type']) {
             case 'boolean':
                 return $raw === '1' || strtolower((string) $raw) === 'true';

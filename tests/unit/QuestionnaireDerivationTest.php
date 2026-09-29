@@ -189,22 +189,146 @@ class QuestionnaireDerivationTest extends TestCase
         $this->assertStringContainsString('name_field', $result['warnings'][0]);
     }
 
-    public function testLegendParameterSetsLegendMappingAndOverridesLinkId(): void
+    /**
+     * An ontology field as REDCap has it: a `text` field whose binding (here
+     * redcap_fhir_ontology_provider's) is in its choices column, resolved by
+     * the caller to a value set.
+     */
+    private function ontologyField(string $annotation, array $overrides = []): array
     {
-        $dd = ['family_disorders' => $this->field([
-            'field_type' => 'checkbox',
-            'field_annotation' => '@PEDIGREE_FIELD(legend="disorders")',
-        ])];
-        $result = QuestionnaireDerivation::derive($dd, 'family_members', [
-            'family_disorders' => 'http://purl.bioontology.org/ontology/OMIM',
-        ]);
+        return $this->field(array_merge([
+            'field_type' => 'text',
+            'select_choices_or_calculations' => 'FHIR:' . self::SCT_VS,
+            'field_annotation' => $annotation,
+        ], $overrides));
+    }
+
+    const SCT_VS = 'http://snomed.info/sct?fhir_vs=refset/32570581000036105';
+
+    private function sourceFields(array $item): array
+    {
+        $fields = [];
+        foreach ($item['extension'] as $ext) {
+            if ($ext['url'] === QuestionnaireDerivation::REDCAP_SOURCE_EXTENSION_URL) {
+                $fields[] = $ext['extension'][1]['valueString'];
+            }
+        }
+        return $fields;
+    }
+
+    public function testLegendParameterOnAnOntologyFieldMakesTheLegendItem(): void
+    {
+        $dd = ['condition' => $this->ontologyField('@PEDIGREE_FIELD(legend="disorders")', ['required_field' => 'y'])];
+        $result = QuestionnaireDerivation::derive($dd, 'family_members', ['condition' => self::SCT_VS]);
         $flat = $this->flatten($result['questionnaire']);
-        $this->assertArrayHasKey('disorders', $flat);
-        $this->assertArrayNotHasKey('family_disorders', $flat);
+        $this->assertSame([], $result['warnings']);
+        $this->assertArrayNotHasKey('condition', $flat);
+        $legend = $flat['disorders'];
+        $this->assertSame('A field', $legend['text']); // one field: its own label
+        // The shape open-pedigree requires of a legend item.
+        $this->assertSame('choice', $legend['type']);
+        $this->assertTrue($legend['repeats']);
+        $this->assertSame(self::SCT_VS, $legend['answerValueSet']);
+        $this->assertArrayNotHasKey('answerOption', $legend);
+        $this->assertArrayNotHasKey('required', $legend);
         $this->assertContains(
             ['url' => QuestionnaireDerivation::MAPPING_EXTENSION_URL, 'valueCode' => 'mapsToLegendCondition'],
-            $flat['disorders']['extension']
+            $legend['extension']
         );
+        $this->assertSame(['condition'], $this->sourceFields($legend));
+    }
+
+    public function testLegendParameterOnAFieldThatCantBeALegendIsRejected(): void
+    {
+        $cases = [
+            'a checkbox, even with a value set' => [$this->field(['field_type' => 'checkbox', 'select_choices_or_calculations' => '1, One',
+                'field_annotation' => '@PEDIGREE_FIELD(legend="disorders")']), self::SCT_VS],
+            'a plain text field' => [$this->field(['field_annotation' => '@PEDIGREE_FIELD(legend="disorders")']), null],
+            'a date field with a value set' => [$this->ontologyField('@PEDIGREE_FIELD(legend="disorders")',
+                ['text_validation_type_or_show_slider_number' => 'date_ymd']), self::SCT_VS],
+        ];
+        foreach ($cases as $case => [$field, $valueSet]) {
+            $result = QuestionnaireDerivation::derive(['dx' => $field], 'family_members', $valueSet ? ['dx' => $valueSet] : []);
+            $flat = $this->flatten($result['questionnaire']);
+            $this->assertArrayHasKey('dx', $flat, $case);
+            $this->assertArrayNotHasKey('disorders', $flat, $case);
+            $this->assertCount(1, $result['warnings'], $case);
+            $this->assertStringContainsString('"dx"', $result['warnings'][0], $case);
+        }
+    }
+
+    public function testSeveralFieldsFeedOneLegend(): void
+    {
+        $dd = [
+            'primary_condition' => $this->ontologyField('@PEDIGREE_FIELD(legend="disorders")', ['field_label' => 'Primary condition']),
+            'other' => $this->field(['field_annotation' => '@PEDIGREE_FIELD']),
+            'secondary_condition' => $this->ontologyField('@PEDIGREE_FIELD(legend="disorders")'),
+            'gene' => $this->ontologyField('@PEDIGREE_FIELD(legend="candidate_genes")'),
+        ];
+        $result = QuestionnaireDerivation::derive($dd, 'family_members', [
+            'primary_condition' => self::SCT_VS, 'secondary_condition' => self::SCT_VS, 'gene' => 'http://www.genenames.org/vs',
+        ]);
+        $this->assertSame([], $result['warnings']);
+        $flat = $this->flatten($result['questionnaire']);
+        $this->assertSame(['disorders', 'other', 'candidate_genes'], array_keys($flat));
+        // fed by two fields, so the legend's own label, not either field's
+        $this->assertSame('Disorders', $flat['disorders']['text']);
+        $this->assertSame('A field', $flat['candidate_genes']['text']);
+        $this->assertSame(['primary_condition', 'secondary_condition'], $this->sourceFields($flat['disorders']));
+        $this->assertSame(['gene'], $this->sourceFields($flat['candidate_genes']));
+    }
+
+    public function testBranchingLogicCantReferenceAFieldThatFeedsALegend(): void
+    {
+        // Its value is in the legend, which enableWhen can't see - like any mapped field.
+        $dd = [
+            'primary_condition' => $this->ontologyField('@PEDIGREE_FIELD(legend="disorders")'),
+            'secondary_condition' => $this->ontologyField('@PEDIGREE_FIELD(legend="disorders")'),
+            'notes' => $this->field(['field_annotation' => '@PEDIGREE_FIELD', 'branching_logic' => "[secondary_condition] = '111'"]),
+        ];
+        $result = QuestionnaireDerivation::derive($dd, 'family_members', ['primary_condition' => self::SCT_VS, 'secondary_condition' => self::SCT_VS]);
+        $this->assertArrayNotHasKey('enableWhen', $this->flatten($result['questionnaire'])['notes']);
+        $this->assertNotEmpty($result['warnings']);
+    }
+
+    public function testLegendLabelsMatchTheBuiltInForm(): void
+    {
+        $labels = [];
+        $walk = function (array $items) use (&$walk, &$labels) {
+            foreach ($items as $item) {
+                if (isset(QuestionnaireDerivation::RESERVED_LEGEND_TARGETS[$item['linkId']])) {
+                    $labels[$item['linkId']] = $item['text'];
+                }
+                $walk($item['item'] ?? []);
+            }
+        };
+        $walk(json_decode(file_get_contents(__DIR__ . '/../../open-pedigree/dist/defaultQuestionnaire.json'), true)['item']);
+        ksort($labels);
+        $expected = QuestionnaireDerivation::LEGEND_LABELS;
+        ksort($expected);
+        $this->assertSame($expected, $labels);
+    }
+
+    public function testDefaultPlusTagsKeepsTheBuiltInLegend(): void
+    {
+        $base = ['resourceType' => 'Questionnaire', 'status' => 'active', 'item' => [
+            ['linkId' => '__group_clinical', 'type' => 'group', 'text' => 'Clinical', 'item' => [
+                ['linkId' => 'disorders', 'type' => 'choice', 'repeats' => true, 'answerValueSet' => 'http://purl.bioontology.org/ontology/OMIM'],
+            ]],
+        ]];
+        $dd = ['condition' => $this->ontologyField('@PEDIGREE_FIELD(legend="disorders")')];
+        $result = QuestionnaireDerivation::deriveWithBaseQuestionnaire($base, $dd, 'family_members', ['condition' => self::SCT_VS]);
+
+        $linkIds = [];
+        array_walk_recursive($result['questionnaire'], function ($value, $key) use (&$linkIds) {
+            if ($key === 'linkId') {
+                $linkIds[] = $value;
+            }
+        });
+        $this->assertSame(1, count(array_keys($linkIds, 'disorders', true)));
+        $this->assertContains('condition', $linkIds);
+        $this->assertCount(1, $result['warnings']);
+        $this->assertStringContainsString('built-in', $result['warnings'][0]);
     }
 
     public function testPredicateParameterLayersAGraphPredicateCondition(): void
@@ -385,24 +509,32 @@ class QuestionnaireDerivationTest extends TestCase
 
     public function testResolveTaggedFieldsOverridesLinkIdForValidLegendMapping(): void
     {
-        $dd = ['family_disorders' => $this->field([
-            'field_type' => 'checkbox',
-            'field_annotation' => '@PEDIGREE_FIELD(legend="disorders")',
-        ])];
-        $resolved = QuestionnaireDerivation::resolveTaggedFields($dd, ['family_disorders' => 'http://www.omim.org/vs']);
-        $this->assertSame('disorders', $resolved[0]['linkId']);
-        $this->assertSame('family_disorders', $resolved[0]['redcapField']);
+        $dd = [
+            'primary_condition' => $this->ontologyField('@PEDIGREE_FIELD(legend="disorders")'),
+            'secondary_condition' => $this->ontologyField('@PEDIGREE_FIELD(legend="disorders")'),
+        ];
+        $valueSets = ['primary_condition' => self::SCT_VS, 'secondary_condition' => self::SCT_VS];
+        $resolved = QuestionnaireDerivation::resolveTaggedFields($dd, $valueSets);
+        // Both feed the legend, so the import combines them.
+        $this->assertSame(['disorders', 'disorders'], array_column($resolved, 'linkId'));
+        $this->assertSame(['primary_condition', 'secondary_condition'], array_column($resolved, 'redcapField'));
+        $this->assertSame([false, false], array_column($resolved, 'repeats'));
+
+        // "default + tags": the built-in legend keeps the linkId.
+        $builtIn = QuestionnaireDerivation::resolveTaggedFields($dd, $valueSets, true);
+        $this->assertSame(['primary_condition', 'secondary_condition'], array_column($builtIn, 'linkId'));
     }
 
     public function testResolveTaggedFieldsKeepsFieldNameWhenLegendMappingIsInvalid(): void
     {
-        // no answerValueSet supplied -> not ontology-backed -> legend mapping invalid
-        $dd = ['family_disorders' => $this->field([
-            'field_type' => 'checkbox',
-            'field_annotation' => '@PEDIGREE_FIELD(legend="disorders")',
-        ])];
-        $resolved = QuestionnaireDerivation::resolveTaggedFields($dd);
-        $this->assertSame('family_disorders', $resolved[0]['linkId']);
+        $dd = [
+            // no value set resolved -> not ontology-backed
+            'text_dx' => $this->ontologyField('@PEDIGREE_FIELD(legend="disorders")'),
+            // a checkbox can't feed a legend, value set or not
+            'checkbox_dx' => $this->field(['field_type' => 'checkbox', 'field_annotation' => '@PEDIGREE_FIELD(legend="disorders")']),
+        ];
+        $resolved = QuestionnaireDerivation::resolveTaggedFields($dd, ['checkbox_dx' => self::SCT_VS]);
+        $this->assertSame(['text_dx', 'checkbox_dx'], array_column($resolved, 'linkId'));
     }
 
     public function testResolveTaggedFieldsExcludesUntaggedAndUnsupportedFields(): void
@@ -449,6 +581,20 @@ class QuestionnaireDerivationTest extends TestCase
         $this->assertSame(['a_field'], array_column($groups[1]['item'], 'linkId'));
         // The base's own Linked Record content is untouched; derive() must not add its own.
         $this->assertNotContains('__group_linked_record', array_column($groups, 'linkId'));
+    }
+
+    public function testADerivedLegendFedBySeveralFieldsImportsThemAllInAdvancedMode(): void
+    {
+        // The derived Questionnaire, used as an advanced one: each source extension is a field.
+        $dd = [
+            'primary_condition' => $this->ontologyField('@PEDIGREE_FIELD(legend="disorders")'),
+            'secondary_condition' => $this->ontologyField('@PEDIGREE_FIELD(legend="disorders")'),
+        ];
+        $derived = QuestionnaireDerivation::derive($dd, 'family_members',
+            ['primary_condition' => self::SCT_VS, 'secondary_condition' => self::SCT_VS])['questionnaire'];
+        $resolved = QuestionnaireDerivation::resolveFieldsFromQuestionnaire($derived, 'family_members', $dd);
+        $this->assertSame(['primary_condition', 'secondary_condition'], array_column($resolved, 'redcapField'));
+        $this->assertSame(['disorders', 'disorders'], array_column($resolved, 'linkId'));
     }
 
     public function testResolveFieldsFromQuestionnaireFindsRedcapSourceExtensions(): void
