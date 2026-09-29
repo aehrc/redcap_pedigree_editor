@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" FileOID="000-00-0000" FileType="Snapshot" Description="Pedigree Editor example: family registry" AsOfDateTime="2026-09-29T12:59:52" CreationDateTime="2026-09-29T12:59:52" SourceSystem="REDCap" SourceSystemVersion="16.0.32">
+<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" FileOID="000-00-0000" FileType="Snapshot" Description="Pedigree Editor example: family registry" AsOfDateTime="2026-09-30T06:30:58" CreationDateTime="2026-09-30T06:30:58" SourceSystem="REDCap" SourceSystemVersion="16.0.32">
 <Study OID="Project.PedigreeEditorExampleFamilyReg">
 <GlobalVariables>
 	<StudyName>Pedigree Editor example: family registry</StudyName>
@@ -68,7 +68,7 @@
 		<redcap:MultilanguageSettings settings="YToyMzp7czo3OiJ2ZXJzaW9uIjtzOjc6IjE2LjAuMzIiO3M6NToibGFuZ3MiO2E6MDp7fXM6OToicHJvamVjdElkIjtzOjI6IjIyIjtzOjE1OiJkZXNpZ25hdGVkRmllbGQiO3M6MDoiIjtzOjY6InN0YXR1cyI7czozOiJkZXYiO3M6NToiZGVidWciO2I6MDtzOjEzOiJhZG1pbi1lbmFibGVkIjtiOjA7czoxNDoiYWRtaW4tZGlzYWJsZWQiO2I6MDtzOjE1OiJhbGxvdy1mcm9tLWZpbGUiO2I6MDtzOjE4OiJhbGxvdy1mcm9tLXNjcmF0Y2giO2I6MDtzOjIxOiJvcHRpb25hbC1zdWJzY3JpcHRpb24iO2I6MDtzOjE4OiJhbGxvdy11aS1vdmVycmlkZXMiO2I6MDtzOjc6InJlZkxhbmciO3M6MDoiIjtzOjEyOiJmYWxsYmFja0xhbmciO3M6MDoiIjtzOjg6ImRpc2FibGVkIjtiOjA7czoyNToiaGlnaGxpZ2h0TWlzc2luZ0RhdGFlbnRyeSI7YjowO3M6MjI6ImhpZ2hsaWdodE1pc3NpbmdTdXJ2ZXkiO2I6MDtzOjIxOiJhdXRvRGV0ZWN0QnJvd3NlckxhbmciO2I6MDtzOjEyOiJhbGVydFNvdXJjZXMiO2E6MDp7fXM6MTA6ImFzaVNvdXJjZXMiO2E6MDp7fXM6MTQ6ImV4Y2x1ZGVkQWxlcnRzIjthOjA6e31zOjE0OiJleGNsdWRlZEZpZWxkcyI7YTowOnt9czoxNjoiZXhjbHVkZWRTZXR0aW5ncyI7YTowOnt9fQ=="/>
 	</redcap:MultilanguageSettingsGroup>
 </GlobalVariables>
-<MetaDataVersion OID="Metadata.PedigreeEditorExampleFamilyReg_2026-09-29_1259" Name="Pedigree Editor example: family registry" redcap:RecordIdField="record_id">
+<MetaDataVersion OID="Metadata.PedigreeEditorExampleFamilyReg_2026-09-30_0630" Name="Pedigree Editor example: family registry" redcap:RecordIdField="record_id">
 	<Protocol>
 		<StudyEventRef StudyEventOID="Event.enrolment_arm_1" OrderNumber="1" Mandatory="No"/>
 		<StudyEventRef StudyEventOID="Event.follow_up_12m_arm_1" OrderNumber="2" Mandatory="No"/>
@@ -461,7 +461,7 @@
 	</CodeList>
 </MetaDataVersion>
 </Study>
-<ClinicalData StudyOID="Project.PedigreeEditorExampleFamilyReg" MetaDataVersionOID="Metadata.PedigreeEditorExampleFamilyReg_2026-09-29_1259">
+<ClinicalData StudyOID="Project.PedigreeEditorExampleFamilyReg" MetaDataVersionOID="Metadata.PedigreeEditorExampleFamilyReg_2026-09-30_0630">
 	<SubjectData SubjectKey="1" redcap:RecordIdField="record_id">
 		<StudyEventData StudyEventOID="Event.enrolment_arm_1" StudyEventRepeatKey="1" redcap:UniqueEventName="enrolment_arm_1">
 			<FormData FormOID="Form.participant_enrolment" FormRepeatKey="1">
@@ -491,7 +491,7 @@
 			<FormData FormOID="Form.family_history" FormRepeatKey="1">
 				<ItemGroupData ItemGroupOID="family_history.family_history_date" ItemGroupRepeatKey="1">
 					<ItemData ItemOID="family_history_date" Value="2025-03-04"/>
-					<ItemData ItemOID="pedigree_diagram" Value="GZ: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"/>
+					<ItemData ItemOID="pedigree_diagram" Value="GZ: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"/>
 					<ItemData ItemOID="parents_related" Value="0"/>
 					<ItemData ItemOID="family_history_notes" Value="Illustrative example family. Both parents are carriers; Maya and her brother Leo have two variants."/>
 				</ItemGroupData>
@@ -905,82 +905,86 @@
   &quot;resourceType&quot;: &quot;Bundle&quot;,
   &quot;identifier&quot;: {
     &quot;system&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig&quot;,
-    &quot;value&quot;: &quot;urn:uuid:66f92242-d5d5-48a4-a74f-b5e73a2f00b0&quot;
+    &quot;value&quot;: &quot;urn:uuid:a840241c-8b34-4bab-92d3-29374da86152&quot;
   },
   &quot;type&quot;: &quot;document&quot;,
-  &quot;timestamp&quot;: &quot;2026-09-29T11:13:19-10:00&quot;,
+  &quot;timestamp&quot;: &quot;2026-09-30T06:30:23+10:00&quot;,
   &quot;entry&quot;: [
     {
       &quot;link&quot;: [
         {
           &quot;relation&quot;: &quot;item&quot;,
-          &quot;url&quot;: &quot;urn:uuid:6974085a-e6a4-4d6d-a56b-983b3c80e417&quot;
+          &quot;url&quot;: &quot;urn:uuid:07da85a1-4b7e-447b-86e1-bf6f5dc1157b&quot;
         },
         {
           &quot;relation&quot;: &quot;item&quot;,
-          &quot;url&quot;: &quot;urn:uuid:04fffad7-9d2e-4954-8b9f-a1906c06d35e&quot;
+          &quot;url&quot;: &quot;urn:uuid:64e7f8cf-e166-495c-ad15-154978701035&quot;
         },
         {
           &quot;relation&quot;: &quot;item&quot;,
-          &quot;url&quot;: &quot;urn:uuid:552aabfa-a57b-4859-9ddb-fda1b6c580c5&quot;
+          &quot;url&quot;: &quot;urn:uuid:bfdfd479-a6b9-4a29-80b4-3b4d3be7411c&quot;
         },
         {
           &quot;relation&quot;: &quot;item&quot;,
-          &quot;url&quot;: &quot;urn:uuid:a604c7ee-e189-4280-ab66-8000c32ac876&quot;
+          &quot;url&quot;: &quot;urn:uuid:25234422-5541-48c6-927b-b125235ec06e&quot;
         },
         {
           &quot;relation&quot;: &quot;item&quot;,
-          &quot;url&quot;: &quot;urn:uuid:65d70ca7-188a-45c8-aebd-a936d433fd2a&quot;
+          &quot;url&quot;: &quot;urn:uuid:381e9776-972e-45e4-9320-13bf61db7e53&quot;
         },
         {
           &quot;relation&quot;: &quot;item&quot;,
-          &quot;url&quot;: &quot;urn:uuid:f6d7ffec-7a91-4f56-b45e-087e96f9a655&quot;
+          &quot;url&quot;: &quot;urn:uuid:5333c10b-1a1e-419d-a9b0-22ff24902b45&quot;
         },
         {
           &quot;relation&quot;: &quot;item&quot;,
-          &quot;url&quot;: &quot;urn:uuid:6b4c7e43-b535-491b-8d31-ca6ba1c15fd1&quot;
+          &quot;url&quot;: &quot;urn:uuid:003849f0-fb31-43c0-9e6a-fd021fa839ce&quot;
         },
         {
           &quot;relation&quot;: &quot;item&quot;,
-          &quot;url&quot;: &quot;urn:uuid:95538f0f-bac0-45fa-8796-190a7a3e3fdd&quot;
+          &quot;url&quot;: &quot;urn:uuid:b6f3eb2f-6e22-4f49-9781-dfa86389a2e6&quot;
         },
         {
           &quot;relation&quot;: &quot;item&quot;,
-          &quot;url&quot;: &quot;urn:uuid:533a3d0d-7c7e-40a7-b0c9-a0207f9d3a94&quot;
+          &quot;url&quot;: &quot;urn:uuid:fe8ac064-9561-49f8-b0b5-ec9aff16255f&quot;
         },
         {
           &quot;relation&quot;: &quot;item&quot;,
-          &quot;url&quot;: &quot;urn:uuid:0cc343fb-1788-4765-867a-7a90e7ebd256&quot;
+          &quot;url&quot;: &quot;urn:uuid:e378a464-56d0-4770-b004-769415a1ddcf&quot;
         },
         {
           &quot;relation&quot;: &quot;item&quot;,
-          &quot;url&quot;: &quot;urn:uuid:9240deb7-8980-460d-8b26-c1b828811eec&quot;
+          &quot;url&quot;: &quot;urn:uuid:bbc77dcb-ada0-4e50-9ee4-d6279f644fde&quot;
         },
         {
           &quot;relation&quot;: &quot;item&quot;,
-          &quot;url&quot;: &quot;urn:uuid:481f5239-cbbc-464a-8de0-4df861441f20&quot;
+          &quot;url&quot;: &quot;urn:uuid:53da62ec-7bdb-44fa-aab8-37085c01ab2f&quot;
         },
         {
           &quot;relation&quot;: &quot;item&quot;,
-          &quot;url&quot;: &quot;urn:uuid:981b8414-0485-4014-8c0b-94393c0f29a0&quot;
+          &quot;url&quot;: &quot;urn:uuid:180ade51-4007-4117-bf32-d5fff1fd3bc0&quot;
         },
         {
           &quot;relation&quot;: &quot;item&quot;,
-          &quot;url&quot;: &quot;urn:uuid:d24e443c-507b-4f6b-a2f9-db85efed882f&quot;
+          &quot;url&quot;: &quot;urn:uuid:ac350141-2f27-409e-a39a-8ec2be23593a&quot;
         },
         {
           &quot;relation&quot;: &quot;item&quot;,
-          &quot;url&quot;: &quot;urn:uuid:4eda5cf9-5f7c-47ec-be60-23595f0ad2b2&quot;
+          &quot;url&quot;: &quot;urn:uuid:89c4f425-14d6-4594-b201-d7ae0f9a8c38&quot;
         },
         {
           &quot;relation&quot;: &quot;item&quot;,
-          &quot;url&quot;: &quot;urn:uuid:ad9f4d38-a2e5-489c-a677-8bac37609eae&quot;
+          &quot;url&quot;: &quot;urn:uuid:4f12df4c-d64f-4731-8d96-43bdac9c4634&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:ba40ed5b-8d03-486c-b692-ca296bcfab0c&quot;
         }
       ],
-      &quot;fullUrl&quot;: &quot;urn:uuid:10ae2109-e0e2-4673-832c-76efc0d58722&quot;,
+      &quot;fullUrl&quot;: &quot;urn:uuid:881c335a-9ddc-4d24-9e4c-ebf22e529d38&quot;,
       &quot;resource&quot;: {
         &quot;resourceType&quot;: &quot;Composition&quot;,
-        &quot;id&quot;: &quot;urn:uuid:10ae2109-e0e2-4673-832c-76efc0d58722&quot;,
+        &quot;id&quot;: &quot;urn:uuid:881c335a-9ddc-4d24-9e4c-ebf22e529d38&quot;,
         &quot;meta&quot;: {
           &quot;profile&quot;: [
             &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/Pedigree&quot;
@@ -997,12 +1001,12 @@
         },
         &quot;subject&quot;: {
           &quot;type&quot;: &quot;Patient&quot;,
-          &quot;reference&quot;: &quot;urn:uuid:04fffad7-9d2e-4954-8b9f-a1906c06d35e&quot;
+          &quot;reference&quot;: &quot;urn:uuid:64e7f8cf-e166-495c-ad15-154978701035&quot;
         },
-        &quot;date&quot;: &quot;2026-09-29T11:13:19-10:00&quot;,
+        &quot;date&quot;: &quot;2026-09-30T06:30:23+10:00&quot;,
         &quot;author&quot;: {
           &quot;type&quot;: &quot;Organization&quot;,
-          &quot;reference&quot;: &quot;urn:uuid:6974085a-e6a4-4d6d-a56b-983b3c80e417&quot;
+          &quot;reference&quot;: &quot;urn:uuid:07da85a1-4b7e-447b-86e1-bf6f5dc1157b&quot;
         },
         &quot;title&quot;: &quot;Pedigree&quot;,
         &quot;section&quot;: [
@@ -1019,7 +1023,7 @@
             &quot;entry&quot;: [
               {
                 &quot;type&quot;: &quot;Patient&quot;,
-                &quot;reference&quot;: &quot;urn:uuid:04fffad7-9d2e-4954-8b9f-a1906c06d35e&quot;
+                &quot;reference&quot;: &quot;urn:uuid:64e7f8cf-e166-495c-ad15-154978701035&quot;
               }
             ]
           },
@@ -1036,7 +1040,7 @@
             &quot;entry&quot;: [
               {
                 &quot;type&quot;: &quot;Condition&quot;,
-                &quot;reference&quot;: &quot;urn:uuid:9240deb7-8980-460d-8b26-c1b828811eec&quot;
+                &quot;reference&quot;: &quot;urn:uuid:bbc77dcb-ada0-4e50-9ee4-d6279f644fde&quot;
               }
             ]
           },
@@ -1053,19 +1057,19 @@
             &quot;entry&quot;: [
               {
                 &quot;type&quot;: &quot;Patient&quot;,
-                &quot;reference&quot;: &quot;urn:uuid:04fffad7-9d2e-4954-8b9f-a1906c06d35e&quot;
+                &quot;reference&quot;: &quot;urn:uuid:64e7f8cf-e166-495c-ad15-154978701035&quot;
               },
               {
                 &quot;type&quot;: &quot;Patient&quot;,
-                &quot;reference&quot;: &quot;urn:uuid:552aabfa-a57b-4859-9ddb-fda1b6c580c5&quot;
+                &quot;reference&quot;: &quot;urn:uuid:bfdfd479-a6b9-4a29-80b4-3b4d3be7411c&quot;
               },
               {
                 &quot;type&quot;: &quot;Patient&quot;,
-                &quot;reference&quot;: &quot;urn:uuid:a604c7ee-e189-4280-ab66-8000c32ac876&quot;
+                &quot;reference&quot;: &quot;urn:uuid:25234422-5541-48c6-927b-b125235ec06e&quot;
               },
               {
                 &quot;type&quot;: &quot;Patient&quot;,
-                &quot;reference&quot;: &quot;urn:uuid:65d70ca7-188a-45c8-aebd-a936d433fd2a&quot;
+                &quot;reference&quot;: &quot;urn:uuid:381e9776-972e-45e4-9320-13bf61db7e53&quot;
               }
             ]
           },
@@ -1082,23 +1086,23 @@
             &quot;entry&quot;: [
               {
                 &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
-                &quot;reference&quot;: &quot;urn:uuid:f6d7ffec-7a91-4f56-b45e-087e96f9a655&quot;
+                &quot;reference&quot;: &quot;urn:uuid:5333c10b-1a1e-419d-a9b0-22ff24902b45&quot;
               },
               {
                 &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
-                &quot;reference&quot;: &quot;urn:uuid:6b4c7e43-b535-491b-8d31-ca6ba1c15fd1&quot;
+                &quot;reference&quot;: &quot;urn:uuid:003849f0-fb31-43c0-9e6a-fd021fa839ce&quot;
               },
               {
                 &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
-                &quot;reference&quot;: &quot;urn:uuid:95538f0f-bac0-45fa-8796-190a7a3e3fdd&quot;
+                &quot;reference&quot;: &quot;urn:uuid:b6f3eb2f-6e22-4f49-9781-dfa86389a2e6&quot;
               },
               {
                 &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
-                &quot;reference&quot;: &quot;urn:uuid:533a3d0d-7c7e-40a7-b0c9-a0207f9d3a94&quot;
+                &quot;reference&quot;: &quot;urn:uuid:fe8ac064-9561-49f8-b0b5-ec9aff16255f&quot;
               },
               {
                 &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
-                &quot;reference&quot;: &quot;urn:uuid:0cc343fb-1788-4765-867a-7a90e7ebd256&quot;
+                &quot;reference&quot;: &quot;urn:uuid:e378a464-56d0-4770-b004-769415a1ddcf&quot;
               }
             ]
           },
@@ -1115,11 +1119,11 @@
             &quot;entry&quot;: [
               {
                 &quot;type&quot;: &quot;Condition&quot;,
-                &quot;reference&quot;: &quot;urn:uuid:9240deb7-8980-460d-8b26-c1b828811eec&quot;
+                &quot;reference&quot;: &quot;urn:uuid:bbc77dcb-ada0-4e50-9ee4-d6279f644fde&quot;
               },
               {
                 &quot;type&quot;: &quot;Observation&quot;,
-                &quot;reference&quot;: &quot;urn:uuid:481f5239-cbbc-464a-8de0-4df861441f20&quot;
+                &quot;reference&quot;: &quot;urn:uuid:53da62ec-7bdb-44fa-aab8-37085c01ab2f&quot;
               }
             ]
           },
@@ -1136,19 +1140,36 @@
             &quot;entry&quot;: [
               {
                 &quot;type&quot;: &quot;QuestionnaireResponse&quot;,
-                &quot;reference&quot;: &quot;urn:uuid:981b8414-0485-4014-8c0b-94393c0f29a0&quot;
+                &quot;reference&quot;: &quot;urn:uuid:180ade51-4007-4117-bf32-d5fff1fd3bc0&quot;
               },
               {
                 &quot;type&quot;: &quot;QuestionnaireResponse&quot;,
-                &quot;reference&quot;: &quot;urn:uuid:d24e443c-507b-4f6b-a2f9-db85efed882f&quot;
+                &quot;reference&quot;: &quot;urn:uuid:ac350141-2f27-409e-a39a-8ec2be23593a&quot;
               },
               {
                 &quot;type&quot;: &quot;QuestionnaireResponse&quot;,
-                &quot;reference&quot;: &quot;urn:uuid:4eda5cf9-5f7c-47ec-be60-23595f0ad2b2&quot;
+                &quot;reference&quot;: &quot;urn:uuid:89c4f425-14d6-4594-b201-d7ae0f9a8c38&quot;
               },
               {
                 &quot;type&quot;: &quot;QuestionnaireResponse&quot;,
-                &quot;reference&quot;: &quot;urn:uuid:ad9f4d38-a2e5-489c-a677-8bac37609eae&quot;
+                &quot;reference&quot;: &quot;urn:uuid:4f12df4c-d64f-4731-8d96-43bdac9c4634&quot;
+              }
+            ]
+          },
+          {
+            &quot;title&quot;: &quot;Pedigree Diagram&quot;,
+            &quot;code&quot;: {
+              &quot;coding&quot;: [
+                {
+                  &quot;system&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/CodeSystem/SectionType&quot;,
+                  &quot;code&quot;: &quot;pedigreeImage&quot;
+                }
+              ]
+            },
+            &quot;entry&quot;: [
+              {
+                &quot;type&quot;: &quot;DocumentReference&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:ba40ed5b-8d03-486c-b692-ca296bcfab0c&quot;
               }
             ]
           }
@@ -1156,17 +1177,17 @@
       }
     },
     {
-      &quot;fullUrl&quot;: &quot;urn:uuid:6974085a-e6a4-4d6d-a56b-983b3c80e417&quot;,
+      &quot;fullUrl&quot;: &quot;urn:uuid:07da85a1-4b7e-447b-86e1-bf6f5dc1157b&quot;,
       &quot;resource&quot;: {
         &quot;resourceType&quot;: &quot;Organization&quot;,
-        &quot;id&quot;: &quot;urn:uuid:6974085a-e6a4-4d6d-a56b-983b3c80e417&quot;,
+        &quot;id&quot;: &quot;urn:uuid:07da85a1-4b7e-447b-86e1-bf6f5dc1157b&quot;,
         &quot;name&quot;: &quot;open-pedigree unknown author&quot;
       }
     },
     {
-      &quot;fullUrl&quot;: &quot;urn:uuid:04fffad7-9d2e-4954-8b9f-a1906c06d35e&quot;,
+      &quot;fullUrl&quot;: &quot;urn:uuid:64e7f8cf-e166-495c-ad15-154978701035&quot;,
       &quot;resource&quot;: {
-        &quot;id&quot;: &quot;urn:uuid:04fffad7-9d2e-4954-8b9f-a1906c06d35e&quot;,
+        &quot;id&quot;: &quot;urn:uuid:64e7f8cf-e166-495c-ad15-154978701035&quot;,
         &quot;resourceType&quot;: &quot;Patient&quot;,
         &quot;meta&quot;: {
           &quot;profile&quot;: [
@@ -1200,9 +1221,9 @@
       }
     },
     {
-      &quot;fullUrl&quot;: &quot;urn:uuid:552aabfa-a57b-4859-9ddb-fda1b6c580c5&quot;,
+      &quot;fullUrl&quot;: &quot;urn:uuid:bfdfd479-a6b9-4a29-80b4-3b4d3be7411c&quot;,
       &quot;resource&quot;: {
-        &quot;id&quot;: &quot;urn:uuid:552aabfa-a57b-4859-9ddb-fda1b6c580c5&quot;,
+        &quot;id&quot;: &quot;urn:uuid:bfdfd479-a6b9-4a29-80b4-3b4d3be7411c&quot;,
         &quot;resourceType&quot;: &quot;Patient&quot;,
         &quot;meta&quot;: {
           &quot;profile&quot;: [
@@ -1236,9 +1257,9 @@
       }
     },
     {
-      &quot;fullUrl&quot;: &quot;urn:uuid:a604c7ee-e189-4280-ab66-8000c32ac876&quot;,
+      &quot;fullUrl&quot;: &quot;urn:uuid:25234422-5541-48c6-927b-b125235ec06e&quot;,
       &quot;resource&quot;: {
-        &quot;id&quot;: &quot;urn:uuid:a604c7ee-e189-4280-ab66-8000c32ac876&quot;,
+        &quot;id&quot;: &quot;urn:uuid:25234422-5541-48c6-927b-b125235ec06e&quot;,
         &quot;resourceType&quot;: &quot;Patient&quot;,
         &quot;meta&quot;: {
           &quot;profile&quot;: [
@@ -1272,9 +1293,9 @@
       }
     },
     {
-      &quot;fullUrl&quot;: &quot;urn:uuid:65d70ca7-188a-45c8-aebd-a936d433fd2a&quot;,
+      &quot;fullUrl&quot;: &quot;urn:uuid:381e9776-972e-45e4-9320-13bf61db7e53&quot;,
       &quot;resource&quot;: {
-        &quot;id&quot;: &quot;urn:uuid:65d70ca7-188a-45c8-aebd-a936d433fd2a&quot;,
+        &quot;id&quot;: &quot;urn:uuid:381e9776-972e-45e4-9320-13bf61db7e53&quot;,
         &quot;resourceType&quot;: &quot;Patient&quot;,
         &quot;meta&quot;: {
           &quot;profile&quot;: [
@@ -1291,10 +1312,10 @@
       }
     },
     {
-      &quot;fullUrl&quot;: &quot;urn:uuid:f6d7ffec-7a91-4f56-b45e-087e96f9a655&quot;,
+      &quot;fullUrl&quot;: &quot;urn:uuid:5333c10b-1a1e-419d-a9b0-22ff24902b45&quot;,
       &quot;resource&quot;: {
         &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
-        &quot;id&quot;: &quot;urn:uuid:f6d7ffec-7a91-4f56-b45e-087e96f9a655&quot;,
+        &quot;id&quot;: &quot;urn:uuid:5333c10b-1a1e-419d-a9b0-22ff24902b45&quot;,
         &quot;meta&quot;: {
           &quot;profile&quot;: [
             &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeRelationship&quot;
@@ -1304,13 +1325,13 @@
           {
             &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/familymemberhistory-patient-record&quot;,
             &quot;valueReference&quot;: {
-              &quot;reference&quot;: &quot;urn:uuid:a604c7ee-e189-4280-ab66-8000c32ac876&quot;
+              &quot;reference&quot;: &quot;urn:uuid:25234422-5541-48c6-927b-b125235ec06e&quot;
             }
           }
         ],
         &quot;status&quot;: &quot;completed&quot;,
         &quot;patient&quot;: {
-          &quot;reference&quot;: &quot;urn:uuid:552aabfa-a57b-4859-9ddb-fda1b6c580c5&quot;
+          &quot;reference&quot;: &quot;urn:uuid:bfdfd479-a6b9-4a29-80b4-3b4d3be7411c&quot;
         },
         &quot;relationship&quot;: {
           &quot;coding&quot;: [
@@ -1324,10 +1345,10 @@
       }
     },
     {
-      &quot;fullUrl&quot;: &quot;urn:uuid:6b4c7e43-b535-491b-8d31-ca6ba1c15fd1&quot;,
+      &quot;fullUrl&quot;: &quot;urn:uuid:003849f0-fb31-43c0-9e6a-fd021fa839ce&quot;,
       &quot;resource&quot;: {
         &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
-        &quot;id&quot;: &quot;urn:uuid:6b4c7e43-b535-491b-8d31-ca6ba1c15fd1&quot;,
+        &quot;id&quot;: &quot;urn:uuid:003849f0-fb31-43c0-9e6a-fd021fa839ce&quot;,
         &quot;meta&quot;: {
           &quot;profile&quot;: [
             &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeRelationship&quot;
@@ -1337,13 +1358,13 @@
           {
             &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/familymemberhistory-patient-record&quot;,
             &quot;valueReference&quot;: {
-              &quot;reference&quot;: &quot;urn:uuid:552aabfa-a57b-4859-9ddb-fda1b6c580c5&quot;
+              &quot;reference&quot;: &quot;urn:uuid:bfdfd479-a6b9-4a29-80b4-3b4d3be7411c&quot;
             }
           }
         ],
         &quot;status&quot;: &quot;completed&quot;,
         &quot;patient&quot;: {
-          &quot;reference&quot;: &quot;urn:uuid:04fffad7-9d2e-4954-8b9f-a1906c06d35e&quot;
+          &quot;reference&quot;: &quot;urn:uuid:64e7f8cf-e166-495c-ad15-154978701035&quot;
         },
         &quot;relationship&quot;: {
           &quot;coding&quot;: [
@@ -1357,10 +1378,10 @@
       }
     },
     {
-      &quot;fullUrl&quot;: &quot;urn:uuid:95538f0f-bac0-45fa-8796-190a7a3e3fdd&quot;,
+      &quot;fullUrl&quot;: &quot;urn:uuid:b6f3eb2f-6e22-4f49-9781-dfa86389a2e6&quot;,
       &quot;resource&quot;: {
         &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
-        &quot;id&quot;: &quot;urn:uuid:95538f0f-bac0-45fa-8796-190a7a3e3fdd&quot;,
+        &quot;id&quot;: &quot;urn:uuid:b6f3eb2f-6e22-4f49-9781-dfa86389a2e6&quot;,
         &quot;meta&quot;: {
           &quot;profile&quot;: [
             &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeRelationship&quot;
@@ -1370,13 +1391,13 @@
           {
             &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/familymemberhistory-patient-record&quot;,
             &quot;valueReference&quot;: {
-              &quot;reference&quot;: &quot;urn:uuid:a604c7ee-e189-4280-ab66-8000c32ac876&quot;
+              &quot;reference&quot;: &quot;urn:uuid:25234422-5541-48c6-927b-b125235ec06e&quot;
             }
           }
         ],
         &quot;status&quot;: &quot;completed&quot;,
         &quot;patient&quot;: {
-          &quot;reference&quot;: &quot;urn:uuid:04fffad7-9d2e-4954-8b9f-a1906c06d35e&quot;
+          &quot;reference&quot;: &quot;urn:uuid:64e7f8cf-e166-495c-ad15-154978701035&quot;
         },
         &quot;relationship&quot;: {
           &quot;coding&quot;: [
@@ -1390,10 +1411,10 @@
       }
     },
     {
-      &quot;fullUrl&quot;: &quot;urn:uuid:533a3d0d-7c7e-40a7-b0c9-a0207f9d3a94&quot;,
+      &quot;fullUrl&quot;: &quot;urn:uuid:fe8ac064-9561-49f8-b0b5-ec9aff16255f&quot;,
       &quot;resource&quot;: {
         &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
-        &quot;id&quot;: &quot;urn:uuid:533a3d0d-7c7e-40a7-b0c9-a0207f9d3a94&quot;,
+        &quot;id&quot;: &quot;urn:uuid:fe8ac064-9561-49f8-b0b5-ec9aff16255f&quot;,
         &quot;meta&quot;: {
           &quot;profile&quot;: [
             &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeRelationship&quot;
@@ -1403,13 +1424,13 @@
           {
             &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/familymemberhistory-patient-record&quot;,
             &quot;valueReference&quot;: {
-              &quot;reference&quot;: &quot;urn:uuid:552aabfa-a57b-4859-9ddb-fda1b6c580c5&quot;
+              &quot;reference&quot;: &quot;urn:uuid:bfdfd479-a6b9-4a29-80b4-3b4d3be7411c&quot;
             }
           }
         ],
         &quot;status&quot;: &quot;completed&quot;,
         &quot;patient&quot;: {
-          &quot;reference&quot;: &quot;urn:uuid:65d70ca7-188a-45c8-aebd-a936d433fd2a&quot;
+          &quot;reference&quot;: &quot;urn:uuid:381e9776-972e-45e4-9320-13bf61db7e53&quot;
         },
         &quot;relationship&quot;: {
           &quot;coding&quot;: [
@@ -1423,10 +1444,10 @@
       }
     },
     {
-      &quot;fullUrl&quot;: &quot;urn:uuid:0cc343fb-1788-4765-867a-7a90e7ebd256&quot;,
+      &quot;fullUrl&quot;: &quot;urn:uuid:e378a464-56d0-4770-b004-769415a1ddcf&quot;,
       &quot;resource&quot;: {
         &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
-        &quot;id&quot;: &quot;urn:uuid:0cc343fb-1788-4765-867a-7a90e7ebd256&quot;,
+        &quot;id&quot;: &quot;urn:uuid:e378a464-56d0-4770-b004-769415a1ddcf&quot;,
         &quot;meta&quot;: {
           &quot;profile&quot;: [
             &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeRelationship&quot;
@@ -1436,13 +1457,13 @@
           {
             &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/familymemberhistory-patient-record&quot;,
             &quot;valueReference&quot;: {
-              &quot;reference&quot;: &quot;urn:uuid:a604c7ee-e189-4280-ab66-8000c32ac876&quot;
+              &quot;reference&quot;: &quot;urn:uuid:25234422-5541-48c6-927b-b125235ec06e&quot;
             }
           }
         ],
         &quot;status&quot;: &quot;completed&quot;,
         &quot;patient&quot;: {
-          &quot;reference&quot;: &quot;urn:uuid:65d70ca7-188a-45c8-aebd-a936d433fd2a&quot;
+          &quot;reference&quot;: &quot;urn:uuid:381e9776-972e-45e4-9320-13bf61db7e53&quot;
         },
         &quot;relationship&quot;: {
           &quot;coding&quot;: [
@@ -1456,12 +1477,12 @@
       }
     },
     {
-      &quot;fullUrl&quot;: &quot;urn:uuid:9240deb7-8980-460d-8b26-c1b828811eec&quot;,
+      &quot;fullUrl&quot;: &quot;urn:uuid:bbc77dcb-ada0-4e50-9ee4-d6279f644fde&quot;,
       &quot;resource&quot;: {
         &quot;resourceType&quot;: &quot;Condition&quot;,
-        &quot;id&quot;: &quot;urn:uuid:9240deb7-8980-460d-8b26-c1b828811eec&quot;,
+        &quot;id&quot;: &quot;urn:uuid:bbc77dcb-ada0-4e50-9ee4-d6279f644fde&quot;,
         &quot;subject&quot;: {
-          &quot;reference&quot;: &quot;urn:uuid:04fffad7-9d2e-4954-8b9f-a1906c06d35e&quot;
+          &quot;reference&quot;: &quot;urn:uuid:64e7f8cf-e166-495c-ad15-154978701035&quot;
         },
         &quot;code&quot;: {
           &quot;text&quot;: &quot;affected&quot;
@@ -1469,10 +1490,10 @@
       }
     },
     {
-      &quot;fullUrl&quot;: &quot;urn:uuid:481f5239-cbbc-464a-8de0-4df861441f20&quot;,
+      &quot;fullUrl&quot;: &quot;urn:uuid:53da62ec-7bdb-44fa-aab8-37085c01ab2f&quot;,
       &quot;resource&quot;: {
         &quot;resourceType&quot;: &quot;Observation&quot;,
-        &quot;id&quot;: &quot;urn:uuid:481f5239-cbbc-464a-8de0-4df861441f20&quot;,
+        &quot;id&quot;: &quot;urn:uuid:53da62ec-7bdb-44fa-aab8-37085c01ab2f&quot;,
         &quot;status&quot;: &quot;preliminary&quot;,
         &quot;code&quot;: {
           &quot;coding&quot;: [
@@ -1484,19 +1505,19 @@
           ]
         },
         &quot;subject&quot;: {
-          &quot;reference&quot;: &quot;urn:uuid:04fffad7-9d2e-4954-8b9f-a1906c06d35e&quot;
+          &quot;reference&quot;: &quot;urn:uuid:64e7f8cf-e166-495c-ad15-154978701035&quot;
         },
         &quot;valueBoolean&quot;: true
       }
     },
     {
-      &quot;fullUrl&quot;: &quot;urn:uuid:981b8414-0485-4014-8c0b-94393c0f29a0&quot;,
+      &quot;fullUrl&quot;: &quot;urn:uuid:180ade51-4007-4117-bf32-d5fff1fd3bc0&quot;,
       &quot;resource&quot;: {
         &quot;resourceType&quot;: &quot;QuestionnaireResponse&quot;,
-        &quot;id&quot;: &quot;urn:uuid:981b8414-0485-4014-8c0b-94393c0f29a0&quot;,
+        &quot;id&quot;: &quot;urn:uuid:180ade51-4007-4117-bf32-d5fff1fd3bc0&quot;,
         &quot;status&quot;: &quot;completed&quot;,
         &quot;subject&quot;: {
-          &quot;reference&quot;: &quot;urn:uuid:04fffad7-9d2e-4954-8b9f-a1906c06d35e&quot;
+          &quot;reference&quot;: &quot;urn:uuid:64e7f8cf-e166-495c-ad15-154978701035&quot;
         },
         &quot;item&quot;: [
           {
@@ -1535,15 +1556,7 @@
             &quot;linkId&quot;: &quot;dob&quot;,
             &quot;answer&quot;: [
               {
-                &quot;valueDate&quot;: &quot;Tue Feb 11 2020&quot;
-              }
-            ]
-          },
-          {
-            &quot;linkId&quot;: &quot;carrier_status&quot;,
-            &quot;answer&quot;: [
-              {
-                &quot;valueString&quot;: &quot;affected&quot;
+                &quot;valueDate&quot;: &quot;2020-02-11&quot;
               }
             ]
           },
@@ -1583,13 +1596,13 @@
       }
     },
     {
-      &quot;fullUrl&quot;: &quot;urn:uuid:d24e443c-507b-4f6b-a2f9-db85efed882f&quot;,
+      &quot;fullUrl&quot;: &quot;urn:uuid:ac350141-2f27-409e-a39a-8ec2be23593a&quot;,
       &quot;resource&quot;: {
         &quot;resourceType&quot;: &quot;QuestionnaireResponse&quot;,
-        &quot;id&quot;: &quot;urn:uuid:d24e443c-507b-4f6b-a2f9-db85efed882f&quot;,
+        &quot;id&quot;: &quot;urn:uuid:ac350141-2f27-409e-a39a-8ec2be23593a&quot;,
         &quot;status&quot;: &quot;completed&quot;,
         &quot;subject&quot;: {
-          &quot;reference&quot;: &quot;urn:uuid:552aabfa-a57b-4859-9ddb-fda1b6c580c5&quot;
+          &quot;reference&quot;: &quot;urn:uuid:bfdfd479-a6b9-4a29-80b4-3b4d3be7411c&quot;
         },
         &quot;item&quot;: [
           {
@@ -1628,7 +1641,7 @@
             &quot;linkId&quot;: &quot;dob&quot;,
             &quot;answer&quot;: [
               {
-                &quot;valueDate&quot;: &quot;Tue May 17 1988&quot;
+                &quot;valueDate&quot;: &quot;1988-05-17&quot;
               }
             ]
           },
@@ -1652,13 +1665,13 @@
       }
     },
     {
-      &quot;fullUrl&quot;: &quot;urn:uuid:4eda5cf9-5f7c-47ec-be60-23595f0ad2b2&quot;,
+      &quot;fullUrl&quot;: &quot;urn:uuid:89c4f425-14d6-4594-b201-d7ae0f9a8c38&quot;,
       &quot;resource&quot;: {
         &quot;resourceType&quot;: &quot;QuestionnaireResponse&quot;,
-        &quot;id&quot;: &quot;urn:uuid:4eda5cf9-5f7c-47ec-be60-23595f0ad2b2&quot;,
+        &quot;id&quot;: &quot;urn:uuid:89c4f425-14d6-4594-b201-d7ae0f9a8c38&quot;,
         &quot;status&quot;: &quot;completed&quot;,
         &quot;subject&quot;: {
-          &quot;reference&quot;: &quot;urn:uuid:a604c7ee-e189-4280-ab66-8000c32ac876&quot;
+          &quot;reference&quot;: &quot;urn:uuid:25234422-5541-48c6-927b-b125235ec06e&quot;
         },
         &quot;item&quot;: [
           {
@@ -1697,7 +1710,7 @@
             &quot;linkId&quot;: &quot;dob&quot;,
             &quot;answer&quot;: [
               {
-                &quot;valueDate&quot;: &quot;Fri Aug 03 1990&quot;
+                &quot;valueDate&quot;: &quot;1990-08-03&quot;
               }
             ]
           },
@@ -1721,13 +1734,13 @@
       }
     },
     {
-      &quot;fullUrl&quot;: &quot;urn:uuid:ad9f4d38-a2e5-489c-a677-8bac37609eae&quot;,
+      &quot;fullUrl&quot;: &quot;urn:uuid:4f12df4c-d64f-4731-8d96-43bdac9c4634&quot;,
       &quot;resource&quot;: {
         &quot;resourceType&quot;: &quot;QuestionnaireResponse&quot;,
-        &quot;id&quot;: &quot;urn:uuid:ad9f4d38-a2e5-489c-a677-8bac37609eae&quot;,
+        &quot;id&quot;: &quot;urn:uuid:4f12df4c-d64f-4731-8d96-43bdac9c4634&quot;,
         &quot;status&quot;: &quot;completed&quot;,
         &quot;subject&quot;: {
-          &quot;reference&quot;: &quot;urn:uuid:65d70ca7-188a-45c8-aebd-a936d433fd2a&quot;
+          &quot;reference&quot;: &quot;urn:uuid:381e9776-972e-45e4-9320-13bf61db7e53&quot;
         },
         &quot;item&quot;: [
           {
@@ -1739,6 +1752,26 @@
             ]
           }
         ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:ba40ed5b-8d03-486c-b692-ca296bcfab0c&quot;,
+      &quot;resource&quot;: {
+        &quot;id&quot;: &quot;urn:uuid:ba40ed5b-8d03-486c-b692-ca296bcfab0c&quot;,
+        &quot;resourceType&quot;: &quot;DocumentReference&quot;,
+        &quot;status&quot;: &quot;current&quot;,
+        &quot;docStatus&quot;: &quot;preliminary&quot;,
+        &quot;subject&quot;: {
+          &quot;type&quot;: &quot;Patient&quot;,
+          &quot;reference&quot;: &quot;urn:uuid:64e7f8cf-e166-495c-ad15-154978701035&quot;
+        },
+        &quot;description&quot;: &quot;Pedigree Diagram of Family in SVG format&quot;,
+        &quot;content&quot;: {
+          &quot;attachment&quot;: {
+            &quot;contentType&quot;: &quot;image/svg+xml&quot;,
+            &quot;data&quot;: &quot;PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIHN0eWxlPSJvdmVyZmxvdzogaGlkZGVuOyBwb3NpdGlvbjogcmVsYXRpdmU7IHRvcDogLTAuMTg3NXB4OyIgdmlld0JveD0iLTMwIC05MCA0NjggNDY3LjY2NjY1NjQ5NDE0MDYiIHdpZHRoPSI0NjgiIGhlaWdodD0iNDY3LjY2NjY1NjQ5NDE0MDYiIHByZXNlcnZlQXNwZWN0UmF0aW89InhNaW5ZTWluIj48dGV4dCB4PSIxNDAuNiIgeT0iMzMzLjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI0MHB4IiBzdHJva2U9Im5vbmUiIGZpbGw9IiMwMDAwMDAiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7IHRleHQtYW5jaG9yOiBtaWRkbGU7IGZvbnQtZmFtaWx5OiBBcmlhbDsgZm9udC1zaXplOiA0MHB4OyIgc3Ryb2tlLXdpZHRoPSIxIj48dHNwYW4gZHk9IjEzLjk5OTk2MzM3ODkwNjI3MyIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPio8L3RzcGFuPjwvdGV4dD48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiMzMzMzMzMiIGQ9Ik0yMDQsMEwyMDQsMTYwIiBzdHJva2Utd2lkdGg9IjMiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ii8+PHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMzMzMzMzIiBkPSJNODQsMTYwTDMyNCwxNjAiIHN0cm9rZS13aWR0aD0iMyIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiLz48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiMzMzMzMzMiIGQ9Ik0zMjQsMTYwTDMyNCwyNzIiIHN0cm9rZS13aWR0aD0iMyIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiLz48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiMzMzMzMzMiIGQ9Ik04NCwxNjBMODQsMjcyIiBzdHJva2Utd2lkdGg9IjMiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ii8+PHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMzMzMzMzIiBkPSJNMjA0LDBMMzQ4LDAiIHN0cm9rZS13aWR0aD0iMyIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiLz48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiMzMzMzMzMiIGQ9Ik02MCwwTDIwNCwwIiBzdHJva2Utd2lkdGg9IjMiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ii8+PGRlc2Mgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPkNyZWF0ZWQgd2l0aCBSYXBoYcOrbCAyLjMuMDwvZGVzYz48ZGVmcyBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyI+PGxpbmVhckdyYWRpZW50IGlkPSJ6cjJkaDAtX2ZmZmZmZjowLV9COEI4Qjg6MTAwIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMCIgZ3JhZGllbnRUcmFuc2Zvcm09Im1hdHJpeCgxLDAsMCwxLDAsMCkiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ij48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZmZmZmZmIiBzdG9wLW9wYWNpdHk9IjEiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjYjhiOGI4IiBzdG9wLW9wYWNpdHk9IjEiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ii8+PC9saW5lYXJHcmFkaWVudD48bGluZWFyR3JhZGllbnQgaWQ9ImR4cDFtMC1fZmZmZmZmOjAtX0I4QjhCODoxMDAiIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIwIiBncmFkaWVudFRyYW5zZm9ybT0ibWF0cml4KDEsMCwwLDEsMCwwKSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNiOGI4YjgiIHN0b3Atb3BhY2l0eT0iMSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0idjlsOGwwLV9mZmZmZmY6MC1fQjhCOEI4OjEwMCIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjAiIGdyYWRpZW50VHJhbnNmb3JtPSJtYXRyaXgoMSwwLDAsMSwwLDApIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2I4YjhiOCIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjwvbGluZWFyR3JhZGllbnQ+PGxpbmVhckdyYWRpZW50IGlkPSJyOWp4ODAtX2ZmZmZmZjowLV9COEI4Qjg6MTAwIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMCIgZ3JhZGllbnRUcmFuc2Zvcm09Im1hdHJpeCgxLDAsMCwxLDAsMCkiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ij48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZmZmZmZmIiBzdG9wLW9wYWNpdHk9IjEiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjYjhiOGI4IiBzdG9wLW9wYWNpdHk9IjEiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ii8+PC9saW5lYXJHcmFkaWVudD48bGluZWFyR3JhZGllbnQgaWQ9ImZoYmdzMC1fZmZmZmZmOjAtX0I4QjhCODoxMDAiIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIwIiBncmFkaWVudFRyYW5zZm9ybT0ibWF0cml4KDEsMCwwLDEsMCwwKSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNiOGI4YjgiIHN0b3Atb3BhY2l0eT0iMSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0iZG8xczcwLV9mZmZmZmY6MC1fQjhCOEI4OjEwMCIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjAiIGdyYWRpZW50VHJhbnNmb3JtPSJtYXRyaXgoMSwwLDAsMSwwLDApIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2I4YjhiOCIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjwvbGluZWFyR3JhZGllbnQ+PGxpbmVhckdyYWRpZW50IGlkPSJ2ejR6NjAtX2ZmZmZmZjowLV9COEI4Qjg6MTAwIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMCIgZ3JhZGllbnRUcmFuc2Zvcm09Im1hdHJpeCgxLDAsMCwxLDAsMCkiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ij48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZmZmZmZmIiBzdG9wLW9wYWNpdHk9IjEiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjYjhiOGI4IiBzdG9wLW9wYWNpdHk9IjEiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ii8+PC9saW5lYXJHcmFkaWVudD48bGluZWFyR3JhZGllbnQgaWQ9ImZ4dTJrMC1fZmZmZmZmOjAtX0I4QjhCODoxMDAiIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIwIiBncmFkaWVudFRyYW5zZm9ybT0ibWF0cml4KDEsMCwwLDEsMCwwKSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNiOGI4YjgiIHN0b3Atb3BhY2l0eT0iMSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0idGthbjQxODAtX2JlYTg2YzowLV9GRUUwOTA6MTAwIiB4MT0iMSIgeTE9IjEuMjI0NjQ2Nzk5MTQ3MzUzMmUtMTYiIHgyPSIwIiB5Mj0iMCIgZ3JhZGllbnRUcmFuc2Zvcm09Im1hdHJpeCgxLDAsMCwxLDAsMCkiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ij48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjYmVhODZjIiBzdG9wLW9wYWNpdHk9IjEiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZmVlMDkwIiBzdG9wLW9wYWNpdHk9IjEiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3QgeD0iLTYiIHk9IjE4MiIgd2lkdGg9IjE4MCIgaGVpZ2h0PSIxODAiIHJ4PSI1IiByeT0iNSIgZmlsbD0iIzgwODA4MCIgc3Ryb2tlPSJub25lIiBvcGFjaXR5PSIwIiBmaWxsLW9wYWNpdHk9IjAuMzUiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7IG9wYWNpdHk6IDA7IGZpbGwtb3BhY2l0eTogMC4zNTsiLz48cmVjdCB4PSI0NCIgeT0iMjMyIiB3aWR0aD0iODAiIGhlaWdodD0iODAiIHJ4PSIwIiByeT0iMCIgZmlsbD0iIzgwODA4MCIgc3Ryb2tlPSJub25lIiBvcGFjaXR5PSIwLjMiIGZpbGwtb3BhY2l0eT0iMSIgc3Ryb2tlLXdpZHRoPSIzIiB0cmFuc2Zvcm09Im1hdHJpeCgxLDAsMCwxLDMsMykiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7IG9wYWNpdHk6IDAuMzsgZmlsbC1vcGFjaXR5OiAxOyIvPjxyZWN0IHg9IjQ0IiB5PSIyMzIiIHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgcng9IjAiIHJ5PSIwIiBmaWxsPSJ1cmwoJyN6cjJkaDAtX2ZmZmZmZjowLV9COEI4Qjg6MTAwJykiIHN0cm9rZT0iIzMzMzMzMyIgb3BhY2l0eT0iMSIgZmlsbC1vcGFjaXR5PSIxIiBzdHJva2Utd2lkdGg9IjUuMDkyNTkyNTkyNTkyNTkzIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyBvcGFjaXR5OiAxOyBmaWxsLW9wYWNpdHk6IDE7IiB0cmFuc2Zvcm09Im1hdHJpeCgxLjA4LDAsMCwxLjA4LC02LjcyLC0yMS43NikiLz48cGF0aCBmaWxsPSIjNTk1OTU5IiBzdHJva2U9Im5vbmUiIGQ9Ik05LjE4MjgwMDAwMDAwMDAwMiwyNS4zMzE5QzkuMTgyODAwMDAwMDAwMDAyLDI1LjMzMTksMC44NzAxMDAwMDAwMDAwMDAxLDMzLjY0MjQsMC44NzAxMDAwMDAwMDAwMDAxLDMzLjY0MjRDMC44NzAxMDAwMDAwMDAwMDAxLDMzLjY0MjQsMy44NjY1MDAwMDAwMDAwMDAzLDM2LjYzODgsMy44NjY1MDAwMDAwMDAwMDAzLDM2LjYzODhDMy44NjY1MDAwMDAwMDAwMDAzLDM2LjYzODgsMTIuMTc3MDAwMDAwMDAwMDAxLDI4LjMyNzIsMTIuMTc3NDQsMjguMzI3MkMxMi4xNzcwMDAwMDAwMDAwMDEsMjguMzI3MiwxNC40MjU0MDAwMDAwMDAwMDIsMzAuNTc0NTAwMDAwMDAwMDA0LDE0LjQyNTQwMDAwMDAwMDAwMiwzMC41NzQ1MDAwMDAwMDAwMDRDMTQuNDI1NDAwMDAwMDAwMDAyLDMwLjU3NDUwMDAwMDAwMDAwNCwxNy4xNTc4LDIwLjM3NjQwMDAwMDAwMDAwNCwxNy4xNTc4LDIwLjM3NjQwMDAwMDAwMDAwNEMxNy4xNTc4LDIwLjM3NjQwMDAwMDAwMDAwNCw2Ljk1OTcwMDAwMDAwMDAwMSwyMy4xMDg4MDAwMDAwMDAwMDIsNi45NTk3MDAwMDAwMDAwMDEsMjMuMTA4ODAwMDAwMDAwMDAyQzYuOTU5NzAwMDAwMDAwMDAxLDIzLjEwODgwMDAwMDAwMDAwMiw5LjE4MjgwMDAwMDAwMDAwMiwyNS4zMzE5LDkuMTgyODAwMDAwMDAwMDAyLDI1LjMzMTM1MDAwMDAwMDAwNEM5LjE4MjgwMDAwMDAwMDAwMiwyNS4zMzE5LDkuMTgyODAwMDAwMDAwMDAyLDI1LjMzMTksOS4xODI4MDAwMDAwMDAwMDIsMjUuMzMxOSIgb3BhY2l0eT0iMSIgdHJhbnNmb3JtPSJtYXRyaXgoMSwwLDAsMSwxOCwzMDApIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyBvcGFjaXR5OiAxOyIgc3Ryb2tlLXdpZHRoPSIxIi8+PHBhdGggZmlsbD0idXJsKCcjdGthbjQxODAtX2JlYTg2YzowLV9GRUUwOTA6MTAwJykiIHN0cm9rZT0ibm9uZSIgZD0iTTEyMy40LDI3Mkw4NCwyNzJMMTIzLjQsMjcyTDEyMy40LDIzMi42TDQ0LjYsMjMyLjZMNDQuNiwzMTEuNEwxMjMuNCwzMTEuNEwxMjMuNCwyNzJaIiBvcGFjaXR5PSIxIiBmaWxsLW9wYWNpdHk9IjEiIHN0cm9rZS13aWR0aD0iMCIgdHJhbnNmb3JtPSJtYXRyaXgoMS4wNCwwLDAsMS4wNCwtMy4zNiwtMTAuODgpIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyBvcGFjaXR5OiAxOyBmaWxsLW9wYWNpdHk6IDE7Ii8+PHRleHQgeD0iODQiIHk9IjM0NCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjIwcHgiIHN0cm9rZT0ibm9uZSIgZmlsbD0iIzAwMDAwMCIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsgdGV4dC1hbmNob3I6IG1pZGRsZTsgZm9udC1mYW1pbHk6IEFyaWFsOyBmb250LXNpemU6IDIwcHg7Ij48dHNwYW4gZHk9IjcuMzMzMzIyNTI1MDI0NDE0IiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyI+Tm9haCBEZW1vPC90c3Bhbj48L3RleHQ+PHRleHQgeD0iODQiIHk9IjM2Ni4zMzMzNTQ5NDk5NTEyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjBweCIgc3Ryb2tlPSJub25lIiBmaWxsPSIjMDAwMDAwIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyB0ZXh0LWFuY2hvcjogbWlkZGxlOyBmb250LWZhbWlseTogQXJpYWw7IGZvbnQtc2l6ZTogMjBweDsiPjx0c3BhbiBkeT0iNy4zMzMzMzM5NjkxMTYyMTEiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ij5iLiAyMDIwPC90c3Bhbj48L3RleHQ+PHJlY3QgeD0iLTYiIHk9IjE4MiIgd2lkdGg9IjE4MCIgaGVpZ2h0PSIxODAiIHJ4PSIwIiByeT0iMCIgZmlsbD0iIzAwODAwMCIgc3Ryb2tlPSJub25lIiBvcGFjaXR5PSIwIiBmaWxsLW9wYWNpdHk9IjAuMzUiIHRyYW5zZm9ybT0ibWF0cml4KDEsMCwwLDEsMCwwKSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsgb3BhY2l0eTogMDsgZmlsbC1vcGFjaXR5OiAwLjM1OyIvPjxyZWN0IHg9Ii0zMCIgeT0iLTkwIiB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgcng9IjUiIHJ5PSI1IiBmaWxsPSIjODA4MDgwIiBzdHJva2U9Im5vbmUiIG9wYWNpdHk9IjAiIGZpbGwtb3BhY2l0eT0iMC4zNSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsgb3BhY2l0eTogMDsgZmlsbC1vcGFjaXR5OiAwLjM1OyIvPjxyZWN0IHg9IjIwIiB5PSItNDAiIHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgcng9IjAiIHJ5PSIwIiBmaWxsPSIjODA4MDgwIiBzdHJva2U9Im5vbmUiIG9wYWNpdHk9IjAuMyIgZmlsbC1vcGFjaXR5PSIxIiBzdHJva2Utd2lkdGg9IjMiIHRyYW5zZm9ybT0ibWF0cml4KDEsMCwwLDEsMywzKSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsgb3BhY2l0eTogMC4zOyBmaWxsLW9wYWNpdHk6IDE7Ii8+PHJlY3QgeD0iMjAiIHk9Ii00MCIgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiByeD0iMCIgcnk9IjAiIGZpbGw9InVybCgnI3Y5bDhsMC1fZmZmZmZmOjAtX0I4QjhCODoxMDAnKSIgc3Ryb2tlPSIjMzMzMzMzIiBvcGFjaXR5PSIxIiBmaWxsLW9wYWNpdHk9IjEiIHN0cm9rZS13aWR0aD0iMyIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsgb3BhY2l0eTogMTsgZmlsbC1vcGFjaXR5OiAxOyIvPjx0ZXh0IHg9IjYwIiB5PSI3MiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjIwcHgiIHN0cm9rZT0ibm9uZSIgZmlsbD0iIzAwMDAwMCIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsgdGV4dC1hbmNob3I6IG1pZGRsZTsgZm9udC1mYW1pbHk6IEFyaWFsOyBmb250LXNpemU6IDIwcHg7Ij48dHNwYW4gZHk9IjcuMzMzMzMwMTU0NDE4OTQ1IiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyI+SXZhbiBEZW1vPC90c3Bhbj48L3RleHQ+PHRleHQgeD0iNjAiIHk9Ijk0LjMzMzMzMjA2MTc2NzU4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjBweCIgc3Ryb2tlPSJub25lIiBmaWxsPSIjMDAwMDAwIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyB0ZXh0LWFuY2hvcjogbWlkZGxlOyBmb250LWZhbWlseTogQXJpYWw7IGZvbnQtc2l6ZTogMjBweDsiPjx0c3BhbiBkeT0iNy4zMzMzMjYzMzk3MjE2OCIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPmIuIDE5ODg8L3RzcGFuPjwvdGV4dD48cmVjdCB4PSItMzAiIHk9Ii05MCIgd2lkdGg9IjE4MCIgaGVpZ2h0PSIxODAiIHJ4PSIwIiByeT0iMCIgZmlsbD0iIzAwODAwMCIgc3Ryb2tlPSJub25lIiBvcGFjaXR5PSIwIiBmaWxsLW9wYWNpdHk9IjAuMzUiIHRyYW5zZm9ybT0ibWF0cml4KDEsMCwwLDEsMCwwKSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsgb3BhY2l0eTogMDsgZmlsbC1vcGFjaXR5OiAwLjM1OyIvPjxyZWN0IHg9IjI1OCIgeT0iLTkwIiB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgcng9IjUiIHJ5PSI1IiBmaWxsPSIjODA4MDgwIiBzdHJva2U9Im5vbmUiIG9wYWNpdHk9IjAiIGZpbGwtb3BhY2l0eT0iMC4zNSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsgb3BhY2l0eTogMDsgZmlsbC1vcGFjaXR5OiAwLjM1OyIvPjxjaXJjbGUgY3g9IjM0OCIgY3k9IjAiIHI9IjQwIiBmaWxsPSIjODA4MDgwIiBzdHJva2U9Im5vbmUiIG9wYWNpdHk9IjAuMyIgZmlsbC1vcGFjaXR5PSIxIiBzdHJva2Utd2lkdGg9IjMiIHRyYW5zZm9ybT0ibWF0cml4KDEsMCwwLDEsMywzKSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsgb3BhY2l0eTogMC4zOyBmaWxsLW9wYWNpdHk6IDE7Ii8+PGNpcmNsZSBjeD0iMzQ4IiBjeT0iMCIgcj0iNDAiIGZpbGw9InVybCgnI2ZoYmdzMC1fZmZmZmZmOjAtX0I4QjhCODoxMDAnKSIgc3Ryb2tlPSIjMzMzMzMzIiBvcGFjaXR5PSIxIiBmaWxsLW9wYWNpdHk9IjEiIHN0cm9rZS13aWR0aD0iMyIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsgb3BhY2l0eTogMTsgZmlsbC1vcGFjaXR5OiAxOyIvPjx0ZXh0IHg9IjM0OCIgeT0iNzIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyMHB4IiBzdHJva2U9Im5vbmUiIGZpbGw9IiMwMDAwMDAiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7IHRleHQtYW5jaG9yOiBtaWRkbGU7IGZvbnQtZmFtaWx5OiBBcmlhbDsgZm9udC1zaXplOiAyMHB4OyI+PHRzcGFuIGR5PSI3LjMzMzMzMDE1NDQxODk0NSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPkNsYXJlIERlbW88L3RzcGFuPjwvdGV4dD48dGV4dCB4PSIzNDgiIHk9Ijk0LjMzMzMzMjA2MTc2NzU4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjBweCIgc3Ryb2tlPSJub25lIiBmaWxsPSIjMDAwMDAwIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyB0ZXh0LWFuY2hvcjogbWlkZGxlOyBmb250LWZhbWlseTogQXJpYWw7IGZvbnQtc2l6ZTogMjBweDsiPjx0c3BhbiBkeT0iNy4zMzMzMjYzMzk3MjE2OCIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPmIuIDE5OTA8L3RzcGFuPjwvdGV4dD48cmVjdCB4PSIyNTgiIHk9Ii05MCIgd2lkdGg9IjE4MCIgaGVpZ2h0PSIxODAiIHJ4PSIwIiByeT0iMCIgZmlsbD0iIzAwODAwMCIgc3Ryb2tlPSJub25lIiBvcGFjaXR5PSIwIiBmaWxsLW9wYWNpdHk9IjAuMzUiIHRyYW5zZm9ybT0ibWF0cml4KDEsMCwwLDEsMCwwKSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsgb3BhY2l0eTogMDsgZmlsbC1vcGFjaXR5OiAwLjM1OyIvPjxyZWN0IHg9IjIzNCIgeT0iMTgyIiB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgcng9IjUiIHJ5PSI1IiBmaWxsPSIjODA4MDgwIiBzdHJva2U9Im5vbmUiIG9wYWNpdHk9IjAiIGZpbGwtb3BhY2l0eT0iMC4zNSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsgb3BhY2l0eTogMDsgZmlsbC1vcGFjaXR5OiAwLjM1OyIvPjxjaXJjbGUgY3g9IjMyNCIgY3k9IjI3MiIgcj0iNDAiIGZpbGw9IiM4MDgwODAiIHN0cm9rZT0ibm9uZSIgb3BhY2l0eT0iMC4zIiBmaWxsLW9wYWNpdHk9IjEiIHN0cm9rZS13aWR0aD0iMyIgdHJhbnNmb3JtPSJtYXRyaXgoMSwwLDAsMSwzLDMpIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyBvcGFjaXR5OiAwLjM7IGZpbGwtb3BhY2l0eTogMTsiLz48Y2lyY2xlIGN4PSIzMjQiIGN5PSIyNzIiIHI9IjQwIiBmaWxsPSJ1cmwoJyN2ejR6NjAtX2ZmZmZmZjowLV9COEI4Qjg6MTAwJykiIHN0cm9rZT0iIzMzMzMzMyIgb3BhY2l0eT0iMSIgZmlsbC1vcGFjaXR5PSIxIiBzdHJva2Utd2lkdGg9IjMiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7IG9wYWNpdHk6IDE7IGZpbGwtb3BhY2l0eTogMTsiLz48cmVjdCB4PSIyMzQiIHk9IjE4MiIgd2lkdGg9IjE4MCIgaGVpZ2h0PSIxODAiIHJ4PSIwIiByeT0iMCIgZmlsbD0iIzAwODAwMCIgc3Ryb2tlPSJub25lIiBvcGFjaXR5PSIwIiBmaWxsLW9wYWNpdHk9IjAuMzUiIHRyYW5zZm9ybT0ibWF0cml4KDEsMCwwLDEsMCwwKSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsgb3BhY2l0eTogMDsgZmlsbC1vcGFjaXR5OiAwLjM1OyIvPjxyZWN0IHg9IjE3OCIgeT0iLTMyIiB3aWR0aD0iNTIiIGhlaWdodD0iOTIiIHJ4PSI1IiByeT0iNSIgZmlsbD0iIzgwODA4MCIgc3Ryb2tlPSJub25lIiBvcGFjaXR5PSIwIiBmaWxsLW9wYWNpdHk9IjAuMzUiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7IG9wYWNpdHk6IDA7IGZpbGwtb3BhY2l0eTogMC4zNTsiLz48Y2lyY2xlIGN4PSIyMDQiIGN5PSIwIiByPSI2LjUiIGZpbGw9IiNkYzc4NjgiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjx0ZXh0IHg9IjIwNCIgeT0iLTIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iVGFob21hIiBmb250LXNpemU9IjE0cHgiIHN0cm9rZT0ibm9uZSIgZmlsbD0iIzAwMDAwMCIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsgdGV4dC1hbmNob3I6IG1pZGRsZTsgZm9udC1mYW1pbHk6IFRhaG9tYTsgZm9udC1zaXplOiAxNHB4OyI+PHRzcGFuIGR5PSItMjAiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ii8+PC90ZXh0PjxyZWN0IHg9IjE3OCIgeT0iLTMyIiB3aWR0aD0iNTIiIGhlaWdodD0iOTIiIHJ4PSIwIiByeT0iMCIgZmlsbD0iIzAwODAwMCIgc3Ryb2tlPSJub25lIiBvcGFjaXR5PSIwIiBmaWxsLW9wYWNpdHk9IjAuMzUiIHRyYW5zZm9ybT0ibWF0cml4KDEsMCwwLDEsMCwwKSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsgb3BhY2l0eTogMDsgZmlsbC1vcGFjaXR5OiAwLjM1OyIvPjxjaXJjbGUgY3g9IjIwNCIgY3k9IjE2MCIgcj0iMy4yNSIgZmlsbD0iIzY2NjY2NiIgc3Ryb2tlPSIjODg4ODg4IiBzdHJva2Utd2lkdGg9IjEiIG9wYWNpdHk9IjEiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7IG9wYWNpdHk6IDE7Ii8+PC9zdmc+&quot;
+          }
+        }
       }
     }
   ]
