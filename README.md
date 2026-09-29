@@ -53,6 +53,8 @@ representation of the diagram, add compression for large diagrams.
   JSON pedigrees are stored so they survive moving a project by XML or re-importing its data (see
   [Moving a project](#moving-a-project)), and the size limit is checked in stored bytes, so a large pedigree is no
   longer cut short.
+  Pedigrees saved in the legacy FHIR format (by versions before v0.3) open again, and are saved in the GA4GH format:
+  the *fhir_v1* storage format is now read only (see [Upgrade Issues](#upgrade-issues)).
   **Breaking**: remove the **@PEDIGREE_HPO**/**@PEDIGREE_SCT** action tags. Terminology is now always taken from
   the project/system *Default Terminology* setting — existing fields tagged **@PEDIGREE_HPO**/**@PEDIGREE_SCT** will stop
   being recognised as pedigree fields; update them to a bare **@PEDIGREE** tag and set *Default Terminology* accordingly.
@@ -94,7 +96,8 @@ Once installed the module has a number of system-wide options:
    is not documented and may not be compatible with future versions of the external module but should allow the best 
    round tripping. This format, PED and DADA2 do not include a svg version of the pedigree diagram so will not show the
    diagram except when the diagram is saved into the system. This is the system-wide setting, there is also a project 
-   level storage format setting which can be used to override this.
+   level storage format setting which can be used to override this. Since 1.0.0 the legacy FHIR format is read but no
+   longer written: a pedigree saved in it opens whichever format is selected, and *fhir_v1* saves in the GA4GH format.
  - *Compress Data* - Specifies how to deal with large diagrams. The fhir format returned from the open_pedigree editor 
    will now have a new section called 'Pedigree Diagram' which will contain a DocumentReference which will have an SVG 
    representation of the pedigree diagram. This diagram will be used by the redcap plugin to show the pedigree diagram. 
@@ -509,10 +512,10 @@ Version 0.3 of this plugin stores data using the fhir format developed by GA4GH 
 Information on the proposed format can be found https://github.com/GA4GH-Pedigree-Standard/pedigree-fhir-ig
 This is a different format to ealier version of the plugin.
 
-Versions of the module before v0.3 use a different FHIR based representation. The open-pedigree editor can read both formats,
-the old format is referred to as `Legacy FHIR` in the editor. If you have an existing project and wish to
-move existing pedigree diagrams to use the new format, it will be necessary to open the diagrams in the editor and resave
-the diagram to move it into the new format.
+Versions of the module before v0.3 use a different FHIR based representation, referred to as `Legacy FHIR` (*fhir_v1*).
+The open-pedigree editor reads both formats, whichever *Storage Format* is selected, and saves a pedigree opened from the
+old format in the new one, so opening and saving a diagram moves it into the new format. (From v0.4 until 1.0.0 the
+bundled editor could neither read nor write the old format.)
 
 The open-pedigree editor has three different lookups which are queried from a FHIR terminology server.
 These are in the clinical tab of a person and are disorders, genes and phenotypic features. For versions
