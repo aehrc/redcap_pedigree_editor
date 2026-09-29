@@ -48,9 +48,21 @@ representation of the diagram, add compression for large diagrams.
   **Security**: fix two cross-site scripting holes - the terminology service echoed request parameters unescaped
   into an HTML error response, and a record's saved pedigree SVG was inserted into the form as raw HTML (it is now
   sanitised first).
+  JSON pedigrees are stored so they survive moving a project by XML or re-importing its data (see
+  [Moving a project](#moving-a-project)), and the size limit is checked in stored bytes, so a large pedigree is no
+  longer cut short.
   **Breaking**: remove the **@PEDIGREE_HPO**/**@PEDIGREE_SCT** action tags. Terminology is now always taken from
   the project/system *Default Terminology* setting — existing fields tagged **@PEDIGREE_HPO**/**@PEDIGREE_SCT** will stop
   being recognised as pedigree fields; update them to a bare **@PEDIGREE** tag and set *Default Terminology* accordingly.
+
+## Moving a project
+
+REDCap's data import - uploading a project XML file, the Data Import Tool, or the API - turns every `\"` in an
+imported value into `"`, which used to leave a JSON pedigree (GA4GH or internal format) that no longer loads. Since
+1.0.0 the module stores JSON pedigrees without `\"` (escaped quotes are written as `\u0022`, which reads the same), so
+they survive. A pedigree saved by an earlier version keeps its old form until it's next saved: before moving a project
+with its data, open and save each pedigree once, or set *Compress Data* to *Always Compress* and re-save them
+(compressed pedigrees are stored as base64 and were never affected).
 
 # Install the distribution
 
@@ -92,6 +104,10 @@ Once installed the module has a number of system-wide options:
    - *Compress Large Diagrams >65K* - The data is compressed if its over 65K. If it's still too large after being 
      compressed, the diagram is stripped and if it is greater than 65K its compressed.
    - *Always Compress* - The data is always compressed. If the compressed data is greater than 65K the diagram is stripped.
+
+   The limit is checked against what's stored: bytes, with each line break counted as two (a form sends CRLF). A JSON
+   pedigree is stored with its escaped quotes written as `\u0022` (see *Moving a project* below), which adds a little to
+   linked pedigrees, so a project with large, heavily linked families may want *Compress Large Diagrams*.
  - *Ontology Server URL* - The URL for FHIR ontology server used to lookup disorders, phenotypes and genes.
  - *Authentication Type* - The authentication to use when communicating with the FHIR server. This can be either `none`
       or `OAuth2 Client Credentials`. The client credentials flow uses a client id and secret to obtain an access token.

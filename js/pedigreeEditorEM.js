@@ -295,6 +295,42 @@ pedigreeEditorEM.edit = function(field) {
 	return true;
 }
 
+/**
+ * REDCap's data import - a project's XML file, the Data Import Tool, the API -
+ * turns every \" in an imported value into " (Records::saveData), which breaks a
+ * JSON pedigree: a linked person's snapshot, and any text with a quote in it, hold
+ * escaped quotes. So a JSON pedigree is stored with its escaped
+ * quotes and backslashes written as \u0022 and \u005c instead, which JSON.parse
+ * reads the same. (A backslash too: an escaped one before a closing quote would
+ * leave a \" behind.) Other formats (PED, DADA2) are returned unchanged.
+ */
+pedigreeEditorEM.importSafeJson = function(value) {
+	if (typeof value !== 'string' || !/^\s*[{[]/.test(value)) {
+		return value;
+	}
+	try {
+		JSON.parse(value);
+	}
+	catch (e) {
+		return value;
+	}
+	// Each match is one whole escape, taken left to right, so an escaped backslash
+	// is never mistaken for the start of the next escape.
+	return value.replace(/\\([\s\S])/g, function(escape, escaped) {
+		return escaped === '"' ? '\\u0022' : escaped === '\\' ? '\\u005c' : escape;
+	});
+};
+
+/**
+ * How many bytes a value takes once stored: the browser submits a textarea with CRLF
+ * line breaks, and REDCap's data table holds UTF-8 in a MySQL TEXT column (65,535
+ * bytes), which cuts anything longer short without an error. So the size limit is
+ * checked against this, not the value's length in characters.
+ */
+pedigreeEditorEM.storedLength = function(value) {
+	return new TextEncoder().encode(value.replace(/\r?\n/g, '\r\n')).length;
+};
+
 pedigreeEditorEM.save = function(field, value, svg) {
 	var fieldData;
 
@@ -309,12 +345,14 @@ pedigreeEditorEM.save = function(field, value, svg) {
 		return;
 	}
 	var tr = $('tr[sq_id=' + field + ']');
+	// Before the length checks below, so they count what's actually stored.
+	value = pedigreeEditorEM.importSafeJson(value);
 
 	if (fieldData.compress === 'always'){
 		let compressedValue = 'GZ:' + btoa(pako.gzip(value,{ to: 'string' }))
-		if (compressedValue.length > 65300) {
+		if (pedigreeEditorEM.storedLength(compressedValue) > 65300) {
 			compressedValue = 'GZ:' + btoa(pako.gzip(pedigreeEditorEM.removeDiagramFromFhir(value),{ to: 'string' }));
-			if (compressedValue.length > 65300) {
+			if (pedigreeEditorEM.storedLength(compressedValue) > 65300) {
 				alert('Pedigree Diagram is too large, even when compressed, not updating');
 				window.focus();
 				return;
@@ -323,13 +361,13 @@ pedigreeEditorEM.save = function(field, value, svg) {
 		$('textarea[name="' + fieldData.field + '"]', tr).val(compressedValue);
 	}
 	else if (fieldData.compress === 'large'){
-		if (value.length > 65300) {
+		if (pedigreeEditorEM.storedLength(value) > 65300) {
 			var compressedValue = 'GZ:' + btoa(pako.gzip(value,{ to: 'string' }))
-			if (compressedValue.length > 65300) {
+			if (pedigreeEditorEM.storedLength(compressedValue) > 65300) {
 				compressedValue = pedigreeEditorEM.removeDiagramFromFhir(value);
-				if (compressedValue.length > 65300) {
+				if (pedigreeEditorEM.storedLength(compressedValue) > 65300) {
 					compressedValue = 'GZ:' + btoa(pako.gzip(compressedValue,{ to: 'string' }));
-					if (compressedValue.length > 65300) {
+					if (pedigreeEditorEM.storedLength(compressedValue) > 65300) {
 						alert('Pedigree Diagram is too large, even when compressed, not updating');
 						window.focus();
 						return;
@@ -343,9 +381,9 @@ pedigreeEditorEM.save = function(field, value, svg) {
 		}
 	}
 	else {
-		if (value.length > 65300) {
+		if (pedigreeEditorEM.storedLength(value) > 65300) {
 			var compressedValue = pedigreeEditorEM.removeDiagramFromFhir(value);
-			if (compressedValue.length > 65300) {
+			if (pedigreeEditorEM.storedLength(compressedValue) > 65300) {
 				alert('Pedigree Diagram is too large, not updating');
 				window.focus();
 				return;
@@ -523,7 +561,7 @@ pedigreeEditorEM.removeDiagramFromFhir = function(rawData) {
 				}
 			}
 			if (foundImageResource || foundImageSection){
-				return JSON.stringify(fhir, null, 2);
+				return pedigreeEditorEM.importSafeJson(JSON.stringify(fhir, null, 2));
 			}
 		}
 		catch (e) {
