@@ -493,8 +493,11 @@ Maya's (the participant's) *Linked Record* tab, with the values from her row:
    - *Repeating instrument*: `family_members`
    - *Search fields*: `first_name`, `last_name`, `relationship`
    - *Node-edit form source*: *Tags only*
+   - *Storage Format*: *GA4GH - Recommended Format*
+   - *Compress Data*: *Compress Large Diagrams >65K* - record 1's pedigree is over the field's size
+     limit, so without compression its diagram would be dropped the next time it's saved.
 
-   Leave the other settings at their defaults.
+   Set the last two here rather than relying on the system settings, which may be unset.
 
 The XML was exported from REDCap 16.0.32 and hasn't been tested on earlier versions. `data-dictionary.csv` beside it
 holds the instruments alone, e.g. to add them to an existing project (the events and the repeating setup then need
