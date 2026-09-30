@@ -226,7 +226,7 @@
 	<ItemDef OID="family_history_date" Name="family_history_date" DataType="date" Length="999" redcap:Variable="family_history_date" redcap:FieldType="text" redcap:TextValidationType="date_ymd">
 		<Question><TranslatedText>Date family history taken</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="pedigree_diagram" Name="pedigree_diagram" DataType="text" Length="999" redcap:Variable="pedigree_diagram" redcap:FieldType="textarea" redcap:FieldNote="Draw the family here. Link each person to their row on the Family members form." redcap:FieldAnnotation="@PEDIGREE">
+	<ItemDef OID="pedigree_diagram" Name="pedigree_diagram" DataType="text" Length="999" redcap:Variable="pedigree_diagram" redcap:FieldType="textarea" redcap:FieldNote="Draw the family here. Link each person to their row on the Family members form." redcap:FieldAnnotation="@PEDIGREE=HIDE_TEXT">
 		<Question><TranslatedText>Family pedigree</TranslatedText></Question>
 	</ItemDef>
 	<ItemDef OID="parents_related" Name="parents_related" DataType="text" Length="7" redcap:Variable="parents_related" redcap:FieldType="radio">
