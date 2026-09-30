@@ -64,7 +64,7 @@ class RedcapInstrumentRowImporter
         $seen = [];
         $combined = [];
         foreach (array_merge($a, $b) as $entry) {
-            $key = is_array($entry) ? (string) ($entry['id'] ?? json_encode($entry)) : (string) $entry;
+            $key = is_array($entry) ? (string) ($entry['id'] ?? $entry['code'] ?? json_encode($entry)) : (string) $entry;
             if (!isset($seen[$key])) {
                 $seen[$key] = true;
                 $combined[] = $entry;
@@ -105,16 +105,12 @@ class RedcapInstrumentRowImporter
             if (empty($checkedCodes)) {
                 return null;
             }
-            // RESERVED_LEGEND_TARGETS linkIds require an array of {id, name}
-            // objects; a plain repeating custom item just gets raw codes.
-            // Checked against the actual reserved-target set (not just
-            // linkId !== redcapField): in ADVANCED mode, an admin-authored
-            // Questionnaire item can declare any custom linkId for an
-            // ordinary (non-legend) repeating field, which is not itself a
-            // signal that legend-shaped output is expected.
-            if (array_key_exists($field['linkId'], QuestionnaireDerivation::RESERVED_LEGEND_TARGETS)) {
+            // A legend takes entries (see legendEntry()); a plain repeating custom item just gets
+            // raw codes. In ADVANCED mode an item can have any linkId, so that alone isn't the
+            // signal - the resolved field says whether its item is a legend.
+            if (self::feedsALegend($field)) {
                 return array_map(function ($code) use ($field) {
-                    return ['id' => $code, 'name' => $field['choices'][$code]];
+                    return self::legendEntry($field, $code, null, $field['choices'][$code]);
                 }, $checkedCodes);
             }
             return $checkedCodes;
@@ -124,6 +120,20 @@ class RedcapInstrumentRowImporter
             return null;
         }
         $raw = $rowData[$fieldName];
+
+        if (self::feedsALegend($field)) {
+            // A single-value field feeding a legend gives it one entry: typically an ontology
+            // field, stored as `code|system` (redcap_fhir_ontology_provider) or a bare code
+            // (advanced_fhir_ontology_provider). The name is the choice label if there is one,
+            // else the code (for a reserved legend, open-pedigree looks the name up itself).
+            $parts = explode('|', (string) $raw, 2);
+            $code = trim($parts[0]);
+            if ($code === '') {
+                return null;
+            }
+            $system = isset($parts[1]) && trim($parts[1]) !== '' ? trim($parts[1]) : null;
+            return [self::legendEntry($field, $code, $system, (string) ($field['choices'][$code] ?? $code))];
+        }
 
         switch ($field['type']) {
             case 'boolean':
@@ -135,6 +145,27 @@ class RedcapInstrumentRowImporter
             default:
                 return $raw;
         }
+    }
+
+    private static function feedsALegend(array $field): bool
+    {
+        return !empty($field['legend'])
+            || array_key_exists($field['linkId'], QuestionnaireDerivation::RESERVED_LEGEND_TARGETS);
+    }
+
+    /**
+     * One legend entry, in the shape open-pedigree takes for that legend: a reserved legend
+     * (disorders/genes/phenotypes) keeps only `id` (`name` for the other paths that read it); a
+     * custom legend item stores `{system, code, display}`.
+     */
+    private static function legendEntry(array $field, string $code, ?string $system, string $name): array
+    {
+        if (array_key_exists($field['linkId'], QuestionnaireDerivation::RESERVED_LEGEND_TARGETS)) {
+            return ['id' => $code, 'name' => $name];
+        }
+        return array_filter(['system' => $system, 'code' => $code, 'display' => $name], function ($v) {
+            return $v !== null;
+        });
     }
 
     /**

@@ -3,18 +3,21 @@
 namespace AEHRC\PedigreeEditorExternalModule;
 
 /**
- * Resolves which `@PEDIGREE_FIELD`-tagged fields are configured against
- * `advanced_fhir_ontology_provider` and, for those with a URL-type valueset,
- * the FHIR ValueSet URI to feed into {@see QuestionnaireDerivation::derive()}
- * as `$fieldAnswerValueSets`.
+ * Resolves which `@PEDIGREE_FIELD`-tagged fields are bound to a FHIR
+ * ontology provider and, where the binding names one, the FHIR ValueSet URI
+ * to feed into {@see QuestionnaireDerivation::derive()} as
+ * `$fieldAnswerValueSets`.
  *
  * REDCap core links a field to an ontology provider via its
  * `element_enum` metadata column, formatted `"<SERVICE_PREFIX>:<category>"`
- * (e.g. `"ADVFHIR:snomed-diagnosis"`) — see
- * `Classes/OntologyProvider.php`/`Classes/OntologyManager.php`. Only
- * `advanced_fhir_ontology_provider` (service prefix `ADVFHIR`) exposes a
- * canonical ValueSet URL; `simple_ontology_provider` categories are static
- * local lists with no FHIR ValueSet concept, so they never resolve here.
+ * — see `Classes/OntologyProvider.php`/`Classes/OntologyManager.php`:
+ * - `redcap_fhir_ontology_provider` (service prefix `FHIR`): the category is
+ *   the ValueSet URL itself, e.g. `"FHIR:http://loinc.org/vs/LL3279-8"`.
+ * - `advanced_fhir_ontology_provider` (service prefix `ADVFHIR`): the
+ *   category is an ID into its `site-category-list`, whose entry gives the
+ *   ValueSet URL when its valueset type is `url`.
+ * `simple_ontology_provider` categories are static local lists with no FHIR
+ * ValueSet concept, so they never resolve here.
  *
  * Pure/testable: takes the already-fetched `element_enum` values and the
  * `advanced_fhir_ontology_provider` module's `site-category-list`
@@ -24,6 +27,7 @@ namespace AEHRC\PedigreeEditorExternalModule;
 class OntologyValueSetResolver
 {
     const ADVANCED_FHIR_SERVICE_PREFIX = 'ADVFHIR';
+    const FHIR_SERVICE_PREFIX = 'FHIR';
 
     /**
      * @param array $elementEnumByField field_name => raw `element_enum`
@@ -32,7 +36,8 @@ class OntologyValueSetResolver
      *   `site-category-list` sub-settings array — each entry an assoc array
      *   with `ontology-id`, `valueset-type` (`'url'`|`'resource'`), `valueset`.
      * @return array field_name => FHIR ValueSet URI, only for fields bound
-     *   to a URL-type advanced-provider category.
+     *   to an absolute http(s) ValueSet URL via `redcap_fhir_ontology_provider`,
+     *   or to a URL-type advanced-provider category.
      */
     public static function resolve(array $elementEnumByField, array $advancedProviderCategories): array
     {
@@ -49,6 +54,12 @@ class OntologyValueSetResolver
                 continue;
             }
             [$service, $categoryId] = explode(':', $elementEnum, 2);
+            if ($service === self::FHIR_SERVICE_PREFIX) {
+                if (preg_match('#^https?://\S+$#i', $categoryId)) {
+                    $result[$fieldName] = $categoryId;
+                }
+                continue;
+            }
             if ($service !== self::ADVANCED_FHIR_SERVICE_PREFIX || !isset($categoriesById[$categoryId])) {
                 continue;
             }
