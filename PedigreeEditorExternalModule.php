@@ -21,6 +21,10 @@ require_once __DIR__ . '/classes/RedcapInstrumentRowImporter.php';
 require_once __DIR__ . '/classes/RedcapInstrumentGateway.php';
 require_once __DIR__ . '/classes/RedcapDataEntryUrl.php';
 require_once __DIR__ . '/classes/RedcapInstrumentEventChooser.php';
+require_once __DIR__ . '/classes/PedigreeBundleReader.php';
+require_once __DIR__ . '/classes/PedigreeRelationships.php';
+require_once __DIR__ . '/classes/RelationshipTopologyPlan.php';
+require_once __DIR__ . '/classes/RelationshipSettings.php';
 
 
 /**
@@ -142,6 +146,8 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
             }
         }
 
+        $errors .= $this->validateRelationshipSettings($settings);
+
         if (($settings['project_pedigree_questionnaire_mode'] ?? null) === 'ADVANCED') {
             $advancedJson = $settings['project_pedigree_advanced_questionnaire'] ?? '';
             if (!$advancedJson) {
@@ -166,6 +172,24 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
 
     function redcap_data_entry_form ($project_id, $record, $instrument, $event_id, $group_id, $repeat_instance) {
         $this->add_pedigree_to_form($project_id, $record, $instrument, $event_id, $group_id, $repeat_instance);
+    }
+
+    /**
+     * Relationship topology sync (pedigree-editor-relationship-topology-sync
+     * D1): after a save of the form holding the configured source @PEDIGREE
+     * field, writes the pedigree's relationships into REDCap. Never lets a
+     * failure reach the user's save - REDCap has already committed it.
+     */
+    function redcap_save_record($project_id, $record, $instrument, $event_id, $group_id = null, $survey_hash = null, $response_id = null, $repeat_instance = 1) {
+        $messages = [];
+        try {
+            $this->syncRelationships((int) $project_id, (string) $record, (string) $instrument, (int) $event_id, $repeat_instance, $messages);
+        } catch (\Throwable $e) {
+            $messages[] = 'Relationships were not updated: ' . $e->getMessage();
+        }
+        if ($messages) {
+            $this->logRelationships(implode(' ', $messages), $record);
+        }
     }
 
     function add_pedigree_to_form ($project_id, $record, $instrument, $event_id, $group_id, $repeat_instance, $isSurvey = false) {
@@ -940,6 +964,196 @@ EOD;
         return null;
     }
 
+
+    /**
+     * @return string Errors from the relationship settings, one per line.
+     */
+    private function validateRelationshipSettings($settings)
+    {
+        $projectId = $this->getProjectId();
+        if (!$projectId || !RelationshipSettings::isUsed($settings)) {
+            return '';
+        }
+        $people = trim((string) ($settings[RelationshipSettings::PEOPLE_INSTRUMENT] ?? ''));
+        $instrument = trim((string) ($settings[RelationshipSettings::INSTRUMENT] ?? ''));
+        $format = trim((string) ($settings['project_format'] ?? '')) ?: $this->getSystemSetting('system_format');
+        $source = trim((string) ($settings[RelationshipSettings::SOURCE_FIELD] ?? ''));
+        $sourceForm = $source !== '' ? RedcapInstrumentGateway::findFieldForm((int) $projectId, $source) : null;
+        return RelationshipSettings::validate(
+            $settings,
+            RedcapInstrumentGateway::fetchFieldDictionary((int) $projectId, RelationshipSettings::fieldNames($settings)),
+            $people !== '' ? RedcapInstrumentGateway::findRepeatingEvents((int) $projectId, $people) : null,
+            $instrument !== '' ? RedcapInstrumentGateway::findRepeatingEvents((int) $projectId, $instrument) : null,
+            is_string($format) && $format !== '' ? $format : null,
+            $sourceForm !== null ? RedcapInstrumentGateway::findFormEvents((int) $projectId, $sourceForm) : null
+        );
+    }
+
+    /**
+     * Reads the saved pedigree and brings the relationship rows and
+     * relationship-to-proband values in line with it (D2-D7). Writes nothing
+     * unless the project is configured, the saved form holds the source
+     * field, and the pedigree could be read.
+     *
+     * @param string[] $messages Out: what went wrong, logged together as one
+     *   entry, so that problems which last are one repeated entry, not several
+     *   taking turns.
+     */
+    private function syncRelationships(int $projectId, string $record, string $instrument, int $eventId, $repeatInstance, array &$messages)
+    {
+        // Runs on every save of every form, so find out cheaply whether this is the pedigree's form first.
+        $source = $this->getProjectSetting(RelationshipSettings::SOURCE_FIELD, $projectId);
+        if (!is_string($source) || trim($source) === '' || RedcapInstrumentGateway::findFieldForm($projectId, trim($source)) !== $instrument) {
+            return;
+        }
+        $config = RelationshipSettings::read(function ($key) use ($projectId) {
+            return $this->getProjectSetting($key, $projectId);
+        });
+        if ($config === null) {
+            return;
+        }
+
+        $pedigree = PedigreeBundleReader::read(
+            RedcapInstrumentGateway::fetchSavedValue($projectId, $record, $eventId, $instrument, $repeatInstance, $config['source'])
+        );
+        if (!$pedigree['ok']) {
+            // A pedigree not drawn yet is normal (e.g. each page of a survey before the diagram), not worth a log entry.
+            if ($pedigree['reason'] !== PedigreeBundleReader::EMPTY) {
+                $messages[] = 'Relationships were not updated: ' . $pedigree['reason'] . '.';
+            }
+            return;
+        }
+        $peopleEventId = RedcapInstrumentGateway::pickRepeatingEvent($projectId, $config['people'], $eventId)['eventId'] ?? null;
+        if ($peopleEventId === null) {
+            $messages[] = 'Relationships were not updated: there is no one event of this arm where "' . $config['people'] . '" repeats.';
+            return;
+        }
+
+        $peopleRows = RedcapInstrumentGateway::fetchInstrumentRows($projectId,
+            array_filter([$config['people'] . '_complete', $config['toProband']]), null, [$record], $config['people'], $peopleEventId);
+        $linked = PedigreeRelationships::linkedInstances($pedigree, $record, array_column($peopleRows, 'instance'), $duplicates);
+        if (!$linked && PedigreeRelationships::hasLinks($pedigree)) {
+            // Links, but none to a row of this record: the record was renamed, or its rows couldn't be read. Treated as
+            // an unreadable pedigree (D7) - otherwise every relationship and value would be wiped.
+            $messages[] = 'Relationships were not updated: the pedigree\'s people are linked, but none to a "' . $config['people']
+                . '" row of this record (was the record renamed?).';
+            return;
+        }
+        if ($duplicates) {
+            $messages[] = 'More than one person in the pedigree is linked to "' . $config['people'] . '" row'
+                . (count($duplicates) > 1 ? 's ' : ' ') . implode(', ', $duplicates) . '; only the first counts.';
+        }
+
+        $typeIsChoice = RedcapInstrumentGateway::fetchChoiceCodes($projectId, $config['type']) !== null;
+        $this->syncRelationshipRows($projectId, $record, $peopleEventId, $config, PedigreeRelationships::rows($pedigree, $linked), $typeIsChoice, $messages);
+        if ($config['toProband'] !== null) {
+            $codes = [];
+            foreach (PedigreeRelationships::relationshipsToProband($pedigree) as $person => $code) {
+                if (isset($linked[$person])) {
+                    $codes[$linked[$person]] = $code;
+                }
+            }
+            $plan = RelationshipTopologyPlan::probandValues($peopleRows, $codes, $config['toProband'],
+                RedcapInstrumentGateway::fetchChoiceCodes($projectId, $config['toProband']));
+            array_push($messages, ...$plan['warnings']);
+            if ($plan['writes']) {
+                $rows = [];
+                foreach ($plan['writes'] as $instance => $value) {
+                    $rows[] = ['redcap_repeat_instance' => $instance, $config['toProband'] => $value];
+                }
+                $errors = RedcapInstrumentGateway::saveInstances($projectId, $record, $peopleEventId, $config['people'], $rows, true);
+                if ($errors) {
+                    $messages[] = 'Relationship to proband values were not all saved: ' . implode('; ', $errors);
+                }
+            }
+        }
+    }
+
+    /**
+     * Brings the record's relationship rows in line with the pedigree (D6):
+     * adds the relationships with no row, deletes the rows no longer wanted.
+     *
+     * @param array<int, array{a: int, b: int, type: string}> $desired With KIN codes.
+     * @param bool $typeIsChoice Whether the relationship type field is a
+     *   dropdown or radio field (see RelationshipSettings::storedKinCode()).
+     * @param string[] $messages See syncRelationships().
+     */
+    private function syncRelationshipRows(int $projectId, string $record, int $eventId, array $config, array $desired, bool $typeIsChoice, array &$messages)
+    {
+        $desired = array_map(function ($row) use ($typeIsChoice) {
+            return ['a' => $row['a'], 'b' => $row['b'], 'type' => RelationshipSettings::storedKinCode($row['type'], $typeIsChoice)];
+        }, $desired);
+        $current = RedcapInstrumentGateway::fetchInstrumentRows($projectId,
+            [$config['a'], $config['b'], $config['type'], $config['instrument'] . '_complete'], null, [$record], $config['instrument'], $eventId);
+        $plan = RelationshipTopologyPlan::rows($current, $desired, ['a' => $config['a'], 'b' => $config['b'], 'type' => $config['type']]);
+        if (!$plan['delete'] && !$plan['add']) {
+            return;
+        }
+        // The new rows go in first, and the old ones are deleted only once they're saved: saveData() refuses a
+        // whole batch over one bad value, and deleting first would then lose rows the pedigree still has.
+        // The new rows get instance numbers above the old ones, so they never collide.
+        if ($plan['add'] && !$this->addRelationshipRows($projectId, $record, $eventId, $config, $plan['add'], $messages)) {
+            return;
+        }
+        // deleteRecord() ignores locking, so a locked (or e-signed) row is kept, as REDCap would keep it.
+        $locked = array_values(array_intersect($plan['delete'],
+            RedcapInstrumentGateway::findLockedInstances($projectId, $record, $eventId, $config['instrument'])));
+        if ($locked) {
+            $messages[] = 'Relationship row' . (count($locked) > 1 ? 's ' : ' ') . implode(', ', $locked)
+                . ' no longer in the pedigree ' . (count($locked) > 1 ? 'are' : 'is') . ' locked, so kept.';
+        }
+        $failed = RedcapInstrumentGateway::deleteInstances($projectId, $record, $eventId, $config['instrument'], array_diff($plan['delete'], $locked));
+        if ($failed) {
+            $messages[] = 'Old relationship rows ' . implode(', ', $failed) . ' could not be deleted, so they are there'
+                . ' alongside the new ones until the pedigree\'s form is next saved.';
+        }
+    }
+
+    /**
+     * @param string[] $messages See syncRelationships().
+     * @return bool Whether every row was saved (REDCap saves all or none).
+     */
+    private function addRelationshipRows(int $projectId, string $record, int $eventId, array $config, array $add, array &$messages)
+    {
+        $rows = array_map(function ($row) use ($config) {
+            return [
+                'redcap_repeat_instance' => 'new',
+                $config['a'] => (string) $row['a'],
+                $config['b'] => (string) $row['b'],
+                $config['type'] => $row['type'],
+                $config['instrument'] . '_complete' => '2',
+            ];
+        }, $add);
+        $errors = RedcapInstrumentGateway::saveInstances($projectId, $record, $eventId, $config['instrument'], $rows, false);
+        if ($errors) {
+            $messages[] = 'Relationships were not updated (the rows already there are kept): ' . implode('; ', $errors);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Logs to the module log (*View Logs*), unless it's the same as the
+     * record's last entry: a problem that lasts (a missing choice, another
+     * storage format) would otherwise be logged again on every save.
+     */
+    private function logRelationships($message, $record)
+    {
+        try {
+            $last = $this->queryLogs('select message where record = ? order by log_id desc limit 1', [(string) $record]);
+            $row = $last ? $last->fetch_assoc() : null;
+            if (($row['message'] ?? null) === $message) {
+                return;
+            }
+        } catch (\Throwable $e) {
+            // Couldn't check: log it anyway.
+        }
+        try {
+            $this->log($message, ['record' => (string) $record]);
+        } catch (\Throwable $e) {
+            error_log('[redcap_pedigree_editor] ' . $message);
+        }
+    }
 
     private function httpGet($fullUrl, $headers)
     {
