@@ -10,7 +10,7 @@ diagnosis_status,participant_enrolment,Diagnosis,radio,ADA2 deficiency status at
 age_at_first_symptoms,participant_enrolment,,text,Age at first symptoms (years),,,integer,,,,[diagnosis_status] = 'confirmed' or [diagnosis_status] = 'suspected',,,,,,
 enrolment_notes,participant_enrolment,,notes,Enrolment notes,,,,,,,,,,,,,
 family_history_date,family_history,,text,Date family history taken,,,date_ymd,,,,,,,,,,
-pedigree_diagram,family_history,,notes,Family pedigree,,Draw the family here. Link each person to their row on the Family members form.,,,,,,,,,,,@PEDIGREE
+pedigree_diagram,family_history,,notes,Family pedigree,,Draw the family here. Link each person to their row on the Family members form.,,,,,,,,,,,@PEDIGREE=HIDE_TEXT
 parents_related,family_history,,radio,Are the participant's biological parents related to each other by blood?,"1, Yes | 0, No | unknown, Don't know",,,,,,,,,,,,
 family_history_notes,family_history,,notes,Family history notes,,,,,,,,,,,,,
 first_name,family_members,Person,text,First name,,,,,,y,,,,,,,"@PEDIGREE_FIELD(mapsTo=""given"")"

@@ -502,8 +502,8 @@ collects, and isn't any organisation's project.
 
 **What it shows**
 
-- A longitudinal project. The *Enrolment* event holds *Participant enrolment*, *Family history* (with the `@PEDIGREE`
-  diagram field) and *Family members*, which repeats in that event only, as linking requires. *Follow up 12m* and
+- A longitudinal project. The *Enrolment* event holds *Participant enrolment*, *Family history* (with the diagram field,
+  `@PEDIGREE=HIDE_TEXT` so the form shows the diagram without its box of stored data) and *Family members*, which repeats in that event only, as linking requires. *Follow up 12m* and
   *Follow up 24m* hold a *Clinical follow-up* form.
 - *Family members* uses `@PEDIGREE_FIELD` with `mapsTo` for first and last name, sex, date of birth, adopted, vital
   status, date of death, ADA2 status (carrier status: affected / carrier / pre-symptomatic) and tested. Relationship,
