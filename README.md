@@ -53,6 +53,7 @@ representation of the diagram, add compression for large diagrams.
   JSON pedigrees are stored so they survive moving a project by XML or re-importing its data (see
   [Moving a project](#moving-a-project)), and the size limit is checked in stored bytes, so a large pedigree is no
   longer cut short.
+  **@PEDIGREE** and **@PEDIGREE_FIELD** are described in REDCap's own *Action Tags* help (Online Designer).
   Pedigrees saved in the legacy FHIR format (by versions before v0.3) open again, and are saved in the GA4GH format:
   the *fhir_v1* storage format is now read only (see [Upgrade Issues](#upgrade-issues)).
   **Breaking**: remove the **@PEDIGREE_HPO**/**@PEDIGREE_SCT** action tags. Terminology is now always taken from
