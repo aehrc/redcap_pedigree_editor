@@ -345,8 +345,8 @@ A `section_header` on the instrument starts a new tab in the node-edit form; fie
 land in an implicit *General* tab.
 
 Simple `branching_logic` - a single comparison or an AND-chain of comparisons against other `@PEDIGREE_FIELD`-tagged
-fields on the same instrument (`[field] = 'value'`, `[field] > 18`, ...) - is translated into the field's visibility
-condition automatically. Anything outside that (OR chains, comparisons against fields elsewhere, checkbox-option syntax,
+fields on the same instrument (`[field] = 'value'`, `[field] > 18`, `[field] <> ''` for "has a value", ...) - is
+translated into the field's visibility condition automatically. Values may be in single or double quotes. Anything outside that (OR chains, comparisons against fields elsewhere, checkbox-option syntax,
 nested parentheses, or a comparison against a *mapped* field - a mapped field's value isn't visible to this mechanism)
 is left untranslated: the field is always shown, and a warning is logged.
 
