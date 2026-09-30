@@ -326,6 +326,10 @@ fields are never included - this is opt-in, the same way `@PEDIGREE` marks the o
   | `candidate_genes` | HGNC (`http://purl.bioontology.org/ontology/HGNC/hgnc.owl`) | HGNC (same) | the custom gene system |
 
   A code from another system gets no name (it's shown as the code) and is exported under the wrong system.
+
+  The value is read as the ontology providers store it by default: `code|system` (redcap_fhir_ontology_provider)
+  or a bare code (advanced_fhir_ontology_provider). A field whose provider has a different code template (e.g.
+  `${SYSTEM}|${CODE}`) gives wrong legend entries.
 - **`@PEDIGREE_FIELD(predicate="<name>")`** - layer a graph/app-state visibility condition onto the field, for cases
   `branching_logic` has no way to express (e.g. twin-group membership). Recognised predicates: `isFetus`,
   `hasRelationships`, `isProband`, `isRelatedToProband`, `hasToBeAdopted`, `isTwin`, `isTwinWithConsistentGender`,
@@ -447,6 +451,10 @@ tagged `@PEDIGREE_FIELD(legend="disorders")`, plus the `questionnaire-linked-rec
   ]
 }
 ```
+
+An Advanced-mode legend item can also have a `linkId` of its own (a custom legend, with the same
+`questionnaire-field-mapping` extension). Its entries from REDCap are shown by their codes, since the pedigree
+editor only looks names up for the three built-in legends.
 
 **The Linked Record tab and its Link/Create-new/Edit buttons are not part of any Questionnaire, hand-authored or
 derived.** `open-pedigree`'s own `record-link-provider` mechanism adds them automatically, entirely independent of
