@@ -510,8 +510,11 @@ also write the pedigree's relationships into ordinary REDCap fields. Each time t
   own row of the linked instrument.
 
 These fields belong to the module: they're recomputed from the pedigree on every save, and anything typed into them is
-overwritten. Give each of them the `@READONLY` action tag so nobody tries. The module never changes any other field,
-and never changes the project's design.
+overwritten. Give each of them the `@READONLY` action tag so nobody tries, and don't use a field people fill in (such as
+a `@PEDIGREE_FIELD`): the module refuses one. The module never changes any other field, and never changes the
+project's design. Its writes are made for whoever saved the pedigree, and show under their name on the *Logging* page,
+whether or not they could edit those instruments themselves: the fields follow from the pedigree, which they can edit.
+A locked (or e-signed) relationship row is never deleted.
 
 Only a pedigree in the **GA4GH** storage format can be read (the other formats don't say which person is linked to
 which row; *fhir_v1* also works, since it saves in the GA4GH format). If the saved pedigree can't be read - another format, or corrupt - nothing is changed, and the reason is
@@ -581,7 +584,8 @@ nothing either, without a log entry.
    instrument and its three fields, and (optionally) the relationship to proband field. The module refuses to save
    them if the relationship instrument doesn't repeat in the linked instrument's event, a field isn't on the
    instrument it belongs to or is the wrong type (as in the tables above), the `@PEDIGREE` field is on the linked or
-   relationship instrument (it has to hold the whole family's pedigree), or the *Storage Format* isn't GA4GH (or
+   relationship instrument, or on a form that repeats or is in more than one event of an arm (each record needs one
+   pedigree to read), or the *Storage Format* isn't GA4GH (or
    *fhir_v1*). Nothing is written until all the required ones are set; clearing them stops the writes
    (rows already written stay, and can be deleted by hand).
 
@@ -592,7 +596,8 @@ When the relationships haven't changed, nothing is written, so an ordinary save 
 When they have, only the difference is written: rows for new relationships are added, then rows for relationships no
 longer in the pedigree are deleted, and the rest keep their row numbers. If REDCap refuses the new rows - say a choice
 was removed from the relationship type field - nothing is deleted, and the module logs why. A problem that lasts is
-logged once, not on every save.
+logged once, not on every save. If people in the pedigree are linked, but none to a row of this record (e.g. after the
+record was renamed), nothing is changed either, and the module logs it: re-link them to put the relationships back.
 
 REDCap doesn't run modules for a **data import or an API save**, so a pedigree changed that way (or a whole project
 imported from XML with an older module version) has its relationships brought up to date the next time its form is

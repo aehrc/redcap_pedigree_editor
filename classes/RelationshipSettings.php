@@ -128,35 +128,34 @@ class RelationshipSettings
      *   relationship instrument.
      * @param string|null $format The storage format pedigrees are saved in
      *   (the project's, or else the system's).
+     * @param array<int, array{arm: string, repeats: bool}>|null $sourceEvents
+     *   The events the source field's instrument is designated to
+     *   ({@see RedcapInstrumentGateway::findFormEvents()}); null: couldn't check.
      * @return string Errors, one per line; empty when the settings are fine
      *   or no relationship setting is used.
      */
-    public static function validate(array $settings, array $dictionary, ?array $peopleEvents, ?array $relationshipEvents, ?string $format): string
+    public static function validate(array $settings, array $dictionary, ?array $peopleEvents, ?array $relationshipEvents, ?string $format, ?array $sourceEvents = null): string
     {
-        $get = function (string $key) use ($settings) {
-            return $settings[$key] ?? null;
-        };
         if (!self::isUsed($settings)) {
             return '';
         }
-        $used = array_filter(self::KEYS, function ($key) use ($get) {
-            return self::value($get($key)) !== null;
-        });
         $prefix = 'Relationships: ';
         $errors = '';
-        $people = trim((string) $get(self::PEOPLE_INSTRUMENT));
-        if ($people === '') {
+        $people = self::value($settings[self::PEOPLE_INSTRUMENT] ?? null);
+        if ($people === null) {
             $errors .= $prefix . 'set the Repeating instrument to link pedigree people to first; relationships are between its rows.' . "\n";
         }
         foreach (self::REQUIRED as $key => $what) {
-            if (!in_array($key, $used, true)) {
+            if (self::value($settings[$key] ?? null) === null) {
                 $errors .= $prefix . $what . ' is required.' . "\n";
             }
         }
         if ($errors !== '') {
             return $errors;
         }
-        $config = self::read($get);
+        $config = self::read(function (string $key) use ($settings) {
+            return $settings[$key] ?? null;
+        });
 
         if (!in_array($format, self::READABLE_FORMATS, true)) {
             $errors .= $prefix . 'they can only be read from a pedigree saved in the GA4GH format; set the Storage Format to'
@@ -173,6 +172,13 @@ class RelationshipSettings
             // rewrite the whole record's relationships from that one row's pedigree.
             $errors .= $prefix . 'the @PEDIGREE field "' . $config['source'] . '" can\'t be on the Repeating instrument or the'
                 . ' relationship instrument; it holds the whole family\'s pedigree.' . "\n";
+        } elseif ($sourceEvents !== null) {
+            // Likewise one copy of it per record's arm: several copies would take turns rewriting the relationships.
+            $arms = array_count_values(array_column($sourceEvents, 'arm'));
+            if (in_array(true, array_column($sourceEvents, 'repeats'), true) || max($arms ?: [0]) > 1) {
+                $errors .= $prefix . 'the @PEDIGREE field "' . $config['source'] . '" must be on a form that doesn\'t repeat and is in only'
+                    . ' one event per arm, so each record has one pedigree to read.' . "\n";
+            }
         }
 
         if ($config['instrument'] === $people) {
@@ -217,6 +223,10 @@ class RelationshipSettings
                 $errors .= $prefix . 'the relationship to proband field "' . $config['toProband'] . '" isn\'t on the Repeating instrument ("' . $people . '").' . "\n";
             } elseif (!in_array($field['field_type'] ?? null, self::TO_PROBAND_FIELD_TYPES, true)) {
                 $errors .= $prefix . 'the relationship to proband field "' . $config['toProband'] . '" must be ' . self::describeTypes(self::TO_PROBAND_FIELD_TYPES) . '.' . "\n";
+            } elseif (PedigreeFieldTag::parse((string) ($field['field_annotation'] ?? ''))->present) {
+                // The module owns the field (it clears it on rows not linked), so it can't also be one people fill in.
+                $errors .= $prefix . 'the relationship to proband field "' . $config['toProband'] . '" is tagged @PEDIGREE_FIELD; use a field'
+                    . ' of its own (with @READONLY), since the module overwrites it and clears it on rows not in the pedigree.' . "\n";
             }
         }
         return $errors;

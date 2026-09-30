@@ -167,6 +167,25 @@ class RelationshipSettingsTest extends TestCase
         }
     }
 
+    public function testTheSourceFormMustNotRepeatAndBeInOneEventPerArm(): void
+    {
+        $validate = function (?array $sourceEvents) {
+            return RelationshipSettings::validate(self::SETTINGS, self::dictionary(), self::PEOPLE_EVENTS, self::PEOPLE_EVENTS, 'GA4GH', $sourceEvents);
+        };
+        $message = 'must be on a form that doesn\'t repeat and is in only one event per arm';
+        $this->assertSame('', $validate([93 => ['arm' => '1', 'repeats' => false], 96 => ['arm' => '2', 'repeats' => false]]));
+        $this->assertStringContainsString($message, $validate([93 => ['arm' => '1', 'repeats' => true]]));
+        $this->assertStringContainsString($message, $validate([93 => ['arm' => '1', 'repeats' => false], 94 => ['arm' => '1', 'repeats' => false]]));
+        $this->assertSame('', $validate(null), 'couldn\'t check');
+    }
+
+    public function testTheRelationshipToProbandFieldCantBeAPedigreeField(): void
+    {
+        $this->assertStringContainsString('is tagged @PEDIGREE_FIELD; use a field of its own',
+            self::validate([], ['relationship' => ['field_annotation' => '@PEDIGREE_FIELD']]));
+        $this->assertSame('', self::validate([], ['relationship' => ['field_annotation' => '@READONLY']]));
+    }
+
     public function testTheKinChoicesAreEveryCodeARowCanHave(): void
     {
         $this->assertEqualsCanonicalizing(\AEHRC\PedigreeEditorExternalModule\PedigreeRelationships::ROW_CODES, array_keys(RelationshipSettings::KIN_CODES));

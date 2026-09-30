@@ -67,9 +67,11 @@ class RelationshipTopologyPlan
         $kept = [];
         $delete = [];
         foreach ($currentRows as $row) {
-            $key = trim((string) ($row['fields'][$fields['a']] ?? '')) . '|'
-                . trim((string) ($row['fields'][$fields['b']] ?? '')) . '|'
-                . trim((string) ($row['fields'][$fields['type']] ?? ''));
+            $key = PedigreeRelationships::rowKey([
+                'a' => trim((string) ($row['fields'][$fields['a']] ?? '')),
+                'b' => trim((string) ($row['fields'][$fields['b']] ?? '')),
+                'type' => trim((string) ($row['fields'][$fields['type']] ?? '')),
+            ]);
             if (isset($wanted[$key]) && !isset($kept[$key])) {
                 $kept[$key] = true; // the lowest instance of a relationship stays
             } else {

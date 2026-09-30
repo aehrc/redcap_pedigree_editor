@@ -39,23 +39,42 @@ class PedigreeRelationships
      * @param array $pedigree A successful {@see PedigreeBundleReader::read()}.
      * @param int[]|null $existingInstances Only these People instances count
      *   (a link to a row since deleted points at nothing); null for any.
+     * @param int[]|null $duplicates Out-param: instances more than one person
+     *   is linked to (all but the first are left out).
      * @return array<string, int> Person key => instance, in Bundle order.
      */
-    public static function linkedInstances(array $pedigree, string $record, ?array $existingInstances = null): array
+    public static function linkedInstances(array $pedigree, string $record, ?array $existingInstances = null, ?array &$duplicates = null): array
     {
         $existing = $existingInstances === null ? null : array_flip(array_map('intval', $existingInstances));
         $linked = [];
+        $duplicates = [];
         foreach ($pedigree['people'] as $key => $person) {
             $link = RedcapInstrumentReference::decode($person['ref']);
             if ($link === null || $link['record'] !== $record) {
                 continue;
             }
-            if (($existing !== null && !isset($existing[$link['instance']])) || in_array($link['instance'], $linked, true)) {
+            if ($existing !== null && !isset($existing[$link['instance']])) {
+                continue;
+            }
+            if (in_array($link['instance'], $linked, true)) {
+                $duplicates[] = $link['instance'];
                 continue;
             }
             $linked[(string) $key] = $link['instance'];
         }
+        $duplicates = array_values(array_unique($duplicates));
         return $linked;
+    }
+
+    /** Whether anyone in the pedigree is linked to a row of any record. */
+    public static function hasLinks(array $pedigree): bool
+    {
+        foreach ($pedigree['people'] as $person) {
+            if (RedcapInstrumentReference::decode($person['ref']) !== null) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

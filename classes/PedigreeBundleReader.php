@@ -54,10 +54,7 @@ class PedigreeBundleReader
             }
         }
         $bundle = json_decode($json, true);
-        if (!is_array($bundle)) {
-            return self::failure('the pedigree is not a GA4GH FHIR Bundle (relationships need the GA4GH storage format)');
-        }
-        if (($bundle['resourceType'] ?? null) !== 'Bundle' || !is_array($bundle['entry'] ?? null)) {
+        if (!is_array($bundle) || ($bundle['resourceType'] ?? null) !== 'Bundle' || !is_array($bundle['entry'] ?? null)) {
             return self::failure('the pedigree is not a GA4GH FHIR Bundle (relationships need the GA4GH storage format)');
         }
 

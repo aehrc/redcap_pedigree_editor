@@ -104,10 +104,17 @@ class PedigreeRelationshipsTest extends TestCase
             'x' => ['Patient/123', null],
         ], []);
 
-        $this->assertSame(['p' => 1, 'f' => 3], PedigreeRelationships::linkedInstances($pedigree, '5'));
+        $this->assertSame(['p' => 1, 'f' => 3], PedigreeRelationships::linkedInstances($pedigree, '5', null, $duplicates));
+        $this->assertSame([1], $duplicates, 'g is also linked to instance 1');
         $this->assertSame(['p' => 1], PedigreeRelationships::linkedInstances($pedigree, '5', [1, 2]));
         $this->assertSame(['m' => 2], PedigreeRelationships::linkedInstances($pedigree, '6'));
         $this->assertSame([], PedigreeRelationships::linkedInstances($pedigree, '50'), 'record names compare exactly');
+    }
+
+    public function testHasLinks(): void
+    {
+        $this->assertTrue(PedigreeRelationships::hasLinks(self::pedigree('p', ['p' => [null, null], 'q' => ['record:9/instance:1', null]], [])));
+        $this->assertFalse(PedigreeRelationships::hasLinks(self::pedigree('p', ['p' => [null, null], 'q' => ['Patient/1', null]], [])));
     }
 
     public function testPartnersAndTwinsAreStoredOnceWithTheLowerInstanceFirst(): void

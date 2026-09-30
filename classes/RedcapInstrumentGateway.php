@@ -234,6 +234,60 @@ class RedcapInstrumentGateway
     }
 
     /**
+     * @return string[]|null A dropdown or radio field's choice codes, from the
+     *   project's cached metadata; null for any other field (or none).
+     */
+    public static function fetchChoiceCodes(int $projectId, string $field): ?array
+    {
+        $proj = self::resolveProject($projectId);
+        $meta = $proj ? ($proj->metadata[$field] ?? null) : null;
+        if (!$meta || !in_array($meta['element_type'] ?? null, ['select', 'radio'], true)) {
+            return null;
+        }
+        return array_map('strval', array_keys(parseEnum($meta['element_enum'] ?? '')));
+    }
+
+    /**
+     * @return array<int, array{arm: string, repeats: bool}>|null Event ID =>
+     *   its arm and whether `$instrument` repeats there (on its own, or with
+     *   the whole event), for each event the instrument is designated to.
+     *   Null if the project couldn't be resolved.
+     */
+    public static function findFormEvents(int $projectId, string $instrument): ?array
+    {
+        $proj = self::resolveProject($projectId);
+        if (!$proj) {
+            return null;
+        }
+        $result = [];
+        foreach ($proj->eventsForms ?: [] as $eventId => $forms) {
+            if (in_array($instrument, $forms ?: [], true)) {
+                $result[(int) $eventId] = [
+                    'arm' => (string) ($proj->eventInfo[$eventId]['arm_num'] ?? ''),
+                    'repeats' => $proj->isRepeatingForm($eventId, $instrument) || $proj->isRepeatingEvent($eventId),
+                ];
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * @return int[] The instances of `$instrument` on `$record` in `$eventId`
+     *   that are locked (an e-signed instance is locked too). REDCap's
+     *   deleteRecord() doesn't check locking, so callers must.
+     */
+    public static function findLockedInstances(int $projectId, string $record, int $eventId, string $instrument): array
+    {
+        $result = db_query('SELECT instance FROM redcap_locking_data WHERE project_id = ? AND record = ? AND event_id = ? AND form_name = ?',
+            [$projectId, $record, $eventId, $instrument]);
+        $instances = [];
+        while ($result && ($row = db_fetch_assoc($result))) {
+            $instances[] = (int) $row['instance'];
+        }
+        return $instances;
+    }
+
+    /**
      * @return string|null The instrument `$field` is on, from the project's
      *   cached metadata (cheap enough for every save hook), or null if the
      *   field doesn't exist or the project couldn't be resolved.
