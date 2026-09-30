@@ -58,6 +58,39 @@ class BranchingLogicTranslatorTest extends TestCase
         $this->assertSame('foo', $result['enableWhen'][0]['answerString']);
     }
 
+    public function testComparingWithAnEmptyValueIsExists(): void
+    {
+        // REDCap's usual "has a value" / "is empty", in either quote style.
+        foreach (["[notes] <> ''" => true, '[notes] <> ""' => true, "[notes] = ''" => false, '[notes] = ""' => false] as $logic => $hasValue) {
+            $result = BranchingLogicTranslator::translate($logic, ['notes' => 'string']);
+            $this->assertNull($result['warning'], $logic);
+            $this->assertSame([['question' => 'notes', 'operator' => 'exists', 'answerBoolean' => $hasValue]], $result['enableWhen'], $logic);
+        }
+        // in an AND-chain, and for other item types
+        $result = BranchingLogicTranslator::translate("[age] <> '' and [gender] = '2'", ['age' => 'integer', 'gender' => 'choice']);
+        $this->assertSame([
+            ['question' => 'age', 'operator' => 'exists', 'answerBoolean' => true],
+            ['question' => 'gender', 'operator' => '=', 'answerCoding' => ['code' => '2']],
+        ], $result['enableWhen']);
+    }
+
+    public function testAnOrderedComparisonWithAnEmptyValueIsUntranslatable(): void
+    {
+        $result = BranchingLogicTranslator::translate("[age] > ''", ['age' => 'integer']);
+        $this->assertNull($result['enableWhen']);
+        $this->assertStringContainsString('empty value', $result['warning']);
+    }
+
+    public function testDoubleQuotedValuesAreReadLikeSingleQuotedOnes(): void
+    {
+        $result = BranchingLogicTranslator::translate('[gender] = "2" and [status] = "a and b"', ['gender' => 'choice', 'status' => 'string']);
+        $this->assertNull($result['warning']);
+        $this->assertSame([
+            ['question' => 'gender', 'operator' => '=', 'answerCoding' => ['code' => '2']],
+            ['question' => 'status', 'operator' => '=', 'answerString' => 'a and b'],
+        ], $result['enableWhen']);
+    }
+
     public function testOrChainIsUntranslatable(): void
     {
         $result = BranchingLogicTranslator::translate(

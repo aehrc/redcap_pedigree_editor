@@ -15,7 +15,8 @@ namespace AEHRC\PedigreeEditorExternalModule;
  */
 class BranchingLogicTranslator
 {
-    const COMPARISON_PATTERN = '/^\s*\[([a-zA-Z][a-zA-Z0-9_]*)\]\s*(<>|>=|<=|=|>|<)\s*(?:\'([^\']*)\'|([^\s]+))\s*$/';
+    // The value is 'single-quoted', "double-quoted" (REDCap accepts both) or bare.
+    const COMPARISON_PATTERN = '/^\s*\[([a-zA-Z][a-zA-Z0-9_]*)\]\s*(<>|>=|<=|=|>|<)\s*(?:\'([^\']*)\'|"([^"]*)"|([^\s]+))\s*$/';
 
     const OPERATOR_MAP = [
         '=' => '=',
@@ -66,19 +67,30 @@ class BranchingLogicTranslator
 
         foreach ($maskedComparisons as $maskedComparison) {
             $comparison = self::unmaskQuotedLiterals($maskedComparison, $literals);
-            if (!preg_match(self::COMPARISON_PATTERN, $comparison, $m)) {
+            // Unmatched groups as null, so an empty quoted value ('' or "") is told apart from a
+            // group that didn't take part.
+            if (!preg_match(self::COMPARISON_PATTERN, $comparison, $m, PREG_UNMATCHED_AS_NULL)) {
                 return self::untranslatable($branchingLogic, 'contains an unsupported comparison "' . trim($comparison) . '"');
             }
 
             $fieldName = $m[1];
             $operator = self::OPERATOR_MAP[$m[2]];
-            $rawValue = $m[3] !== '' ? $m[3] : $m[4];
+            $rawValue = $m[3] ?? $m[4] ?? $m[5];
 
             if (!array_key_exists($fieldName, $taggedItemTypes)) {
                 return self::untranslatable($branchingLogic, 'references field "' . $fieldName . '" which is not an @PEDIGREE_FIELD-tagged field in this instrument');
             }
             if (isset($mappedFieldNames[$fieldName])) {
                 return self::untranslatable($branchingLogic, 'references field "' . $fieldName . '" which is mapped via mapsTo/legend — its value is not visible to enableWhen');
+            }
+
+            if ($rawValue === '') {
+                // REDCap's "is empty" / "has a value": FHIR's exists.
+                if ($operator !== '=' && $operator !== '!=') {
+                    return self::untranslatable($branchingLogic, 'compares field "' . $fieldName . '" with an empty value using "' . $m[2] . '"');
+                }
+                $enableWhen[] = ['question' => $fieldName, 'operator' => 'exists', 'answerBoolean' => $operator === '!='];
+                continue;
             }
 
             $enableWhen[] = self::buildCondition($fieldName, $operator, $rawValue, $taggedItemTypes[$fieldName]);
@@ -116,14 +128,14 @@ class BranchingLogicTranslator
     }
 
     /**
-     * Replaces every `'...'`-quoted literal with a NUL-delimited placeholder
+     * Replaces every `'...'`- or `"..."`-quoted literal with a NUL-delimited placeholder
      * (one that cannot appear in REDCap branching_logic source), appending
      * each original literal to $literals in the order encountered so
      * {@see unmaskQuotedLiterals()} can restore them positionally.
      */
     private static function maskQuotedLiterals(string $s, array &$literals): string
     {
-        return preg_replace_callback("/'[^']*'/", function ($m) use (&$literals) {
+        return preg_replace_callback('/\'[^\']*\'|"[^"]*"/', function ($m) use (&$literals) {
             $literals[] = $m[0];
             return "\x00" . (count($literals) - 1) . "\x00";
         }, $s);
