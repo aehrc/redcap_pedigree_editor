@@ -238,6 +238,18 @@ class QuestionnaireDerivationTest extends TestCase
         $this->assertSame(['condition'], $this->sourceFields($legend));
     }
 
+    public function testAnOntologyFieldWithoutALegendStaysAPlainItem(): void
+    {
+        // Only a legend changes how an ontology field derives; otherwise it's a plain string, as before.
+        $dd = ['condition' => $this->ontologyField('@PEDIGREE_FIELD')];
+        $result = QuestionnaireDerivation::derive($dd, 'family_members', ['condition' => self::SCT_VS]);
+        $item = $this->flatten($result['questionnaire'])['condition'];
+        $this->assertSame('string', $item['type']);
+        $this->assertArrayNotHasKey('answerValueSet', $item);
+        $this->assertArrayNotHasKey('repeats', $item);
+        $this->assertSame([], $result['warnings']);
+    }
+
     public function testLegendParameterOnAFieldThatCantBeALegendIsRejected(): void
     {
         $cases = [
