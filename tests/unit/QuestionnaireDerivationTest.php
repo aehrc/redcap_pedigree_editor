@@ -291,6 +291,66 @@ class QuestionnaireDerivationTest extends TestCase
         $this->assertNotEmpty($result['warnings']);
     }
 
+    public function testAnUnknownLegendTargetSaysSo(): void
+    {
+        $dd = ['dx' => $this->ontologyField('@PEDIGREE_FIELD(legend="disorder")')];
+        $result = QuestionnaireDerivation::derive($dd, 'family_members', ['dx' => self::SCT_VS]);
+        $this->assertArrayHasKey('dx', $this->flatten($result['questionnaire']));
+        $this->assertCount(1, $result['warnings']);
+        $this->assertStringContainsString("isn't a legend", $result['warnings'][0]);
+        $this->assertStringContainsString('"disorders"', $result['warnings'][0]);
+    }
+
+    public function testALegendFieldTakesNoMapsTo(): void
+    {
+        $dd = ['dx' => $this->ontologyField('@PEDIGREE_FIELD(legend="disorders",mapsTo="family")')];
+        $valueSets = ['dx' => self::SCT_VS];
+        $result = QuestionnaireDerivation::derive($dd, 'family_members', $valueSets);
+        $legend = $this->flatten($result['questionnaire'])['disorders'];
+        $this->assertArrayNotHasKey('definition', $legend);
+        $this->assertNotContains(['url' => QuestionnaireDerivation::MAPPING_EXTENSION_URL, 'valueCode' => 'mapsToField'], $legend['extension']);
+        $this->assertStringContainsString('mapsTo is ignored', implode(' ', $result['warnings']));
+        // resolve agrees
+        $this->assertNull(QuestionnaireDerivation::resolveTaggedFields($dd, $valueSets)[0]['mapsTo']);
+    }
+
+    public function testALegendFedBySeveralFieldsIsAlwaysShown(): void
+    {
+        $dd = [
+            'has_primary' => $this->field(['field_type' => 'yesno', 'field_annotation' => '@PEDIGREE_FIELD']),
+            'condition_primary' => $this->ontologyField('@PEDIGREE_FIELD(legend="disorders")', ['branching_logic' => "[has_primary] = '1'"]),
+            'condition_secondary' => $this->ontologyField('@PEDIGREE_FIELD(legend="disorders",predicate="isProband")'),
+        ];
+        $result = QuestionnaireDerivation::derive($dd, 'family_members',
+            ['condition_primary' => self::SCT_VS, 'condition_secondary' => self::SCT_VS]);
+        $this->assertArrayNotHasKey('enableWhen', $this->flatten($result['questionnaire'])['disorders']);
+        $warnings = implode(' ', $result['warnings']);
+        $this->assertStringContainsString('"condition_primary" feeds', $warnings);
+        $this->assertStringContainsString('"condition_secondary" feeds', $warnings);
+
+        // A legend fed by one field keeps its condition.
+        unset($dd['condition_secondary']);
+        $single = QuestionnaireDerivation::derive($dd, 'family_members', ['condition_primary' => self::SCT_VS]);
+        $this->assertArrayHasKey('enableWhen', $this->flatten($single['questionnaire'])['disorders']);
+        $this->assertSame([], $single['warnings']);
+    }
+
+    public function testAnAdvancedLegendItemIsMarkedAsOne(): void
+    {
+        $dd = ['dx' => $this->ontologyField(''), 'notes' => $this->field()];
+        $source = function ($field) {
+            return ['url' => QuestionnaireDerivation::REDCAP_SOURCE_EXTENSION_URL, 'extension' => [
+                ['url' => 'instrument', 'valueString' => 'family_members'], ['url' => 'field', 'valueString' => $field]]];
+        };
+        $questionnaire = ['item' => [
+            ['linkId' => 'my_conditions', 'type' => 'choice', 'repeats' => true, 'answerValueSet' => self::SCT_VS, 'extension' => [
+                ['url' => QuestionnaireDerivation::MAPPING_EXTENSION_URL, 'valueCode' => 'mapsToLegendCondition'], $source('dx')]],
+            ['linkId' => 'my_notes', 'type' => 'string', 'extension' => [$source('notes')]],
+        ]];
+        $resolved = QuestionnaireDerivation::resolveFieldsFromQuestionnaire($questionnaire, 'family_members', $dd);
+        $this->assertSame([true, false], array_column($resolved, 'legend'));
+    }
+
     public function testLegendLabelsMatchTheBuiltInForm(): void
     {
         $labels = [];
@@ -461,7 +521,7 @@ class QuestionnaireDerivationTest extends TestCase
         $dd = ['first_name' => $this->field(['field_annotation' => '@PEDIGREE_FIELD'])];
         $resolved = QuestionnaireDerivation::resolveTaggedFields($dd);
         $this->assertSame([
-            ['redcapField' => 'first_name', 'linkId' => 'first_name', 'type' => 'string', 'repeats' => false, 'choices' => [], 'mapsTo' => null],
+            ['redcapField' => 'first_name', 'linkId' => 'first_name', 'type' => 'string', 'repeats' => false, 'choices' => [], 'mapsTo' => null, 'legend' => false],
         ], $resolved);
     }
 

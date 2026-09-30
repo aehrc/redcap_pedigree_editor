@@ -417,9 +417,9 @@ A few starting examples:
 }
 ```
 
-**A disorders legend**, fed by a REDCap ontology field (the shape *Tags only* mode generates for
-`@PEDIGREE_FIELD(legend="disorders")`; add a `questionnaire-redcap-source` extension for each further field that
-should feed it):
+**A disorders legend**, fed by two REDCap ontology fields bound to a SNOMED CT value set (for *Default Terminology*
+*SnomedCT*; one `questionnaire-redcap-source` extension per field). *Tags only* mode derives this from two fields
+tagged `@PEDIGREE_FIELD(legend="disorders")`, plus the `questionnaire-linked-record-source` extension described below:
 
 ```json
 {
@@ -427,14 +427,21 @@ should feed it):
   "type": "choice",
   "text": "Disorders",
   "repeats": true,
-  "answerValueSet": "http://purl.bioontology.org/ontology/OMIM",
+  "answerValueSet": "http://snomed.info/sct?fhir_vs=refset/32570581000036105",
   "extension": [
     { "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping", "valueCode": "mapsToLegendCondition" },
     {
       "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
       "extension": [
         { "url": "instrument", "valueString": "family_members" },
-        { "url": "field", "valueString": "family_disorders" }
+        { "url": "field", "valueString": "condition_primary" }
+      ]
+    },
+    {
+      "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+      "extension": [
+        { "url": "instrument", "valueString": "family_members" },
+        { "url": "field", "valueString": "condition_secondary" }
       ]
     }
   ]

@@ -107,7 +107,7 @@ class QuestionnaireDerivation
      * linkId-resolution rules, including the legend-target `linkId`
      * override, to correctly key the answer bag it returns).
      *
-     * @return array Ordered list of `['redcapField', 'linkId', 'type', 'repeats', 'choices', 'mapsTo']`,
+     * @return array Ordered list of `['redcapField', 'linkId', 'type', 'repeats', 'choices', 'mapsTo', 'legend']`,
      *   where `choices` is the field's parsed `code => display` choice map
      *   (empty for non-choice types), and `mapsTo` is the tag's validly-typed
      *   `mapsTo=` target (e.g. `'gender'`), or `null` if untagged/invalid -
@@ -132,13 +132,15 @@ class QuestionnaireDerivation
 
             $answerValueSet = $fieldAnswerValueSets[$fieldName] ?? null;
             $linkId = $fieldName;
-            if ($tag->legend !== null && !$builtInLegends && self::legendMappingIsValid($typeInfo, $answerValueSet, $tag->legend)) {
+            $legend = $tag->legend !== null && !$builtInLegends && self::legendMappingIsValid($typeInfo, $answerValueSet, $tag->legend);
+            if ($legend) {
                 // Every field validly tagged for a legend resolves to it, so the import combines them.
                 $linkId = $tag->legend;
             }
 
             $mapsTo = null;
-            if ($tag->mapsTo !== null
+            if (!$legend // a legend field's value goes to the legend, not a mapsTo target (see derive())
+                && $tag->mapsTo !== null
                 && isset(self::MAPS_TO_FIELD_EXPECTED_TYPES[$tag->mapsTo])
                 && self::MAPS_TO_FIELD_EXPECTED_TYPES[$tag->mapsTo] === $typeInfo['type']
                 && !$typeInfo['repeats']
@@ -170,6 +172,7 @@ class QuestionnaireDerivation
                 'repeats' => $typeInfo['repeats'],
                 'choices' => $choices,
                 'mapsTo' => $mapsTo,
+                'legend' => $legend,
             ];
         }
         return $resolved;
@@ -263,9 +266,25 @@ class QuestionnaireDerivation
                     'type' => $typeInfo['type'],
                     'repeats' => $typeInfo['repeats'],
                     'choices' => $choices,
+                    'legend' => self::isLegendItem($item),
                 ];
             }
         }
+    }
+
+    /** Whether an item is a legend: one of the reserved targets, or an item with a legend mapping. */
+    private static function isLegendItem(array $item): bool
+    {
+        if (isset(self::RESERVED_LEGEND_TARGETS[$item['linkId'] ?? ''])) {
+            return true;
+        }
+        foreach ($item['extension'] ?? [] as $ext) {
+            if (($ext['url'] ?? null) === self::MAPPING_EXTENSION_URL
+                && in_array($ext['valueCode'] ?? null, ['mapsToLegendCondition', 'mapsToLegendObservation'], true)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static function findRedcapSourceExtensions(array $item, string $instrumentName): array
@@ -311,6 +330,8 @@ class QuestionnaireDerivation
         $warnings = [];
         // legend target => the field whose item is that legend's item
         $legendItemField = [];
+        // fields whose item is a legend fed by more than one field
+        $sharedLegendItems = [];
         $items = [];
         $itemTypesByField = [];
         $mappedFieldNames = [];
@@ -337,15 +358,26 @@ class QuestionnaireDerivation
             $item = self::buildBaseItem($fieldName, $field, $typeInfo, $fieldAnswerValueSets[$fieldName] ?? null);
             $extensions = [];
             $isMapped = false;
+            $isLegend = $tag->legend !== null && !$builtInLegends
+                && self::legendMappingIsValid($typeInfo, $fieldAnswerValueSets[$fieldName] ?? null, $tag->legend);
 
             if ($tag->mapsTo !== null) {
-                $isMapped = self::applyMapsTo($item, $extensions, $fieldName, $tag->mapsTo, $typeInfo['type'], $warnings) || $isMapped;
+                if ($isLegend) {
+                    $warnings[] = 'Field "' . $fieldName . '" has both legend= and mapsTo= — its value goes to the "'
+                        . $tag->legend . '" legend, so mapsTo is ignored.';
+                } else {
+                    $isMapped = self::applyMapsTo($item, $extensions, $fieldName, $tag->mapsTo, $typeInfo['type'], $warnings) || $isMapped;
+                }
             }
             if ($tag->legend !== null) {
-                if ($builtInLegends) {
+                if (!isset(self::RESERVED_LEGEND_TARGETS[$tag->legend])) {
+                    $warnings[] = 'Field "' . $fieldName . '" has @PEDIGREE_FIELD(legend="' . $tag->legend
+                        . '"), which isn\'t a legend: use "' . implode('", "', array_keys(self::RESERVED_LEGEND_TARGETS))
+                        . '" — mapping omitted, field derived as a plain item.';
+                } elseif ($builtInLegends) {
                     $warnings[] = 'Field "' . $fieldName . '" has @PEDIGREE_FIELD(legend="' . $tag->legend
                         . '"), but the built-in form already has that legend in "default + tags" mode — mapping omitted, field derived as a plain item.';
-                } elseif (!self::legendMappingIsValid($typeInfo, $fieldAnswerValueSets[$fieldName] ?? null, $tag->legend)) {
+                } elseif (!$isLegend) {
                     $warnings[] = 'Field "' . $fieldName . '" has @PEDIGREE_FIELD(legend="' . $tag->legend
                         . '") but is not a single-value text field bound to a FHIR ontology value set — mapping omitted, field derived as a plain item.';
                 } elseif (isset($legendItemField[$tag->legend])) {
@@ -354,6 +386,11 @@ class QuestionnaireDerivation
                     // takes the legend's own label since it's no longer one field's.
                     $items[$legendItemField[$tag->legend]]['extension'][] = self::redcapSourceExtension($instrumentName, $fieldName);
                     $items[$legendItemField[$tag->legend]]['text'] = self::LEGEND_LABELS[$tag->legend];
+                    $sharedLegendItems[$legendItemField[$tag->legend]] = true;
+                    if (!empty($field['branching_logic']) || $tag->predicate !== null) {
+                        $warnings[] = 'Field "' . $fieldName . '" feeds the "' . $tag->legend . '" legend with another field, so its'
+                            . ' branching logic/predicate is ignored: a legend fed by several fields is always shown.';
+                    }
                     $itemTypesByField[$fieldName] = 'choice';
                     $mappedFieldNames[$fieldName] = true;
                     continue;
@@ -388,7 +425,7 @@ class QuestionnaireDerivation
             }
         }
 
-        self::applyBranchingLogicAndPredicates($items, $order, $dataDictionary, $itemTypesByField, $mappedFieldNames, $warnings);
+        self::applyBranchingLogicAndPredicates($items, $order, $dataDictionary, $itemTypesByField, $mappedFieldNames, $warnings, $sharedLegendItems);
 
         $topLevelItems = self::groupIntoSections($items, $order, $sectionOfField);
 
@@ -549,12 +586,22 @@ class QuestionnaireDerivation
      *   over — so it degrades gracefully instead, exactly like any other
      *   untranslatable branching_logic.
      */
-    private static function applyBranchingLogicAndPredicates(array &$items, array $order, array $dataDictionary, array $itemTypesByField, array $mappedFieldNames, array &$warnings): void
+    private static function applyBranchingLogicAndPredicates(array &$items, array $order, array $dataDictionary, array $itemTypesByField, array $mappedFieldNames, array &$warnings, array $sharedLegendItems = []): void
     {
         foreach ($order as $fieldName) {
             $branchingLogic = $dataDictionary[$fieldName]['branching_logic'] ?? '';
             $item =& $items[$fieldName];
             $enableWhen = [];
+
+            // One field's condition can't decide whether a legend other fields also feed is shown.
+            if (isset($sharedLegendItems[$fieldName])) {
+                if (!empty($branchingLogic) || isset($item['_pendingPredicate'])) {
+                    $warnings[] = 'Field "' . $fieldName . '" feeds the "' . $item['linkId'] . '" legend with another field, so its'
+                        . ' branching logic/predicate is ignored: a legend fed by several fields is always shown.';
+                }
+                unset($item['_pendingPredicate'], $item);
+                continue;
+            }
 
             if (!empty($branchingLogic)) {
                 $result = BranchingLogicTranslator::translate($branchingLogic, $itemTypesByField, $mappedFieldNames);
