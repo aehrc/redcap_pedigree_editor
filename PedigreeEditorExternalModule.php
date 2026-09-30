@@ -901,7 +901,9 @@ EOD;
             $resolvedFields = QuestionnaireDerivation::resolveFieldsFromQuestionnaire($advanced, $instrument, $dataDictionary);
         } else {
             $answerValueSets = RedcapInstrumentGateway::resolveAnswerValueSets($project_id, array_keys($dataDictionary));
-            $resolvedFields = QuestionnaireDerivation::resolveTaggedFields($dataDictionary, $answerValueSets);
+            // In "default + tags" mode the built-in form keeps the legends (see QuestionnaireDerivation::derive()).
+            $builtInLegends = $this->getPedigreeQuestionnaireMode($project_id) === 'DEFAULT_PLUS_TAGS';
+            $resolvedFields = QuestionnaireDerivation::resolveTaggedFields($dataDictionary, $answerValueSets, $builtInLegends);
         }
 
         return RedcapInstrumentRowImporter::buildAnswers($row['fields'], $resolvedFields);

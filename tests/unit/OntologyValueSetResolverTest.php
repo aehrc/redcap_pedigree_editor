@@ -32,6 +32,30 @@ class OntologyValueSetResolverTest extends TestCase
         $this->assertSame(['disorder_field' => 'http://www.omim.org/vs'], $result);
     }
 
+    public function testRedcapFhirOntologyProviderBindingIsItsValueSetUrl(): void
+    {
+        // Real bindings from local projects 16/17.
+        $result = OntologyValueSetResolver::resolve([
+            'disorder' => 'FHIR:http://snomed.info/sct?fhir_vs=refset/32570581000036105',
+            'loinc' => 'FHIR:http://loinc.org/vs/LL3279-8',
+        ], []);
+        $this->assertSame([
+            'disorder' => 'http://snomed.info/sct?fhir_vs=refset/32570581000036105',
+            'loinc' => 'http://loinc.org/vs/LL3279-8',
+        ], $result);
+    }
+
+    public function testFhirBindingThatIsNotAnHttpUrlIsNotResolved(): void
+    {
+        $result = OntologyValueSetResolver::resolve([
+            'relative' => 'FHIR:ValueSet/local',
+            'other_scheme' => 'FHIR:urn:oid:1.2.3',
+            'spaces' => 'FHIR:http://example.org/vs with spaces',
+            'empty' => 'FHIR:',
+        ], []);
+        $this->assertSame([], $result);
+    }
+
     public function testFieldWithNoElementEnumIsSkipped(): void
     {
         $result = OntologyValueSetResolver::resolve(['plain_field' => ''], $this->advancedCategories());
