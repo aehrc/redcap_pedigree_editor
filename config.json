@@ -447,6 +447,41 @@
 				"field": "project_pedigree_questionnaire_mode",
 				"value": "ADVANCED"
 			}
+		},
+		{
+			"key": "project_relationship_info",
+			"name": "<b>Relationships</b> (optional). When a record's pedigree form is saved, the module writes the pedigree's relationships into REDCap, so branching logic, calculations and reports can use them:<ul><li>one row of the <i>relationship instrument</i> per direct relationship between two people linked to rows of the <i>Repeating instrument</i> above (parent and child, partners, twins), coded with GA4GH KIN codes;</li><li>optionally, each linked person's relationship to the proband (<code>proband</code>, <code>mother</code>, <code>sibling</code>, <code>grandparent_maternal</code> ...), on their own row.</li></ul>These fields are managed by the module and rewritten on every save, so make them <b>@READONLY</b>. Needs the GA4GH storage format; data imports and API saves don't update them until the pedigree's form is next saved. See the module README for the fields to create.",
+			"type": "descriptive"
+		},
+		{
+			"key": "project_relationship_source_field",
+			"name": "Relationships: the <b>@PEDIGREE</b> field to read them from",
+			"type": "field-list"
+		},
+		{
+			"key": "project_relationship_instrument",
+			"name": "Relationships: relationship instrument (repeating, in the same event as the Repeating instrument above)",
+			"type": "form-list"
+		},
+		{
+			"key": "project_relationship_person_a_field",
+			"name": "Relationships: <i>person A</i> field - the first person's row number (the parent, for a parent relationship)",
+			"type": "field-list"
+		},
+		{
+			"key": "project_relationship_person_b_field",
+			"name": "Relationships: <i>person B</i> field - the second person's row number (the child, for a parent relationship)",
+			"type": "field-list"
+		},
+		{
+			"key": "project_relationship_type_field",
+			"name": "Relationships: <i>relationship type</i> field - the GA4GH KIN code",
+			"type": "field-list"
+		},
+		{
+			"key": "project_relationship_to_proband_field",
+			"name": "Relationships (optional): <i>relationship to proband</i> field, on the Repeating instrument above",
+			"type": "field-list"
 		}
 	],
   "action-tags": [

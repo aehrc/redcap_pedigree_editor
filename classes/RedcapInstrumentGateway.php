@@ -19,8 +19,13 @@ class RedcapInstrumentGateway
      */
     public static function fetchDataDictionary(int $projectId, string $instrument): array
     {
+        return self::dataDictionary($projectId, null, $instrument);
+    }
+
+    private static function dataDictionary(int $projectId, ?array $fieldNames, ?string $instrument): array
+    {
         try {
-            return \REDCap::getDataDictionary($projectId, 'array', false, null, $instrument) ?: [];
+            return \REDCap::getDataDictionary($projectId, 'array', false, $fieldNames, $instrument) ?: [];
         } catch (\Exception $e) {
             return [];
         }
@@ -182,6 +187,117 @@ class RedcapInstrumentGateway
             $result[(string) $arm] = self::namesOf($eventIds, $events['eventNames']);
         }
         return $result;
+    }
+
+    /**
+     * @return array<int, string>|null Event ID => name, for the events where
+     *   `$instrument` repeats (and is designated), or null if the project
+     *   couldn't be resolved.
+     */
+    public static function findRepeatingEvents(int $projectId, string $instrument): ?array
+    {
+        $events = self::fetchRepeatingEvents($projectId, $instrument);
+        if (!$events) {
+            return null;
+        }
+        $result = [];
+        foreach ($events['repeatingEventIds'] as $eventId) {
+            $result[$eventId] = $events['eventNames'][$eventId];
+        }
+        return $result;
+    }
+
+    /**
+     * @return array Field-name-keyed Data Dictionary rows for just these
+     *   fields (any instrument); a field that doesn't exist is missing.
+     */
+    public static function fetchFieldDictionary(int $projectId, array $fieldNames): array
+    {
+        $fieldNames = array_values(array_filter($fieldNames));
+        return $fieldNames ? self::dataDictionary($projectId, $fieldNames, null) : [];
+    }
+
+    /**
+     * The value `$field` was just saved with on `$record`: the row for
+     * `$eventId` and, when `$instrument` repeats (on its own or with its
+     * event), `$instance`. Null if there's no such row.
+     */
+    public static function fetchSavedValue(int $projectId, string $record, int $eventId, string $instrument, $instance, string $field): ?string
+    {
+        $recordIdField = \REDCap::getRecordIdField($projectId);
+        try {
+            $rows = \REDCap::getData($projectId, 'json-array', [$record], array_values(array_unique([$recordIdField, $field])), [$eventId]);
+        } catch (\Exception $e) {
+            return null;
+        }
+        return RelationshipTopologyPlan::savedValue(is_array($rows) ? $rows : [], $instrument, $instance, $field);
+    }
+
+    /**
+     * @return string|null The instrument `$field` is on, from the project's
+     *   cached metadata (cheap enough for every save hook), or null if the
+     *   field doesn't exist or the project couldn't be resolved.
+     */
+    public static function findFieldForm(int $projectId, string $field): ?string
+    {
+        $proj = self::resolveProject($projectId);
+        $form = $proj ? ($proj->metadata[$field]['form_name'] ?? null) : null;
+        return is_string($form) ? $form : null;
+    }
+
+    /**
+     * Deletes these instances of a repeating instrument, one
+     * `\REDCap::deleteRecord()` call each (REDCap 16 has no bulk delete).
+     *
+     * @return int[] The instances that couldn't be deleted.
+     */
+    public static function deleteInstances(int $projectId, string $record, int $eventId, string $instrument, array $instances): array
+    {
+        $proj = self::resolveProject($projectId);
+        if (!$proj) {
+            return array_values($instances);
+        }
+        // deleteRecord() takes the unique event name, and only in a longitudinal project.
+        $eventName = $proj->longitudinal ? $proj->getUniqueEventNames($eventId) : null;
+        $failed = [];
+        foreach ($instances as $instance) {
+            if (!\REDCap::deleteRecord($projectId, $record, null, $eventName, $instrument, (int) $instance)) {
+                $failed[] = (int) $instance;
+            }
+        }
+        return $failed;
+    }
+
+    /**
+     * Saves rows of a repeating instrument in one `\REDCap::saveData()` call.
+     *
+     * @param array<int, array> $rows Each row's field values plus its
+     *   `redcap_repeat_instance` (a number, or `'new'` for the next one).
+     * @param bool $overwrite Whether an empty value clears the saved one.
+     * @return string[] saveData()'s errors.
+     */
+    public static function saveInstances(int $projectId, string $record, int $eventId, string $instrument, array $rows, bool $overwrite): array
+    {
+        $proj = self::resolveProject($projectId);
+        if (!$proj) {
+            return ['The project could not be loaded.'];
+        }
+        $base = [\REDCap::getRecordIdField($projectId) => $record];
+        if ($proj->longitudinal) {
+            $base['redcap_event_name'] = $proj->getUniqueEventNames($eventId);
+        }
+        $base['redcap_repeat_instrument'] = $instrument;
+        $data = array_map(function ($row) use ($base) {
+            return $base + $row;
+        }, array_values($rows));
+        $result = \REDCap::saveData([
+            'project_id' => $projectId,
+            'dataFormat' => 'json-array',
+            'data' => $data,
+            'overwriteBehavior' => $overwrite ? 'overwrite' : 'normal',
+        ]);
+        $errors = $result['errors'] ?? [];
+        return is_array($errors) ? array_map('strval', $errors) : [(string) $errors];
     }
 
     private static function namesOf(array $eventIds, array $eventNames): array

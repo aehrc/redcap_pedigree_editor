@@ -57,6 +57,9 @@ representation of the diagram, add compression for large diagrams.
   `@PEDIGREE_FIELD(legend=...)` works: an ontology field (either FHIR ontology provider) can put a disorder, gene or
   phenotype on the pedigree's legend, and several fields can feed one legend. Before, it required a field shape REDCap
   can't produce.
+  A pedigree's relationships can be written into REDCap fields when it's saved - a row per relationship between linked
+  people, coded with GA4GH KIN codes, and each person's relationship to the proband - for branching logic, calculations
+  and reports (see [Relationships in REDCap fields](#relationships-in-redcap-fields)).
   Pedigrees saved in the legacy FHIR format (by versions before v0.3) open again, and are saved in the GA4GH format:
   the *fhir_v1* storage format is now read only (see [Upgrade Issues](#upgrade-issues)).
   **Breaking**: remove the **@PEDIGREE_HPO**/**@PEDIGREE_SCT** action tags. Terminology is now always taken from
@@ -493,6 +496,108 @@ everything else a Questionnaire item can do - tabs, `enableWhen`, the other `map
 embedded module's `open-pedigree/dist/defaultQuestionnaire.json` file.
 
 
+## Relationships in REDCap fields
+
+REDCap's branching logic, calculations and reports can't look inside the pedigree's stored data, so the module can
+also write the pedigree's relationships into ordinary REDCap fields. Each time the form holding the pedigree is saved
+(on a data entry form or a survey), it writes:
+
+- **one row of a *relationship instrument* per direct relationship** between two people linked to rows of the
+  [linked instrument](#linking-pedigree-nodes-to-a-repeating-instrument) - a parent and their child, two partners,
+  two twins - saying who (their row numbers) and how (a KIN code, from the kinship code system of the
+  [GA4GH pedigree FHIR IG](https://github.com/GA4GH-Pedigree-Standard/pedigree-fhir-ig));
+- optionally, **each linked person's relationship to the proband** (`mother`, `grandparent_maternal`, ...), on their
+  own row of the linked instrument.
+
+These fields belong to the module: they're recomputed from the pedigree on every save, and anything typed into them is
+overwritten. Give each of them the `@READONLY` action tag so nobody tries. The module never changes any other field,
+and never changes the project's design.
+
+Only a pedigree in the **GA4GH** storage format can be read (the other formats don't say which person is linked to
+which row; *fhir_v1* also works, since it saves in the GA4GH format). If the saved pedigree can't be read - another format, or corrupt - nothing is changed, and the reason is
+written to the module's log (*External Modules* > *View Logs*). An empty pedigree field (nothing drawn yet) changes
+nothing either, without a log entry.
+
+### Setting it up
+
+1. Add a **relationship instrument** with three fields, and make it a repeating instrument in the same event as the
+   linked instrument (*Project Setup* > *Repeating Instruments and Events*):
+
+   | Field | Type | What the module writes |
+   |---|---|---|
+   | person A | *Text Box* (integer) | the first person's row number - the parent, for a parent relationship |
+   | person B | *Text Box* (integer) | the second person's row number - the child, for a parent relationship |
+   | relationship type | *Drop-down List* | what person A is to person B |
+
+   The relationship type's choices (REDCap's choice codes can't contain a `:`, so `KIN:027` is stored as `KIN_027`):
+
+   ```
+   KIN_027, Biological mother (KIN:027)
+   KIN_028, Biological father (KIN:028)
+   KIN_003, Biological parent (KIN:003)
+   KIN_022, Adoptive parent (KIN:022)
+   KIN_026, Partner (KIN:026)
+   KIN_048, Separated partner (KIN:048)
+   KIN_030, Consanguineous partner (KIN:030)
+   KIN_049, Separated consanguineous partner (KIN:049)
+   KIN_009, Twin (KIN:009)
+   KIN_010, Monozygotic twin (KIN:010)
+   KIN_011, Polyzygotic twin (KIN:011)
+   ```
+
+   A *Text Box* works too, and then holds the code itself (`KIN:027`).
+
+   A parent relationship has the parent as person A (`KIN_027`: person A is person B's biological mother). Partners and
+   twins are stored once, with the lower row number as person A. A relationship with someone who isn't linked to a row
+   of this record has no row. A useful custom label for the repeating instrument is
+   `[person_a] to [person_b]: [relationship_type]`.
+
+2. Optionally, add a **relationship to proband** field to the linked instrument: a *Drop-down List* (or *Radio
+   Buttons*, or a *Text Box*) with these choices:
+
+   | Code | Meaning |
+   |---|---|
+   | `proband` | the pedigree's proband |
+   | `mother`, `father` | the proband's parents (an adoptive parent included) |
+   | `sibling` | has the same parents as the proband, or is the proband's twin |
+   | `half_sibling_maternal`, `half_sibling_paternal` | shares only the proband's mother / father |
+   | `child` | the proband's child |
+   | `partner` | the proband's own partner |
+   | `grandparent_maternal`, `grandparent_paternal` | a parent of the proband's mother / father |
+   | `aunt_uncle_maternal`, `aunt_uncle_paternal` | another child of those grandparents |
+   | `cousin_maternal`, `cousin_paternal` | a child of those aunts and uncles |
+   | `niece_nephew` | a child of the proband's sibling or half-sibling |
+   | `grandchild` | a child of the proband's child |
+   | `other` | anyone else connected to the proband: in-laws, step-parents, an aunt or uncle by marriage, ... |
+
+   The relationship is worked out over the whole pedigree, so it can go through people who aren't linked: a linked
+   grandmother is `grandparent_maternal` even if the mother between them has no row. A person who isn't connected to
+   the proband gets no value, and so does a row whose person isn't in the pedigree (or isn't linked) any more - its
+   value is cleared, and the row itself is kept. When one person fits more than one code (in a family with
+   consanguinity), the first in the table wins. When a code isn't among the field's choices, `other` is written if it
+   is one, and otherwise nothing (and the module logs why).
+
+3. In the module's project settings, set the *Relationships* settings: the `@PEDIGREE` field to read, the relationship
+   instrument and its three fields, and (optionally) the relationship to proband field. The module refuses to save
+   them if the relationship instrument doesn't repeat in the linked instrument's event, a field isn't on the
+   instrument it belongs to or is the wrong type (as in the tables above), the `@PEDIGREE` field is on the linked or
+   relationship instrument (it has to hold the whole family's pedigree), or the *Storage Format* isn't GA4GH (or
+   *fhir_v1*). Nothing is written until all the required ones are set; clearing them stops the writes
+   (rows already written stay, and can be deleted by hand).
+
+### When it runs
+
+On every save of the pedigree's form: *Save & Exit*, *Save & Stay*, a survey page's *Next* or *Submit*, and so on.
+When the relationships haven't changed, nothing is written, so an ordinary save doesn't add to the *Logging* page.
+When they have, only the difference is written: rows for new relationships are added, then rows for relationships no
+longer in the pedigree are deleted, and the rest keep their row numbers. If REDCap refuses the new rows - say a choice
+was removed from the relationship type field - nothing is deleted, and the module logs why. A problem that lasts is
+logged once, not on every save.
+
+REDCap doesn't run modules for a **data import or an API save**, so a pedigree changed that way (or a whole project
+imported from XML with an older module version) has its relationships brought up to date the next time its form is
+saved.
+
 ## Example project
 
 [`documentation/example-project/`](documentation/example-project/) holds a project you can import to see the linking
@@ -509,6 +614,11 @@ collects, and isn't any organisation's project.
   status, date of death, ADA2 status (carrier status: affected / carrier / pre-symptomatic) and tested. Relationship,
   ADA2 variants, ADA2 enzyme activity and notes are linked but unmapped, and *Contact notes* has no tag, so it never
   reaches the diagram.
+- [Relationships in REDCap fields](#relationships-in-redcap-fields): *Family relationships* repeats in the *Enrolment*
+  event too, with a row per relationship between linked people, and *Family members* has a read-only *Relationship to
+  the participant (from the pedigree)* beside the hand-entered *Relationship*. Both are written by the module when a
+  pedigree is saved; in records 1 and 3 the computed relationship matches the hand-entered one (the proband's code is
+  `proband` where the hand-entered field says `participant`), and aunt Beth, who isn't drawn, has none.
 - Three families, one per record:
   - **Record 1, the Example family** - complete. All nine people are linked to their rows, including two grandparents
     whose rows were made with *Create in REDCap*.
@@ -535,8 +645,10 @@ Maya's (the participant's) *Linked Record* tab, with the values from her row:
    - *Storage Format*: *GA4GH - Recommended Format*
    - *Compress Data*: *Compress Large Diagrams >65K* - record 1's pedigree is over the field's size
      limit, so without compression its diagram would be dropped the next time it's saved.
+   - *Relationships*: read from `pedigree_diagram`; relationship instrument `family_relationships`, with `person_a`,
+     `person_b` and `relationship_type`; relationship to proband `relationship_to_proband`.
 
-   Set the last two here rather than relying on the system settings, which may be unset.
+   Set *Storage Format* and *Compress Data* here rather than relying on the system settings, which may be unset.
 
 **Adding a legend.** The example doesn't need an ontology provider, so it has no legend fields. To try them, enable
 [redcap_fhir_ontology_provider](https://github.com/aehrc/redcap_fhir_ontology_provider) on the project, add a *Text
