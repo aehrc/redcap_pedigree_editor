@@ -449,6 +449,16 @@
 			}
 		}
 	],
+  "action-tags": [
+    {
+      "tag": "@PEDIGREE",
+      "description": "<b>@PEDIGREE</b> or <b>@PEDIGREE=option,option</b><br>Turns a <i>Notes Box</i> field into a pedigree diagram: the form shows the diagram's image, and clicking it opens the pedigree editor. The field stores the pedigree in the module's <i>Storage Format</i> setting, and the editor uses the <i>Default Terminology</i> setting for disorders, phenotypes and genes.<br>Options, comma-separated, override the module's settings for this field:<ul><li><b>HIDE_TEXT</b> / <b>SHOW_TEXT</b> - hide or show the field's text box of stored data (hiding it is recommended).</li><li><b>NEVER_COMPRESS</b> / <b>COMPRESS_LARGE</b> / <b>ALWAYS_COMPRESS</b> - never compress the stored data, compress it when it's over 65K characters, or always compress it.</li></ul>Example: <code>@PEDIGREE=HIDE_TEXT,COMPRESS_LARGE</code>"
+    },
+    {
+      "tag": "@PEDIGREE_FIELD",
+      "description": "<b>@PEDIGREE_FIELD</b> or <b>@PEDIGREE_FIELD(mapsTo=\"...\", legend=\"...\", predicate=\"...\")</b><br>On a field of the instrument set as the module's <i>Repeating instrument</i>: shows the field on a linked person's <i>Linked Record</i> tab in the pedigree editor, with its value from the person's row. Fields without it never reach the pedigree. Parameters, all optional:<ul><li><b>mapsTo=\"<i>target</i>\"</b> - sets that property of the person in the diagram, e.g. <code>given</code>, <code>family</code>, <code>gender</code>, <code>birthDate</code>, <code>lifeStatus</code>, <code>carrierStatus</code> (the field's type must suit it).</li><li><b>legend=\"disorders\"</b>, <b>\"candidate_genes\"</b> or <b>\"hpo_positive\"</b> - puts the field's value on that legend. The field must be a <i>Text Box</i> using FHIR ontology search, with a value set in the same code system as <i>Default Terminology</i>; several fields can feed one legend. Ignored when the <i>Node-edit form source</i> is <i>Default + tags</i>, whose built-in legends stay editable.</li><li><b>predicate=\"<i>name</i>\"</b> - shows the field only for some people, e.g. <code>isFetus</code>, <code>isProband</code>, <code>isTwin</code>.</li></ul>Example: <code>@PEDIGREE_FIELD(mapsTo=\"gender\")</code>. The tag isn't used when the module's <i>Node-edit form source</i> is <i>Advanced</i>. See the module's documentation for every target and predicate."
+    }
+  ],
   "compatibility": {
     "php-version-min": "8.0.0",
     "redcap-version-min": "8.8.1"

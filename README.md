@@ -53,6 +53,7 @@ representation of the diagram, add compression for large diagrams.
   JSON pedigrees are stored so they survive moving a project by XML or re-importing its data (see
   [Moving a project](#moving-a-project)), and the size limit is checked in stored bytes, so a large pedigree is no
   longer cut short.
+  **@PEDIGREE** and **@PEDIGREE_FIELD** are described in REDCap's own *Action Tags* help (Online Designer).
   `@PEDIGREE_FIELD(legend=...)` works: an ontology field (either FHIR ontology provider) can put a disorder, gene or
   phenotype on the pedigree's legend, and several fields can feed one legend. Before, it required a field shape REDCap
   can't produce.
