@@ -62,6 +62,9 @@ representation of the diagram, add compression for large diagrams.
   and reports (see [Relationships in REDCap fields](#relationships-in-redcap-fields)).
   Pedigrees saved in the legacy FHIR format (by versions before v0.3) open again, and are saved in the GA4GH format:
   the *fhir_v1* storage format is now read only (see [Upgrade Issues](#upgrade-issues)).
+  The project-level *Allow manual entry* setting now takes effect. It was read under the wrong name, so only the
+  system setting ever applied: a project that ticked it before will find its pedigree fields' stored text editable
+  after upgrading.
   **Breaking**: remove the **@PEDIGREE_HPO**/**@PEDIGREE_SCT** action tags. Terminology is now always taken from
   the project/system *Default Terminology* setting — existing fields tagged **@PEDIGREE_HPO**/**@PEDIGREE_SCT** will stop
   being recognised as pedigree fields; update them to a bare **@PEDIGREE** tag and set *Default Terminology* accordingly.
@@ -92,7 +95,9 @@ Once installed the module has a number of system-wide options:
  - *Hide Text* - Flag to indicate if the text area associated with the note should be shown. The format used to store 
    diagram will likely not make sense to anyone so this option should probably set to true.
  - *Allow Manual Entry* - Normal if the text area is shown it is made readonly to prevent accidental entry. This option
-   allow manual entry into the field (it is recommended not to enable this).
+   allow manual entry into the field (it is recommended not to enable this). A project can also allow manual entry for
+   itself with its own *Allow manual entry* project setting. That can only turn it on: when the system setting is on,
+   every project allows manual entry.
  - *Storage Format* - Allows the selection of which Storage format to use. The *fhir_v1* option is for projects that used the
    legacy FHIR format of versions before v0.3. The GA4GH format is recommended. In version 0.4 five new formats were 
    added, ***PED***, ***PEDX***, ***DADA2***, ***DADA2X*** and ***internal***. ***PED*** is a very simple format that 
