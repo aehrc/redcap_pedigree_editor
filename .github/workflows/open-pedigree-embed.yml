@@ -1,0 +1,32 @@
+name: open-pedigree-embed
+
+# open-pedigree/ must be exactly the pinned release asset named in open-pedigree/embedded.json
+# (plus this module's own localEditor.html) - catches a hand-copied or locally rebuilt embed,
+# or upstream files coming back. Runs when the embed or the script changes, and weekly, so a
+# release asset that changed or disappeared upstream is noticed too.
+on:
+  pull_request:
+    paths:
+      - 'open-pedigree/**'
+      - 'scripts/update-open-pedigree.sh'
+      - '.github/workflows/open-pedigree-embed.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'open-pedigree/**'
+      - 'scripts/update-open-pedigree.sh'
+      - '.github/workflows/open-pedigree-embed.yml'
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - run: scripts/update-open-pedigree.sh --check
