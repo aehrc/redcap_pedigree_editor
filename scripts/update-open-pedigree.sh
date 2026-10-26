@@ -6,8 +6,9 @@
 #       needed - aehrc/open-pedigree is public), verifies the zip against it, and replaces
 #       open-pedigree/dist/ with the files this module uses, plus open-pedigree/LICENSE, and
 #       records the release in open-pedigree/embedded.json. Everything is downloaded and
-#       verified before open-pedigree/ changes, and it refuses to start if open-pedigree/ has
-#       uncommitted changes, so git can always undo it. Refuses to re-pin a tag that is
+#       verified before open-pedigree/ changes, it refuses to start if open-pedigree/ has
+#       anything git couldn't restore, and it finishes by running the same comparison as
+#       --check. A failure part way prints the git commands that undo it. Refuses to re-pin a tag that is
 #       already pinned to a different sha256 - a published asset should never change.
 #
 #   scripts/update-open-pedigree.sh --check
@@ -62,9 +63,9 @@ if [ "$1" = --check ]; then
   tag=$pinned_tag
 else
   tag=$1
-  git -C "$root" diff --quiet HEAD -- open-pedigree \
-    && [ -z "$(git -C "$root" ls-files --others --exclude-standard -- open-pedigree)" ] \
-    || die "open-pedigree/ has uncommitted changes; commit or discard them first, so a failed update can be undone with git"
+  # Modified, untracked and ignored files all count: anything git couldn't restore.
+  [ -z "$(git -C "$root" status --porcelain --ignored -- open-pedigree)" ] \
+    || die "open-pedigree/ has uncommitted, untracked or ignored files; commit or remove them first, so a failed update can be undone with git"
 fi
 [[ "$tag" =~ ^open-pedigree-v[0-9]+\.[0-9]+\.[0-9]+$ ]] || die "'$tag' is not an open-pedigree-v<major>.<minor>.<patch> tag"
 asset="open-pedigree-dist-${tag#open-pedigree-v}.zip"
@@ -85,13 +86,15 @@ published=$(head -n 1 "$work/$asset.sha256" | tr -d '\r' | cut -d' ' -f1 | tr 'A
 
 # Only plain files and directories, with no absolute or .. paths, before anything is extracted.
 entries=$(zipinfo -1 "$work/$asset") || die "could not read $asset"
-types=$(zipinfo "$work/$asset" | awk '$1 ~ /^.[rwxsStT-]{9}$/ { print substr($1, 1, 1) }')
+# Entry lines start with a 10-character mode string (e.g. -rw-r--r--); header and footer lines don't.
+types=$(zipinfo "$work/$asset" | awk 'length($1) == 10 { print substr($1, 1, 1) }') \
+  || die "could not read the entry types in $asset"
 [ "$(wc -l <<< "$entries")" = "$(wc -l <<< "$types")" ] || die "could not read the entry types in $asset"
 grep -qv '^[-d]$' <<< "$types" && die "$asset contains entries that aren't plain files or directories"
 grep -qE '(^/|(^|/)\.\.(/|$))' <<< "$entries" && die "$asset contains an absolute or '..' path"
 unzip -q "$work/$asset" -d "$work/release" || die "could not unzip $asset"
 
-# The tree open-pedigree/ should hold, apart from localEditor.html and embedded.json.
+# The release's part of the tree open-pedigree/ should hold.
 expected="$work/expected"
 for f in "${FILES[@]}"; do
   [ -f "$work/release/dist/$f" ] || die "$asset has no dist/$f"
@@ -100,6 +103,32 @@ for f in "${FILES[@]}"; do
 done
 [ -f "$work/release/LICENSE" ] || die "$asset has no LICENSE"
 cp "$work/release/LICENSE" "$expected/LICENSE"
+
+# Succeeds only if open-pedigree/ is exactly the release's part plus this module's own
+# localEditor.html and embedded.json (both regular files), at every depth; prints why not.
+compare_embed() {
+  local f line differs=0
+  for f in localEditor.html embedded.json; do
+    if [ -L "$embed/$f" ] || [ ! -f "$embed/$f" ]; then
+      echo "open-pedigree/$f is missing or not a regular file" >&2
+      differs=1
+    else
+      cp "$embed/$f" "$expected/$f"
+    fi
+  done
+  if ! diff -rq --no-dereference "$expected" "$embed" > "$work/diff"; then
+    while IFS= read -r line; do
+      line=${line//"$expected"/$tag}
+      echo "${line//"$embed"/open-pedigree}" >&2
+    done < "$work/diff"
+    differs=1
+  fi
+  rm -f "$expected/localEditor.html" "$expected/embedded.json"
+  if [ $differs = 1 ]; then
+    echo "open-pedigree/ isn't exactly $tag's files plus localEditor.html and embedded.json." >&2
+    return 1
+  fi
+}
 
 if [ "$mode" = check ]; then
   problems=0
@@ -112,12 +141,7 @@ if [ "$mode" = check ]; then
     echo "Published assets shouldn't change: find out why before re-pinning anything." >&2
     problems=1
   fi
-  if ! diff -rq --no-dereference --exclude=localEditor.html --exclude=embedded.json \
-      "$expected" "$embed" > "$work/diff"; then
-    sed -e "s|$expected|$tag|g" -e "s|$embed|open-pedigree|g" "$work/diff" >&2
-    echo "open-pedigree/ isn't exactly $tag's files plus localEditor.html and embedded.json." >&2
-    problems=1
-  fi
+  compare_embed || problems=1
   [ $problems = 0 ] || die "the embed doesn't match $tag"
   echo "open-pedigree/ matches $tag ($asset, sha256 $sha)"
   exit 0
@@ -128,12 +152,18 @@ if [ "$tag" = "$pinned_tag" ] && [ "$sha" != "$pinned_sha" ]; then
 fi
 
 # Everything is verified and staged; now replace dist/, LICENSE and embedded.json. A failure
-# from here on is undone with git, since open-pedigree/ had no uncommitted changes.
-trap 'rm -rf "${work:?}"; [ "$done" = 1 ] || echo "update-open-pedigree: failed part way; run git checkout -- open-pedigree to restore it" >&2' EXIT
+# from here on is undone with git, since open-pedigree/ had nothing git couldn't restore.
+restore="git -C '$root' checkout -- open-pedigree && git -C '$root' clean -fdx -- open-pedigree"
+on_exit() {
+  rm -rf "${work:?}"
+  [ "$done" = 1 ] || echo "update-open-pedigree: failed part way; to restore open-pedigree/, run: $restore" >&2
+}
+trap on_exit EXIT
 done=0
 rm -rf "${embed:?}/dist"
 cp -R "$expected/dist" "$embed/dist"
 cp "$expected/LICENSE" "$embed/LICENSE"
 printf '{\n  "tag": "%s",\n  "asset": "%s",\n  "sha256": "%s"\n}\n' "$tag" "$asset" "$sha" > "$manifest"
+compare_embed || die "the updated open-pedigree/ isn't what --check expects"
 done=1
 echo "open-pedigree/ now embeds $tag ($asset, sha256 $sha)"
