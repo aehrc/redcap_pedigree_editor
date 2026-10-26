@@ -18,8 +18,8 @@
 
     <!--
       redcap_pedigree_editor-specific addition (see pedigree-repeating-instrument-import
-      OpenSpec change) - not part of the upstream open-pedigree-upgrade file this is
-      otherwise copied from verbatim. Preserve this block across future re-syncs.
+      OpenSpec change) - not in upstream open-pedigree's localEditor.html. Keep it if
+      upstream changes to that page are ever applied here by hand.
     -->
     <script type="text/javascript" src="../js/RedcapInstrumentPatientProvider.js"></script>
 
@@ -179,9 +179,9 @@
       console.log("creating editor");
 
       // redcap_pedigree_editor-specific addition (see pedigree-repeating-instrument-import
-      // and pedigree-editor-redcap-extension-extraction OpenSpec changes) - not part of
-      // the upstream file this is otherwise copied from verbatim. Preserve this block
-      // across future re-syncs.
+      // and pedigree-editor-redcap-extension-extraction OpenSpec changes) - not in
+      // upstream open-pedigree's localEditor.html. Keep it if upstream changes to that
+      // page are ever applied here by hand.
       var pedigreeImportEndpoint = getParameterByName('pedigreeImportEndpoint');
       var recordLinkProviderOptions = {};
       if (pedigreeImportEndpoint && window.RedcapInstrumentPatientProvider) {
