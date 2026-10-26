@@ -11,4 +11,5 @@
 /phpunit*.xml                   export-ignore
 /psalm.xml                      export-ignore
 /stubs                          export-ignore
+/scripts                        export-ignore
 /tests                          export-ignore
