@@ -259,7 +259,8 @@
 		{
 			"key" : "project_allow_edit",
 			"name" : "Allow manual entry",
-			"type" : "checkbox"
+			"type" : "checkbox",
+			"super-users-only" : true
 		},
 		{
 			"key" : "project_format_info",
