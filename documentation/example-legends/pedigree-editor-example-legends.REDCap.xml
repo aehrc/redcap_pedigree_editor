@@ -1,0 +1,1531 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" FileOID="000-00-0000" FileType="Snapshot" Description="Pedigree Editor example: legends and terminology" AsOfDateTime="2026-10-27T14:56:26" CreationDateTime="2026-10-27T14:56:26" SourceSystem="REDCap" SourceSystemVersion="16.0.32">
+<Study OID="Project.PedigreeEditorExampleLegendsAn">
+<GlobalVariables>
+	<StudyName>Pedigree Editor example: legends and terminology</StudyName>
+	<StudyDescription>This file contains the metadata, events, and data for REDCap project "Pedigree Editor example: legends and terminology".</StudyDescription>
+	<ProtocolName>Pedigree Editor example: legends and terminology</ProtocolName>
+	<redcap:RecordAutonumberingEnabled>1</redcap:RecordAutonumberingEnabled>
+	<redcap:CustomRecordLabel></redcap:CustomRecordLabel>
+	<redcap:SecondaryUniqueField></redcap:SecondaryUniqueField>
+	<redcap:SecondaryUniqueFieldDisplayValue>1</redcap:SecondaryUniqueFieldDisplayValue>
+	<redcap:SecondaryUniqueFieldDisplayLabel>1</redcap:SecondaryUniqueFieldDisplayLabel>
+	<redcap:SchedulingEnabled>0</redcap:SchedulingEnabled>
+	<redcap:SurveysEnabled>0</redcap:SurveysEnabled>
+	<redcap:SurveyInvitationEmailField></redcap:SurveyInvitationEmailField>
+	<redcap:SurveyParticipantIdentifiers>0</redcap:SurveyParticipantIdentifiers>
+	<redcap:RandomizationEnabled>0</redcap:RandomizationEnabled>
+	<redcap:DisplayTodayNowButton>1</redcap:DisplayTodayNowButton>
+	<redcap:PreventBranchingEraseValues>0</redcap:PreventBranchingEraseValues>
+	<redcap:RequireChangeReason>0</redcap:RequireChangeReason>
+	<redcap:DataHistoryPopup>1</redcap:DataHistoryPopup>
+	<redcap:OrderRecordsByField></redcap:OrderRecordsByField>
+	<redcap:taskCompleteStatus>0</redcap:taskCompleteStatus>
+	<redcap:DataResolutionWorkflowEnabled>1</redcap:DataResolutionWorkflowEnabled>
+	<redcap:FieldCommentLogOptionEditDelete>1</redcap:FieldCommentLogOptionEditDelete>
+	<redcap:DataResolutionWorkflowHideClosedQueries>1</redcap:DataResolutionWorkflowHideClosedQueries>
+	<redcap:MyCapEnabled>0</redcap:MyCapEnabled>
+	<redcap:Purpose>0</redcap:Purpose>
+	<redcap:PurposeOther></redcap:PurposeOther>
+	<redcap:ProjectNotes></redcap:ProjectNotes>
+	<redcap:SurveyQueueCustomText></redcap:SurveyQueueCustomText>
+	<redcap:SurveyQueueHide>0</redcap:SurveyQueueHide>
+	<redcap:SurveyAuthEnabled>0</redcap:SurveyAuthEnabled>
+	<redcap:SurveyAuthField1></redcap:SurveyAuthField1>
+	<redcap:SurveyAuthEvent1></redcap:SurveyAuthEvent1>
+	<redcap:SurveyAuthField2></redcap:SurveyAuthField2>
+	<redcap:SurveyAuthEvent2></redcap:SurveyAuthEvent2>
+	<redcap:SurveyAuthField3></redcap:SurveyAuthField3>
+	<redcap:SurveyAuthEvent3></redcap:SurveyAuthEvent3>
+	<redcap:SurveyAuthMinFields></redcap:SurveyAuthMinFields>
+	<redcap:SurveyAuthApplyAllSurveys>1</redcap:SurveyAuthApplyAllSurveys>
+	<redcap:SurveyAuthCustomMessage></redcap:SurveyAuthCustomMessage>
+	<redcap:SurveyAuthFailLimit></redcap:SurveyAuthFailLimit>
+	<redcap:SurveyAuthFailWindow></redcap:SurveyAuthFailWindow>
+	<redcap:DataMartProjectEnabled>0</redcap:DataMartProjectEnabled>
+	<redcap:DatamartAllowRepeatRevision>0</redcap:DatamartAllowRepeatRevision>
+	<redcap:DatamartAllowCreateRevision>0</redcap:DatamartAllowCreateRevision>
+	<redcap:DatamartCronEnabled>0</redcap:DatamartCronEnabled>
+	<redcap:HideFilledForms>1</redcap:HideFilledForms>
+	<redcap:HideDisabledForms>0</redcap:HideDisabledForms>
+	<redcap:MissingDataCodes></redcap:MissingDataCodes>
+	<redcap:ProtectedEmailMode>0</redcap:ProtectedEmailMode>
+	<redcap:ProtectedEmailModeCustomText></redcap:ProtectedEmailModeCustomText>
+	<redcap:ProtectedEmailModeTrigger>ALL</redcap:ProtectedEmailModeTrigger>
+	<redcap:ProtectedEmailModeLogo></redcap:ProtectedEmailModeLogo>
+	<redcap:RepeatingInstrumentsAndEvents>
+		<redcap:RepeatingInstruments>
+			<redcap:RepeatingInstrument redcap:UniqueEventName="event_1_arm_1" redcap:RepeatInstrument="relatives" redcap:CustomLabel="[first_name] [last_name]"/>
+		</redcap:RepeatingInstruments>
+	</redcap:RepeatingInstrumentsAndEvents>
+	<redcap:MycapProjectsGroup>
+		<redcap:MycapProjects/>
+	</redcap:MycapProjectsGroup>
+	<redcap:MycapThemesGroup>
+		<redcap:MycapThemes/>
+	</redcap:MycapThemesGroup>
+	<redcap:MultilanguageSettingsGroup>
+		<redcap:MultilanguageSettings settings="YToyMzp7czo3OiJ2ZXJzaW9uIjtzOjc6IjE2LjAuMzIiO3M6NToibGFuZ3MiO2E6MDp7fXM6OToicHJvamVjdElkIjtzOjI6IjQzIjtzOjE1OiJkZXNpZ25hdGVkRmllbGQiO3M6MDoiIjtzOjY6InN0YXR1cyI7czozOiJkZXYiO3M6NToiZGVidWciO2I6MDtzOjEzOiJhZG1pbi1lbmFibGVkIjtiOjA7czoxNDoiYWRtaW4tZGlzYWJsZWQiO2I6MDtzOjE1OiJhbGxvdy1mcm9tLWZpbGUiO2I6MDtzOjE4OiJhbGxvdy1mcm9tLXNjcmF0Y2giO2I6MDtzOjIxOiJvcHRpb25hbC1zdWJzY3JpcHRpb24iO2I6MDtzOjE4OiJhbGxvdy11aS1vdmVycmlkZXMiO2I6MDtzOjc6InJlZkxhbmciO3M6MDoiIjtzOjEyOiJmYWxsYmFja0xhbmciO3M6MDoiIjtzOjg6ImRpc2FibGVkIjtiOjA7czoyNToiaGlnaGxpZ2h0TWlzc2luZ0RhdGFlbnRyeSI7YjowO3M6MjI6ImhpZ2hsaWdodE1pc3NpbmdTdXJ2ZXkiO2I6MDtzOjIxOiJhdXRvRGV0ZWN0QnJvd3NlckxhbmciO2I6MDtzOjEyOiJhbGVydFNvdXJjZXMiO2E6MDp7fXM6MTA6ImFzaVNvdXJjZXMiO2E6MDp7fXM6MTQ6ImV4Y2x1ZGVkQWxlcnRzIjthOjA6e31zOjE0OiJleGNsdWRlZEZpZWxkcyI7YTowOnt9czoxNjoiZXhjbHVkZWRTZXR0aW5ncyI7YTowOnt9fQ=="/>
+	</redcap:MultilanguageSettingsGroup>
+</GlobalVariables>
+<MetaDataVersion OID="Metadata.PedigreeEditorExampleLegendsAn_2026-10-27_1456" Name="Pedigree Editor example: legends and terminology" redcap:RecordIdField="record_id">
+	<FormDef OID="Form.family_history" Name="Family History" Repeating="No" redcap:FormName="family_history">
+		<ItemGroupRef ItemGroupOID="family_history.record_id" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="family_history.family_history_complete" Mandatory="No"/>
+	</FormDef>
+	<FormDef OID="Form.relatives" Name="Relatives" Repeating="No" redcap:FormName="relatives">
+		<ItemGroupRef ItemGroupOID="relatives.first_name" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="relatives.primary_condition" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="relatives.other_condition" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="relatives.relatives_complete" Mandatory="No"/>
+	</FormDef>
+	<ItemGroupDef OID="family_history.record_id" Name="Family History" Repeating="No">
+		<ItemRef ItemOID="record_id" Mandatory="No" redcap:Variable="record_id"/>
+		<ItemRef ItemOID="referral_date" Mandatory="No" redcap:Variable="referral_date"/>
+		<ItemRef ItemOID="family_pedigree" Mandatory="No" redcap:Variable="family_pedigree"/>
+		<ItemRef ItemOID="family_history_notes" Mandatory="No" redcap:Variable="family_history_notes"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="family_history.family_history_complete" Name="Form Status" Repeating="No">
+		<ItemRef ItemOID="family_history_complete" Mandatory="No" redcap:Variable="family_history_complete"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="relatives.first_name" Name="Relatives" Repeating="No">
+		<ItemRef ItemOID="first_name" Mandatory="No" redcap:Variable="first_name"/>
+		<ItemRef ItemOID="last_name" Mandatory="No" redcap:Variable="last_name"/>
+		<ItemRef ItemOID="relationship" Mandatory="No" redcap:Variable="relationship"/>
+		<ItemRef ItemOID="sex" Mandatory="No" redcap:Variable="sex"/>
+		<ItemRef ItemOID="dob" Mandatory="No" redcap:Variable="dob"/>
+		<ItemRef ItemOID="carrier_status" Mandatory="No" redcap:Variable="carrier_status"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="relatives.primary_condition" Name="Clinical findings" Repeating="No">
+		<ItemRef ItemOID="primary_condition" Mandatory="No" redcap:Variable="primary_condition"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="relatives.other_condition" Name="Relatives" Repeating="No">
+		<ItemRef ItemOID="other_condition" Mandatory="No" redcap:Variable="other_condition"/>
+		<ItemRef ItemOID="gene" Mandatory="No" redcap:Variable="gene"/>
+		<ItemRef ItemOID="features" Mandatory="No" redcap:Variable="features"/>
+		<ItemRef ItemOID="clinic_notes" Mandatory="No" redcap:Variable="clinic_notes"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="relatives.relatives_complete" Name="Form Status" Repeating="No">
+		<ItemRef ItemOID="relatives_complete" Mandatory="No" redcap:Variable="relatives_complete"/>
+	</ItemGroupDef>
+	<ItemDef OID="record_id" Name="record_id" DataType="text" Length="999" redcap:Variable="record_id" redcap:FieldType="text">
+		<Question><TranslatedText>Family ID</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="referral_date" Name="referral_date" DataType="date" Length="999" redcap:Variable="referral_date" redcap:FieldType="text" redcap:TextValidationType="date_ymd">
+		<Question><TranslatedText>Date of referral</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="family_pedigree" Name="family_pedigree" DataType="text" Length="999" redcap:Variable="family_pedigree" redcap:FieldType="textarea" redcap:FieldNote="Drawn in the pedigree editor. Each relative&#039;s conditions, genes and features come from their row in Relatives." redcap:FieldAnnotation="@PEDIGREE=HIDE_TEXT,COMPRESS_LARGE">
+		<Question><TranslatedText>Family pedigree</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="family_history_notes" Name="family_history_notes" DataType="text" Length="999" redcap:Variable="family_history_notes" redcap:FieldType="textarea">
+		<Question><TranslatedText>Notes</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="family_history_complete" Name="family_history_complete" DataType="text" Length="1" redcap:Variable="family_history_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+		<Question><TranslatedText>Complete?</TranslatedText></Question>
+		<CodeListRef CodeListOID="family_history_complete.choices"/>
+	</ItemDef>
+	<ItemDef OID="first_name" Name="first_name" DataType="text" Length="999" redcap:Variable="first_name" redcap:FieldType="text" redcap:FieldAnnotation="@PEDIGREE_FIELD(mapsTo=&quot;given&quot;)">
+		<Question><TranslatedText>First name</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="last_name" Name="last_name" DataType="text" Length="999" redcap:Variable="last_name" redcap:FieldType="text" redcap:FieldAnnotation="@PEDIGREE_FIELD(mapsTo=&quot;family&quot;)">
+		<Question><TranslatedText>Last name</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="relationship" Name="relationship" DataType="text" Length="20" redcap:Variable="relationship" redcap:FieldType="select" redcap:FieldAnnotation="@PEDIGREE_FIELD">
+		<Question><TranslatedText>Relationship to the proband</TranslatedText></Question>
+		<CodeListRef CodeListOID="relationship.choices"/>
+	</ItemDef>
+	<ItemDef OID="sex" Name="sex" DataType="text" Length="1" redcap:Variable="sex" redcap:FieldType="radio" redcap:FieldAnnotation="@PEDIGREE_FIELD(mapsTo=&quot;gender&quot;)">
+		<Question><TranslatedText>Sex</TranslatedText></Question>
+		<CodeListRef CodeListOID="sex.choices"/>
+	</ItemDef>
+	<ItemDef OID="dob" Name="dob" DataType="date" Length="999" redcap:Variable="dob" redcap:FieldType="text" redcap:TextValidationType="date_ymd" redcap:FieldAnnotation="@PEDIGREE_FIELD(mapsTo=&quot;birthDate&quot;)">
+		<Question><TranslatedText>Date of birth</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="carrier_status" Name="carrier_status" DataType="text" Length="14" redcap:Variable="carrier_status" redcap:FieldType="radio" redcap:FieldNote="Leave blank if not known" redcap:FieldAnnotation="@PEDIGREE_FIELD(mapsTo=&quot;carrierStatus&quot;)">
+		<Question><TranslatedText>Carrier status</TranslatedText></Question>
+		<CodeListRef CodeListOID="carrier_status.choices"/>
+	</ItemDef>
+	<ItemDef OID="primary_condition" Name="primary_condition" DataType="text" Length="999" redcap:Variable="primary_condition" redcap:FieldType="text" redcap:FieldNote="SNOMED CT, searched on Ontoserver" redcap:SectionHeader="Clinical findings" redcap:OntologySearch="FHIR:http://snomed.info/sct?fhir_vs=refset/32570581000036105" redcap:FieldAnnotation="@PEDIGREE_FIELD(legend=&quot;disorders&quot;)">
+		<Question><TranslatedText>Primary condition</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="other_condition" Name="other_condition" DataType="text" Length="999" redcap:Variable="other_condition" redcap:FieldType="text" redcap:FieldNote="SNOMED CT, searched on Ontoserver" redcap:OntologySearch="FHIR:http://snomed.info/sct?fhir_vs=refset/32570581000036105" redcap:FieldAnnotation="@PEDIGREE_FIELD(legend=&quot;disorders&quot;)">
+		<Question><TranslatedText>Other condition</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="gene" Name="gene" DataType="text" Length="999" redcap:Variable="gene" redcap:FieldType="text" redcap:FieldNote="HGNC, searched on Ontoserver" redcap:OntologySearch="FHIR:http://www.genenames.org" redcap:FieldAnnotation="@PEDIGREE_FIELD(legend=&quot;candidate_genes&quot;)">
+		<Question><TranslatedText>Gene with a variant</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="features" Name="features" DataType="text" Length="999" redcap:Variable="features" redcap:FieldType="text" redcap:FieldNote="SNOMED CT, searched on Ontoserver" redcap:OntologySearch="FHIR:http://ga4gh.org/fhir/ValueSet/phenotype" redcap:FieldAnnotation="@PEDIGREE_FIELD(legend=&quot;hpo_positive&quot;)">
+		<Question><TranslatedText>Main clinical feature</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="clinic_notes" Name="clinic_notes" DataType="text" Length="999" redcap:Variable="clinic_notes" redcap:FieldType="textarea" redcap:FieldNote="Not tagged, so never shown on the pedigree.">
+		<Question><TranslatedText>Clinic notes</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="relatives_complete" Name="relatives_complete" DataType="text" Length="1" redcap:Variable="relatives_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+		<Question><TranslatedText>Complete?</TranslatedText></Question>
+		<CodeListRef CodeListOID="relatives_complete.choices"/>
+	</ItemDef>
+	<CodeList OID="family_history_complete.choices" Name="family_history_complete" DataType="text" redcap:Variable="family_history_complete">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="relationship.choices" Name="relationship" DataType="text" redcap:Variable="relationship">
+		<CodeListItem CodedValue="proband"><Decode><TranslatedText>Proband</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="mother"><Decode><TranslatedText>Mother</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="father"><Decode><TranslatedText>Father</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="sibling"><Decode><TranslatedText>Brother or sister</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="child"><Decode><TranslatedText>Son or daughter</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="grandparent_paternal"><Decode><TranslatedText>Grandparent (father&#039;s side)</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="grandparent_maternal"><Decode><TranslatedText>Grandparent (mother&#039;s side)</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="aunt_uncle"><Decode><TranslatedText>Aunt or uncle</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="cousin"><Decode><TranslatedText>Cousin</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="other"><Decode><TranslatedText>Other</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="sex.choices" Name="sex" DataType="text" redcap:Variable="sex">
+		<CodeListItem CodedValue="F"><Decode><TranslatedText>Female</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="M"><Decode><TranslatedText>Male</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="U"><Decode><TranslatedText>Unknown</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="carrier_status.choices" Name="carrier_status" DataType="text" redcap:Variable="carrier_status">
+		<CodeListItem CodedValue="affected"><Decode><TranslatedText>Affected</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="carrier"><Decode><TranslatedText>Carrier</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="presymptomatic"><Decode><TranslatedText>Pre-symptomatic (carries the variant, no signs yet)</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="relatives_complete.choices" Name="relatives_complete" DataType="text" redcap:Variable="relatives_complete">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+</MetaDataVersion>
+</Study>
+<ClinicalData StudyOID="Project.PedigreeEditorExampleLegendsAn" MetaDataVersionOID="Metadata.PedigreeEditorExampleLegendsAn_2026-10-27_1456">
+	<SubjectData SubjectKey="1" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.family_history" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="family_history.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1"/>
+					<ItemData ItemOID="referral_date" Value="2025-05-14"/>
+					<ItemData ItemOID="family_pedigree" Value="GZ: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"/>
+					<ItemData ItemOID="family_history_notes" Value="Illustrative example family. Lena was referred after a fainting episode; her father has hypertrophic cardiomyopathy."/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_history.family_history_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="family_history_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.relatives" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="relatives.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Lena"/>
+					<ItemData ItemOID="last_name" Value="Ashby"/>
+					<ItemData ItemOID="relationship" Value="proband"/>
+					<ItemData ItemOID="sex" Value="F"/>
+					<ItemData ItemOID="dob" Value="1994-05-02"/>
+					<ItemData ItemOID="carrier_status" Value="affected"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.primary_condition" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="primary_condition" Value="233873004|http://snomed.info/sct"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="gene" Value="7551|http://purl.bioontology.org/ontology/HGNC/hgnc.owl"/>
+					<ItemData ItemOID="features" Value="271594007|http://snomed.info/sct"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.relatives_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="relatives_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.relatives" FormRepeatKey="2">
+				<ItemGroupData ItemGroupOID="relatives.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Mark"/>
+					<ItemData ItemOID="last_name" Value="Ashby"/>
+					<ItemData ItemOID="relationship" Value="father"/>
+					<ItemData ItemOID="sex" Value="M"/>
+					<ItemData ItemOID="dob" Value="1962-09-18"/>
+					<ItemData ItemOID="carrier_status" Value="affected"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.primary_condition" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="primary_condition" Value="233873004|http://snomed.info/sct"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.other_condition" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="other_condition" Value="49436004|http://snomed.info/sct"/>
+					<ItemData ItemOID="gene" Value="7551|http://purl.bioontology.org/ontology/HGNC/hgnc.owl"/>
+					<ItemData ItemOID="features" Value="80313002|http://snomed.info/sct"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.relatives_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="relatives_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.relatives" FormRepeatKey="3">
+				<ItemGroupData ItemGroupOID="relatives.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Ruth"/>
+					<ItemData ItemOID="last_name" Value="Ashby"/>
+					<ItemData ItemOID="relationship" Value="mother"/>
+					<ItemData ItemOID="sex" Value="F"/>
+					<ItemData ItemOID="dob" Value="1965-01-27"/>
+					<ItemData ItemOID="clinic_notes" Value="Screened 2025: normal echocardiogram."/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.relatives_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="relatives_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.relatives" FormRepeatKey="4">
+				<ItemGroupData ItemGroupOID="relatives.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Owen"/>
+					<ItemData ItemOID="last_name" Value="Ashby"/>
+					<ItemData ItemOID="relationship" Value="sibling"/>
+					<ItemData ItemOID="sex" Value="M"/>
+					<ItemData ItemOID="dob" Value="1997-11-03"/>
+					<ItemData ItemOID="carrier_status" Value="presymptomatic"/>
+					<ItemData ItemOID="gene" Value="7551|http://purl.bioontology.org/ontology/HGNC/hgnc.owl"/>
+					<ItemData ItemOID="clinic_notes" Value="Carries the family variant; no signs of cardiomyopathy so far."/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.relatives_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="relatives_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.relatives" FormRepeatKey="5">
+				<ItemGroupData ItemGroupOID="relatives.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Ivy"/>
+					<ItemData ItemOID="last_name" Value="Ashby"/>
+					<ItemData ItemOID="relationship" Value="grandparent_paternal"/>
+					<ItemData ItemOID="sex" Value="F"/>
+					<ItemData ItemOID="dob" Value="1938-04-12"/>
+					<ItemData ItemOID="carrier_status" Value="affected"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.primary_condition" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="primary_condition" Value="233873004|http://snomed.info/sct"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.relatives_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="relatives_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.relatives" FormRepeatKey="6">
+				<ItemGroupData ItemGroupOID="relatives.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Henry"/>
+					<ItemData ItemOID="last_name" Value="Ashby"/>
+					<ItemData ItemOID="relationship" Value="grandparent_paternal"/>
+					<ItemData ItemOID="sex" Value="M"/>
+					<ItemData ItemOID="dob" Value="1936-08-30"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.relatives_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="relatives_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="2" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.family_history" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="family_history.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="2"/>
+					<ItemData ItemOID="referral_date" Value="2025-08-02"/>
+					<ItemData ItemOID="family_pedigree" Value="{
+  &quot;resourceType&quot;: &quot;Bundle&quot;,
+  &quot;identifier&quot;: {
+    &quot;system&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig&quot;,
+    &quot;value&quot;: &quot;urn:uuid:2ea0040d-a1f8-4bd5-87b9-a69eb4125c58&quot;
+  },
+  &quot;type&quot;: &quot;document&quot;,
+  &quot;timestamp&quot;: &quot;2026-10-27T14:56:22+10:00&quot;,
+  &quot;entry&quot;: [
+    {
+      &quot;link&quot;: [
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:8041fdee-add9-4227-9610-258cc5d05928&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:c1d8d73a-5fe5-4e45-8b5b-a72391e5974a&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:76116e07-e20b-4d02-9647-f9ff220a0ffa&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:e31bc09d-99e5-4dc3-ad1d-7372592b4e76&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:e6b4cae8-f214-4f5d-8438-80cc91464878&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:f3bb36f0-5aa3-4f04-a23b-ebec57596b5e&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:1e1e431a-e31d-4254-bc18-12bf9aa5951e&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:2d7d3ce0-ad6f-483d-9953-1a0d8726560c&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:c76cd144-5561-4fbd-b6b5-c3a8191afb5f&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:6a3da15b-f337-42b1-bbe5-0e6566a4627f&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:c0afa377-8124-4c2e-aeb0-34161bd4cf55&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:dd1b7881-a331-4173-ad0e-bcebdbef9ca5&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:3c9bb4cd-4f88-4ca0-afc4-7299b3d81f07&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:90d9db1b-2ea2-4a3b-aebd-c64b4978bd2d&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:c106b143-4bce-473e-9a9f-d7aae2c367b5&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:7071b9fd-c3ae-4292-948f-1c4f585972ab&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:7c961392-dc22-46cf-87bb-facc675dfa39&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:9c397892-e4eb-4675-9ce0-fe152f0d92ee&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:c160c63e-0ca6-4607-81a8-b4561235bf4a&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:4b3b0f94-a98b-4f38-bf9a-957204b1fd26&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:c83693a1-83a3-4d36-8601-25bda01ec199&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:212c0d9c-e4fd-4111-a201-312dd4a6f662&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:f67a45e3-d426-46cc-ba5e-e7085ea46c51&quot;
+        }
+      ],
+      &quot;fullUrl&quot;: &quot;urn:uuid:5141e3dd-4ecc-4a9d-b2a6-f85628b9e983&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;Composition&quot;,
+        &quot;id&quot;: &quot;urn:uuid:5141e3dd-4ecc-4a9d-b2a6-f85628b9e983&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/Pedigree&quot;
+          ]
+        },
+        &quot;status&quot;: &quot;final&quot;,
+        &quot;type&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://snomed.info/sct&quot;,
+              &quot;code&quot;: &quot;422432008&quot;
+            }
+          ]
+        },
+        &quot;subject&quot;: {
+          &quot;type&quot;: &quot;Patient&quot;,
+          &quot;reference&quot;: &quot;urn:uuid:c1d8d73a-5fe5-4e45-8b5b-a72391e5974a&quot;
+        },
+        &quot;date&quot;: &quot;2026-10-27T14:56:22+10:00&quot;,
+        &quot;author&quot;: {
+          &quot;type&quot;: &quot;Organization&quot;,
+          &quot;reference&quot;: &quot;urn:uuid:8041fdee-add9-4227-9610-258cc5d05928&quot;
+        },
+        &quot;title&quot;: &quot;Pedigree&quot;,
+        &quot;section&quot;: [
+          {
+            &quot;title&quot;: &quot;Proband&quot;,
+            &quot;code&quot;: {
+              &quot;coding&quot;: [
+                {
+                  &quot;system&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/CodeSystem/SectionType&quot;,
+                  &quot;code&quot;: &quot;proband&quot;
+                }
+              ]
+            },
+            &quot;entry&quot;: [
+              {
+                &quot;type&quot;: &quot;Patient&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:c1d8d73a-5fe5-4e45-8b5b-a72391e5974a&quot;
+              }
+            ]
+          },
+          {
+            &quot;title&quot;: &quot;Reason&quot;,
+            &quot;code&quot;: {
+              &quot;coding&quot;: [
+                {
+                  &quot;system&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/CodeSystem/SectionType&quot;,
+                  &quot;code&quot;: &quot;reason&quot;
+                }
+              ]
+            },
+            &quot;entry&quot;: [
+              {
+                &quot;type&quot;: &quot;Condition&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:c0afa377-8124-4c2e-aeb0-34161bd4cf55&quot;
+              }
+            ]
+          },
+          {
+            &quot;title&quot;: &quot;Individuals&quot;,
+            &quot;code&quot;: {
+              &quot;coding&quot;: [
+                {
+                  &quot;system&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/CodeSystem/SectionType&quot;,
+                  &quot;code&quot;: &quot;individuals&quot;
+                }
+              ]
+            },
+            &quot;entry&quot;: [
+              {
+                &quot;type&quot;: &quot;Patient&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:c1d8d73a-5fe5-4e45-8b5b-a72391e5974a&quot;
+              },
+              {
+                &quot;type&quot;: &quot;Patient&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:76116e07-e20b-4d02-9647-f9ff220a0ffa&quot;
+              },
+              {
+                &quot;type&quot;: &quot;Patient&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:e31bc09d-99e5-4dc3-ad1d-7372592b4e76&quot;
+              },
+              {
+                &quot;type&quot;: &quot;Patient&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:e6b4cae8-f214-4f5d-8438-80cc91464878&quot;
+              }
+            ]
+          },
+          {
+            &quot;title&quot;: &quot;Relationships&quot;,
+            &quot;code&quot;: {
+              &quot;coding&quot;: [
+                {
+                  &quot;system&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/CodeSystem/SectionType&quot;,
+                  &quot;code&quot;: &quot;relationships&quot;
+                }
+              ]
+            },
+            &quot;entry&quot;: [
+              {
+                &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:f3bb36f0-5aa3-4f04-a23b-ebec57596b5e&quot;
+              },
+              {
+                &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:1e1e431a-e31d-4254-bc18-12bf9aa5951e&quot;
+              },
+              {
+                &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:2d7d3ce0-ad6f-483d-9953-1a0d8726560c&quot;
+              },
+              {
+                &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:c76cd144-5561-4fbd-b6b5-c3a8191afb5f&quot;
+              },
+              {
+                &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:6a3da15b-f337-42b1-bbe5-0e6566a4627f&quot;
+              }
+            ]
+          },
+          {
+            &quot;title&quot;: &quot;Other&quot;,
+            &quot;code&quot;: {
+              &quot;coding&quot;: [
+                {
+                  &quot;system&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/CodeSystem/SectionType&quot;,
+                  &quot;code&quot;: &quot;other&quot;
+                }
+              ]
+            },
+            &quot;entry&quot;: [
+              {
+                &quot;type&quot;: &quot;Condition&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:c0afa377-8124-4c2e-aeb0-34161bd4cf55&quot;
+              },
+              {
+                &quot;type&quot;: &quot;Condition&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:dd1b7881-a331-4173-ad0e-bcebdbef9ca5&quot;
+              },
+              {
+                &quot;type&quot;: &quot;Observation&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:3c9bb4cd-4f88-4ca0-afc4-7299b3d81f07&quot;
+              },
+              {
+                &quot;type&quot;: &quot;Observation&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:90d9db1b-2ea2-4a3b-aebd-c64b4978bd2d&quot;
+              },
+              {
+                &quot;type&quot;: &quot;Observation&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:c106b143-4bce-473e-9a9f-d7aae2c367b5&quot;
+              },
+              {
+                &quot;type&quot;: &quot;Observation&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:7071b9fd-c3ae-4292-948f-1c4f585972ab&quot;
+              },
+              {
+                &quot;type&quot;: &quot;Observation&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:7c961392-dc22-46cf-87bb-facc675dfa39&quot;
+              },
+              {
+                &quot;type&quot;: &quot;Observation&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:9c397892-e4eb-4675-9ce0-fe152f0d92ee&quot;
+              }
+            ]
+          },
+          {
+            &quot;title&quot;: &quot;Questionnaire Responses&quot;,
+            &quot;code&quot;: {
+              &quot;coding&quot;: [
+                {
+                  &quot;system&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/CodeSystem/SectionType&quot;,
+                  &quot;code&quot;: &quot;questionnaire-responses&quot;
+                }
+              ]
+            },
+            &quot;entry&quot;: [
+              {
+                &quot;type&quot;: &quot;QuestionnaireResponse&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:c160c63e-0ca6-4607-81a8-b4561235bf4a&quot;
+              },
+              {
+                &quot;type&quot;: &quot;QuestionnaireResponse&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:4b3b0f94-a98b-4f38-bf9a-957204b1fd26&quot;
+              },
+              {
+                &quot;type&quot;: &quot;QuestionnaireResponse&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:c83693a1-83a3-4d36-8601-25bda01ec199&quot;
+              },
+              {
+                &quot;type&quot;: &quot;QuestionnaireResponse&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:212c0d9c-e4fd-4111-a201-312dd4a6f662&quot;
+              }
+            ]
+          },
+          {
+            &quot;title&quot;: &quot;Pedigree Diagram&quot;,
+            &quot;code&quot;: {
+              &quot;coding&quot;: [
+                {
+                  &quot;system&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/CodeSystem/SectionType&quot;,
+                  &quot;code&quot;: &quot;pedigreeImage&quot;
+                }
+              ]
+            },
+            &quot;entry&quot;: [
+              {
+                &quot;type&quot;: &quot;DocumentReference&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:f67a45e3-d426-46cc-ba5e-e7085ea46c51&quot;
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:8041fdee-add9-4227-9610-258cc5d05928&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;Organization&quot;,
+        &quot;id&quot;: &quot;urn:uuid:8041fdee-add9-4227-9610-258cc5d05928&quot;,
+        &quot;name&quot;: &quot;open-pedigree unknown author&quot;
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:c1d8d73a-5fe5-4e45-8b5b-a72391e5974a&quot;,
+      &quot;resource&quot;: {
+        &quot;id&quot;: &quot;urn:uuid:c1d8d73a-5fe5-4e45-8b5b-a72391e5974a&quot;,
+        &quot;resourceType&quot;: &quot;Patient&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeIndividual&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/patient-unborn&quot;,
+            &quot;valueBoolean&quot;: false
+          },
+          {
+            &quot;url&quot;: &quot;https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-ref&quot;,
+            &quot;valueString&quot;: &quot;record:2/instance:1&quot;
+          },
+          {
+            &quot;url&quot;: &quot;https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-snapshot&quot;,
+            &quot;valueString&quot;: &quot;{\u0022first_name\u0022:\u0022Theo\u0022,\u0022last_name\u0022:\u0022Brook\u0022,\u0022relationship\u0022:\u0022proband\u0022,\u0022sex\u0022:\u0022M\u0022,\u0022dob\u0022:\u00222001-02-14\u0022,\u0022carrier_status\u0022:\u0022affected\u0022,\u0022disorders\u0022:[{\u0022id\u0022:\u0022195021004\u0022,\u0022name\u0022:\u0022195021004\u0022}],\u0022candidate_genes\u0022:[{\u0022id\u0022:\u002212403\u0022,\u0022name\u0022:\u002212403\u0022}],\u0022hpo_positive\u0022:[{\u0022id\u0022:\u0022267036007\u0022,\u0022name\u0022:\u0022267036007\u0022}]}&quot;
+          }
+        ],
+        &quot;gender&quot;: &quot;male&quot;,
+        &quot;birthDate&quot;: &quot;2001-02-14&quot;,
+        &quot;name&quot;: [
+          {
+            &quot;family&quot;: &quot;Brook&quot;,
+            &quot;given&quot;: [
+              &quot;Theo&quot;
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:76116e07-e20b-4d02-9647-f9ff220a0ffa&quot;,
+      &quot;resource&quot;: {
+        &quot;id&quot;: &quot;urn:uuid:76116e07-e20b-4d02-9647-f9ff220a0ffa&quot;,
+        &quot;resourceType&quot;: &quot;Patient&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeIndividual&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/patient-unborn&quot;,
+            &quot;valueBoolean&quot;: false
+          },
+          {
+            &quot;url&quot;: &quot;https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-ref&quot;,
+            &quot;valueString&quot;: &quot;record:2/instance:3&quot;
+          },
+          {
+            &quot;url&quot;: &quot;https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-snapshot&quot;,
+            &quot;valueString&quot;: &quot;{\u0022first_name\u0022:\u0022Paul\u0022,\u0022last_name\u0022:\u0022Brook\u0022,\u0022relationship\u0022:\u0022father\u0022,\u0022sex\u0022:\u0022M\u0022,\u0022dob\u0022:\u00221968-03-09\u0022}&quot;
+          }
+        ],
+        &quot;gender&quot;: &quot;male&quot;,
+        &quot;birthDate&quot;: &quot;1968-03-09&quot;,
+        &quot;name&quot;: [
+          {
+            &quot;family&quot;: &quot;Brook&quot;,
+            &quot;given&quot;: [
+              &quot;Paul&quot;
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:e31bc09d-99e5-4dc3-ad1d-7372592b4e76&quot;,
+      &quot;resource&quot;: {
+        &quot;id&quot;: &quot;urn:uuid:e31bc09d-99e5-4dc3-ad1d-7372592b4e76&quot;,
+        &quot;resourceType&quot;: &quot;Patient&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeIndividual&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/patient-unborn&quot;,
+            &quot;valueBoolean&quot;: false
+          },
+          {
+            &quot;url&quot;: &quot;https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-ref&quot;,
+            &quot;valueString&quot;: &quot;record:2/instance:2&quot;
+          },
+          {
+            &quot;url&quot;: &quot;https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-snapshot&quot;,
+            &quot;valueString&quot;: &quot;{\u0022first_name\u0022:\u0022Clara\u0022,\u0022last_name\u0022:\u0022Brook\u0022,\u0022relationship\u0022:\u0022mother\u0022,\u0022sex\u0022:\u0022F\u0022,\u0022dob\u0022:\u00221970-06-21\u0022,\u0022carrier_status\u0022:\u0022affected\u0022,\u0022disorders\u0022:[{\u0022id\u0022:\u0022195021004\u0022,\u0022name\u0022:\u0022195021004\u0022}],\u0022candidate_genes\u0022:[{\u0022id\u0022:\u002212403\u0022,\u0022name\u0022:\u002212403\u0022}],\u0022hpo_positive\u0022:[{\u0022id\u0022:\u002280313002\u0022,\u0022name\u0022:\u002280313002\u0022}]}&quot;
+          }
+        ],
+        &quot;gender&quot;: &quot;female&quot;,
+        &quot;birthDate&quot;: &quot;1970-06-21&quot;,
+        &quot;name&quot;: [
+          {
+            &quot;family&quot;: &quot;Brook&quot;,
+            &quot;given&quot;: [
+              &quot;Clara&quot;
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:e6b4cae8-f214-4f5d-8438-80cc91464878&quot;,
+      &quot;resource&quot;: {
+        &quot;id&quot;: &quot;urn:uuid:e6b4cae8-f214-4f5d-8438-80cc91464878&quot;,
+        &quot;resourceType&quot;: &quot;Patient&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeIndividual&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/patient-unborn&quot;,
+            &quot;valueBoolean&quot;: false
+          },
+          {
+            &quot;url&quot;: &quot;https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-ref&quot;,
+            &quot;valueString&quot;: &quot;record:2/instance:4&quot;
+          },
+          {
+            &quot;url&quot;: &quot;https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-snapshot&quot;,
+            &quot;valueString&quot;: &quot;{\u0022first_name\u0022:\u0022Nina\u0022,\u0022last_name\u0022:\u0022Brook\u0022,\u0022relationship\u0022:\u0022sibling\u0022,\u0022sex\u0022:\u0022F\u0022,\u0022dob\u0022:\u00222004-10-05\u0022,\u0022carrier_status\u0022:\u0022presymptomatic\u0022,\u0022candidate_genes\u0022:[{\u0022id\u0022:\u002212403\u0022,\u0022name\u0022:\u002212403\u0022}]}&quot;
+          }
+        ],
+        &quot;gender&quot;: &quot;female&quot;,
+        &quot;birthDate&quot;: &quot;2004-10-05&quot;,
+        &quot;name&quot;: [
+          {
+            &quot;family&quot;: &quot;Brook&quot;,
+            &quot;given&quot;: [
+              &quot;Nina&quot;
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:f3bb36f0-5aa3-4f04-a23b-ebec57596b5e&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+        &quot;id&quot;: &quot;urn:uuid:f3bb36f0-5aa3-4f04-a23b-ebec57596b5e&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeRelationship&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/familymemberhistory-patient-record&quot;,
+            &quot;valueReference&quot;: {
+              &quot;reference&quot;: &quot;urn:uuid:e31bc09d-99e5-4dc3-ad1d-7372592b4e76&quot;
+            }
+          }
+        ],
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;patient&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:76116e07-e20b-4d02-9647-f9ff220a0ffa&quot;
+        },
+        &quot;relationship&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+              &quot;code&quot;: &quot;KIN:026&quot;,
+              &quot;display&quot;: &quot;isPartner&quot;
+            }
+          ]
+        }
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:1e1e431a-e31d-4254-bc18-12bf9aa5951e&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+        &quot;id&quot;: &quot;urn:uuid:1e1e431a-e31d-4254-bc18-12bf9aa5951e&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeRelationship&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/familymemberhistory-patient-record&quot;,
+            &quot;valueReference&quot;: {
+              &quot;reference&quot;: &quot;urn:uuid:76116e07-e20b-4d02-9647-f9ff220a0ffa&quot;
+            }
+          }
+        ],
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;patient&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:c1d8d73a-5fe5-4e45-8b5b-a72391e5974a&quot;
+        },
+        &quot;relationship&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+              &quot;code&quot;: &quot;KIN:028&quot;,
+              &quot;display&quot;: &quot;isBiologicalFather&quot;
+            }
+          ]
+        }
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:2d7d3ce0-ad6f-483d-9953-1a0d8726560c&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+        &quot;id&quot;: &quot;urn:uuid:2d7d3ce0-ad6f-483d-9953-1a0d8726560c&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeRelationship&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/familymemberhistory-patient-record&quot;,
+            &quot;valueReference&quot;: {
+              &quot;reference&quot;: &quot;urn:uuid:e31bc09d-99e5-4dc3-ad1d-7372592b4e76&quot;
+            }
+          }
+        ],
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;patient&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:c1d8d73a-5fe5-4e45-8b5b-a72391e5974a&quot;
+        },
+        &quot;relationship&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+              &quot;code&quot;: &quot;KIN:027&quot;,
+              &quot;display&quot;: &quot;isBiologicalMother&quot;
+            }
+          ]
+        }
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:c76cd144-5561-4fbd-b6b5-c3a8191afb5f&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+        &quot;id&quot;: &quot;urn:uuid:c76cd144-5561-4fbd-b6b5-c3a8191afb5f&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeRelationship&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/familymemberhistory-patient-record&quot;,
+            &quot;valueReference&quot;: {
+              &quot;reference&quot;: &quot;urn:uuid:76116e07-e20b-4d02-9647-f9ff220a0ffa&quot;
+            }
+          }
+        ],
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;patient&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:e6b4cae8-f214-4f5d-8438-80cc91464878&quot;
+        },
+        &quot;relationship&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+              &quot;code&quot;: &quot;KIN:028&quot;,
+              &quot;display&quot;: &quot;isBiologicalFather&quot;
+            }
+          ]
+        }
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:6a3da15b-f337-42b1-bbe5-0e6566a4627f&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+        &quot;id&quot;: &quot;urn:uuid:6a3da15b-f337-42b1-bbe5-0e6566a4627f&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeRelationship&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/familymemberhistory-patient-record&quot;,
+            &quot;valueReference&quot;: {
+              &quot;reference&quot;: &quot;urn:uuid:e31bc09d-99e5-4dc3-ad1d-7372592b4e76&quot;
+            }
+          }
+        ],
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;patient&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:e6b4cae8-f214-4f5d-8438-80cc91464878&quot;
+        },
+        &quot;relationship&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+              &quot;code&quot;: &quot;KIN:027&quot;,
+              &quot;display&quot;: &quot;isBiologicalMother&quot;
+            }
+          ]
+        }
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:c0afa377-8124-4c2e-aeb0-34161bd4cf55&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;Condition&quot;,
+        &quot;id&quot;: &quot;urn:uuid:c0afa377-8124-4c2e-aeb0-34161bd4cf55&quot;,
+        &quot;subject&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:c1d8d73a-5fe5-4e45-8b5b-a72391e5974a&quot;
+        },
+        &quot;code&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://snomed.info/sct&quot;,
+              &quot;code&quot;: &quot;195021004&quot;,
+              &quot;display&quot;: &quot;Primary dilated cardiomyopathy&quot;
+            }
+          ]
+        }
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:dd1b7881-a331-4173-ad0e-bcebdbef9ca5&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;Condition&quot;,
+        &quot;id&quot;: &quot;urn:uuid:dd1b7881-a331-4173-ad0e-bcebdbef9ca5&quot;,
+        &quot;subject&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:e31bc09d-99e5-4dc3-ad1d-7372592b4e76&quot;
+        },
+        &quot;code&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://snomed.info/sct&quot;,
+              &quot;code&quot;: &quot;195021004&quot;,
+              &quot;display&quot;: &quot;Primary dilated cardiomyopathy&quot;
+            }
+          ]
+        }
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:3c9bb4cd-4f88-4ca0-afc4-7299b3d81f07&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;Observation&quot;,
+        &quot;id&quot;: &quot;urn:uuid:3c9bb4cd-4f88-4ca0-afc4-7299b3d81f07&quot;,
+        &quot;status&quot;: &quot;preliminary&quot;,
+        &quot;subject&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:c1d8d73a-5fe5-4e45-8b5b-a72391e5974a&quot;
+        },
+        &quot;valueCodeableConcept&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://snomed.info/sct&quot;,
+              &quot;code&quot;: &quot;267036007&quot;,
+              &quot;display&quot;: &quot;Dyspnoea&quot;
+            }
+          ]
+        }
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:90d9db1b-2ea2-4a3b-aebd-c64b4978bd2d&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;Observation&quot;,
+        &quot;id&quot;: &quot;urn:uuid:90d9db1b-2ea2-4a3b-aebd-c64b4978bd2d&quot;,
+        &quot;status&quot;: &quot;preliminary&quot;,
+        &quot;subject&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:c1d8d73a-5fe5-4e45-8b5b-a72391e5974a&quot;
+        },
+        &quot;valueCodeableConcept&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://purl.bioontology.org/ontology/HGNC/hgnc.owl&quot;,
+              &quot;code&quot;: &quot;12403&quot;,
+              &quot;display&quot;: &quot;TTN&quot;
+            }
+          ]
+        }
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:c106b143-4bce-473e-9a9f-d7aae2c367b5&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;Observation&quot;,
+        &quot;id&quot;: &quot;urn:uuid:c106b143-4bce-473e-9a9f-d7aae2c367b5&quot;,
+        &quot;status&quot;: &quot;preliminary&quot;,
+        &quot;subject&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:e31bc09d-99e5-4dc3-ad1d-7372592b4e76&quot;
+        },
+        &quot;valueCodeableConcept&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://snomed.info/sct&quot;,
+              &quot;code&quot;: &quot;80313002&quot;,
+              &quot;display&quot;: &quot;Palpitations&quot;
+            }
+          ]
+        }
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:7071b9fd-c3ae-4292-948f-1c4f585972ab&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;Observation&quot;,
+        &quot;id&quot;: &quot;urn:uuid:7071b9fd-c3ae-4292-948f-1c4f585972ab&quot;,
+        &quot;status&quot;: &quot;preliminary&quot;,
+        &quot;subject&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:e31bc09d-99e5-4dc3-ad1d-7372592b4e76&quot;
+        },
+        &quot;valueCodeableConcept&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://purl.bioontology.org/ontology/HGNC/hgnc.owl&quot;,
+              &quot;code&quot;: &quot;12403&quot;,
+              &quot;display&quot;: &quot;TTN&quot;
+            }
+          ]
+        }
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:7c961392-dc22-46cf-87bb-facc675dfa39&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;Observation&quot;,
+        &quot;id&quot;: &quot;urn:uuid:7c961392-dc22-46cf-87bb-facc675dfa39&quot;,
+        &quot;status&quot;: &quot;preliminary&quot;,
+        &quot;subject&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:e6b4cae8-f214-4f5d-8438-80cc91464878&quot;
+        },
+        &quot;valueCodeableConcept&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://purl.bioontology.org/ontology/HGNC/hgnc.owl&quot;,
+              &quot;code&quot;: &quot;12403&quot;,
+              &quot;display&quot;: &quot;TTN&quot;
+            }
+          ]
+        }
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:9c397892-e4eb-4675-9ce0-fe152f0d92ee&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;Observation&quot;,
+        &quot;id&quot;: &quot;urn:uuid:9c397892-e4eb-4675-9ce0-fe152f0d92ee&quot;,
+        &quot;status&quot;: &quot;preliminary&quot;,
+        &quot;valueCodeableConcept&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://snomed.info/sct&quot;,
+              &quot;code&quot;: &quot;24800002&quot;,
+              &quot;display&quot;: &quot;Carrier state, disease not expressed&quot;
+            }
+          ]
+        },
+        &quot;subject&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:e6b4cae8-f214-4f5d-8438-80cc91464878&quot;
+        }
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:c160c63e-0ca6-4607-81a8-b4561235bf4a&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;QuestionnaireResponse&quot;,
+        &quot;id&quot;: &quot;urn:uuid:c160c63e-0ca6-4607-81a8-b4561235bf4a&quot;,
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;subject&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:c1d8d73a-5fe5-4e45-8b5b-a72391e5974a&quot;
+        },
+        &quot;item&quot;: [
+          {
+            &quot;linkId&quot;: &quot;first_name&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Theo&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;last_name&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Brook&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;relationship&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;proband&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;sex&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;M&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;dob&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueDate&quot;: &quot;2001-02-14&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;carrier_status&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;affected&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;disorders&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueCoding&quot;: {
+                  &quot;system&quot;: &quot;http://snomed.info/sct&quot;,
+                  &quot;code&quot;: &quot;195021004&quot;,
+                  &quot;display&quot;: &quot;Primary dilated cardiomyopathy&quot;
+                }
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;candidate_genes&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueCoding&quot;: {
+                  &quot;system&quot;: &quot;http://purl.bioontology.org/ontology/HGNC/hgnc.owl&quot;,
+                  &quot;code&quot;: &quot;12403&quot;,
+                  &quot;display&quot;: &quot;TTN&quot;
+                }
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;hpo_positive&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueCoding&quot;: {
+                  &quot;system&quot;: &quot;http://snomed.info/sct&quot;,
+                  &quot;code&quot;: &quot;267036007&quot;,
+                  &quot;display&quot;: &quot;Dyspnoea&quot;
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:4b3b0f94-a98b-4f38-bf9a-957204b1fd26&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;QuestionnaireResponse&quot;,
+        &quot;id&quot;: &quot;urn:uuid:4b3b0f94-a98b-4f38-bf9a-957204b1fd26&quot;,
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;subject&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:76116e07-e20b-4d02-9647-f9ff220a0ffa&quot;
+        },
+        &quot;item&quot;: [
+          {
+            &quot;linkId&quot;: &quot;first_name&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Paul&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;last_name&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Brook&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;relationship&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;father&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;sex&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;M&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;dob&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueDate&quot;: &quot;1968-03-09&quot;
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:c83693a1-83a3-4d36-8601-25bda01ec199&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;QuestionnaireResponse&quot;,
+        &quot;id&quot;: &quot;urn:uuid:c83693a1-83a3-4d36-8601-25bda01ec199&quot;,
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;subject&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:e31bc09d-99e5-4dc3-ad1d-7372592b4e76&quot;
+        },
+        &quot;item&quot;: [
+          {
+            &quot;linkId&quot;: &quot;first_name&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Clara&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;last_name&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Brook&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;relationship&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;mother&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;sex&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;F&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;dob&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueDate&quot;: &quot;1970-06-21&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;carrier_status&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;affected&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;disorders&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueCoding&quot;: {
+                  &quot;system&quot;: &quot;http://snomed.info/sct&quot;,
+                  &quot;code&quot;: &quot;195021004&quot;,
+                  &quot;display&quot;: &quot;Primary dilated cardiomyopathy&quot;
+                }
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;candidate_genes&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueCoding&quot;: {
+                  &quot;system&quot;: &quot;http://purl.bioontology.org/ontology/HGNC/hgnc.owl&quot;,
+                  &quot;code&quot;: &quot;12403&quot;,
+                  &quot;display&quot;: &quot;TTN&quot;
+                }
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;hpo_positive&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueCoding&quot;: {
+                  &quot;system&quot;: &quot;http://snomed.info/sct&quot;,
+                  &quot;code&quot;: &quot;80313002&quot;,
+                  &quot;display&quot;: &quot;Palpitations&quot;
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:212c0d9c-e4fd-4111-a201-312dd4a6f662&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;QuestionnaireResponse&quot;,
+        &quot;id&quot;: &quot;urn:uuid:212c0d9c-e4fd-4111-a201-312dd4a6f662&quot;,
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;subject&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:e6b4cae8-f214-4f5d-8438-80cc91464878&quot;
+        },
+        &quot;item&quot;: [
+          {
+            &quot;linkId&quot;: &quot;first_name&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Nina&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;last_name&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Brook&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;relationship&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;sibling&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;sex&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;F&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;dob&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueDate&quot;: &quot;2004-10-05&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;carrier_status&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;presymptomatic&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;candidate_genes&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueCoding&quot;: {
+                  &quot;system&quot;: &quot;http://purl.bioontology.org/ontology/HGNC/hgnc.owl&quot;,
+                  &quot;code&quot;: &quot;12403&quot;,
+                  &quot;display&quot;: &quot;TTN&quot;
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:f67a45e3-d426-46cc-ba5e-e7085ea46c51&quot;,
+      &quot;resource&quot;: {
+        &quot;id&quot;: &quot;urn:uuid:f67a45e3-d426-46cc-ba5e-e7085ea46c51&quot;,
+        &quot;resourceType&quot;: &quot;DocumentReference&quot;,
+        &quot;status&quot;: &quot;current&quot;,
+        &quot;docStatus&quot;: &quot;preliminary&quot;,
+        &quot;subject&quot;: {
+          &quot;type&quot;: &quot;Patient&quot;,
+          &quot;reference&quot;: &quot;urn:uuid:c1d8d73a-5fe5-4e45-8b5b-a72391e5974a&quot;
+        },
+        &quot;description&quot;: &quot;Pedigree Diagram of Family in SVG format&quot;,
+        &quot;content&quot;: {
+          &quot;attachment&quot;: {
+            &quot;contentType&quot;: &quot;image/svg+xml&quot;,
+            &quot;data&quot;: &quot;PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIHN0eWxlPSJvdmVyZmxvdzogaGlkZGVuOyBwb3NpdGlvbjogcmVsYXRpdmU7IHRvcDogLTAuMTg3NXB4OyIgdmlld0JveD0iLTMwIC05MCA0NjggNDY3LjY2NjY1NjQ5NDE0MDYiIHdpZHRoPSI0NjgiIGhlaWdodD0iNDY3LjY2NjY1NjQ5NDE0MDYiIHByZXNlcnZlQXNwZWN0UmF0aW89InhNaW5ZTWluIj48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiMzMzMzMzMiIGQ9Ik0yMDQsMEwyMDQsMTYwIiBzdHJva2Utd2lkdGg9IjMiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ii8+PHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMzMzMzMzIiBkPSJNODQsMTYwTDMyNCwxNjAiIHN0cm9rZS13aWR0aD0iMyIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiLz48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiMzMzMzMzMiIGQ9Ik0zMjQsMTYwTDMyNCwyNzIiIHN0cm9rZS13aWR0aD0iMyIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiLz48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiMzMzMzMzMiIGQ9Ik04NCwxNjBMODQsMjcyIiBzdHJva2Utd2lkdGg9IjMiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ii8+PHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMzMzMzMzIiBkPSJNMjA0LDBMMzQ4LDAiIHN0cm9rZS13aWR0aD0iMyIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiLz48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiMzMzMzMzMiIGQ9Ik02MCwwTDIwNCwwIiBzdHJva2Utd2lkdGg9IjMiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ii8+PGRlc2Mgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPkNyZWF0ZWQgd2l0aCBSYXBoYcOrbCAyLjMuMDwvZGVzYz48ZGVmcyBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyI+PGxpbmVhckdyYWRpZW50IGlkPSJrbXI3NDAtX2ZmZmZmZjowLV9COEI4Qjg6MTAwIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMCIgZ3JhZGllbnRUcmFuc2Zvcm09Im1hdHJpeCgxLDAsMCwxLDAsMCkiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ij48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZmZmZmZmIiBzdG9wLW9wYWNpdHk9IjEiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjYjhiOGI4IiBzdG9wLW9wYWNpdHk9IjEiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ii8+PC9saW5lYXJHcmFkaWVudD48bGluZWFyR3JhZGllbnQgaWQ9ImNodWRtMC1fZmZmZmZmOjAtX0I4QjhCODoxMDAiIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIwIiBncmFkaWVudFRyYW5zZm9ybT0ibWF0cml4KDEsMCwwLDEsMCwwKSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNiOGI4YjgiIHN0b3Atb3BhY2l0eT0iMSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0iYWVsMDQwLV9mZmZmZmY6MC1fQjhCOEI4OjEwMCIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjAiIGdyYWRpZW50VHJhbnNmb3JtPSJtYXRyaXgoMSwwLDAsMSwwLDApIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2I4YjhiOCIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjwvbGluZWFyR3JhZGllbnQ+PGxpbmVhckdyYWRpZW50IGlkPSJxeHN0ZTAtX2ZmZmZmZjowLV9COEI4Qjg6MTAwIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMCIgZ3JhZGllbnRUcmFuc2Zvcm09Im1hdHJpeCgxLDAsMCwxLDAsMCkiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ij48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZmZmZmZmIiBzdG9wLW9wYWNpdHk9IjEiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjYjhiOGI4IiBzdG9wLW9wYWNpdHk9IjEiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ii8+PC9saW5lYXJHcmFkaWVudD48bGluZWFyR3JhZGllbnQgaWQ9InAxZXEyMC1fZmZmZmZmOjAtX0I4QjhCODoxMDAiIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIwIiBncmFkaWVudFRyYW5zZm9ybT0ibWF0cml4KDEsMCwwLDEsMCwwKSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNiOGI4YjgiIHN0b3Atb3BhY2l0eT0iMSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0ibHhva2owLV9mZmZmZmY6MC1fQjhCOEI4OjEwMCIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjAiIGdyYWRpZW50VHJhbnNmb3JtPSJtYXRyaXgoMSwwLDAsMSwwLDApIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2I4YjhiOCIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjwvbGluZWFyR3JhZGllbnQ+PGxpbmVhckdyYWRpZW50IGlkPSJuZ2k1bTAtX2ZmZmZmZjowLV9COEI4Qjg6MTAwIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMCIgZ3JhZGllbnRUcmFuc2Zvcm09Im1hdHJpeCgxLDAsMCwxLDAsMCkiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ij48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZmZmZmZmIiBzdG9wLW9wYWNpdHk9IjEiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjYjhiOGI4IiBzdG9wLW9wYWNpdHk9IjEiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ii8+PC9saW5lYXJHcmFkaWVudD48bGluZWFyR3JhZGllbnQgaWQ9InI5bXM3MC1fZmZmZmZmOjAtX0I4QjhCODoxMDAiIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIwIiBncmFkaWVudFRyYW5zZm9ybT0ibWF0cml4KDEsMCwwLDEsMCwwKSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNiOGI4YjgiIHN0b3Atb3BhY2l0eT0iMSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0ieTI1N2o5MC1fYTZiOGI4OjAtX0UwRjhGODoxMDAiIHgxPSIwIiB5MT0iMSIgeDI9IjYuMTIzMjMzOTk1NzM2NzY2ZS0xNyIgeTI9IjAiIGdyYWRpZW50VHJhbnNmb3JtPSJtYXRyaXgoMSwwLDAsMSwwLDApIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2E2YjhiOCIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2UwZjhmOCIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjwvbGluZWFyR3JhZGllbnQ+PGxpbmVhckdyYWRpZW50IGlkPSJ4dW5qcDI3MC1fNGU2MjQ0OjAtXzgxYTI3MDoxMDAiIHgxPSIxLjgzNjk3MDE5ODcyMTAyOTdlLTE2IiB5MT0iMCIgeDI9IjAiIHkyPSIxIiBncmFkaWVudFRyYW5zZm9ybT0ibWF0cml4KDEsMCwwLDEsMCwwKSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiM0ZTYyNDQiIHN0b3Atb3BhY2l0eT0iMSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM4MWEyNzAiIHN0b3Atb3BhY2l0eT0iMSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0icjJkYjMwLV9mZmZmZmY6MC1fQjhCOEI4OjEwMCIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjAiIGdyYWRpZW50VHJhbnNmb3JtPSJtYXRyaXgoMSwwLDAsMSwwLDApIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2I4YjhiOCIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjwvbGluZWFyR3JhZGllbnQ+PHJhZGlhbEdyYWRpZW50IGlkPSJieTZ2NHJfLjVfLjFfX2NjYy1fY2NjIiBmeD0iMC41IiBmeT0iMC4xIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2NjY2NjYyIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2NjY2NjYyIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjwvcmFkaWFsR3JhZGllbnQ+PHJhZGlhbEdyYWRpZW50IGlkPSJmdjNjbnJfLjVfLjlfaHNiXzAuNTNfXzFfXy43NV8taHNiXzAuNTNfXy41X18uMjVfIiBmeD0iMC41IiBmeT0iMC45IiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzAwOWRiZiIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzIwM2E0MCIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjwvcmFkaWFsR3JhZGllbnQ+PHJhZGlhbEdyYWRpZW50IGlkPSIxam5rcHJfLjVfLjFfX2NjYy1fY2NjIiBmeD0iMC41IiBmeT0iMC4xIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2NjY2NjYyIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2NjY2NjYyIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjwvcmFkaWFsR3JhZGllbnQ+PHJhZGlhbEdyYWRpZW50IGlkPSJrdmNic3JfLjVfLjlfaHNiXzAuNTNfXzFfXy43NV8taHNiXzAuNTNfXy41X18uMjVfIiBmeD0iMC41IiBmeT0iMC45IiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzAwOWRiZiIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzIwM2E0MCIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjwvcmFkaWFsR3JhZGllbnQ+PHJhZGlhbEdyYWRpZW50IGlkPSI1emkzcHJfLjVfLjFfX2NjYy1fY2NjIiBmeD0iMC41IiBmeT0iMC4xIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2NjY2NjYyIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2NjY2NjYyIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjwvcmFkaWFsR3JhZGllbnQ+PHJhZGlhbEdyYWRpZW50IGlkPSJ6dm02a3JfLjVfLjlfaHNiXzAuNTNfXzFfXy43NV8taHNiXzAuNTNfXy41X18uMjVfIiBmeD0iMC41IiBmeT0iMC45IiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzAwOWRiZiIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzIwM2E0MCIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjwvcmFkaWFsR3JhZGllbnQ+PHJhZGlhbEdyYWRpZW50IGlkPSJpaHB3OXJfLjVfLjFfX2NjYy1fY2NjIiBmeD0iMC41IiBmeT0iMC4xIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2NjY2NjYyIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2NjY2NjYyIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjwvcmFkaWFsR3JhZGllbnQ+PHJhZGlhbEdyYWRpZW50IGlkPSJsNDhwcXJfLjVfLjlfaHNiXzAuNTNfXzFfXy43NV8taHNiXzAuNTNfXy41X18uMjVfIiBmeD0iMC41IiBmeT0iMC45IiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzAwOWRiZiIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzIwM2E0MCIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjwvcmFkaWFsR3JhZGllbnQ+PGxpbmVhckdyYWRpZW50IGlkPSIzMGtkYjkwLV9hNmI4Yjg6MC1fRTBGOEY4OjEwMCIgeDE9IjAiIHkxPSIxIiB4Mj0iNi4xMjMyMzM5OTU3MzY3NjZlLTE3IiB5Mj0iMCIgZ3JhZGllbnRUcmFuc2Zvcm09Im1hdHJpeCgxLDAsMCwxLDAsMCkiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ij48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjYTZiOGI4IiBzdG9wLW9wYWNpdHk9IjEiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZTBmOGY4IiBzdG9wLW9wYWNpdHk9IjEiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ii8+PC9saW5lYXJHcmFkaWVudD48bGluZWFyR3JhZGllbnQgaWQ9Im91Zjh0MjcwLV80ZTYyNDQ6MC1fODFhMjcwOjEwMCIgeDE9IjEuODM2OTcwMTk4NzIxMDI5N2UtMTYiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiIGdyYWRpZW50VHJhbnNmb3JtPSJtYXRyaXgoMSwwLDAsMSwwLDApIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzRlNjI0NCIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzgxYTI3MCIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjwvbGluZWFyR3JhZGllbnQ+PGxpbmVhckdyYWRpZW50IGlkPSJkOGpxcDE4MC1fNGU2MjQ0OjAtXzgxYTI3MDoxMDAiIHgxPSIxIiB5MT0iMS4yMjQ2NDY3OTkxNDczNTMyZS0xNiIgeDI9IjAiIHkyPSIwIiBncmFkaWVudFRyYW5zZm9ybT0ibWF0cml4KDEsMCwwLDEsMCwwKSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiM0ZTYyNDQiIHN0b3Atb3BhY2l0eT0iMSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM4MWEyNzAiIHN0b3Atb3BhY2l0eT0iMSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB4PSIyMzQiIHk9IjE4MiIgd2lkdGg9IjE4MCIgaGVpZ2h0PSIxODAiIHJ4PSI1IiByeT0iNSIgZmlsbD0iIzgwODA4MCIgc3Ryb2tlPSJub25lIiBvcGFjaXR5PSIwIiBmaWxsLW9wYWNpdHk9IjAuMzUiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7IG9wYWNpdHk6IDA7IGZpbGwtb3BhY2l0eTogMC4zNTsiLz48cmVjdCB4PSIyODQiIHk9IjIzMiIgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiByeD0iMCIgcnk9IjAiIGZpbGw9IiM4MDgwODAiIHN0cm9rZT0ibm9uZSIgb3BhY2l0eT0iMC4zIiBmaWxsLW9wYWNpdHk9IjEiIHN0cm9rZS13aWR0aD0iMyIgdHJhbnNmb3JtPSJtYXRyaXgoMSwwLDAsMSwzLDMpIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyBvcGFjaXR5OiAwLjM7IGZpbGwtb3BhY2l0eTogMTsiLz48cmVjdCB4PSIyODQiIHk9IjIzMiIgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiByeD0iMCIgcnk9IjAiIGZpbGw9InVybCgnI2ttcjc0MC1fZmZmZmZmOjAtX0I4QjhCODoxMDAnKSIgc3Ryb2tlPSIjMzMzMzMzIiBvcGFjaXR5PSIxIiBmaWxsLW9wYWNpdHk9IjEiIHN0cm9rZS13aWR0aD0iNS4wOTI1OTI1OTI1OTI1OTMiIHRyYW5zZm9ybT0ibWF0cml4KDEuMDgsMCwwLDEuMDgsLTI1LjkyLC0yMS43NikiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7IG9wYWNpdHk6IDE7IGZpbGwtb3BhY2l0eTogMTsiLz48cGF0aCBmaWxsPSIjNTk1OTU5IiBzdHJva2U9Im5vbmUiIGQ9Ik05LjE4MjgwMDAwMDAwMDAwMiwyNS4zMzE5QzkuMTgyODAwMDAwMDAwMDAyLDI1LjMzMTksMC44NzAxMDAwMDAwMDAwMDAxLDMzLjY0MjQsMC44NzAxMDAwMDAwMDAwMDAxLDMzLjY0MjRDMC44NzAxMDAwMDAwMDAwMDAxLDMzLjY0MjQsMy44NjY1MDAwMDAwMDAwMDAzLDM2LjYzODgsMy44NjY1MDAwMDAwMDAwMDAzLDM2LjYzODhDMy44NjY1MDAwMDAwMDAwMDAzLDM2LjYzODgsMTIuMTc3MDAwMDAwMDAwMDAxLDI4LjMyNzIsMTIuMTc3NDQsMjguMzI3MkMxMi4xNzcwMDAwMDAwMDAwMDEsMjguMzI3MiwxNC40MjU0MDAwMDAwMDAwMDIsMzAuNTc0NTAwMDAwMDAwMDA0LDE0LjQyNTQwMDAwMDAwMDAwMiwzMC41NzQ1MDAwMDAwMDAwMDRDMTQuNDI1NDAwMDAwMDAwMDAyLDMwLjU3NDUwMDAwMDAwMDAwNCwxNy4xNTc4LDIwLjM3NjQwMDAwMDAwMDAwNCwxNy4xNTc4LDIwLjM3NjQwMDAwMDAwMDAwNEMxNy4xNTc4LDIwLjM3NjQwMDAwMDAwMDAwNCw2Ljk1OTcwMDAwMDAwMDAwMSwyMy4xMDg4MDAwMDAwMDAwMDIsNi45NTk3MDAwMDAwMDAwMDEsMjMuMTA4ODAwMDAwMDAwMDAyQzYuOTU5NzAwMDAwMDAwMDAxLDIzLjEwODgwMDAwMDAwMDAwMiw5LjE4MjgwMDAwMDAwMDAwMiwyNS4zMzE5LDkuMTgyODAwMDAwMDAwMDAyLDI1LjMzMTM1MDAwMDAwMDAwNEM5LjE4MjgwMDAwMDAwMDAwMiwyNS4zMzE5LDkuMTgyODAwMDAwMDAwMDAyLDI1LjMzMTksOS4xODI4MDAwMDAwMDAwMDIsMjUuMzMxOSIgb3BhY2l0eT0iMSIgdHJhbnNmb3JtPSJtYXRyaXgoMSwwLDAsMSwyNTgsMzAwKSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsgb3BhY2l0eTogMTsiIHN0cm9rZS13aWR0aD0iMSIvPjxwYXRoIGZpbGw9InVybCgnI3kyNTdqOTAtX2E2YjhiODowLV9FMEY4Rjg6MTAwJykiIHN0cm9rZT0iIzU5NTk1OSIgZD0iTTI4NC42LDI3MkwzMjQsMjcyTDM2My40LDI3MkwzNjMuNCwyMzIuNkwyODQuNiwyMzIuNkwyODQuNiwyNzJaIiBvcGFjaXR5PSIxIiBmaWxsLW9wYWNpdHk9IjEiIHN0cm9rZS13aWR0aD0iMC4wMjg4NDYxNTM4NDYxNTM4NDQiIHRyYW5zZm9ybT0ibWF0cml4KDEuMDQsMCwwLDEuMDQsLTEyLjk2LC0xMC44OCkiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7IG9wYWNpdHk6IDE7IGZpbGwtb3BhY2l0eTogMTsiLz48cGF0aCBmaWxsPSJ1cmwoJyN4dW5qcDI3MC1fNGU2MjQ0OjAtXzgxYTI3MDoxMDAnKSIgc3Ryb2tlPSIjNTk1OTU5IiBkPSJNMzYzLjQsMjcyTDMyNCwyNzJMMjg0LjYsMjcyTDI4NC42LDMxMS40TDM2My40LDMxMS40TDM2My40LDI3MloiIG9wYWNpdHk9IjEiIGZpbGwtb3BhY2l0eT0iMSIgc3Ryb2tlLXdpZHRoPSIwLjAyODg0NjE1Mzg0NjE1Mzg0NCIgdHJhbnNmb3JtPSJtYXRyaXgoMS4wNCwwLDAsMS4wNCwtMTIuOTYsLTEwLjg4KSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsgb3BhY2l0eTogMTsgZmlsbC1vcGFjaXR5OiAxOyIvPjx0ZXh0IHg9IjMyNCIgeT0iMzQ0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjBweCIgc3Ryb2tlPSJub25lIiBmaWxsPSIjMDAwMDAwIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyB0ZXh0LWFuY2hvcjogbWlkZGxlOyBmb250LWZhbWlseTogQXJpYWw7IGZvbnQtc2l6ZTogMjBweDsiPjx0c3BhbiBkeT0iNy4zMzMzMjI1MjUwMjQ0MTQiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ij5UaGVvIEJyb29rPC90c3Bhbj48L3RleHQ+PHRleHQgeD0iMzI0IiB5PSIzNjYuMzMzMzU0OTQ5OTUxMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjIwcHgiIHN0cm9rZT0ibm9uZSIgZmlsbD0iIzAwMDAwMCIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsgdGV4dC1hbmNob3I6IG1pZGRsZTsgZm9udC1mYW1pbHk6IEFyaWFsOyBmb250LXNpemU6IDIwcHg7Ij48dHNwYW4gZHk9IjcuMzMzMzMzOTY5MTE2MjExIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyI+Yi4gMjAwMTwvdHNwYW4+PC90ZXh0PjxyZWN0IHg9IjIzNCIgeT0iMTgyIiB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgcng9IjAiIHJ5PSIwIiBmaWxsPSIjMDA4MDAwIiBzdHJva2U9Im5vbmUiIG9wYWNpdHk9IjAiIGZpbGwtb3BhY2l0eT0iMC4zNSIgdHJhbnNmb3JtPSJtYXRyaXgoMSwwLDAsMSwwLDApIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyBvcGFjaXR5OiAwOyBmaWxsLW9wYWNpdHk6IDAuMzU7Ii8+PHJlY3QgeD0iLTMwIiB5PSItOTAiIHdpZHRoPSIxODAiIGhlaWdodD0iMTgwIiByeD0iNSIgcnk9IjUiIGZpbGw9IiM4MDgwODAiIHN0cm9rZT0ibm9uZSIgb3BhY2l0eT0iMCIgZmlsbC1vcGFjaXR5PSIwLjM1IiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyBvcGFjaXR5OiAwOyBmaWxsLW9wYWNpdHk6IDAuMzU7Ii8+PHJlY3QgeD0iMjAiIHk9Ii00MCIgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiByeD0iMCIgcnk9IjAiIGZpbGw9IiM4MDgwODAiIHN0cm9rZT0ibm9uZSIgb3BhY2l0eT0iMC4zIiBmaWxsLW9wYWNpdHk9IjEiIHN0cm9rZS13aWR0aD0iMyIgdHJhbnNmb3JtPSJtYXRyaXgoMSwwLDAsMSwzLDMpIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyBvcGFjaXR5OiAwLjM7IGZpbGwtb3BhY2l0eTogMTsiLz48cmVjdCB4PSIyMCIgeT0iLTQwIiB3aWR0aD0iODAiIGhlaWdodD0iODAiIHJ4PSIwIiByeT0iMCIgZmlsbD0idXJsKCcjYWVsMDQwLV9mZmZmZmY6MC1fQjhCOEI4OjEwMCcpIiBzdHJva2U9IiMzMzMzMzMiIG9wYWNpdHk9IjEiIGZpbGwtb3BhY2l0eT0iMSIgc3Ryb2tlLXdpZHRoPSIzIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyBvcGFjaXR5OiAxOyBmaWxsLW9wYWNpdHk6IDE7Ii8+PHRleHQgeD0iNjAiIHk9IjcyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjBweCIgc3Ryb2tlPSJub25lIiBmaWxsPSIjMDAwMDAwIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyB0ZXh0LWFuY2hvcjogbWlkZGxlOyBmb250LWZhbWlseTogQXJpYWw7IGZvbnQtc2l6ZTogMjBweDsiPjx0c3BhbiBkeT0iNy4zMzMzMzAxNTQ0MTg5NDUiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ij5QYXVsIEJyb29rPC90c3Bhbj48L3RleHQ+PHRleHQgeD0iNjAiIHk9Ijk0LjMzMzMzMjA2MTc2NzU4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjBweCIgc3Ryb2tlPSJub25lIiBmaWxsPSIjMDAwMDAwIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyB0ZXh0LWFuY2hvcjogbWlkZGxlOyBmb250LWZhbWlseTogQXJpYWw7IGZvbnQtc2l6ZTogMjBweDsiPjx0c3BhbiBkeT0iNy4zMzMzMjYzMzk3MjE2OCIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPmIuIDE5Njg8L3RzcGFuPjwvdGV4dD48cmVjdCB4PSItMzAiIHk9Ii05MCIgd2lkdGg9IjE4MCIgaGVpZ2h0PSIxODAiIHJ4PSIwIiByeT0iMCIgZmlsbD0iIzAwODAwMCIgc3Ryb2tlPSJub25lIiBvcGFjaXR5PSIwIiBmaWxsLW9wYWNpdHk9IjAuMzUiIHRyYW5zZm9ybT0ibWF0cml4KDEsMCwwLDEsMCwwKSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsgb3BhY2l0eTogMDsgZmlsbC1vcGFjaXR5OiAwLjM1OyIvPjxyZWN0IHg9IjI1OCIgeT0iLTkwIiB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgcng9IjUiIHJ5PSI1IiBmaWxsPSIjODA4MDgwIiBzdHJva2U9Im5vbmUiIG9wYWNpdHk9IjAuNTcwNDk5OTk5OTk5OTk5OSIgZmlsbC1vcGFjaXR5PSIwLjM1IiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyBvcGFjaXR5OiAwLjU3MDU7IGZpbGwtb3BhY2l0eTogMC4zNTsiLz48Y2lyY2xlIGN4PSIzNDgiIGN5PSIwIiByPSI0MCIgZmlsbD0iIzgwODA4MCIgc3Ryb2tlPSJub25lIiBvcGFjaXR5PSIwLjMiIGZpbGwtb3BhY2l0eT0iMSIgc3Ryb2tlLXdpZHRoPSIzIiB0cmFuc2Zvcm09Im1hdHJpeCgxLDAsMCwxLDMsMykiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7IG9wYWNpdHk6IDAuMzsgZmlsbC1vcGFjaXR5OiAxOyIvPjxjaXJjbGUgY3g9IjM0OCIgY3k9IjAiIHI9IjQwIiBmaWxsPSJ1cmwoJyNwMWVxMjAtX2ZmZmZmZjowLV9COEI4Qjg6MTAwJykiIHN0cm9rZT0iIzMzMzMzMyIgb3BhY2l0eT0iMSIgZmlsbC1vcGFjaXR5PSIxIiBzdHJva2Utd2lkdGg9IjMiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7IG9wYWNpdHk6IDE7IGZpbGwtb3BhY2l0eTogMTsiLz48cGF0aCBmaWxsPSJ1cmwoJyMzMGtkYjkwLV9hNmI4Yjg6MC1fRTBGOEY4OjEwMCcpIiBzdHJva2U9IiM1OTU5NTkiIGQ9Ik0zNDgsMEwzODcuNCwwQTM5LjQsMzkuNCwwLDAsMCwzMDguNiwtNC44MjUxMDgzODg2NDA1NzFlLTE1WiIgb3BhY2l0eT0iMSIgZmlsbC1vcGFjaXR5PSIxIiBzdHJva2Utd2lkdGg9IjAuMDMiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7IG9wYWNpdHk6IDE7IGZpbGwtb3BhY2l0eTogMTsiLz48cGF0aCBmaWxsPSJ1cmwoJyNvdWY4dDI3MC1fNGU2MjQ0OjAtXzgxYTI3MDoxMDAnKSIgc3Ryb2tlPSIjNTk1OTU5IiBkPSJNMzQ4LDBMMzA4LjYsLTQuODI1MTA4Mzg4NjQwNTcxZS0xNUEzOS40LDM5LjQsMCwwLDAsMzg3LjQsOS42NTAyMTY3NzcyODExNDNlLTE1WiIgb3BhY2l0eT0iMSIgZmlsbC1vcGFjaXR5PSIxIiBzdHJva2Utd2lkdGg9IjAuMDMiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7IG9wYWNpdHk6IDE7IGZpbGwtb3BhY2l0eTogMTsiLz48dGV4dCB4PSIzNDgiIHk9Ijk4LjEwOTM0NjQ4NzA2MTMyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjBweCIgc3Ryb2tlPSJub25lIiBmaWxsPSIjMDAwMDAwIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyB0ZXh0LWFuY2hvcjogbWlkZGxlOyBmb250LWZhbWlseTogQXJpYWw7IGZvbnQtc2l6ZTogMjBweDsiPjx0c3BhbiBkeT0iNy4zMzMzMzIxNTkwNTgzODYiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ij5DbGFyYSBCcm9vazwvdHNwYW4+PC90ZXh0Pjx0ZXh0IHg9IjM0OCIgeT0iMTIwLjIzMjYwNzExMTAwNzM1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjBweCIgc3Ryb2tlPSJub25lIiBmaWxsPSIjMDAwMDAwIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyB0ZXh0LWFuY2hvcjogbWlkZGxlOyBmb250LWZhbWlseTogQXJpYWw7IGZvbnQtc2l6ZTogMjBweDsiPjx0c3BhbiBkeT0iNy4zMzMzMzIyODQ5NTc1NDk1IiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyI+Yi4gMTk3MDwvdHNwYW4+PC90ZXh0PjxyZWN0IHg9IjI1OCIgeT0iLTkwIiB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgcng9IjAiIHJ5PSIwIiBmaWxsPSIjMDA4MDAwIiBzdHJva2U9Im5vbmUiIG9wYWNpdHk9IjAiIGZpbGwtb3BhY2l0eT0iMC4zNSIgdHJhbnNmb3JtPSJtYXRyaXgoMSwwLDAsMSwwLDApIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyBvcGFjaXR5OiAwOyBmaWxsLW9wYWNpdHk6IDAuMzU7Ii8+PHJlY3QgeD0iLTYiIHk9IjE4MiIgd2lkdGg9IjE4MCIgaGVpZ2h0PSIxODAiIHJ4PSI1IiByeT0iNSIgZmlsbD0iIzgwODA4MCIgc3Ryb2tlPSJub25lIiBvcGFjaXR5PSIwIiBmaWxsLW9wYWNpdHk9IjAuMzUiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7IG9wYWNpdHk6IDA7IGZpbGwtb3BhY2l0eTogMC4zNTsiLz48Y2lyY2xlIGN4PSI4NCIgY3k9IjI3MiIgcj0iNDAiIGZpbGw9IiM4MDgwODAiIHN0cm9rZT0ibm9uZSIgb3BhY2l0eT0iMC4zIiBmaWxsLW9wYWNpdHk9IjEiIHN0cm9rZS13aWR0aD0iMyIgdHJhbnNmb3JtPSJtYXRyaXgoMSwwLDAsMSwzLDMpIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyBvcGFjaXR5OiAwLjM7IGZpbGwtb3BhY2l0eTogMTsiLz48Y2lyY2xlIGN4PSI4NCIgY3k9IjI3MiIgcj0iNDAiIGZpbGw9InVybCgnI25naTVtMC1fZmZmZmZmOjAtX0I4QjhCODoxMDAnKSIgc3Ryb2tlPSIjMzMzMzMzIiBvcGFjaXR5PSIxIiBmaWxsLW9wYWNpdHk9IjEiIHN0cm9rZS13aWR0aD0iMyIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsgb3BhY2l0eTogMTsgZmlsbC1vcGFjaXR5OiAxOyIvPjxjaXJjbGUgY3g9Ijg0IiBjeT0iMjcyIiByPSIzOS40IiBmaWxsPSJ1cmwoJyNkOGpxcDE4MC1fNGU2MjQ0OjAtXzgxYTI3MDoxMDAnKSIgc3Ryb2tlPSJub25lIiBvcGFjaXR5PSIxIiBmaWxsLW9wYWNpdHk9IjEiIHN0cm9rZS13aWR0aD0iMCIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsgb3BhY2l0eTogMTsgZmlsbC1vcGFjaXR5OiAxOyIvPjx0ZXh0IHg9Ijg0IiB5PSIzNDQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyMHB4IiBzdHJva2U9Im5vbmUiIGZpbGw9IiMwMDAwMDAiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7IHRleHQtYW5jaG9yOiBtaWRkbGU7IGZvbnQtZmFtaWx5OiBBcmlhbDsgZm9udC1zaXplOiAyMHB4OyI+PHRzcGFuIGR5PSI3LjMzMzMyMjUyNTAyNDQxNCIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPk5pbmEgQnJvb2s8L3RzcGFuPjwvdGV4dD48dGV4dCB4PSI4NCIgeT0iMzY2LjMzMzM1NDk0OTk1MTIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyMHB4IiBzdHJva2U9Im5vbmUiIGZpbGw9IiMwMDAwMDAiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7IHRleHQtYW5jaG9yOiBtaWRkbGU7IGZvbnQtZmFtaWx5OiBBcmlhbDsgZm9udC1zaXplOiAyMHB4OyI+PHRzcGFuIGR5PSI3LjMzMzMzMzk2OTExNjIxMSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPmIuIDIwMDQ8L3RzcGFuPjwvdGV4dD48cmVjdCB4PSI4MCIgeT0iMjMyIiB3aWR0aD0iOCIgaGVpZ2h0PSI4MCIgcng9IjAiIHJ5PSIwIiBmaWxsPSIjNzc3Nzc3IiBzdHJva2U9IiM3Nzc3NzciIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ii8+PHJlY3QgeD0iLTYiIHk9IjE4MiIgd2lkdGg9IjE4MCIgaGVpZ2h0PSIxODAiIHJ4PSIwIiByeT0iMCIgZmlsbD0iIzAwODAwMCIgc3Ryb2tlPSJub25lIiBvcGFjaXR5PSIwIiBmaWxsLW9wYWNpdHk9IjAuMzUiIHRyYW5zZm9ybT0ibWF0cml4KDEsMCwwLDEsMCwwKSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsgb3BhY2l0eTogMDsgZmlsbC1vcGFjaXR5OiAwLjM1OyIvPjxyZWN0IHg9IjE3OCIgeT0iLTMyIiB3aWR0aD0iNTIiIGhlaWdodD0iOTIiIHJ4PSI1IiByeT0iNSIgZmlsbD0iIzgwODA4MCIgc3Ryb2tlPSJub25lIiBvcGFjaXR5PSIwIiBmaWxsLW9wYWNpdHk9IjAuMzUiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7IG9wYWNpdHk6IDA7IGZpbGwtb3BhY2l0eTogMC4zNTsiLz48Y2lyY2xlIGN4PSIyMDQiIGN5PSIwIiByPSI2LjUiIGZpbGw9IiNkYzc4NjgiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjx0ZXh0IHg9IjIwNCIgeT0iLTIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iVGFob21hIiBmb250LXNpemU9IjE0cHgiIHN0cm9rZT0ibm9uZSIgZmlsbD0iIzAwMDAwMCIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsgdGV4dC1hbmNob3I6IG1pZGRsZTsgZm9udC1mYW1pbHk6IFRhaG9tYTsgZm9udC1zaXplOiAxNHB4OyI+PHRzcGFuIGR5PSItMjAiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ii8+PC90ZXh0PjxyZWN0IHg9IjE3OCIgeT0iLTMyIiB3aWR0aD0iNTIiIGhlaWdodD0iOTIiIHJ4PSIwIiByeT0iMCIgZmlsbD0iIzAwODAwMCIgc3Ryb2tlPSJub25lIiBvcGFjaXR5PSIwIiBmaWxsLW9wYWNpdHk9IjAuMzUiIHRyYW5zZm9ybT0ibWF0cml4KDEsMCwwLDEsMCwwKSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsgb3BhY2l0eTogMDsgZmlsbC1vcGFjaXR5OiAwLjM1OyIvPjxjaXJjbGUgY3g9IjIwNCIgY3k9IjE2MCIgcj0iMy4yNSIgZmlsbD0iIzY2NjY2NiIgc3Ryb2tlPSIjODg4ODg4IiBzdHJva2Utd2lkdGg9IjEiIG9wYWNpdHk9IjEiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7IG9wYWNpdHk6IDE7Ii8+PC9zdmc+&quot;
+          }
+        }
+      }
+    }
+  ]
+}"/>
+					<ItemData ItemOID="family_history_notes" Value="Illustrative example family. Theo was referred with breathlessness; his mother has dilated cardiomyopathy."/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_history.family_history_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="family_history_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.relatives" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="relatives.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Theo"/>
+					<ItemData ItemOID="last_name" Value="Brook"/>
+					<ItemData ItemOID="relationship" Value="proband"/>
+					<ItemData ItemOID="sex" Value="M"/>
+					<ItemData ItemOID="dob" Value="2001-02-14"/>
+					<ItemData ItemOID="carrier_status" Value="affected"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.primary_condition" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="primary_condition" Value="195021004|http://snomed.info/sct"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="gene" Value="12403|http://purl.bioontology.org/ontology/HGNC/hgnc.owl"/>
+					<ItemData ItemOID="features" Value="267036007|http://snomed.info/sct"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.relatives_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="relatives_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.relatives" FormRepeatKey="2">
+				<ItemGroupData ItemGroupOID="relatives.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Clara"/>
+					<ItemData ItemOID="last_name" Value="Brook"/>
+					<ItemData ItemOID="relationship" Value="mother"/>
+					<ItemData ItemOID="sex" Value="F"/>
+					<ItemData ItemOID="dob" Value="1970-06-21"/>
+					<ItemData ItemOID="carrier_status" Value="affected"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.primary_condition" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="primary_condition" Value="195021004|http://snomed.info/sct"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="gene" Value="12403|http://purl.bioontology.org/ontology/HGNC/hgnc.owl"/>
+					<ItemData ItemOID="features" Value="80313002|http://snomed.info/sct"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.relatives_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="relatives_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.relatives" FormRepeatKey="3">
+				<ItemGroupData ItemGroupOID="relatives.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Paul"/>
+					<ItemData ItemOID="last_name" Value="Brook"/>
+					<ItemData ItemOID="relationship" Value="father"/>
+					<ItemData ItemOID="sex" Value="M"/>
+					<ItemData ItemOID="dob" Value="1968-03-09"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.relatives_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="relatives_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.relatives" FormRepeatKey="4">
+				<ItemGroupData ItemGroupOID="relatives.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Nina"/>
+					<ItemData ItemOID="last_name" Value="Brook"/>
+					<ItemData ItemOID="relationship" Value="sibling"/>
+					<ItemData ItemOID="sex" Value="F"/>
+					<ItemData ItemOID="dob" Value="2004-10-05"/>
+					<ItemData ItemOID="carrier_status" Value="presymptomatic"/>
+					<ItemData ItemOID="gene" Value="12403|http://purl.bioontology.org/ontology/HGNC/hgnc.owl"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.relatives_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="relatives_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+</ClinicalData>
+</ODM>

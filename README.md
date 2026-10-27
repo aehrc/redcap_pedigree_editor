@@ -48,7 +48,7 @@ representation of the diagram, add compression for large diagrams.
   **Security**: fix two cross-site scripting holes - the terminology service echoed request parameters unescaped
   into an HTML error response, and a record's saved pedigree SVG was inserted into the form as raw HTML (it is now
   sanitised first).
-  An importable [example project](#example-project) shows it all in a longitudinal registry with three fictional
+  An importable [example project](#family-registry-ada2) shows it all in a longitudinal registry with three fictional
   families.
   JSON pedigrees are stored so they survive moving a project by XML or re-importing its data (see
   [Moving a project](#moving-a-project)), and the size limit is checked in stored bytes, so a large pedigree is no
@@ -227,7 +227,7 @@ edited in REDCap's own form, opened from the pedigree editor, and the node refre
 needs no custom code: it works by deriving a FHIR Questionnaire (the node-edit form's definition) from the
 instrument's Data Dictionary, driven by action tags on the instrument's own fields.
 
-To see it working, import the [example project](#example-project).
+To see it working, import the [example project](#family-registry-ada2).
 
 ### Configuring the linked instrument
 
@@ -335,7 +335,11 @@ fields are never included - this is opt-in, the same way `@PEDIGREE` marks the o
   | `hpo_positive` | SNOMED CT (`http://snomed.info/sct`) | HPO (`http://purl.obolibrary.org/obo/hp.owl`) | the custom phenotype system |
   | `candidate_genes` | HGNC (`http://purl.bioontology.org/ontology/HGNC/hgnc.owl`) | HGNC (same) | the custom gene system |
 
-  A code from another system gets no name (it's shown as the code) and is exported under the wrong system.
+  A code from another system gets no name (it's shown as the code) and is saved as text, without a code system.
+  **Changing *Default Terminology* once pedigrees have been saved** changes how they're read back: a saved value coded in
+  the old system is read as its display text (disorders) or left out (phenotypes), and is saved that way the next time
+  the pedigree is saved. Choose the terminology before entering data, or check what a change does on a copy of the
+  project first.
 
   The value is read as the ontology providers store it by default: `code|system` (redcap_fhir_ontology_provider)
   or a bare code (advanced_fhir_ontology_provider). A field whose provider has a different code template (e.g.
@@ -609,7 +613,19 @@ REDCap doesn't run modules for a **data import or an API save**, so a pedigree c
 imported from XML with an older module version) has its relationships brought up to date the next time its form is
 saved.
 
-## Example project
+## Example projects
+
+Each example is a REDCap project XML you can import, with made-up people and families, and a list of the module
+settings to apply afterwards (REDCap's project XML doesn't carry module settings). The XML files were exported from
+REDCap 16.0.32 and haven't been tested on earlier versions; each has a `data-dictionary.csv` beside it with its
+instruments alone.
+
+- [Family registry (ADA2)](#family-registry-ada2) - linking people to a repeating instrument in a longitudinal project,
+  and relationships written into REDCap fields.
+- [Legends and terminology](#legends-and-terminology) - ontology fields feeding the pedigree's disorders, candidate genes
+  and phenotypes legends, in a classic (non-longitudinal) project.
+
+### Family registry (ADA2)
 
 [`documentation/example-project/`](documentation/example-project/) holds a project you can import to see the linking
 at work: an illustrative registry for a rare inherited condition (ADA2 deficiency), with three fictional families. The
@@ -661,16 +677,79 @@ Maya's (the participant's) *Linked Record* tab, with the values from her row:
 
    Set *Storage Format* and *Compress Data* here rather than relying on the system settings, which may be unset.
 
-**Adding a legend.** The example doesn't need an ontology provider, so it has no legend fields. To try them, enable
-[redcap_fhir_ontology_provider](https://github.com/aehrc/redcap_fhir_ontology_provider) on the project, add a *Text
-Box* to *Family members* with its ontology search set to a SNOMED CT value set (e.g. `http://snomed.info/sct?fhir_vs=refset/32570581000036105`)
-and the annotation `@PEDIGREE_FIELD(legend="disorders")`, and set *Default Terminology* to *SnomedCT*. A condition entered on
-a person's row then shows on the pedigree's disorders legend once the person is linked (see
-[the `@PEDIGREE_FIELD` action tag](#the-pedigree_field-action-tag)).
+This example needs no other module, so it has no legend fields; the [Legends and terminology](#legends-and-terminology)
+example shows them. To add the instruments to an existing project from `data-dictionary.csv`, the events and the
+repeating setup need setting up by hand. Record 1's pedigree is stored compressed, since it's over the field's size
+limit.
 
-The XML was exported from REDCap 16.0.32 and hasn't been tested on earlier versions. `data-dictionary.csv` beside it
-holds the instruments alone, e.g. to add them to an existing project (the events and the repeating setup then need
-setting up by hand). Record 1's pedigree is stored compressed, since it's over the field's size limit.
+### Legends and terminology
+
+[`documentation/example-legends/`](documentation/example-legends/) holds a fictional inherited-cardiomyopathy family
+clinic. Each relative's conditions, gene and main clinical feature are REDCap ontology fields, searched through
+[redcap_fhir_ontology_provider](https://github.com/aehrc/redcap_fhir_ontology_provider) on CSIRO's Ontoserver, and
+feed the pedigree's legends once the relative is linked.
+
+**What it shows**
+
+- A classic (non-longitudinal) project: *Family history* holds the diagram field (`@PEDIGREE=HIDE_TEXT,COMPRESS_LARGE`,
+  so the Ashby family's pedigree, which is over the field's size limit, is stored compressed whatever the project's
+  *Compress Data* setting) and *Relatives* repeats, one row per relative, so linking works without events too.
+- *Relatives* maps first and last name, sex, date of birth and carrier status with `mapsTo`, and has four ontology
+  fields tagged with [`@PEDIGREE_FIELD(legend=...)`](#the-pedigree_field-action-tag):
+  - *Primary condition* and *Other condition* - SNOMED CT (`http://snomed.info/sct?fhir_vs=refset/32570581000036105`),
+    both `legend="disorders"`, so a person with two conditions shows both;
+  - *Gene with a variant* - HGNC (`http://www.genenames.org`), `legend="candidate_genes"`;
+  - *Main clinical feature* - SNOMED CT (`http://ga4gh.org/fhir/ValueSet/phenotype`), `legend="hpo_positive"`.
+
+  *Clinic notes* has no tag, so it never reaches the diagram.
+- Two families, both drawn with every person linked:
+  - **Record 1, the Ashby family** - hypertrophic cardiomyopathy and MYBPC3. Mark has two conditions (hypertrophic
+    cardiomyopathy and atrial fibrillation); his son Owen carries the variant with no condition (pre-symptomatic).
+  - **Record 2, the Brook family** - dilated cardiomyopathy and TTN; Theo's sister Nina carries the variant
+    (pre-symptomatic).
+
+![The Ashby family's pedigree with its disorders, candidate genes and phenotypes legends](documentation/example-legends/legends-ashby-family.png)
+
+**Importing it**
+
+1. *New Project* > *Upload a REDCap project XML file (CDISC ODM format)*, and choose
+   `documentation/example-legends/pedigree-editor-example-legends.REDCap.xml`.
+2. Make sure redcap_fhir_ontology_provider is installed with *FHIR API URL* `https://tx.ontoserver.csiro.au/fhir`
+   (Control Center), and enable both it and the Pedigree Editor module on the new project before using it: the
+   ontology fields keep their value sets through the import, but are only searchable, and only feed the legends, with
+   the provider enabled. Names for values that aren't saved in a pedigree yet are looked up through the Pedigree
+   Editor's own *Ontology Server URL* system setting, so that needs to be a FHIR terminology server that knows SNOMED
+   CT and HGNC (Ontoserver, the default, does).
+3. Configure the Pedigree Editor module:
+   - *Repeating instrument*: `relatives`
+   - *Search fields*: `first_name`, `last_name`, `relationship`
+   - *Node-edit form source*: *Tags only*
+   - *Default Terminology*: *SnomedCT*
+   - *Storage Format*: *GA4GH - Recommended Format*
+   - *Compress Data*: *Compress Large Diagrams >65K* (the diagram field's own `COMPRESS_LARGE` does this for it too)
+
+To add the instruments to an existing project from `data-dictionary.csv` instead, make *Relatives* a repeating
+instrument by hand.
+
+The values are stored the way redcap_fhir_ontology_provider stores them by default (`code|system`). The legends use
+the code; the system is ignored, so a bare code works too.
+
+**Try this**
+
+- **Node-edit form source *Default + tags*.** The editor's own legends are used, editable in the editor, and the
+  `legend=` tags are ignored: the four fields become ordinary linked items, and each time the editor opens, the web
+  server's PHP error log gets one warning per field (`... but the built-in form already has that legend in "default +
+  tags" mode ...`). A pedigree keeps the legend entries it already has.
+- ***Default Terminology* HPO + omim** - try this on a copy of the project, or close the editor without saving: it
+  shows why the terminology should be chosen before data is entered. The stored pedigrees' SNOMED CT values don't
+  belong to the HPO terminology's code systems, so the disorders are read back as plain text (their names, without
+  codes), the phenotypes are left out of the pedigree, and saving would store them that way. The genes are unaffected,
+  as HGNC is used either way.
+- ***Default Terminology* Custom**, set up as SnomedCT is (the setting's help lists each value): *Disorder Code
+  System* `http://snomed.info/sct` with *Disorder Value Set* `http://snomed.info/sct?fhir_vs=refset/32570581000036105`;
+  *Phenotype Code System* `http://snomed.info/sct` with *Phenotype Value Set* `http://ga4gh.org/fhir/ValueSet/phenotype`;
+  *Gene Code System* `http://purl.bioontology.org/ontology/HGNC/hgnc.owl` with *Gene Value Set*
+  `http://www.genenames.org`; and each *Regex* `[0-9]+`. The legends show the same as with SnomedCT.
 
 # Upgrade Issues
 
