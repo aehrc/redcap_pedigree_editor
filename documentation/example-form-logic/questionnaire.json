@@ -370,7 +370,17 @@
             {
               "url": "https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source"
             }
-          ]
+          ],
+          "enableWhen": [
+            {
+              "question": "hearing_status",
+              "operator": "=",
+              "answerCoding": {
+                "code": "loss"
+              }
+            }
+          ],
+          "enableBehavior": "all"
         },
         {
           "linkId": "age_at_onset",

@@ -776,8 +776,8 @@ same fields.
 - *Other features* is a checkbox field with the option codes `1`, `2`, `A` and `-1`. REDCap renames the last two in
   exports (`other_features___a`, `other_features____1`); they still come through ticked on the node form.
 - Two families:
-  - **Record 1, the Carver family** - drawn, with every person linked. Ella (the proband) has every item shown, with
-    tinnitus (`A`) ticked; her father Tom wasn't tested, so his test result is hidden and his reason shown, with "Not
+  - **Record 1, the Carver family** - drawn, with every person linked. Ella (the proband) has hearing loss and a
+    pathogenic result, so everything but the "why?" item is shown, with tinnitus (`A`) ticked; her father Tom wasn't tested, so his test result is hidden and his reason shown, with "Not
     known" (`-1`) ticked; her mother Rose has normal hearing, so the hearing-loss items and her (tested) result are
     hidden; her brother Sam's hearing isn't recorded, so he has the "why?" item instead.
   - **Record 2, the Dunn family** - rows entered, no pedigree yet: draw one and link each person (or use it for the
@@ -803,9 +803,7 @@ Tom's node form - the test result hidden, *Why not tested?* shown, and *Not know
 Each time the editor opens, the web server's PHP error log gets one notice for the OR-chain - this is expected:
 
 ```
-[redcap_pedigree_editor] Questionnaire derivation (project N): Field "not_tested_reason": branching_logic
-"[genetic_test] = '0' or [genetic_test] = ''" contains an OR chain (only AND-chains are supported) - deriving field
-with no enableWhen (always visible)
+[redcap_pedigree_editor] Questionnaire derivation (project N): Field "not_tested_reason": branching_logic "[genetic_test] = '0' or [genetic_test] = ''" contains an OR chain (only AND-chains are supported) — deriving field with no enableWhen (always visible)
 ```
 
 **Try this**
@@ -815,15 +813,17 @@ with no enableWhen (always visible)
 - ***Advanced* mode with `questionnaire.json`.** Paste the file into *Advanced: FHIR Questionnaire JSON* and set
   *Node-edit form source* to *Advanced*. Then draw record 2 (the Dunn family) and link each person:
   - the *Personal* tab has the Questionnaire's own items: a *Link to a relative's row* button (`invokesAction`
-    `linkRecord`, shown by the `canLinkRecord` predicate) and *Prenatal notes*, shown only for a fetus (`isFetus`);
+    `linkRecord`, shown by the `canLinkRecord` predicate - the same action as *Link to existing record*, placed where
+    the Questionnaire wants it) and *Prenatal notes*, shown only for a fetus (`isFetus`);
   - the *Linked Record* tab has the items read from the row, under the Questionnaire's *Personal*, *Hearing*, *Genetic
     testing* and *Other features* groups;
-  - *Type of hearing loss* is the pedigree's disorders legend (`mapsToLegendCondition`, filled from the row's
+  - *Type of hearing loss* is the pedigree's disorders legend, shown for hearing loss only as in REDCap (`mapsToLegendCondition`, filled from the row's
     `diagnosis` through `questionnaire-redcap-source`), so Leo's conductive hearing loss is a SNOMED CT-coded
     disorder;
   - *Genetic test result* is an Observation (LOINC 51968-6) and *Hereditary hearing loss* a fixed-code Condition
-    (SNOMED CT 788953003), both in the stored GA4GH data once the pedigree is saved - set a row's result to
-    *Pathogenic* and tick *Hereditary hearing loss* to see the Condition;
+    (SNOMED CT 788953003), both in the stored GA4GH data once the pedigree is saved. Leo's result is a VUS, so to see the Condition use
+    *Edit in REDCap* on him, set *Genetic test result* to *Pathogenic* and *Hereditary hearing loss confirmed?* to
+    *Yes*, and save the row (the node form's linked items are read-only);
   - *Why not tested?* is shown or hidden by an `enableWhen` with `enableBehavior` `any` - the OR the branching logic
     couldn't express.
 
