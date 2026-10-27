@@ -1,0 +1,15 @@
+Variable / Field Name,Form Name,Section Header,Field Type,Field Label,"Choices, Calculations, OR Slider Labels",Field Note,Text Validation Type OR Show Slider Number,Text Validation Min,Text Validation Max,Identifier?,Branching Logic (Show field only if...),Required Field?,Custom Alignment,Question Number (surveys only),Matrix Group Name,Matrix Ranking?,Field Annotation
+record_id,family_history,,text,Family ID,,,,,,,,,,,,,
+referral_date,family_history,,text,Date of referral,,,date_ymd,,,,,,,,,,
+family_pedigree,family_history,,notes,Family pedigree,,"Drawn in the pedigree editor. Each relative's conditions, genes and features come from their row in Relatives.",,,,,,,,,,,@PEDIGREE=HIDE_TEXT
+family_history_notes,family_history,,notes,Notes,,,,,,,,,,,,,
+first_name,relatives,,text,First name,,,,,,,,,,,,,"@PEDIGREE_FIELD(mapsTo=""given"")"
+last_name,relatives,,text,Last name,,,,,,,,,,,,,"@PEDIGREE_FIELD(mapsTo=""family"")"
+relationship,relatives,,dropdown,Relationship to the proband,"proband, Proband | mother, Mother | father, Father | sibling, Brother or sister | child, Son or daughter | grandparent_paternal, Grandparent (father's side) | grandparent_maternal, Grandparent (mother's side) | aunt_uncle, Aunt or uncle | cousin, Cousin | other, Other",,,,,,,,,,,,@PEDIGREE_FIELD
+sex,relatives,,radio,Sex,"F, Female | M, Male | U, Unknown",,,,,,,,,,,,"@PEDIGREE_FIELD(mapsTo=""gender"")"
+dob,relatives,,text,Date of birth,,,date_ymd,,,,,,,,,,"@PEDIGREE_FIELD(mapsTo=""birthDate"")"
+primary_condition,relatives,Clinical findings,text,Primary condition,FHIR:http://snomed.info/sct?fhir_vs=refset/32570581000036105,"SNOMED CT, searched on Ontoserver",,,,,,,,,,,"@PEDIGREE_FIELD(legend=""disorders"")"
+other_condition,relatives,,text,Other condition,FHIR:http://snomed.info/sct?fhir_vs=refset/32570581000036105,"SNOMED CT, searched on Ontoserver",,,,,,,,,,,"@PEDIGREE_FIELD(legend=""disorders"")"
+gene,relatives,,text,Gene with a variant,FHIR:http://www.genenames.org,"HGNC, searched on Ontoserver",,,,,,,,,,,"@PEDIGREE_FIELD(legend=""candidate_genes"")"
+features,relatives,,text,Main clinical feature,FHIR:http://ga4gh.org/fhir/ValueSet/phenotype,"SNOMED CT, searched on Ontoserver",,,,,,,,,,,"@PEDIGREE_FIELD(legend=""hpo_positive"")"
+clinic_notes,relatives,,notes,Clinic notes,,"Not tagged, so never shown on the pedigree.",,,,,,,,,,,

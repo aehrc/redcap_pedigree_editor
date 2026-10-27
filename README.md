@@ -48,7 +48,7 @@ representation of the diagram, add compression for large diagrams.
   **Security**: fix two cross-site scripting holes - the terminology service echoed request parameters unescaped
   into an HTML error response, and a record's saved pedigree SVG was inserted into the form as raw HTML (it is now
   sanitised first).
-  An importable [example project](#example-project) shows it all in a longitudinal registry with three fictional
+  An importable [example project](#family-registry-ada2) shows it all in a longitudinal registry with three fictional
   families.
   JSON pedigrees are stored so they survive moving a project by XML or re-importing its data (see
   [Moving a project](#moving-a-project)), and the size limit is checked in stored bytes, so a large pedigree is no
@@ -227,7 +227,7 @@ edited in REDCap's own form, opened from the pedigree editor, and the node refre
 needs no custom code: it works by deriving a FHIR Questionnaire (the node-edit form's definition) from the
 instrument's Data Dictionary, driven by action tags on the instrument's own fields.
 
-To see it working, import the [example project](#example-project).
+To see it working, import the [example project](#family-registry-ada2).
 
 ### Configuring the linked instrument
 
@@ -609,7 +609,19 @@ REDCap doesn't run modules for a **data import or an API save**, so a pedigree c
 imported from XML with an older module version) has its relationships brought up to date the next time its form is
 saved.
 
-## Example project
+## Example projects
+
+Each example is a REDCap project XML you can import, with made-up people and families, and a list of the module
+settings to apply afterwards (REDCap's project XML doesn't carry module settings). The XML files were exported from
+REDCap 16.0.32 and haven't been tested on earlier versions; each has a `data-dictionary.csv` beside it with its
+instruments alone.
+
+- [Family registry (ADA2)](#family-registry-ada2) - linking people to a repeating instrument in a longitudinal project,
+  and relationships written into REDCap fields.
+- [Legends and terminology](#legends-and-terminology) - ontology fields feeding the pedigree's disorders, candidate genes
+  and phenotypes legends, in a classic (non-longitudinal) project.
+
+### Family registry (ADA2)
 
 [`documentation/example-project/`](documentation/example-project/) holds a project you can import to see the linking
 at work: an illustrative registry for a rare inherited condition (ADA2 deficiency), with three fictional families. The
@@ -661,16 +673,65 @@ Maya's (the participant's) *Linked Record* tab, with the values from her row:
 
    Set *Storage Format* and *Compress Data* here rather than relying on the system settings, which may be unset.
 
-**Adding a legend.** The example doesn't need an ontology provider, so it has no legend fields. To try them, enable
-[redcap_fhir_ontology_provider](https://github.com/aehrc/redcap_fhir_ontology_provider) on the project, add a *Text
-Box* to *Family members* with its ontology search set to a SNOMED CT value set (e.g. `http://snomed.info/sct?fhir_vs=refset/32570581000036105`)
-and the annotation `@PEDIGREE_FIELD(legend="disorders")`, and set *Default Terminology* to *SnomedCT*. A condition entered on
-a person's row then shows on the pedigree's disorders legend once the person is linked (see
-[the `@PEDIGREE_FIELD` action tag](#the-pedigree_field-action-tag)).
+This example needs no other module, so it has no legend fields; the [Legends and terminology](#legends-and-terminology)
+example shows them. To add the instruments to an existing project from `data-dictionary.csv`, the events and the
+repeating setup need setting up by hand. Record 1's pedigree is stored compressed, since it's over the field's size
+limit.
 
-The XML was exported from REDCap 16.0.32 and hasn't been tested on earlier versions. `data-dictionary.csv` beside it
-holds the instruments alone, e.g. to add them to an existing project (the events and the repeating setup then need
-setting up by hand). Record 1's pedigree is stored compressed, since it's over the field's size limit.
+### Legends and terminology
+
+[`documentation/example-legends/`](documentation/example-legends/) holds a fictional inherited-cardiomyopathy family
+clinic. Each relative's conditions, gene and main clinical feature are REDCap ontology fields, searched through
+[redcap_fhir_ontology_provider](https://github.com/aehrc/redcap_fhir_ontology_provider) on CSIRO's Ontoserver, and
+feed the pedigree's legends once the relative is linked.
+
+**What it shows**
+
+- A classic (non-longitudinal) project: *Family history* holds the diagram field (`@PEDIGREE=HIDE_TEXT`) and
+  *Relatives* repeats, one row per relative, so linking works without events too.
+- *Relatives* maps first and last name, sex and date of birth with `mapsTo`, and has four ontology fields tagged
+  with [`@PEDIGREE_FIELD(legend=...)`](#the-pedigree_field-action-tag):
+  - *Primary condition* and *Other condition* - SNOMED CT (`http://snomed.info/sct?fhir_vs=refset/32570581000036105`),
+    both `legend="disorders"`, so a person with two conditions shows both;
+  - *Gene with a variant* - HGNC (`http://www.genenames.org`), `legend="candidate_genes"`;
+  - *Main clinical feature* - SNOMED CT (`http://ga4gh.org/fhir/ValueSet/phenotype`), `legend="hpo_positive"`.
+
+  *Clinic notes* has no tag, so it never reaches the diagram.
+- Two families, both drawn with every person linked:
+  - **Record 1, the Ashby family** - hypertrophic cardiomyopathy and MYBPC3. Mark has two conditions (hypertrophic
+    cardiomyopathy and atrial fibrillation); his son Owen carries the variant with no condition.
+  - **Record 2, the Brook family** - dilated cardiomyopathy and TTN.
+
+![The Ashby family's pedigree with its disorders, candidate genes and phenotypes legends](documentation/example-legends/legends-ashby-family.png)
+
+**Importing it**
+
+1. *New Project* > *Upload a REDCap project XML file (CDISC ODM format)*, and choose
+   `documentation/example-legends/pedigree-editor-example-legends.REDCap.xml`.
+2. Make sure redcap_fhir_ontology_provider is installed with *FHIR API URL* `https://tx.ontoserver.csiro.au/fhir`
+   (Control Center), and enable both it and the Pedigree Editor module on the new project.
+3. Configure the Pedigree Editor module:
+   - *Repeating instrument*: `relatives`
+   - *Search fields*: `first_name`, `last_name`, `relationship`
+   - *Node-edit form source*: *Tags only*
+   - *Default Terminology*: *SnomedCT*
+   - *Storage Format*: *GA4GH - Recommended Format*
+
+The values are stored the way redcap_fhir_ontology_provider stores them by default (`code|system`), which is what the
+legends expect.
+
+**Try this**
+
+- **Node-edit form source *Default + tags*.** The editor's own legends are used, editable in the editor, and the
+  `legend=` tags are ignored: the four fields become ordinary linked items, and the web server's PHP error log gets one
+  warning per field (`... but the built-in form already has that legend in "default + tags" mode ...`). A pedigree
+  keeps the legend entries it already has.
+- ***Default Terminology* HPO.** The disorders and phenotypes legends now expect OMIM and HPO codes, so this example's
+  SNOMED CT values show as bare codes (e.g. `233873004`). The genes still show their names, as HGNC is used either
+  way. Changing the terminology doesn't recode values already entered.
+- ***Default Terminology* CUSTOM**, with disorders and phenotypes `http://snomed.info/sct` and genes
+  `http://purl.bioontology.org/ontology/HGNC/hgnc.owl` (and their value sets above): the legends show the same as
+  with SnomedCT.
 
 # Upgrade Issues
 
