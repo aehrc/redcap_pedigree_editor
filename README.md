@@ -335,7 +335,11 @@ fields are never included - this is opt-in, the same way `@PEDIGREE` marks the o
   | `hpo_positive` | SNOMED CT (`http://snomed.info/sct`) | HPO (`http://purl.obolibrary.org/obo/hp.owl`) | the custom phenotype system |
   | `candidate_genes` | HGNC (`http://purl.bioontology.org/ontology/HGNC/hgnc.owl`) | HGNC (same) | the custom gene system |
 
-  A code from another system gets no name (it's shown as the code) and is exported under the wrong system.
+  A code from another system gets no name (it's shown as the code) and is saved as text, without a code system.
+  **Changing *Default Terminology* once pedigrees have been saved** changes how they're read back: a saved value coded in
+  the old system is read as its display text (disorders) or left out (phenotypes), and is saved that way the next time
+  the pedigree is saved. Choose the terminology before entering data, or check what a change does on a copy of the
+  project first.
 
   The value is read as the ontology providers store it by default: `code|system` (redcap_fhir_ontology_provider)
   or a bare code (advanced_fhir_ontology_provider). A field whose provider has a different code template (e.g.
@@ -687,10 +691,11 @@ feed the pedigree's legends once the relative is linked.
 
 **What it shows**
 
-- A classic (non-longitudinal) project: *Family history* holds the diagram field (`@PEDIGREE=HIDE_TEXT`) and
-  *Relatives* repeats, one row per relative, so linking works without events too.
-- *Relatives* maps first and last name, sex and date of birth with `mapsTo`, and has four ontology fields tagged
-  with [`@PEDIGREE_FIELD(legend=...)`](#the-pedigree_field-action-tag):
+- A classic (non-longitudinal) project: *Family history* holds the diagram field (`@PEDIGREE=HIDE_TEXT,COMPRESS_LARGE`,
+  so the Ashby family's pedigree, which is over the field's size limit, is stored compressed whatever the project's
+  *Compress Data* setting) and *Relatives* repeats, one row per relative, so linking works without events too.
+- *Relatives* maps first and last name, sex, date of birth and carrier status with `mapsTo`, and has four ontology
+  fields tagged with [`@PEDIGREE_FIELD(legend=...)`](#the-pedigree_field-action-tag):
   - *Primary condition* and *Other condition* - SNOMED CT (`http://snomed.info/sct?fhir_vs=refset/32570581000036105`),
     both `legend="disorders"`, so a person with two conditions shows both;
   - *Gene with a variant* - HGNC (`http://www.genenames.org`), `legend="candidate_genes"`;
@@ -699,8 +704,9 @@ feed the pedigree's legends once the relative is linked.
   *Clinic notes* has no tag, so it never reaches the diagram.
 - Two families, both drawn with every person linked:
   - **Record 1, the Ashby family** - hypertrophic cardiomyopathy and MYBPC3. Mark has two conditions (hypertrophic
-    cardiomyopathy and atrial fibrillation); his son Owen carries the variant with no condition.
-  - **Record 2, the Brook family** - dilated cardiomyopathy and TTN.
+    cardiomyopathy and atrial fibrillation); his son Owen carries the variant with no condition (pre-symptomatic).
+  - **Record 2, the Brook family** - dilated cardiomyopathy and TTN; Theo's sister Nina carries the variant
+    (pre-symptomatic).
 
 ![The Ashby family's pedigree with its disorders, candidate genes and phenotypes legends](documentation/example-legends/legends-ashby-family.png)
 
@@ -709,17 +715,21 @@ feed the pedigree's legends once the relative is linked.
 1. *New Project* > *Upload a REDCap project XML file (CDISC ODM format)*, and choose
    `documentation/example-legends/pedigree-editor-example-legends.REDCap.xml`.
 2. Make sure redcap_fhir_ontology_provider is installed with *FHIR API URL* `https://tx.ontoserver.csiro.au/fhir`
-   (Control Center), and enable both it and the Pedigree Editor module on the new project. The legends look their
-   names up through the Pedigree Editor's own *Ontology Server URL* system setting, so that needs to be a server with
-   these value sets too (Ontoserver is the default).
+   (Control Center), and enable both it and the Pedigree Editor module on the new project before using it: the
+   ontology fields keep their value sets through the import, but are only searchable, and only feed the legends, with
+   the provider enabled. Names for values that aren't saved in a pedigree yet are looked up through the Pedigree
+   Editor's own *Ontology Server URL* system setting, so that needs to be a FHIR terminology server that knows SNOMED
+   CT and HGNC (Ontoserver, the default, does).
 3. Configure the Pedigree Editor module:
    - *Repeating instrument*: `relatives`
    - *Search fields*: `first_name`, `last_name`, `relationship`
    - *Node-edit form source*: *Tags only*
    - *Default Terminology*: *SnomedCT*
    - *Storage Format*: *GA4GH - Recommended Format*
-   - *Compress Data*: *Compress Large Diagrams >65K* - record 1's pedigree is over the field's size limit, so without
-     compression its diagram would be dropped the next time it's saved.
+   - *Compress Data*: *Compress Large Diagrams >65K* (the diagram field's own `COMPRESS_LARGE` does this for it too)
+
+To add the instruments to an existing project from `data-dictionary.csv` instead, make *Relatives* a repeating
+instrument by hand.
 
 The values are stored the way redcap_fhir_ontology_provider stores them by default (`code|system`). The legends use
 the code; the system is ignored, so a bare code works too.
@@ -730,9 +740,11 @@ the code; the system is ignored, so a bare code works too.
   `legend=` tags are ignored: the four fields become ordinary linked items, and each time the editor opens, the web
   server's PHP error log gets one warning per field (`... but the built-in form already has that legend in "default +
   tags" mode ...`). A pedigree keeps the legend entries it already has.
-- ***Default Terminology* HPO + omim.** The disorders and phenotypes legends now expect OMIM and HPO codes, so this example's
-  SNOMED CT values show as bare codes (e.g. `233873004`). The genes still show their names, as HGNC is used either
-  way. Changing the terminology doesn't recode values already entered.
+- ***Default Terminology* HPO + omim** - try this on a copy of the project, or close the editor without saving: it
+  shows why the terminology should be chosen before data is entered. The stored pedigrees' SNOMED CT values don't
+  belong to the HPO terminology's code systems, so the disorders are read back as plain text (their names, without
+  codes), the phenotypes are left out of the pedigree, and saving would store them that way. The genes are unaffected,
+  as HGNC is used either way.
 - ***Default Terminology* Custom**, set up as SnomedCT is (the setting's help lists each value): *Disorder Code
   System* `http://snomed.info/sct` with *Disorder Value Set* `http://snomed.info/sct?fhir_vs=refset/32570581000036105`;
   *Phenotype Code System* `http://snomed.info/sct` with *Phenotype Value Set* `http://ga4gh.org/fhir/ValueSet/phenotype`;
