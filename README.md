@@ -624,6 +624,8 @@ instruments alone.
   and relationships written into REDCap fields.
 - [Legends and terminology](#legends-and-terminology) - ontology fields feeding the pedigree's disorders, candidate genes
   and phenotypes legends, in a classic (non-longitudinal) project.
+- [Form logic and Advanced questionnaire](#form-logic-and-advanced-questionnaire) - REDCap branching logic carried into
+  the node form, checkbox codes REDCap renames in exports, and a hand-authored Questionnaire for *Advanced* mode.
 
 ### Family registry (ADA2)
 
@@ -750,6 +752,83 @@ the code; the system is ignored, so a bare code works too.
   *Phenotype Code System* `http://snomed.info/sct` with *Phenotype Value Set* `http://ga4gh.org/fhir/ValueSet/phenotype`;
   *Gene Code System* `http://purl.bioontology.org/ontology/HGNC/hgnc.owl` with *Gene Value Set*
   `http://www.genenames.org`; and each *Regex* `[0-9]+`. The legends show the same as with SnomedCT.
+
+### Form logic and Advanced questionnaire
+
+[`documentation/example-form-logic/`](documentation/example-form-logic/) holds a fictional inherited hearing-loss
+clinic. The branching logic on its *Relatives* form decides which items each linked person's node form shows, and
+[`questionnaire.json`](documentation/example-form-logic/questionnaire.json) is an *Advanced* mode Questionnaire over the
+same fields.
+
+**What it shows**
+
+- A classic project: *Family history* holds the diagram field (`@PEDIGREE=HIDE_TEXT`) and *Relatives* repeats, one row
+  per relative. Name, sex and date of birth are mapped with `mapsTo`; the other fields are linked but unmapped, and
+  *Clinic notes* has no tag.
+- Branching logic of each kind the module [translates into the node form](#the-pedigree_field-action-tag):
+  - an equality - *Type of hearing loss* and *Age at onset* show if `[hearing_status] = 'loss'`;
+  - "is empty" - *Hearing not recorded yet: why?* shows if `[hearing_status] = ''`;
+  - "has a value" - *Onset notes* shows if `[age_at_onset] <> ''`;
+  - an AND-chain - *Genetic test result* shows if `[genetic_test] = '1' and [hearing_status] = 'loss'`.
+
+  *Why not tested?* (`[genetic_test] = '0' or [genetic_test] = ''`) is an OR-chain, which isn't translated, so it's
+  always shown.
+- *Other features* is a checkbox field with the option codes `1`, `2`, `A` and `-1`. REDCap renames the last two in
+  exports (`other_features___a`, `other_features____1`); they still come through ticked on the node form.
+- Two families:
+  - **Record 1, the Carver family** - drawn, with every person linked. Ella (the proband) has every item shown, with
+    tinnitus (`A`) ticked; her father Tom wasn't tested, so his test result is hidden and his reason shown, with "Not
+    known" (`-1`) ticked; her mother Rose has normal hearing, so the hearing-loss items and her (tested) result are
+    hidden; her brother Sam's hearing isn't recorded, so he has the "why?" item instead.
+  - **Record 2, the Dunn family** - rows entered, no pedigree yet: draw one and link each person (or use it for the
+    *Advanced* step below).
+
+Tom's node form - the test result hidden, *Why not tested?* shown, and *Not known* ticked:
+
+![Tom Carver's node form: the hearing-loss items shown, his test result hidden and his reason for not testing shown](documentation/example-form-logic/node-form-branching.png)
+
+**Importing it**
+
+1. *New Project* > *Upload a REDCap project XML file (CDISC ODM format)*, and choose
+   `documentation/example-form-logic/pedigree-editor-example-form-logic.REDCap.xml`.
+2. Enable the Pedigree Editor module on the new project.
+3. Configure the module:
+   - *Repeating instrument*: `relatives`
+   - *Search fields*: `first_name`, `last_name`, `relationship`
+   - *Node-edit form source*: *Tags only*
+   - *Default Terminology*: *SnomedCT*
+   - *Storage Format*: *GA4GH - Recommended Format*
+   - *Compress Data*: *Compress Large Diagrams >65K*
+
+Each time the editor opens, the web server's PHP error log gets one notice for the OR-chain - this is expected:
+
+```
+[redcap_pedigree_editor] Questionnaire derivation (project N): Field "not_tested_reason": branching_logic
+"[genetic_test] = '0' or [genetic_test] = ''" contains an OR chain (only AND-chains are supported) - deriving field
+with no enableWhen (always visible)
+```
+
+**Try this**
+
+- **Change a row from the node form.** Use *Edit in REDCap* on Sam, give him a hearing status and save the row: his
+  node form now hides *Hearing not recorded yet: why?* and shows the items for that status.
+- ***Advanced* mode with `questionnaire.json`.** Paste the file into *Advanced: FHIR Questionnaire JSON* and set
+  *Node-edit form source* to *Advanced*. Then draw record 2 (the Dunn family) and link each person:
+  - the *Personal* tab has the Questionnaire's own items: a *Link to a relative's row* button (`invokesAction`
+    `linkRecord`, shown by the `canLinkRecord` predicate) and *Prenatal notes*, shown only for a fetus (`isFetus`);
+  - the *Linked Record* tab has the items read from the row, under the Questionnaire's *Personal*, *Hearing*, *Genetic
+    testing* and *Other features* groups;
+  - *Type of hearing loss* is the pedigree's disorders legend (`mapsToLegendCondition`, filled from the row's
+    `diagnosis` through `questionnaire-redcap-source`), so Leo's conductive hearing loss is a SNOMED CT-coded
+    disorder;
+  - *Genetic test result* is an Observation (LOINC 51968-6) and *Hereditary hearing loss* a fixed-code Condition
+    (SNOMED CT 788953003), both in the stored GA4GH data once the pedigree is saved - set a row's result to
+    *Pathogenic* and tick *Hereditary hearing loss* to see the Condition;
+  - *Why not tested?* is shown or hidden by an `enableWhen` with `enableBehavior` `any` - the OR the branching logic
+    couldn't express.
+
+  Record 1's people were linked under *Tags only*, so their stored answers belong to that mode's Questionnaire and
+  their node forms come up empty in *Advanced*: link them again to bring their rows in.
 
 # Upgrade Issues
 
