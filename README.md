@@ -844,8 +844,9 @@ upgrading to 1.0.0.
   compressed data).
 - *Pedigree (never compressed)* (`@PEDIGREE=SHOW_TEXT,NEVER_COMPRESS`) overrides the project's *Compress Data* for that
   field, so its GA4GH JSON is readable. It also shows the size limit at work: uncompressed, even a seven-person GA4GH
-  pedigree is over the field's limit (about 65K), so it's stored without its diagram image and the form shows a
-  placeholder instead of the diagram. The pedigree itself is all there, and opens in the editor as usual.
+  pedigree is over the field's limit (about 65K), so it's stored without its diagram image, and once the form is saved
+  and reopened it shows a placeholder instead of the diagram. The pedigree itself is all there, and opens in the editor
+  as usual.
 - *Pedigree (tagged @PEDIGREE_HPO before 1.0.0)* is tagged `@PEDIGREE_HPO`, which 1.0.0 no longer recognises, so it's a
   plain notes field showing the stored text.
 - Three families:
@@ -884,13 +885,14 @@ lookup errors in the browser's console for that code and for the *affected* stat
   - *PEDX* and *DADA2X* wrap the same lines in XML with the diagram's SVG image;
   - *internal* stores open-pedigree's own graph JSON, with names and dates but no diagram image.
 
-  Records 1 and 2 hold GA4GH and legacy data, which none of these formats can read: the editor opens them empty, with the template picker, and **saving would replace the pedigree** - close the
-  editor without saving, and set the format back to *GA4GH* afterwards.
+  Records 1 and 2 hold GA4GH and legacy data, which none of these formats can read: the editor shows an *Error
+  importing pedigree* (or *Error loading pedigree*) alert, then opens empty with the template picker, and **saving would
+  replace the pedigree**. Close the editor without saving, and set the format back to *GA4GH* afterwards.
 - **Compression.** With *Compress Data* *Never compress*, a newly saved pedigree is stored as readable JSON, without its
   diagram image once it's over the limit; with *Compress Large Diagrams >65K*, it's compressed only then.
 - **Allow manual entry** (administrators only). Unless the system's *Allow Manual Entry* is on, the stored text is
-  read-only on the form; tick the project's *Allow manual entry* and it can be typed into. Only an administrator should ever do that - the text must stay a valid
-  pedigree in the project's storage format.
+  read-only on the form; tick the project's *Allow manual entry* and it can be typed into. Only an administrator should
+  ever do that - the text must stay a valid pedigree in the project's storage format.
 
 # Upgrade Issues
 
