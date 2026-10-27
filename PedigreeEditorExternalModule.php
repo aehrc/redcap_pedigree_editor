@@ -325,10 +325,9 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
         $format = ($projectFormat) ?: $systemFormat;
 
         $systemAllowEdit = $this->getSystemSetting('system_allow_edit');
-        $projectAllowEdit = $this->getProjectSetting('project__allow_edit', $project_id);
+        $projectAllowEdit = $this->getProjectSetting('project_allow_edit', $project_id);
         $allowEdit = ($projectAllowEdit) ?: $systemAllowEdit;
 
-        $this->getSystemSetting('system_compression');
         $hpoEditorPage = $hpoEditorPage . '&format=' . $format;
         $sctEditorPage = $sctEditorPage . '&format=' . $format;
         $customEditorPage = $customEditorPage . '&format=' . $format;
