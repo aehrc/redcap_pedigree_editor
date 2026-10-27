@@ -709,29 +709,35 @@ feed the pedigree's legends once the relative is linked.
 1. *New Project* > *Upload a REDCap project XML file (CDISC ODM format)*, and choose
    `documentation/example-legends/pedigree-editor-example-legends.REDCap.xml`.
 2. Make sure redcap_fhir_ontology_provider is installed with *FHIR API URL* `https://tx.ontoserver.csiro.au/fhir`
-   (Control Center), and enable both it and the Pedigree Editor module on the new project.
+   (Control Center), and enable both it and the Pedigree Editor module on the new project. The legends look their
+   names up through the Pedigree Editor's own *Ontology Server URL* system setting, so that needs to be a server with
+   these value sets too (Ontoserver is the default).
 3. Configure the Pedigree Editor module:
    - *Repeating instrument*: `relatives`
    - *Search fields*: `first_name`, `last_name`, `relationship`
    - *Node-edit form source*: *Tags only*
    - *Default Terminology*: *SnomedCT*
    - *Storage Format*: *GA4GH - Recommended Format*
+   - *Compress Data*: *Compress Large Diagrams >65K* - record 1's pedigree is over the field's size limit, so without
+     compression its diagram would be dropped the next time it's saved.
 
-The values are stored the way redcap_fhir_ontology_provider stores them by default (`code|system`), which is what the
-legends expect.
+The values are stored the way redcap_fhir_ontology_provider stores them by default (`code|system`). The legends use
+the code; the system is ignored, so a bare code works too.
 
 **Try this**
 
 - **Node-edit form source *Default + tags*.** The editor's own legends are used, editable in the editor, and the
-  `legend=` tags are ignored: the four fields become ordinary linked items, and the web server's PHP error log gets one
-  warning per field (`... but the built-in form already has that legend in "default + tags" mode ...`). A pedigree
-  keeps the legend entries it already has.
-- ***Default Terminology* HPO.** The disorders and phenotypes legends now expect OMIM and HPO codes, so this example's
+  `legend=` tags are ignored: the four fields become ordinary linked items, and each time the editor opens, the web
+  server's PHP error log gets one warning per field (`... but the built-in form already has that legend in "default +
+  tags" mode ...`). A pedigree keeps the legend entries it already has.
+- ***Default Terminology* HPO + omim.** The disorders and phenotypes legends now expect OMIM and HPO codes, so this example's
   SNOMED CT values show as bare codes (e.g. `233873004`). The genes still show their names, as HGNC is used either
   way. Changing the terminology doesn't recode values already entered.
-- ***Default Terminology* CUSTOM**, with disorders and phenotypes `http://snomed.info/sct` and genes
-  `http://purl.bioontology.org/ontology/HGNC/hgnc.owl` (and their value sets above): the legends show the same as
-  with SnomedCT.
+- ***Default Terminology* Custom**, set up as SnomedCT is (the setting's help lists each value): *Disorder Code
+  System* `http://snomed.info/sct` with *Disorder Value Set* `http://snomed.info/sct?fhir_vs=refset/32570581000036105`;
+  *Phenotype Code System* `http://snomed.info/sct` with *Phenotype Value Set* `http://ga4gh.org/fhir/ValueSet/phenotype`;
+  *Gene Code System* `http://purl.bioontology.org/ontology/HGNC/hgnc.owl` with *Gene Value Set*
+  `http://www.genenames.org`; and each *Regex* `[0-9]+`. The legends show the same as with SnomedCT.
 
 # Upgrade Issues
 
