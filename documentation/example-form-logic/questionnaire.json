@@ -1,0 +1,688 @@
+{
+  "resourceType": "Questionnaire",
+  "url": "https://github.com/aehrc/redcap_pedigree_editor/documentation/example-form-logic/questionnaire",
+  "version": "1",
+  "name": "HearingClinicFamilyMember",
+  "title": "Hearing clinic: family member",
+  "status": "active",
+  "item": [
+    {
+      "linkId": "personal",
+      "type": "group",
+      "text": "Personal",
+      "item": [
+        {
+          "linkId": "first_name",
+          "type": "string",
+          "text": "First name",
+          "definition": "http://hl7.org/fhir/StructureDefinition/Patient#Patient.name.given",
+          "extension": [
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "valueCode": "mapsToField"
+            },
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+              "extension": [
+                {
+                  "url": "instrument",
+                  "valueString": "relatives"
+                },
+                {
+                  "url": "field",
+                  "valueString": "first_name"
+                }
+              ]
+            },
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source"
+            }
+          ]
+        },
+        {
+          "linkId": "last_name",
+          "type": "string",
+          "text": "Last name",
+          "definition": "http://hl7.org/fhir/StructureDefinition/Patient#Patient.name.family",
+          "extension": [
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "valueCode": "mapsToField"
+            },
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+              "extension": [
+                {
+                  "url": "instrument",
+                  "valueString": "relatives"
+                },
+                {
+                  "url": "field",
+                  "valueString": "last_name"
+                }
+              ]
+            },
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source"
+            }
+          ]
+        },
+        {
+          "linkId": "relationship",
+          "type": "choice",
+          "text": "Relationship to the proband",
+          "answerOption": [
+            {
+              "valueCoding": {
+                "code": "proband",
+                "display": "Proband"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "mother",
+                "display": "Mother"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "father",
+                "display": "Father"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "sibling",
+                "display": "Brother or sister"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "child",
+                "display": "Son or daughter"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "grandparent",
+                "display": "Grandparent"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "aunt_uncle",
+                "display": "Aunt or uncle"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "cousin",
+                "display": "Cousin"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "other",
+                "display": "Other"
+              }
+            }
+          ],
+          "extension": [
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+              "extension": [
+                {
+                  "url": "instrument",
+                  "valueString": "relatives"
+                },
+                {
+                  "url": "field",
+                  "valueString": "relationship"
+                }
+              ]
+            },
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source"
+            }
+          ]
+        },
+        {
+          "linkId": "sex",
+          "type": "choice",
+          "text": "Sex",
+          "answerOption": [
+            {
+              "valueCoding": {
+                "code": "F",
+                "display": "Female"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "M",
+                "display": "Male"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "U",
+                "display": "Unknown"
+              }
+            }
+          ],
+          "definition": "http://hl7.org/fhir/StructureDefinition/Patient#Patient.gender",
+          "extension": [
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "valueCode": "mapsToField"
+            },
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+              "extension": [
+                {
+                  "url": "instrument",
+                  "valueString": "relatives"
+                },
+                {
+                  "url": "field",
+                  "valueString": "sex"
+                }
+              ]
+            },
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source"
+            }
+          ]
+        },
+        {
+          "linkId": "dob",
+          "type": "date",
+          "text": "Date of birth",
+          "definition": "http://hl7.org/fhir/StructureDefinition/Patient#Patient.birthDate",
+          "extension": [
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "valueCode": "mapsToField"
+            },
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+              "extension": [
+                {
+                  "url": "instrument",
+                  "valueString": "relatives"
+                },
+                {
+                  "url": "field",
+                  "valueString": "dob"
+                }
+              ]
+            },
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source"
+            }
+          ]
+        },
+        {
+          "linkId": "link_record",
+          "type": "display",
+          "text": "Link to a relative's row",
+          "extension": [
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "valueCode": "invokesAction"
+            },
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-action",
+              "valueCode": "linkRecord"
+            }
+          ],
+          "enableWhen": [
+            {
+              "extension": [
+                {
+                  "url": "https://github.com/aehrc/open-pedigree/questionnaire-enable-predicate",
+                  "valueCode": "canLinkRecord"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "prenatal_notes",
+          "type": "text",
+          "text": "Prenatal notes",
+          "enableWhen": [
+            {
+              "extension": [
+                {
+                  "url": "https://github.com/aehrc/open-pedigree/questionnaire-enable-predicate",
+                  "valueCode": "isFetus"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "hearing",
+      "type": "group",
+      "text": "Hearing",
+      "item": [
+        {
+          "linkId": "hearing_status",
+          "type": "choice",
+          "text": "Hearing",
+          "answerOption": [
+            {
+              "valueCoding": {
+                "code": "normal",
+                "display": "Normal hearing"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "loss",
+                "display": "Hearing loss"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "unknown",
+                "display": "Not known"
+              }
+            }
+          ],
+          "extension": [
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+              "extension": [
+                {
+                  "url": "instrument",
+                  "valueString": "relatives"
+                },
+                {
+                  "url": "field",
+                  "valueString": "hearing_status"
+                }
+              ]
+            },
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source"
+            }
+          ]
+        },
+        {
+          "linkId": "status_unknown_note",
+          "type": "string",
+          "text": "Hearing not recorded yet: why?",
+          "extension": [
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+              "extension": [
+                {
+                  "url": "instrument",
+                  "valueString": "relatives"
+                },
+                {
+                  "url": "field",
+                  "valueString": "status_unknown_note"
+                }
+              ]
+            },
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source"
+            }
+          ],
+          "enableWhen": [
+            {
+              "question": "hearing_status",
+              "operator": "exists",
+              "answerBoolean": false
+            }
+          ],
+          "enableBehavior": "all"
+        },
+        {
+          "linkId": "disorders",
+          "type": "choice",
+          "text": "Type of hearing loss",
+          "repeats": true,
+          "answerValueSet": "http://snomed.info/sct?fhir_vs=refset/32570581000036105",
+          "extension": [
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "valueCode": "mapsToLegendCondition"
+            },
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+              "extension": [
+                {
+                  "url": "instrument",
+                  "valueString": "relatives"
+                },
+                {
+                  "url": "field",
+                  "valueString": "diagnosis"
+                }
+              ]
+            },
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source"
+            }
+          ],
+          "enableWhen": [
+            {
+              "question": "hearing_status",
+              "operator": "=",
+              "answerCoding": {
+                "code": "loss"
+              }
+            }
+          ],
+          "enableBehavior": "all"
+        },
+        {
+          "linkId": "age_at_onset",
+          "type": "integer",
+          "text": "Age at onset (years)",
+          "extension": [
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+              "extension": [
+                {
+                  "url": "instrument",
+                  "valueString": "relatives"
+                },
+                {
+                  "url": "field",
+                  "valueString": "age_at_onset"
+                }
+              ]
+            },
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source"
+            }
+          ],
+          "enableWhen": [
+            {
+              "question": "hearing_status",
+              "operator": "=",
+              "answerCoding": {
+                "code": "loss"
+              }
+            }
+          ],
+          "enableBehavior": "all"
+        },
+        {
+          "linkId": "onset_notes",
+          "type": "text",
+          "text": "Onset notes",
+          "extension": [
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+              "extension": [
+                {
+                  "url": "instrument",
+                  "valueString": "relatives"
+                },
+                {
+                  "url": "field",
+                  "valueString": "onset_notes"
+                }
+              ]
+            },
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source"
+            }
+          ],
+          "enableWhen": [
+            {
+              "question": "age_at_onset",
+              "operator": "exists",
+              "answerBoolean": true
+            }
+          ],
+          "enableBehavior": "all"
+        }
+      ]
+    },
+    {
+      "linkId": "genetic_testing",
+      "type": "group",
+      "text": "Genetic testing",
+      "item": [
+        {
+          "linkId": "genetic_test",
+          "type": "boolean",
+          "text": "Genetic test done?",
+          "extension": [
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+              "extension": [
+                {
+                  "url": "instrument",
+                  "valueString": "relatives"
+                },
+                {
+                  "url": "field",
+                  "valueString": "genetic_test"
+                }
+              ]
+            },
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source"
+            }
+          ]
+        },
+        {
+          "linkId": "test_result",
+          "type": "choice",
+          "text": "Genetic test result",
+          "answerOption": [
+            {
+              "valueCoding": {
+                "code": "pathogenic",
+                "display": "Pathogenic variant found"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "vus",
+                "display": "Variant of uncertain significance"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "negative",
+                "display": "No variant found"
+              }
+            }
+          ],
+          "extension": [
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "valueCode": "mapsToObservation"
+            },
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+              "extension": [
+                {
+                  "url": "instrument",
+                  "valueString": "relatives"
+                },
+                {
+                  "url": "field",
+                  "valueString": "test_result"
+                }
+              ]
+            },
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source"
+            }
+          ],
+          "enableWhen": [
+            {
+              "question": "genetic_test",
+              "operator": "=",
+              "answerBoolean": true
+            },
+            {
+              "question": "hearing_status",
+              "operator": "=",
+              "answerCoding": {
+                "code": "loss"
+              }
+            }
+          ],
+          "enableBehavior": "all",
+          "code": [
+            {
+              "system": "http://loinc.org",
+              "code": "51968-6",
+              "display": "Discrete variation analysis overall interpretation"
+            }
+          ]
+        },
+        {
+          "linkId": "hereditary_confirmed",
+          "type": "boolean",
+          "text": "Hereditary hearing loss",
+          "extension": [
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "valueCode": "mapsToCondition"
+            },
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+              "extension": [
+                {
+                  "url": "instrument",
+                  "valueString": "relatives"
+                },
+                {
+                  "url": "field",
+                  "valueString": "hereditary_confirmed"
+                }
+              ]
+            },
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source"
+            }
+          ],
+          "enableWhen": [
+            {
+              "question": "test_result",
+              "operator": "=",
+              "answerCoding": {
+                "code": "pathogenic"
+              }
+            }
+          ],
+          "enableBehavior": "all",
+          "code": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "788953003",
+              "display": "Hereditary hearing loss"
+            }
+          ]
+        },
+        {
+          "linkId": "not_tested_reason",
+          "type": "string",
+          "text": "Why not tested?",
+          "extension": [
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+              "extension": [
+                {
+                  "url": "instrument",
+                  "valueString": "relatives"
+                },
+                {
+                  "url": "field",
+                  "valueString": "not_tested_reason"
+                }
+              ]
+            },
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source"
+            }
+          ],
+          "enableWhen": [
+            {
+              "question": "genetic_test",
+              "operator": "=",
+              "answerBoolean": false
+            },
+            {
+              "question": "genetic_test",
+              "operator": "exists",
+              "answerBoolean": false
+            }
+          ],
+          "enableBehavior": "any"
+        }
+      ]
+    },
+    {
+      "linkId": "other_features_tab",
+      "type": "group",
+      "text": "Other features",
+      "item": [
+        {
+          "linkId": "other_features",
+          "type": "choice",
+          "text": "Other features",
+          "repeats": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "code": "1",
+                "display": "Vertigo"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "2",
+                "display": "Ear malformation"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "A",
+                "display": "Tinnitus"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "-1",
+                "display": "Not known"
+              }
+            }
+          ],
+          "extension": [
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+              "extension": [
+                {
+                  "url": "instrument",
+                  "valueString": "relatives"
+                },
+                {
+                  "url": "field",
+                  "valueString": "other_features"
+                }
+              ]
+            },
+            {
+              "url": "https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1439 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" FileOID="000-00-0000" FileType="Snapshot" Description="Pedigree Editor example: form logic and Advanced questionnaire" AsOfDateTime="2026-10-28T06:09:57" CreationDateTime="2026-10-28T06:09:57" SourceSystem="REDCap" SourceSystemVersion="16.0.32">
+<Study OID="Project.PedigreeEditorExampleFormLogic">
+<GlobalVariables>
+	<StudyName>Pedigree Editor example: form logic and Advanced questionnaire</StudyName>
+	<StudyDescription>This file contains the metadata, events, and data for REDCap project "Pedigree Editor example: form logic and Advanced questionnaire".</StudyDescription>
+	<ProtocolName>Pedigree Editor example: form logic and Advanced questionnaire</ProtocolName>
+	<redcap:RecordAutonumberingEnabled>1</redcap:RecordAutonumberingEnabled>
+	<redcap:CustomRecordLabel></redcap:CustomRecordLabel>
+	<redcap:SecondaryUniqueField></redcap:SecondaryUniqueField>
+	<redcap:SecondaryUniqueFieldDisplayValue>1</redcap:SecondaryUniqueFieldDisplayValue>
+	<redcap:SecondaryUniqueFieldDisplayLabel>1</redcap:SecondaryUniqueFieldDisplayLabel>
+	<redcap:SchedulingEnabled>0</redcap:SchedulingEnabled>
+	<redcap:SurveysEnabled>0</redcap:SurveysEnabled>
+	<redcap:SurveyInvitationEmailField></redcap:SurveyInvitationEmailField>
+	<redcap:SurveyParticipantIdentifiers>0</redcap:SurveyParticipantIdentifiers>
+	<redcap:RandomizationEnabled>0</redcap:RandomizationEnabled>
+	<redcap:DisplayTodayNowButton>1</redcap:DisplayTodayNowButton>
+	<redcap:PreventBranchingEraseValues>0</redcap:PreventBranchingEraseValues>
+	<redcap:RequireChangeReason>0</redcap:RequireChangeReason>
+	<redcap:DataHistoryPopup>1</redcap:DataHistoryPopup>
+	<redcap:OrderRecordsByField></redcap:OrderRecordsByField>
+	<redcap:taskCompleteStatus>0</redcap:taskCompleteStatus>
+	<redcap:DataResolutionWorkflowEnabled>1</redcap:DataResolutionWorkflowEnabled>
+	<redcap:FieldCommentLogOptionEditDelete>1</redcap:FieldCommentLogOptionEditDelete>
+	<redcap:DataResolutionWorkflowHideClosedQueries>1</redcap:DataResolutionWorkflowHideClosedQueries>
+	<redcap:MyCapEnabled>0</redcap:MyCapEnabled>
+	<redcap:Purpose>0</redcap:Purpose>
+	<redcap:PurposeOther></redcap:PurposeOther>
+	<redcap:ProjectNotes></redcap:ProjectNotes>
+	<redcap:SurveyQueueCustomText></redcap:SurveyQueueCustomText>
+	<redcap:SurveyQueueHide>0</redcap:SurveyQueueHide>
+	<redcap:SurveyAuthEnabled>0</redcap:SurveyAuthEnabled>
+	<redcap:SurveyAuthField1></redcap:SurveyAuthField1>
+	<redcap:SurveyAuthEvent1></redcap:SurveyAuthEvent1>
+	<redcap:SurveyAuthField2></redcap:SurveyAuthField2>
+	<redcap:SurveyAuthEvent2></redcap:SurveyAuthEvent2>
+	<redcap:SurveyAuthField3></redcap:SurveyAuthField3>
+	<redcap:SurveyAuthEvent3></redcap:SurveyAuthEvent3>
+	<redcap:SurveyAuthMinFields></redcap:SurveyAuthMinFields>
+	<redcap:SurveyAuthApplyAllSurveys>1</redcap:SurveyAuthApplyAllSurveys>
+	<redcap:SurveyAuthCustomMessage></redcap:SurveyAuthCustomMessage>
+	<redcap:SurveyAuthFailLimit></redcap:SurveyAuthFailLimit>
+	<redcap:SurveyAuthFailWindow></redcap:SurveyAuthFailWindow>
+	<redcap:DataMartProjectEnabled>0</redcap:DataMartProjectEnabled>
+	<redcap:DatamartAllowRepeatRevision>0</redcap:DatamartAllowRepeatRevision>
+	<redcap:DatamartAllowCreateRevision>0</redcap:DatamartAllowCreateRevision>
+	<redcap:DatamartCronEnabled>0</redcap:DatamartCronEnabled>
+	<redcap:HideFilledForms>1</redcap:HideFilledForms>
+	<redcap:HideDisabledForms>0</redcap:HideDisabledForms>
+	<redcap:MissingDataCodes></redcap:MissingDataCodes>
+	<redcap:ProtectedEmailMode>0</redcap:ProtectedEmailMode>
+	<redcap:ProtectedEmailModeCustomText></redcap:ProtectedEmailModeCustomText>
+	<redcap:ProtectedEmailModeTrigger>ALL</redcap:ProtectedEmailModeTrigger>
+	<redcap:ProtectedEmailModeLogo></redcap:ProtectedEmailModeLogo>
+	<redcap:RepeatingInstrumentsAndEvents>
+		<redcap:RepeatingInstruments>
+			<redcap:RepeatingInstrument redcap:UniqueEventName="event_1_arm_1" redcap:RepeatInstrument="relatives" redcap:CustomLabel="[first_name] [last_name]"/>
+		</redcap:RepeatingInstruments>
+	</redcap:RepeatingInstrumentsAndEvents>
+	<redcap:MycapProjectsGroup>
+		<redcap:MycapProjects/>
+	</redcap:MycapProjectsGroup>
+	<redcap:MycapThemesGroup>
+		<redcap:MycapThemes/>
+	</redcap:MycapThemesGroup>
+	<redcap:MultilanguageSettingsGroup>
+		<redcap:MultilanguageSettings settings="YToyMzp7czo3OiJ2ZXJzaW9uIjtzOjc6IjE2LjAuMzIiO3M6NToibGFuZ3MiO2E6MDp7fXM6OToicHJvamVjdElkIjtzOjI6IjQ1IjtzOjE1OiJkZXNpZ25hdGVkRmllbGQiO3M6MDoiIjtzOjY6InN0YXR1cyI7czozOiJkZXYiO3M6NToiZGVidWciO2I6MDtzOjEzOiJhZG1pbi1lbmFibGVkIjtiOjA7czoxNDoiYWRtaW4tZGlzYWJsZWQiO2I6MDtzOjE1OiJhbGxvdy1mcm9tLWZpbGUiO2I6MDtzOjE4OiJhbGxvdy1mcm9tLXNjcmF0Y2giO2I6MDtzOjIxOiJvcHRpb25hbC1zdWJzY3JpcHRpb24iO2I6MDtzOjE4OiJhbGxvdy11aS1vdmVycmlkZXMiO2I6MDtzOjc6InJlZkxhbmciO3M6MDoiIjtzOjEyOiJmYWxsYmFja0xhbmciO3M6MDoiIjtzOjg6ImRpc2FibGVkIjtiOjA7czoyNToiaGlnaGxpZ2h0TWlzc2luZ0RhdGFlbnRyeSI7YjowO3M6MjI6ImhpZ2hsaWdodE1pc3NpbmdTdXJ2ZXkiO2I6MDtzOjIxOiJhdXRvRGV0ZWN0QnJvd3NlckxhbmciO2I6MDtzOjEyOiJhbGVydFNvdXJjZXMiO2E6MDp7fXM6MTA6ImFzaVNvdXJjZXMiO2E6MDp7fXM6MTQ6ImV4Y2x1ZGVkQWxlcnRzIjthOjA6e31zOjE0OiJleGNsdWRlZEZpZWxkcyI7YTowOnt9czoxNjoiZXhjbHVkZWRTZXR0aW5ncyI7YTowOnt9fQ=="/>
+	</redcap:MultilanguageSettingsGroup>
+</GlobalVariables>
+<MetaDataVersion OID="Metadata.PedigreeEditorExampleFormLogic_2026-10-28_0609" Name="Pedigree Editor example: form logic and Advanced questionnaire" redcap:RecordIdField="record_id">
+	<FormDef OID="Form.family_history" Name="Family History" Repeating="No" redcap:FormName="family_history">
+		<ItemGroupRef ItemGroupOID="family_history.record_id" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="family_history.family_history_complete" Mandatory="No"/>
+	</FormDef>
+	<FormDef OID="Form.relatives" Name="Relatives" Repeating="No" redcap:FormName="relatives">
+		<ItemGroupRef ItemGroupOID="relatives.first_name" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="relatives.hearing_status" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="relatives.status_unknown_note" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="relatives.genetic_test" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="relatives.test_result" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="relatives.other_features___1" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="relatives.clinic_notes" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="relatives.relatives_complete" Mandatory="No"/>
+	</FormDef>
+	<ItemGroupDef OID="family_history.record_id" Name="Family History" Repeating="No">
+		<ItemRef ItemOID="record_id" Mandatory="No" redcap:Variable="record_id"/>
+		<ItemRef ItemOID="visit_date" Mandatory="No" redcap:Variable="visit_date"/>
+		<ItemRef ItemOID="family_pedigree" Mandatory="No" redcap:Variable="family_pedigree"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="family_history.family_history_complete" Name="Form Status" Repeating="No">
+		<ItemRef ItemOID="family_history_complete" Mandatory="No" redcap:Variable="family_history_complete"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="relatives.first_name" Name="Relatives" Repeating="No">
+		<ItemRef ItemOID="first_name" Mandatory="No" redcap:Variable="first_name"/>
+		<ItemRef ItemOID="last_name" Mandatory="No" redcap:Variable="last_name"/>
+		<ItemRef ItemOID="relationship" Mandatory="No" redcap:Variable="relationship"/>
+		<ItemRef ItemOID="sex" Mandatory="No" redcap:Variable="sex"/>
+		<ItemRef ItemOID="dob" Mandatory="No" redcap:Variable="dob"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="relatives.hearing_status" Name="Hearing" Repeating="No">
+		<ItemRef ItemOID="hearing_status" Mandatory="No" redcap:Variable="hearing_status"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="relatives.status_unknown_note" Name="Relatives" Repeating="No">
+		<ItemRef ItemOID="status_unknown_note" Mandatory="No" redcap:Variable="status_unknown_note"/>
+		<ItemRef ItemOID="diagnosis" Mandatory="No" redcap:Variable="diagnosis"/>
+		<ItemRef ItemOID="age_at_onset" Mandatory="No" redcap:Variable="age_at_onset"/>
+		<ItemRef ItemOID="onset_notes" Mandatory="No" redcap:Variable="onset_notes"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="relatives.genetic_test" Name="Genetic testing" Repeating="No">
+		<ItemRef ItemOID="genetic_test" Mandatory="No" redcap:Variable="genetic_test"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="relatives.test_result" Name="Relatives" Repeating="No">
+		<ItemRef ItemOID="test_result" Mandatory="No" redcap:Variable="test_result"/>
+		<ItemRef ItemOID="hereditary_confirmed" Mandatory="No" redcap:Variable="hereditary_confirmed"/>
+		<ItemRef ItemOID="not_tested_reason" Mandatory="No" redcap:Variable="not_tested_reason"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="relatives.other_features___1" Name="Other features" Repeating="No">
+		<ItemRef ItemOID="other_features___1" Mandatory="No" redcap:Variable="other_features"/>
+		<ItemRef ItemOID="other_features___2" Mandatory="No" redcap:Variable="other_features"/>
+		<ItemRef ItemOID="other_features___a" Mandatory="No" redcap:Variable="other_features"/>
+		<ItemRef ItemOID="other_features____1" Mandatory="No" redcap:Variable="other_features"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="relatives.clinic_notes" Name="Relatives" Repeating="No">
+		<ItemRef ItemOID="clinic_notes" Mandatory="No" redcap:Variable="clinic_notes"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="relatives.relatives_complete" Name="Form Status" Repeating="No">
+		<ItemRef ItemOID="relatives_complete" Mandatory="No" redcap:Variable="relatives_complete"/>
+	</ItemGroupDef>
+	<ItemDef OID="record_id" Name="record_id" DataType="text" Length="999" redcap:Variable="record_id" redcap:FieldType="text">
+		<Question><TranslatedText>Family ID</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="visit_date" Name="visit_date" DataType="date" Length="999" redcap:Variable="visit_date" redcap:FieldType="text" redcap:TextValidationType="date_ymd">
+		<Question><TranslatedText>Date of first visit</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="family_pedigree" Name="family_pedigree" DataType="text" Length="999" redcap:Variable="family_pedigree" redcap:FieldType="textarea" redcap:FieldNote="Drawn in the pedigree editor; each relative&#039;s details come from their row in Relatives." redcap:FieldAnnotation="@PEDIGREE=HIDE_TEXT">
+		<Question><TranslatedText>Family pedigree</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="family_history_complete" Name="family_history_complete" DataType="text" Length="1" redcap:Variable="family_history_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+		<Question><TranslatedText>Complete?</TranslatedText></Question>
+		<CodeListRef CodeListOID="family_history_complete.choices"/>
+	</ItemDef>
+	<ItemDef OID="first_name" Name="first_name" DataType="text" Length="999" redcap:Variable="first_name" redcap:FieldType="text" redcap:FieldAnnotation="@PEDIGREE_FIELD(mapsTo=&quot;given&quot;)">
+		<Question><TranslatedText>First name</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="last_name" Name="last_name" DataType="text" Length="999" redcap:Variable="last_name" redcap:FieldType="text" redcap:FieldAnnotation="@PEDIGREE_FIELD(mapsTo=&quot;family&quot;)">
+		<Question><TranslatedText>Last name</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="relationship" Name="relationship" DataType="text" Length="11" redcap:Variable="relationship" redcap:FieldType="select" redcap:FieldAnnotation="@PEDIGREE_FIELD">
+		<Question><TranslatedText>Relationship to the proband</TranslatedText></Question>
+		<CodeListRef CodeListOID="relationship.choices"/>
+	</ItemDef>
+	<ItemDef OID="sex" Name="sex" DataType="text" Length="1" redcap:Variable="sex" redcap:FieldType="radio" redcap:FieldAnnotation="@PEDIGREE_FIELD(mapsTo=&quot;gender&quot;)">
+		<Question><TranslatedText>Sex</TranslatedText></Question>
+		<CodeListRef CodeListOID="sex.choices"/>
+	</ItemDef>
+	<ItemDef OID="dob" Name="dob" DataType="date" Length="999" redcap:Variable="dob" redcap:FieldType="text" redcap:TextValidationType="date_ymd" redcap:FieldAnnotation="@PEDIGREE_FIELD(mapsTo=&quot;birthDate&quot;)">
+		<Question><TranslatedText>Date of birth</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="hearing_status" Name="hearing_status" DataType="text" Length="7" redcap:Variable="hearing_status" redcap:FieldType="radio" redcap:SectionHeader="Hearing" redcap:FieldAnnotation="@PEDIGREE_FIELD">
+		<Question><TranslatedText>Hearing</TranslatedText></Question>
+		<CodeListRef CodeListOID="hearing_status.choices"/>
+	</ItemDef>
+	<ItemDef OID="status_unknown_note" Name="status_unknown_note" DataType="text" Length="999" redcap:Variable="status_unknown_note" redcap:FieldType="text" redcap:FieldNote="Shown while Hearing is blank" redcap:BranchingLogic="[hearing_status] = &#039;&#039;" redcap:FieldAnnotation="@PEDIGREE_FIELD">
+		<Question><TranslatedText>Hearing not recorded yet: why?</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="diagnosis" Name="diagnosis" DataType="text" Length="9" redcap:Variable="diagnosis" redcap:FieldType="select" redcap:FieldNote="Codes are SNOMED CT" redcap:BranchingLogic="[hearing_status] = &#039;loss&#039;" redcap:FieldAnnotation="@PEDIGREE_FIELD">
+		<Question><TranslatedText>Type of hearing loss</TranslatedText></Question>
+		<CodeListRef CodeListOID="diagnosis.choices"/>
+	</ItemDef>
+	<ItemDef OID="age_at_onset" Name="age_at_onset" DataType="integer" Length="999" redcap:Variable="age_at_onset" redcap:FieldType="text" redcap:TextValidationType="int" redcap:BranchingLogic="[hearing_status] = &#039;loss&#039;" redcap:FieldAnnotation="@PEDIGREE_FIELD">
+		<Question><TranslatedText>Age at onset (years)</TranslatedText></Question>
+		<RangeCheck Comparator="GE" SoftHard="Soft">
+			<CheckValue>0</CheckValue>
+			<ErrorMessage><TranslatedText>The value you provided is outside the suggested range (0 - no limit). This value is admissible, but you may wish to double check it.</TranslatedText></ErrorMessage>
+		</RangeCheck>
+	</ItemDef>
+	<ItemDef OID="onset_notes" Name="onset_notes" DataType="text" Length="999" redcap:Variable="onset_notes" redcap:FieldType="textarea" redcap:FieldNote="Shown once an age at onset is entered" redcap:BranchingLogic="[age_at_onset] &lt;&gt; &#039;&#039;" redcap:FieldAnnotation="@PEDIGREE_FIELD">
+		<Question><TranslatedText>Onset notes</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="genetic_test" Name="genetic_test" DataType="boolean" Length="1" redcap:Variable="genetic_test" redcap:FieldType="yesno" redcap:SectionHeader="Genetic testing" redcap:FieldAnnotation="@PEDIGREE_FIELD">
+		<Question><TranslatedText>Genetic test done?</TranslatedText></Question>
+		<CodeListRef CodeListOID="genetic_test.choices"/>
+	</ItemDef>
+	<ItemDef OID="test_result" Name="test_result" DataType="text" Length="10" redcap:Variable="test_result" redcap:FieldType="radio" redcap:BranchingLogic="[genetic_test] = &#039;1&#039; and [hearing_status] = &#039;loss&#039;" redcap:FieldAnnotation="@PEDIGREE_FIELD">
+		<Question><TranslatedText>Genetic test result</TranslatedText></Question>
+		<CodeListRef CodeListOID="test_result.choices"/>
+	</ItemDef>
+	<ItemDef OID="hereditary_confirmed" Name="hereditary_confirmed" DataType="boolean" Length="1" redcap:Variable="hereditary_confirmed" redcap:FieldType="yesno" redcap:BranchingLogic="[test_result] = &#039;pathogenic&#039;" redcap:FieldAnnotation="@PEDIGREE_FIELD">
+		<Question><TranslatedText>Hereditary hearing loss confirmed?</TranslatedText></Question>
+		<CodeListRef CodeListOID="hereditary_confirmed.choices"/>
+	</ItemDef>
+	<ItemDef OID="not_tested_reason" Name="not_tested_reason" DataType="text" Length="999" redcap:Variable="not_tested_reason" redcap:FieldType="text" redcap:FieldNote="OR branching: not translated, so always shown on the pedigree" redcap:BranchingLogic="[genetic_test] = &#039;0&#039; or [genetic_test] = &#039;&#039;" redcap:FieldAnnotation="@PEDIGREE_FIELD">
+		<Question><TranslatedText>Why not tested?</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="other_features___1" Name="other_features___1" DataType="boolean" Length="1" redcap:Variable="other_features" redcap:FieldType="checkbox" redcap:SectionHeader="Other features" redcap:FieldAnnotation="@PEDIGREE_FIELD">
+		<Question><TranslatedText>Other features</TranslatedText></Question>
+		<CodeListRef CodeListOID="other_features___1.choices"/>
+	</ItemDef>
+	<ItemDef OID="other_features___2" Name="other_features___2" DataType="boolean" Length="1" redcap:Variable="other_features" redcap:FieldType="checkbox" redcap:SectionHeader="Other features" redcap:FieldAnnotation="@PEDIGREE_FIELD">
+		<Question><TranslatedText>Other features</TranslatedText></Question>
+		<CodeListRef CodeListOID="other_features___2.choices"/>
+	</ItemDef>
+	<ItemDef OID="other_features___a" Name="other_features___a" DataType="boolean" Length="1" redcap:Variable="other_features" redcap:FieldType="checkbox" redcap:SectionHeader="Other features" redcap:FieldAnnotation="@PEDIGREE_FIELD">
+		<Question><TranslatedText>Other features</TranslatedText></Question>
+		<CodeListRef CodeListOID="other_features___a.choices"/>
+	</ItemDef>
+	<ItemDef OID="other_features____1" Name="other_features____1" DataType="boolean" Length="1" redcap:Variable="other_features" redcap:FieldType="checkbox" redcap:SectionHeader="Other features" redcap:FieldAnnotation="@PEDIGREE_FIELD">
+		<Question><TranslatedText>Other features</TranslatedText></Question>
+		<CodeListRef CodeListOID="other_features____1.choices"/>
+	</ItemDef>
+	<ItemDef OID="clinic_notes" Name="clinic_notes" DataType="text" Length="999" redcap:Variable="clinic_notes" redcap:FieldType="textarea" redcap:FieldNote="Not tagged, so never shown on the pedigree.">
+		<Question><TranslatedText>Clinic notes</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="relatives_complete" Name="relatives_complete" DataType="text" Length="1" redcap:Variable="relatives_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+		<Question><TranslatedText>Complete?</TranslatedText></Question>
+		<CodeListRef CodeListOID="relatives_complete.choices"/>
+	</ItemDef>
+	<CodeList OID="family_history_complete.choices" Name="family_history_complete" DataType="text" redcap:Variable="family_history_complete">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="relationship.choices" Name="relationship" DataType="text" redcap:Variable="relationship">
+		<CodeListItem CodedValue="proband"><Decode><TranslatedText>Proband</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="mother"><Decode><TranslatedText>Mother</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="father"><Decode><TranslatedText>Father</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="sibling"><Decode><TranslatedText>Brother or sister</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="child"><Decode><TranslatedText>Son or daughter</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="grandparent"><Decode><TranslatedText>Grandparent</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="aunt_uncle"><Decode><TranslatedText>Aunt or uncle</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="cousin"><Decode><TranslatedText>Cousin</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="other"><Decode><TranslatedText>Other</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="sex.choices" Name="sex" DataType="text" redcap:Variable="sex">
+		<CodeListItem CodedValue="F"><Decode><TranslatedText>Female</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="M"><Decode><TranslatedText>Male</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="U"><Decode><TranslatedText>Unknown</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="hearing_status.choices" Name="hearing_status" DataType="text" redcap:Variable="hearing_status">
+		<CodeListItem CodedValue="normal"><Decode><TranslatedText>Normal hearing</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="loss"><Decode><TranslatedText>Hearing loss</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="unknown"><Decode><TranslatedText>Not known</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="diagnosis.choices" Name="diagnosis" DataType="text" redcap:Variable="diagnosis">
+		<CodeListItem CodedValue="60700002"><Decode><TranslatedText>Sensorineural hearing loss</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="44057004"><Decode><TranslatedText>Conductive hearing loss</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="232328005"><Decode><TranslatedText>Dominant sensorineural hearing loss</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="genetic_test.choices" Name="genetic_test" DataType="boolean" redcap:Variable="genetic_test">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Yes</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>No</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="test_result.choices" Name="test_result" DataType="text" redcap:Variable="test_result">
+		<CodeListItem CodedValue="pathogenic"><Decode><TranslatedText>Pathogenic variant found</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="vus"><Decode><TranslatedText>Variant of uncertain significance</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="negative"><Decode><TranslatedText>No variant found</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="hereditary_confirmed.choices" Name="hereditary_confirmed" DataType="boolean" redcap:Variable="hereditary_confirmed">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Yes</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>No</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="other_features___1.choices" Name="other_features___1" DataType="boolean" redcap:Variable="other_features" redcap:CheckboxChoices="1, Vertigo | 2, Ear malformation | A, Tinnitus | -1, Not known">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="other_features___2.choices" Name="other_features___2" DataType="boolean" redcap:Variable="other_features" redcap:CheckboxChoices="1, Vertigo | 2, Ear malformation | A, Tinnitus | -1, Not known">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="other_features___a.choices" Name="other_features___a" DataType="boolean" redcap:Variable="other_features" redcap:CheckboxChoices="1, Vertigo | 2, Ear malformation | A, Tinnitus | -1, Not known">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="other_features____1.choices" Name="other_features____1" DataType="boolean" redcap:Variable="other_features" redcap:CheckboxChoices="1, Vertigo | 2, Ear malformation | A, Tinnitus | -1, Not known">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="relatives_complete.choices" Name="relatives_complete" DataType="text" redcap:Variable="relatives_complete">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+</MetaDataVersion>
+</Study>
+<ClinicalData StudyOID="Project.PedigreeEditorExampleFormLogic" MetaDataVersionOID="Metadata.PedigreeEditorExampleFormLogic_2026-10-28_0609">
+	<SubjectData SubjectKey="1" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.family_history" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="family_history.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1"/>
+					<ItemData ItemOID="visit_date" Value="2025-04-08"/>
+					<ItemData ItemOID="family_pedigree" Value="{
+  &quot;resourceType&quot;: &quot;Bundle&quot;,
+  &quot;identifier&quot;: {
+    &quot;system&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig&quot;,
+    &quot;value&quot;: &quot;urn:uuid:bd20abf8-07da-4ca4-86f5-dedfb4db3fd5&quot;
+  },
+  &quot;type&quot;: &quot;document&quot;,
+  &quot;timestamp&quot;: &quot;2026-10-28T06:05:50+10:00&quot;,
+  &quot;entry&quot;: [
+    {
+      &quot;link&quot;: [
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:6c14bb7d-b95a-4eb7-acbf-115b28fcb24c&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:dc55916f-f20c-4b1d-a20e-525f55ff1123&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:67a4a38f-b583-4715-9631-cb7aca40fbba&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:3c2d8971-0b92-44c7-8f89-042840e61b5c&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:31211914-13ed-4885-8598-73e9d38f123e&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:f4179d0a-da92-43b2-b766-413e7f028424&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:00bc5f76-7ca2-409d-9c7d-3d0ecacf9724&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:9862bee4-60ee-467f-904c-38ed35b1df81&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:426f2d4c-e832-4e8c-8472-35380d60f8e1&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:b2d9ae1e-3a57-46c2-8869-81fa9ea8c95c&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:67d7efcc-10e8-44d5-9ad9-e6ae58cbf8a2&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:70768260-5630-4b09-9588-c7803278e5e9&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:78f94e05-af65-436d-936c-f1e14ba7786b&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:326ead98-a2c5-4eca-b9e3-3c1415414b33&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:30a88f74-046e-4e01-9706-67d509f35bd6&quot;
+        }
+      ],
+      &quot;fullUrl&quot;: &quot;urn:uuid:182bd877-d627-4983-9911-56b96beeded5&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;Composition&quot;,
+        &quot;id&quot;: &quot;urn:uuid:182bd877-d627-4983-9911-56b96beeded5&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/Pedigree&quot;
+          ]
+        },
+        &quot;status&quot;: &quot;final&quot;,
+        &quot;type&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://snomed.info/sct&quot;,
+              &quot;code&quot;: &quot;422432008&quot;
+            }
+          ]
+        },
+        &quot;subject&quot;: {
+          &quot;type&quot;: &quot;Patient&quot;,
+          &quot;reference&quot;: &quot;urn:uuid:dc55916f-f20c-4b1d-a20e-525f55ff1123&quot;
+        },
+        &quot;date&quot;: &quot;2026-10-28T06:05:50+10:00&quot;,
+        &quot;author&quot;: {
+          &quot;type&quot;: &quot;Organization&quot;,
+          &quot;reference&quot;: &quot;urn:uuid:6c14bb7d-b95a-4eb7-acbf-115b28fcb24c&quot;
+        },
+        &quot;title&quot;: &quot;Pedigree&quot;,
+        &quot;section&quot;: [
+          {
+            &quot;title&quot;: &quot;Proband&quot;,
+            &quot;code&quot;: {
+              &quot;coding&quot;: [
+                {
+                  &quot;system&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/CodeSystem/SectionType&quot;,
+                  &quot;code&quot;: &quot;proband&quot;
+                }
+              ]
+            },
+            &quot;entry&quot;: [
+              {
+                &quot;type&quot;: &quot;Patient&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:dc55916f-f20c-4b1d-a20e-525f55ff1123&quot;
+              }
+            ]
+          },
+          {
+            &quot;title&quot;: &quot;Reason&quot;,
+            &quot;code&quot;: {
+              &quot;coding&quot;: [
+                {
+                  &quot;system&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/CodeSystem/SectionType&quot;,
+                  &quot;code&quot;: &quot;reason&quot;
+                }
+              ]
+            },
+            &quot;entry&quot;: []
+          },
+          {
+            &quot;title&quot;: &quot;Individuals&quot;,
+            &quot;code&quot;: {
+              &quot;coding&quot;: [
+                {
+                  &quot;system&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/CodeSystem/SectionType&quot;,
+                  &quot;code&quot;: &quot;individuals&quot;
+                }
+              ]
+            },
+            &quot;entry&quot;: [
+              {
+                &quot;type&quot;: &quot;Patient&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:dc55916f-f20c-4b1d-a20e-525f55ff1123&quot;
+              },
+              {
+                &quot;type&quot;: &quot;Patient&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:67a4a38f-b583-4715-9631-cb7aca40fbba&quot;
+              },
+              {
+                &quot;type&quot;: &quot;Patient&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:3c2d8971-0b92-44c7-8f89-042840e61b5c&quot;
+              },
+              {
+                &quot;type&quot;: &quot;Patient&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:31211914-13ed-4885-8598-73e9d38f123e&quot;
+              }
+            ]
+          },
+          {
+            &quot;title&quot;: &quot;Relationships&quot;,
+            &quot;code&quot;: {
+              &quot;coding&quot;: [
+                {
+                  &quot;system&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/CodeSystem/SectionType&quot;,
+                  &quot;code&quot;: &quot;relationships&quot;
+                }
+              ]
+            },
+            &quot;entry&quot;: [
+              {
+                &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:f4179d0a-da92-43b2-b766-413e7f028424&quot;
+              },
+              {
+                &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:00bc5f76-7ca2-409d-9c7d-3d0ecacf9724&quot;
+              },
+              {
+                &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:9862bee4-60ee-467f-904c-38ed35b1df81&quot;
+              },
+              {
+                &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:426f2d4c-e832-4e8c-8472-35380d60f8e1&quot;
+              },
+              {
+                &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:b2d9ae1e-3a57-46c2-8869-81fa9ea8c95c&quot;
+              }
+            ]
+          },
+          {
+            &quot;title&quot;: &quot;Other&quot;,
+            &quot;code&quot;: {
+              &quot;coding&quot;: [
+                {
+                  &quot;system&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/CodeSystem/SectionType&quot;,
+                  &quot;code&quot;: &quot;other&quot;
+                }
+              ]
+            },
+            &quot;entry&quot;: []
+          },
+          {
+            &quot;title&quot;: &quot;Questionnaire Responses&quot;,
+            &quot;code&quot;: {
+              &quot;coding&quot;: [
+                {
+                  &quot;system&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/CodeSystem/SectionType&quot;,
+                  &quot;code&quot;: &quot;questionnaire-responses&quot;
+                }
+              ]
+            },
+            &quot;entry&quot;: [
+              {
+                &quot;type&quot;: &quot;QuestionnaireResponse&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:67d7efcc-10e8-44d5-9ad9-e6ae58cbf8a2&quot;
+              },
+              {
+                &quot;type&quot;: &quot;QuestionnaireResponse&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:70768260-5630-4b09-9588-c7803278e5e9&quot;
+              },
+              {
+                &quot;type&quot;: &quot;QuestionnaireResponse&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:78f94e05-af65-436d-936c-f1e14ba7786b&quot;
+              },
+              {
+                &quot;type&quot;: &quot;QuestionnaireResponse&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:326ead98-a2c5-4eca-b9e3-3c1415414b33&quot;
+              }
+            ]
+          },
+          {
+            &quot;title&quot;: &quot;Pedigree Diagram&quot;,
+            &quot;code&quot;: {
+              &quot;coding&quot;: [
+                {
+                  &quot;system&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/CodeSystem/SectionType&quot;,
+                  &quot;code&quot;: &quot;pedigreeImage&quot;
+                }
+              ]
+            },
+            &quot;entry&quot;: [
+              {
+                &quot;type&quot;: &quot;DocumentReference&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:30a88f74-046e-4e01-9706-67d509f35bd6&quot;
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:6c14bb7d-b95a-4eb7-acbf-115b28fcb24c&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;Organization&quot;,
+        &quot;id&quot;: &quot;urn:uuid:6c14bb7d-b95a-4eb7-acbf-115b28fcb24c&quot;,
+        &quot;name&quot;: &quot;open-pedigree unknown author&quot;
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:dc55916f-f20c-4b1d-a20e-525f55ff1123&quot;,
+      &quot;resource&quot;: {
+        &quot;id&quot;: &quot;urn:uuid:dc55916f-f20c-4b1d-a20e-525f55ff1123&quot;,
+        &quot;resourceType&quot;: &quot;Patient&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeIndividual&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/patient-unborn&quot;,
+            &quot;valueBoolean&quot;: false
+          },
+          {
+            &quot;url&quot;: &quot;https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-ref&quot;,
+            &quot;valueString&quot;: &quot;record:1/instance:1&quot;
+          },
+          {
+            &quot;url&quot;: &quot;https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-snapshot&quot;,
+            &quot;valueString&quot;: &quot;{\u0022first_name\u0022:\u0022Ella\u0022,\u0022last_name\u0022:\u0022Carver\u0022,\u0022relationship\u0022:\u0022proband\u0022,\u0022sex\u0022:\u0022F\u0022,\u0022dob\u0022:\u00222012-03-14\u0022,\u0022hearing_status\u0022:\u0022loss\u0022,\u0022diagnosis\u0022:\u002260700002\u0022,\u0022age_at_onset\u0022:2,\u0022onset_notes\u0022:\u0022Passed newborn screening; loss picked up at a preschool check.\u0022,\u0022genetic_test\u0022:true,\u0022test_result\u0022:\u0022pathogenic\u0022,\u0022hereditary_confirmed\u0022:true,\u0022other_features\u0022:[\u0022A\u0022]}&quot;
+          }
+        ],
+        &quot;gender&quot;: &quot;female&quot;,
+        &quot;birthDate&quot;: &quot;2012-03-14&quot;,
+        &quot;name&quot;: [
+          {
+            &quot;family&quot;: &quot;Carver&quot;,
+            &quot;given&quot;: [
+              &quot;Ella&quot;
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:67a4a38f-b583-4715-9631-cb7aca40fbba&quot;,
+      &quot;resource&quot;: {
+        &quot;id&quot;: &quot;urn:uuid:67a4a38f-b583-4715-9631-cb7aca40fbba&quot;,
+        &quot;resourceType&quot;: &quot;Patient&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeIndividual&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/patient-unborn&quot;,
+            &quot;valueBoolean&quot;: false
+          },
+          {
+            &quot;url&quot;: &quot;https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-ref&quot;,
+            &quot;valueString&quot;: &quot;record:1/instance:2&quot;
+          },
+          {
+            &quot;url&quot;: &quot;https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-snapshot&quot;,
+            &quot;valueString&quot;: &quot;{\u0022first_name\u0022:\u0022Tom\u0022,\u0022last_name\u0022:\u0022Carver\u0022,\u0022relationship\u0022:\u0022father\u0022,\u0022sex\u0022:\u0022M\u0022,\u0022dob\u0022:\u00221980-07-22\u0022,\u0022hearing_status\u0022:\u0022loss\u0022,\u0022diagnosis\u0022:\u0022232328005\u0022,\u0022age_at_onset\u0022:30,\u0022genetic_test\u0022:false,\u0022not_tested_reason\u0022:\u0022Declined testing for now.\u0022,\u0022other_features\u0022:[\u0022-1\u0022]}&quot;
+          }
+        ],
+        &quot;gender&quot;: &quot;male&quot;,
+        &quot;birthDate&quot;: &quot;1980-07-22&quot;,
+        &quot;name&quot;: [
+          {
+            &quot;family&quot;: &quot;Carver&quot;,
+            &quot;given&quot;: [
+              &quot;Tom&quot;
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:3c2d8971-0b92-44c7-8f89-042840e61b5c&quot;,
+      &quot;resource&quot;: {
+        &quot;id&quot;: &quot;urn:uuid:3c2d8971-0b92-44c7-8f89-042840e61b5c&quot;,
+        &quot;resourceType&quot;: &quot;Patient&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeIndividual&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/patient-unborn&quot;,
+            &quot;valueBoolean&quot;: false
+          },
+          {
+            &quot;url&quot;: &quot;https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-ref&quot;,
+            &quot;valueString&quot;: &quot;record:1/instance:3&quot;
+          },
+          {
+            &quot;url&quot;: &quot;https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-snapshot&quot;,
+            &quot;valueString&quot;: &quot;{\u0022first_name\u0022:\u0022Rose\u0022,\u0022last_name\u0022:\u0022Carver\u0022,\u0022relationship\u0022:\u0022mother\u0022,\u0022sex\u0022:\u0022F\u0022,\u0022dob\u0022:\u00221982-11-02\u0022,\u0022hearing_status\u0022:\u0022normal\u0022,\u0022genetic_test\u0022:true}&quot;
+          }
+        ],
+        &quot;gender&quot;: &quot;female&quot;,
+        &quot;birthDate&quot;: &quot;1982-11-02&quot;,
+        &quot;name&quot;: [
+          {
+            &quot;family&quot;: &quot;Carver&quot;,
+            &quot;given&quot;: [
+              &quot;Rose&quot;
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:31211914-13ed-4885-8598-73e9d38f123e&quot;,
+      &quot;resource&quot;: {
+        &quot;id&quot;: &quot;urn:uuid:31211914-13ed-4885-8598-73e9d38f123e&quot;,
+        &quot;resourceType&quot;: &quot;Patient&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeIndividual&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/patient-unborn&quot;,
+            &quot;valueBoolean&quot;: false
+          },
+          {
+            &quot;url&quot;: &quot;https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-ref&quot;,
+            &quot;valueString&quot;: &quot;record:1/instance:4&quot;
+          },
+          {
+            &quot;url&quot;: &quot;https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-snapshot&quot;,
+            &quot;valueString&quot;: &quot;{\u0022first_name\u0022:\u0022Sam\u0022,\u0022last_name\u0022:\u0022Carver\u0022,\u0022relationship\u0022:\u0022sibling\u0022,\u0022sex\u0022:\u0022M\u0022,\u0022dob\u0022:\u00222015-05-09\u0022,\u0022status_unknown_note\u0022:\u0022Hearing assessment booked.\u0022}&quot;
+          }
+        ],
+        &quot;gender&quot;: &quot;male&quot;,
+        &quot;birthDate&quot;: &quot;2015-05-09&quot;,
+        &quot;name&quot;: [
+          {
+            &quot;family&quot;: &quot;Carver&quot;,
+            &quot;given&quot;: [
+              &quot;Sam&quot;
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:f4179d0a-da92-43b2-b766-413e7f028424&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+        &quot;id&quot;: &quot;urn:uuid:f4179d0a-da92-43b2-b766-413e7f028424&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeRelationship&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/familymemberhistory-patient-record&quot;,
+            &quot;valueReference&quot;: {
+              &quot;reference&quot;: &quot;urn:uuid:3c2d8971-0b92-44c7-8f89-042840e61b5c&quot;
+            }
+          }
+        ],
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;patient&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:67a4a38f-b583-4715-9631-cb7aca40fbba&quot;
+        },
+        &quot;relationship&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+              &quot;code&quot;: &quot;KIN:026&quot;,
+              &quot;display&quot;: &quot;isPartner&quot;
+            }
+          ]
+        }
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:00bc5f76-7ca2-409d-9c7d-3d0ecacf9724&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+        &quot;id&quot;: &quot;urn:uuid:00bc5f76-7ca2-409d-9c7d-3d0ecacf9724&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeRelationship&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/familymemberhistory-patient-record&quot;,
+            &quot;valueReference&quot;: {
+              &quot;reference&quot;: &quot;urn:uuid:67a4a38f-b583-4715-9631-cb7aca40fbba&quot;
+            }
+          }
+        ],
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;patient&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:dc55916f-f20c-4b1d-a20e-525f55ff1123&quot;
+        },
+        &quot;relationship&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+              &quot;code&quot;: &quot;KIN:028&quot;,
+              &quot;display&quot;: &quot;isBiologicalFather&quot;
+            }
+          ]
+        }
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:9862bee4-60ee-467f-904c-38ed35b1df81&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+        &quot;id&quot;: &quot;urn:uuid:9862bee4-60ee-467f-904c-38ed35b1df81&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeRelationship&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/familymemberhistory-patient-record&quot;,
+            &quot;valueReference&quot;: {
+              &quot;reference&quot;: &quot;urn:uuid:3c2d8971-0b92-44c7-8f89-042840e61b5c&quot;
+            }
+          }
+        ],
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;patient&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:dc55916f-f20c-4b1d-a20e-525f55ff1123&quot;
+        },
+        &quot;relationship&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+              &quot;code&quot;: &quot;KIN:027&quot;,
+              &quot;display&quot;: &quot;isBiologicalMother&quot;
+            }
+          ]
+        }
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:426f2d4c-e832-4e8c-8472-35380d60f8e1&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+        &quot;id&quot;: &quot;urn:uuid:426f2d4c-e832-4e8c-8472-35380d60f8e1&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeRelationship&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/familymemberhistory-patient-record&quot;,
+            &quot;valueReference&quot;: {
+              &quot;reference&quot;: &quot;urn:uuid:67a4a38f-b583-4715-9631-cb7aca40fbba&quot;
+            }
+          }
+        ],
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;patient&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:31211914-13ed-4885-8598-73e9d38f123e&quot;
+        },
+        &quot;relationship&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+              &quot;code&quot;: &quot;KIN:028&quot;,
+              &quot;display&quot;: &quot;isBiologicalFather&quot;
+            }
+          ]
+        }
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:b2d9ae1e-3a57-46c2-8869-81fa9ea8c95c&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+        &quot;id&quot;: &quot;urn:uuid:b2d9ae1e-3a57-46c2-8869-81fa9ea8c95c&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeRelationship&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/familymemberhistory-patient-record&quot;,
+            &quot;valueReference&quot;: {
+              &quot;reference&quot;: &quot;urn:uuid:3c2d8971-0b92-44c7-8f89-042840e61b5c&quot;
+            }
+          }
+        ],
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;patient&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:31211914-13ed-4885-8598-73e9d38f123e&quot;
+        },
+        &quot;relationship&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+              &quot;code&quot;: &quot;KIN:027&quot;,
+              &quot;display&quot;: &quot;isBiologicalMother&quot;
+            }
+          ]
+        }
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:67d7efcc-10e8-44d5-9ad9-e6ae58cbf8a2&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;QuestionnaireResponse&quot;,
+        &quot;id&quot;: &quot;urn:uuid:67d7efcc-10e8-44d5-9ad9-e6ae58cbf8a2&quot;,
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;subject&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:dc55916f-f20c-4b1d-a20e-525f55ff1123&quot;
+        },
+        &quot;item&quot;: [
+          {
+            &quot;linkId&quot;: &quot;first_name&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Ella&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;last_name&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Carver&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;relationship&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;proband&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;sex&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;F&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;dob&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueDate&quot;: &quot;2012-03-14&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;hearing_status&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;loss&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;diagnosis&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;60700002&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;age_at_onset&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueInteger&quot;: 2
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;onset_notes&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Passed newborn screening; loss picked up at a preschool check.&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;genetic_test&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueBoolean&quot;: true
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;test_result&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;pathogenic&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;hereditary_confirmed&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueBoolean&quot;: true
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;other_features&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;A&quot;
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:70768260-5630-4b09-9588-c7803278e5e9&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;QuestionnaireResponse&quot;,
+        &quot;id&quot;: &quot;urn:uuid:70768260-5630-4b09-9588-c7803278e5e9&quot;,
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;subject&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:67a4a38f-b583-4715-9631-cb7aca40fbba&quot;
+        },
+        &quot;item&quot;: [
+          {
+            &quot;linkId&quot;: &quot;first_name&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Tom&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;last_name&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Carver&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;relationship&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;father&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;sex&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;M&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;dob&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueDate&quot;: &quot;1980-07-22&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;hearing_status&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;loss&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;diagnosis&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;232328005&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;age_at_onset&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueInteger&quot;: 30
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;genetic_test&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueBoolean&quot;: false
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;not_tested_reason&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Declined testing for now.&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;other_features&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;-1&quot;
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:78f94e05-af65-436d-936c-f1e14ba7786b&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;QuestionnaireResponse&quot;,
+        &quot;id&quot;: &quot;urn:uuid:78f94e05-af65-436d-936c-f1e14ba7786b&quot;,
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;subject&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:3c2d8971-0b92-44c7-8f89-042840e61b5c&quot;
+        },
+        &quot;item&quot;: [
+          {
+            &quot;linkId&quot;: &quot;first_name&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Rose&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;last_name&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Carver&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;relationship&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;mother&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;sex&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;F&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;dob&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueDate&quot;: &quot;1982-11-02&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;hearing_status&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;normal&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;genetic_test&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueBoolean&quot;: true
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:326ead98-a2c5-4eca-b9e3-3c1415414b33&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;QuestionnaireResponse&quot;,
+        &quot;id&quot;: &quot;urn:uuid:326ead98-a2c5-4eca-b9e3-3c1415414b33&quot;,
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;subject&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:31211914-13ed-4885-8598-73e9d38f123e&quot;
+        },
+        &quot;item&quot;: [
+          {
+            &quot;linkId&quot;: &quot;first_name&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Sam&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;last_name&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Carver&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;relationship&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;sibling&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;sex&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;M&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;dob&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueDate&quot;: &quot;2015-05-09&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;status_unknown_note&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Hearing assessment booked.&quot;
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:30a88f74-046e-4e01-9706-67d509f35bd6&quot;,
+      &quot;resource&quot;: {
+        &quot;id&quot;: &quot;urn:uuid:30a88f74-046e-4e01-9706-67d509f35bd6&quot;,
+        &quot;resourceType&quot;: &quot;DocumentReference&quot;,
+        &quot;status&quot;: &quot;current&quot;,
+        &quot;docStatus&quot;: &quot;preliminary&quot;,
+        &quot;subject&quot;: {
+          &quot;type&quot;: &quot;Patient&quot;,
+          &quot;reference&quot;: &quot;urn:uuid:dc55916f-f20c-4b1d-a20e-525f55ff1123&quot;
+        },
+        &quot;description&quot;: &quot;Pedigree Diagram of Family in SVG format&quot;,
+        &quot;content&quot;: {
+          &quot;attachment&quot;: {
+            &quot;contentType&quot;: &quot;image/svg+xml&quot;,
+            &quot;data&quot;: &quot;PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIHN0eWxlPSJvdmVyZmxvdzogaGlkZGVuOyBwb3NpdGlvbjogcmVsYXRpdmU7IHRvcDogLTAuMTg3NXB4OyIgdmlld0JveD0iLTMwIC05MCA0NjggNDY3LjY2NjY1NjQ5NDE0MDYiIHdpZHRoPSI0NjgiIGhlaWdodD0iNDY3LjY2NjY1NjQ5NDE0MDYiIHByZXNlcnZlQXNwZWN0UmF0aW89InhNaW5ZTWluIj48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiMzMzMzMzMiIGQ9Ik0yMDQsMEwyMDQsMTYwIiBzdHJva2Utd2lkdGg9IjMiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ii8+PHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMzMzMzMzIiBkPSJNODQsMTYwTDMyNCwxNjAiIHN0cm9rZS13aWR0aD0iMyIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiLz48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiMzMzMzMzMiIGQ9Ik0zMjQsMTYwTDMyNCwyNzIiIHN0cm9rZS13aWR0aD0iMyIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiLz48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiMzMzMzMzMiIGQ9Ik04NCwxNjBMODQsMjcyIiBzdHJva2Utd2lkdGg9IjMiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ii8+PHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMzMzMzMzIiBkPSJNMjA0LDBMMzQ4LDAiIHN0cm9rZS13aWR0aD0iMyIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiLz48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiMzMzMzMzMiIGQ9Ik02MCwwTDIwNCwwIiBzdHJva2Utd2lkdGg9IjMiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ii8+PGRlc2Mgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPkNyZWF0ZWQgd2l0aCBSYXBoYcOrbCAyLjMuMDwvZGVzYz48ZGVmcyBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyI+PGxpbmVhckdyYWRpZW50IGlkPSJuczN3OTAtX2ZmZmZmZjowLV9COEI4Qjg6MTAwIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMCIgZ3JhZGllbnRUcmFuc2Zvcm09Im1hdHJpeCgxLDAsMCwxLDAsMCkiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ij48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZmZmZmZmIiBzdG9wLW9wYWNpdHk9IjEiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjYjhiOGI4IiBzdG9wLW9wYWNpdHk9IjEiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ii8+PC9saW5lYXJHcmFkaWVudD48bGluZWFyR3JhZGllbnQgaWQ9ImQ2ejcwMC1fZmZmZmZmOjAtX0I4QjhCODoxMDAiIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIwIiBncmFkaWVudFRyYW5zZm9ybT0ibWF0cml4KDEsMCwwLDEsMCwwKSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNiOGI4YjgiIHN0b3Atb3BhY2l0eT0iMSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0iMDYwbXIwLV9mZmZmZmY6MC1fQjhCOEI4OjEwMCIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjAiIGdyYWRpZW50VHJhbnNmb3JtPSJtYXRyaXgoMSwwLDAsMSwwLDApIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2I4YjhiOCIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjwvbGluZWFyR3JhZGllbnQ+PGxpbmVhckdyYWRpZW50IGlkPSJkcGgzcDAtX2ZmZmZmZjowLV9COEI4Qjg6MTAwIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMCIgZ3JhZGllbnRUcmFuc2Zvcm09Im1hdHJpeCgxLDAsMCwxLDAsMCkiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ij48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZmZmZmZmIiBzdG9wLW9wYWNpdHk9IjEiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjYjhiOGI4IiBzdG9wLW9wYWNpdHk9IjEiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ii8+PC9saW5lYXJHcmFkaWVudD48bGluZWFyR3JhZGllbnQgaWQ9IjFjNzhnMC1fZmZmZmZmOjAtX0I4QjhCODoxMDAiIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIwIiBncmFkaWVudFRyYW5zZm9ybT0ibWF0cml4KDEsMCwwLDEsMCwwKSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNiOGI4YjgiIHN0b3Atb3BhY2l0eT0iMSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0iMmJ3bGkwLV9mZmZmZmY6MC1fQjhCOEI4OjEwMCIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjAiIGdyYWRpZW50VHJhbnNmb3JtPSJtYXRyaXgoMSwwLDAsMSwwLDApIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2I4YjhiOCIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjwvbGluZWFyR3JhZGllbnQ+PGxpbmVhckdyYWRpZW50IGlkPSJxZDNoMTAtX2ZmZmZmZjowLV9COEI4Qjg6MTAwIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMCIgZ3JhZGllbnRUcmFuc2Zvcm09Im1hdHJpeCgxLDAsMCwxLDAsMCkiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ij48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZmZmZmZmIiBzdG9wLW9wYWNpdHk9IjEiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjYjhiOGI4IiBzdG9wLW9wYWNpdHk9IjEiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ii8+PC9saW5lYXJHcmFkaWVudD48bGluZWFyR3JhZGllbnQgaWQ9IjZyZ2FsMC1fZmZmZmZmOjAtX0I4QjhCODoxMDAiIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIwIiBncmFkaWVudFRyYW5zZm9ybT0ibWF0cml4KDEsMCwwLDEsMCwwKSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNiOGI4YjgiIHN0b3Atb3BhY2l0eT0iMSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0iNmU2Y2wwLV9mZmZmZmY6MC1fQjhCOEI4OjEwMCIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjAiIGdyYWRpZW50VHJhbnNmb3JtPSJtYXRyaXgoMSwwLDAsMSwwLDApIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2I4YjhiOCIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjwvbGluZWFyR3JhZGllbnQ+PHJhZGlhbEdyYWRpZW50IGlkPSJleGtmbXJfLjVfLjFfX2NjYy1fY2NjIiBmeD0iMC41IiBmeT0iMC4xIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2NjY2NjYyIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2NjY2NjYyIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjwvcmFkaWFsR3JhZGllbnQ+PHJhZGlhbEdyYWRpZW50IGlkPSJuZWRoM3JfLjVfLjlfaHNiXzAuNTNfXzFfXy43NV8taHNiXzAuNTNfXy41X18uMjVfIiBmeD0iMC41IiBmeT0iMC45IiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzAwOWRiZiIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzIwM2E0MCIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjwvcmFkaWFsR3JhZGllbnQ+PHJhZGlhbEdyYWRpZW50IGlkPSIwOXAyNnJfLjVfLjFfX2NjYy1fY2NjIiBmeD0iMC41IiBmeT0iMC4xIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2NjY2NjYyIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2NjY2NjYyIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjwvcmFkaWFsR3JhZGllbnQ+PHJhZGlhbEdyYWRpZW50IGlkPSJvMmJpMXJfLjVfLjlfaHNiXzAuNTNfXzFfXy43NV8taHNiXzAuNTNfXy41X18uMjVfIiBmeD0iMC41IiBmeT0iMC45IiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzAwOWRiZiIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzIwM2E0MCIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjwvcmFkaWFsR3JhZGllbnQ+PHJhZGlhbEdyYWRpZW50IGlkPSJkbXE4aXJfLjVfLjFfX2NjYy1fY2NjIiBmeD0iMC41IiBmeT0iMC4xIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2NjY2NjYyIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2NjY2NjYyIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjwvcmFkaWFsR3JhZGllbnQ+PHJhZGlhbEdyYWRpZW50IGlkPSIyZnZ2dXJfLjVfLjlfaHNiXzAuNTNfXzFfXy43NV8taHNiXzAuNTNfXy41X18uMjVfIiBmeD0iMC41IiBmeT0iMC45IiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzAwOWRiZiIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzIwM2E0MCIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjwvcmFkaWFsR3JhZGllbnQ+PHJhZGlhbEdyYWRpZW50IGlkPSI2NTF3anJfLjVfLjFfX2NjYy1fY2NjIiBmeD0iMC41IiBmeT0iMC4xIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2NjY2NjYyIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2NjY2NjYyIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjwvcmFkaWFsR3JhZGllbnQ+PHJhZGlhbEdyYWRpZW50IGlkPSJpMmpmNnJfLjVfLjlfaHNiXzAuNTNfXzFfXy43NV8taHNiXzAuNTNfXy41X18uMjVfIiBmeD0iMC41IiBmeT0iMC45IiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzAwOWRiZiIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzIwM2E0MCIgc3RvcC1vcGFjaXR5PSIxIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyIvPjwvcmFkaWFsR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHg9IjIzNCIgeT0iMTgyIiB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgcng9IjUiIHJ5PSI1IiBmaWxsPSIjODA4MDgwIiBzdHJva2U9Im5vbmUiIG9wYWNpdHk9IjAiIGZpbGwtb3BhY2l0eT0iMC4zNSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsgb3BhY2l0eTogMDsgZmlsbC1vcGFjaXR5OiAwLjM1OyIvPjxjaXJjbGUgY3g9IjMyNCIgY3k9IjI3MiIgcj0iNDAiIGZpbGw9IiM4MDgwODAiIHN0cm9rZT0ibm9uZSIgb3BhY2l0eT0iMC4zIiBmaWxsLW9wYWNpdHk9IjEiIHN0cm9rZS13aWR0aD0iMyIgdHJhbnNmb3JtPSJtYXRyaXgoMSwwLDAsMSwzLDMpIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyBvcGFjaXR5OiAwLjM7IGZpbGwtb3BhY2l0eTogMTsiLz48Y2lyY2xlIGN4PSIzMjQiIGN5PSIyNzIiIHI9IjQwIiBmaWxsPSJ1cmwoJyNuczN3OTAtX2ZmZmZmZjowLV9COEI4Qjg6MTAwJykiIHN0cm9rZT0iIzMzMzMzMyIgb3BhY2l0eT0iMSIgZmlsbC1vcGFjaXR5PSIxIiBzdHJva2Utd2lkdGg9IjUuMDkyNTkyNTkyNTkyNTkzIiB0cmFuc2Zvcm09Im1hdHJpeCgxLjA4LDAsMCwxLjA4LC0yNS45MiwtMjEuNzYpIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyBvcGFjaXR5OiAxOyBmaWxsLW9wYWNpdHk6IDE7Ii8+PHBhdGggZmlsbD0iIzU5NTk1OSIgc3Ryb2tlPSJub25lIiBkPSJNOS4xODI4MDAwMDAwMDAwMDIsMjUuMzMxOUM5LjE4MjgwMDAwMDAwMDAwMiwyNS4zMzE5LDAuODcwMTAwMDAwMDAwMDAwMSwzMy42NDI0LDAuODcwMTAwMDAwMDAwMDAwMSwzMy42NDI0QzAuODcwMTAwMDAwMDAwMDAwMSwzMy42NDI0LDMuODY2NTAwMDAwMDAwMDAwMywzNi42Mzg4LDMuODY2NTAwMDAwMDAwMDAwMywzNi42Mzg4QzMuODY2NTAwMDAwMDAwMDAwMywzNi42Mzg4LDEyLjE3NzAwMDAwMDAwMDAwMSwyOC4zMjcyLDEyLjE3NzQ0LDI4LjMyNzJDMTIuMTc3MDAwMDAwMDAwMDAxLDI4LjMyNzIsMTQuNDI1NDAwMDAwMDAwMDAyLDMwLjU3NDUwMDAwMDAwMDAwNCwxNC40MjU0MDAwMDAwMDAwMDIsMzAuNTc0NTAwMDAwMDAwMDA0QzE0LjQyNTQwMDAwMDAwMDAwMiwzMC41NzQ1MDAwMDAwMDAwMDQsMTcuMTU3OCwyMC4zNzY0MDAwMDAwMDAwMDQsMTcuMTU3OCwyMC4zNzY0MDAwMDAwMDAwMDRDMTcuMTU3OCwyMC4zNzY0MDAwMDAwMDAwMDQsNi45NTk3MDAwMDAwMDAwMDEsMjMuMTA4ODAwMDAwMDAwMDAyLDYuOTU5NzAwMDAwMDAwMDAxLDIzLjEwODgwMDAwMDAwMDAwMkM2Ljk1OTcwMDAwMDAwMDAwMSwyMy4xMDg4MDAwMDAwMDAwMDIsOS4xODI4MDAwMDAwMDAwMDIsMjUuMzMxOSw5LjE4MjgwMDAwMDAwMDAwMiwyNS4zMzEzNTAwMDAwMDAwMDRDOS4xODI4MDAwMDAwMDAwMDIsMjUuMzMxOSw5LjE4MjgwMDAwMDAwMDAwMiwyNS4zMzE5LDkuMTgyODAwMDAwMDAwMDAyLDI1LjMzMTkiIG9wYWNpdHk9IjEiIHRyYW5zZm9ybT0ibWF0cml4KDEsMCwwLDEsMjYzLDI5NSkiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7IG9wYWNpdHk6IDE7IiBzdHJva2Utd2lkdGg9IjEiLz48dGV4dCB4PSIzMjQiIHk9IjM0NCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjIwcHgiIHN0cm9rZT0ibm9uZSIgZmlsbD0iIzAwMDAwMCIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsgdGV4dC1hbmNob3I6IG1pZGRsZTsgZm9udC1mYW1pbHk6IEFyaWFsOyBmb250LXNpemU6IDIwcHg7Ij48dHNwYW4gZHk9IjcuMzMzMzIyNTI1MDI0NDE0IiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyI+RWxsYSBDYXJ2ZXI8L3RzcGFuPjwvdGV4dD48dGV4dCB4PSIzMjQiIHk9IjM2Ni4zMzMzNTQ5NDk5NTEyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjBweCIgc3Ryb2tlPSJub25lIiBmaWxsPSIjMDAwMDAwIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyB0ZXh0LWFuY2hvcjogbWlkZGxlOyBmb250LWZhbWlseTogQXJpYWw7IGZvbnQtc2l6ZTogMjBweDsiPjx0c3BhbiBkeT0iNy4zMzMzMzM5NjkxMTYyMTEiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ij5iLiAyMDEyPC90c3Bhbj48L3RleHQ+PHJlY3QgeD0iMjM0IiB5PSIxODIiIHdpZHRoPSIxODAiIGhlaWdodD0iMTgwIiByeD0iMCIgcnk9IjAiIGZpbGw9IiMwMDgwMDAiIHN0cm9rZT0ibm9uZSIgb3BhY2l0eT0iMCIgZmlsbC1vcGFjaXR5PSIwLjM1IiB0cmFuc2Zvcm09Im1hdHJpeCgxLDAsMCwxLDAsMCkiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7IG9wYWNpdHk6IDA7IGZpbGwtb3BhY2l0eTogMC4zNTsiLz48cmVjdCB4PSItMzAiIHk9Ii05MCIgd2lkdGg9IjE4MCIgaGVpZ2h0PSIxODAiIHJ4PSI1IiByeT0iNSIgZmlsbD0iIzgwODA4MCIgc3Ryb2tlPSJub25lIiBvcGFjaXR5PSIwIiBmaWxsLW9wYWNpdHk9IjAuMzUiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7IG9wYWNpdHk6IDA7IGZpbGwtb3BhY2l0eTogMC4zNTsiLz48cmVjdCB4PSIyMCIgeT0iLTQwIiB3aWR0aD0iODAiIGhlaWdodD0iODAiIHJ4PSIwIiByeT0iMCIgZmlsbD0iIzgwODA4MCIgc3Ryb2tlPSJub25lIiBvcGFjaXR5PSIwLjMiIGZpbGwtb3BhY2l0eT0iMSIgc3Ryb2tlLXdpZHRoPSIzIiB0cmFuc2Zvcm09Im1hdHJpeCgxLDAsMCwxLDMsMykiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7IG9wYWNpdHk6IDAuMzsgZmlsbC1vcGFjaXR5OiAxOyIvPjxyZWN0IHg9IjIwIiB5PSItNDAiIHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgcng9IjAiIHJ5PSIwIiBmaWxsPSJ1cmwoJyMwNjBtcjAtX2ZmZmZmZjowLV9COEI4Qjg6MTAwJykiIHN0cm9rZT0iIzMzMzMzMyIgb3BhY2l0eT0iMSIgZmlsbC1vcGFjaXR5PSIxIiBzdHJva2Utd2lkdGg9IjMiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7IG9wYWNpdHk6IDE7IGZpbGwtb3BhY2l0eTogMTsiLz48dGV4dCB4PSI2MCIgeT0iNzIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyMHB4IiBzdHJva2U9Im5vbmUiIGZpbGw9IiMwMDAwMDAiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7IHRleHQtYW5jaG9yOiBtaWRkbGU7IGZvbnQtZmFtaWx5OiBBcmlhbDsgZm9udC1zaXplOiAyMHB4OyI+PHRzcGFuIGR5PSI3LjMzMzMzMDE1NDQxODk0NSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPlRvbSBDYXJ2ZXI8L3RzcGFuPjwvdGV4dD48dGV4dCB4PSI2MCIgeT0iOTQuMzMzMzMyMDYxNzY3NTgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyMHB4IiBzdHJva2U9Im5vbmUiIGZpbGw9IiMwMDAwMDAiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7IHRleHQtYW5jaG9yOiBtaWRkbGU7IGZvbnQtZmFtaWx5OiBBcmlhbDsgZm9udC1zaXplOiAyMHB4OyI+PHRzcGFuIGR5PSI3LjMzMzMyNjMzOTcyMTY4IiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyI+Yi4gMTk4MDwvdHNwYW4+PC90ZXh0PjxyZWN0IHg9Ii0zMCIgeT0iLTkwIiB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgcng9IjAiIHJ5PSIwIiBmaWxsPSIjMDA4MDAwIiBzdHJva2U9Im5vbmUiIG9wYWNpdHk9IjAiIGZpbGwtb3BhY2l0eT0iMC4zNSIgdHJhbnNmb3JtPSJtYXRyaXgoMSwwLDAsMSwwLDApIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyBvcGFjaXR5OiAwOyBmaWxsLW9wYWNpdHk6IDAuMzU7Ii8+PHJlY3QgeD0iMjU4IiB5PSItOTAiIHdpZHRoPSIxODAiIGhlaWdodD0iMTgwIiByeD0iNSIgcnk9IjUiIGZpbGw9IiM4MDgwODAiIHN0cm9rZT0ibm9uZSIgb3BhY2l0eT0iMC41ODEiIGZpbGwtb3BhY2l0eT0iMC4zNSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsgb3BhY2l0eTogMC41ODE7IGZpbGwtb3BhY2l0eTogMC4zNTsiLz48Y2lyY2xlIGN4PSIzNDgiIGN5PSIwIiByPSI0MCIgZmlsbD0iIzgwODA4MCIgc3Ryb2tlPSJub25lIiBvcGFjaXR5PSIwLjMiIGZpbGwtb3BhY2l0eT0iMSIgc3Ryb2tlLXdpZHRoPSIzIiB0cmFuc2Zvcm09Im1hdHJpeCgxLDAsMCwxLDMsMykiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7IG9wYWNpdHk6IDAuMzsgZmlsbC1vcGFjaXR5OiAxOyIvPjxjaXJjbGUgY3g9IjM0OCIgY3k9IjAiIHI9IjQwIiBmaWxsPSJ1cmwoJyMxYzc4ZzAtX2ZmZmZmZjowLV9COEI4Qjg6MTAwJykiIHN0cm9rZT0iIzMzMzMzMyIgb3BhY2l0eT0iMSIgZmlsbC1vcGFjaXR5PSIxIiBzdHJva2Utd2lkdGg9IjMiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7IG9wYWNpdHk6IDE7IGZpbGwtb3BhY2l0eTogMTsiLz48dGV4dCB4PSIzNDgiIHk9Ijk4LjEyNjk5MzY2NjM0ODE0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjBweCIgc3Ryb2tlPSJub25lIiBmaWxsPSIjMDAwMDAwIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyB0ZXh0LWFuY2hvcjogbWlkZGxlOyBmb250LWZhbWlseTogQXJpYWw7IGZvbnQtc2l6ZTogMjBweDsiPjx0c3BhbiBkeT0iNy4zMzMzMzI1NDg3OTQ0MzEiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ij5Sb3NlIENhcnZlcjwvdHNwYW4+PC90ZXh0Pjx0ZXh0IHg9IjM0OCIgeT0iMTIwLjQ2MDMyNTcyODExNTcyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjBweCIgc3Ryb2tlPSJub25lIiBmaWxsPSIjMDAwMDAwIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyB0ZXh0LWFuY2hvcjogbWlkZGxlOyBmb250LWZhbWlseTogQXJpYWw7IGZvbnQtc2l6ZTogMjBweDsiPjx0c3BhbiBkeT0iNy4zMzMzMjg3MzQwOTcxNjUiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ij5iLiAxOTgyPC90c3Bhbj48L3RleHQ+PHJlY3QgeD0iMjU4IiB5PSItOTAiIHdpZHRoPSIxODAiIGhlaWdodD0iMTgwIiByeD0iMCIgcnk9IjAiIGZpbGw9IiMwMDgwMDAiIHN0cm9rZT0ibm9uZSIgb3BhY2l0eT0iMCIgZmlsbC1vcGFjaXR5PSIwLjM1IiB0cmFuc2Zvcm09Im1hdHJpeCgxLDAsMCwxLDAsMCkiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7IG9wYWNpdHk6IDA7IGZpbGwtb3BhY2l0eTogMC4zNTsiLz48cmVjdCB4PSItNiIgeT0iMTgyIiB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgcng9IjUiIHJ5PSI1IiBmaWxsPSIjODA4MDgwIiBzdHJva2U9Im5vbmUiIG9wYWNpdHk9IjAiIGZpbGwtb3BhY2l0eT0iMC4zNSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsgb3BhY2l0eTogMDsgZmlsbC1vcGFjaXR5OiAwLjM1OyIvPjxyZWN0IHg9IjQ0IiB5PSIyMzIiIHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgcng9IjAiIHJ5PSIwIiBmaWxsPSIjODA4MDgwIiBzdHJva2U9Im5vbmUiIG9wYWNpdHk9IjAuMyIgZmlsbC1vcGFjaXR5PSIxIiBzdHJva2Utd2lkdGg9IjMiIHRyYW5zZm9ybT0ibWF0cml4KDEsMCwwLDEsMywzKSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsgb3BhY2l0eTogMC4zOyBmaWxsLW9wYWNpdHk6IDE7Ii8+PHJlY3QgeD0iNDQiIHk9IjIzMiIgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiByeD0iMCIgcnk9IjAiIGZpbGw9InVybCgnI3FkM2gxMC1fZmZmZmZmOjAtX0I4QjhCODoxMDAnKSIgc3Ryb2tlPSIjMzMzMzMzIiBvcGFjaXR5PSIxIiBmaWxsLW9wYWNpdHk9IjEiIHN0cm9rZS13aWR0aD0iMyIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsgb3BhY2l0eTogMTsgZmlsbC1vcGFjaXR5OiAxOyIvPjx0ZXh0IHg9Ijg0IiB5PSIzNDQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyMHB4IiBzdHJva2U9Im5vbmUiIGZpbGw9IiMwMDAwMDAiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7IHRleHQtYW5jaG9yOiBtaWRkbGU7IGZvbnQtZmFtaWx5OiBBcmlhbDsgZm9udC1zaXplOiAyMHB4OyI+PHRzcGFuIGR5PSI3LjMzMzMyMjUyNTAyNDQxNCIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPlNhbSBDYXJ2ZXI8L3RzcGFuPjwvdGV4dD48dGV4dCB4PSI4NCIgeT0iMzY2LjMzMzM1NDk0OTk1MTIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyMHB4IiBzdHJva2U9Im5vbmUiIGZpbGw9IiMwMDAwMDAiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7IHRleHQtYW5jaG9yOiBtaWRkbGU7IGZvbnQtZmFtaWx5OiBBcmlhbDsgZm9udC1zaXplOiAyMHB4OyI+PHRzcGFuIGR5PSI3LjMzMzMzMzk2OTExNjIxMSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPmIuIDIwMTU8L3RzcGFuPjwvdGV4dD48cmVjdCB4PSItNiIgeT0iMTgyIiB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgcng9IjAiIHJ5PSIwIiBmaWxsPSIjMDA4MDAwIiBzdHJva2U9Im5vbmUiIG9wYWNpdHk9IjAiIGZpbGwtb3BhY2l0eT0iMC4zNSIgdHJhbnNmb3JtPSJtYXRyaXgoMSwwLDAsMSwwLDApIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyBvcGFjaXR5OiAwOyBmaWxsLW9wYWNpdHk6IDAuMzU7Ii8+PHJlY3QgeD0iMTc4IiB5PSItMzIiIHdpZHRoPSI1MiIgaGVpZ2h0PSI5MiIgcng9IjUiIHJ5PSI1IiBmaWxsPSIjODA4MDgwIiBzdHJva2U9Im5vbmUiIG9wYWNpdHk9IjAiIGZpbGwtb3BhY2l0eT0iMC4zNSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsgb3BhY2l0eTogMDsgZmlsbC1vcGFjaXR5OiAwLjM1OyIvPjxjaXJjbGUgY3g9IjIwNCIgY3k9IjAiIHI9IjYuNSIgZmlsbD0iI2RjNzg2OCIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utd2lkdGg9IjIiIHN0eWxlPSItd2Via2l0LXRhcC1oaWdobGlnaHQtY29sb3I6IHJnYmEoMCwgMCwgMCwgMCk7Ii8+PHRleHQgeD0iMjA0IiB5PSItMjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJUYWhvbWEiIGZvbnQtc2l6ZT0iMTRweCIgc3Ryb2tlPSJub25lIiBmaWxsPSIjMDAwMDAwIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyB0ZXh0LWFuY2hvcjogbWlkZGxlOyBmb250LWZhbWlseTogVGFob21hOyBmb250LXNpemU6IDE0cHg7Ij48dHNwYW4gZHk9Ii0yMCIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiLz48L3RleHQ+PHJlY3QgeD0iMTc4IiB5PSItMzIiIHdpZHRoPSI1MiIgaGVpZ2h0PSI5MiIgcng9IjAiIHJ5PSIwIiBmaWxsPSIjMDA4MDAwIiBzdHJva2U9Im5vbmUiIG9wYWNpdHk9IjAiIGZpbGwtb3BhY2l0eT0iMC4zNSIgdHJhbnNmb3JtPSJtYXRyaXgoMSwwLDAsMSwwLDApIiBzdHlsZT0iLXdlYmtpdC10YXAtaGlnaGxpZ2h0LWNvbG9yOiByZ2JhKDAsIDAsIDAsIDApOyBvcGFjaXR5OiAwOyBmaWxsLW9wYWNpdHk6IDAuMzU7Ii8+PGNpcmNsZSBjeD0iMjA0IiBjeT0iMTYwIiByPSIzLjI1IiBmaWxsPSIjNjY2NjY2IiBzdHJva2U9IiM4ODg4ODgiIHN0cm9rZS13aWR0aD0iMSIgb3BhY2l0eT0iMSIgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsgb3BhY2l0eTogMTsiLz48L3N2Zz4=&quot;
+          }
+        }
+      }
+    }
+  ]
+}"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_history.family_history_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="family_history_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.relatives" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="relatives.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Ella"/>
+					<ItemData ItemOID="last_name" Value="Carver"/>
+					<ItemData ItemOID="relationship" Value="proband"/>
+					<ItemData ItemOID="sex" Value="F"/>
+					<ItemData ItemOID="dob" Value="2012-03-14"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.hearing_status" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="hearing_status" Value="loss"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="diagnosis" Value="60700002"/>
+					<ItemData ItemOID="age_at_onset" Value="2"/>
+					<ItemData ItemOID="onset_notes" Value="Passed newborn screening; loss picked up at a preschool check."/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.genetic_test" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="genetic_test" Value="1"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.test_result" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="test_result" Value="pathogenic"/>
+					<ItemData ItemOID="hereditary_confirmed" Value="1"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.other_features___1" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="other_features___1" Value="0"/>
+					<ItemData ItemOID="other_features___2" Value="0"/>
+					<ItemData ItemOID="other_features___a" Value="1"/>
+					<ItemData ItemOID="other_features____1" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.relatives_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="relatives_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.relatives" FormRepeatKey="2">
+				<ItemGroupData ItemGroupOID="relatives.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Tom"/>
+					<ItemData ItemOID="last_name" Value="Carver"/>
+					<ItemData ItemOID="relationship" Value="father"/>
+					<ItemData ItemOID="sex" Value="M"/>
+					<ItemData ItemOID="dob" Value="1980-07-22"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.hearing_status" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="hearing_status" Value="loss"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="diagnosis" Value="232328005"/>
+					<ItemData ItemOID="age_at_onset" Value="30"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.genetic_test" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="genetic_test" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="not_tested_reason" Value="Declined testing for now."/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.other_features___1" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="other_features___1" Value="0"/>
+					<ItemData ItemOID="other_features___2" Value="0"/>
+					<ItemData ItemOID="other_features___a" Value="0"/>
+					<ItemData ItemOID="other_features____1" Value="1"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.relatives_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="relatives_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.relatives" FormRepeatKey="3">
+				<ItemGroupData ItemGroupOID="relatives.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Rose"/>
+					<ItemData ItemOID="last_name" Value="Carver"/>
+					<ItemData ItemOID="relationship" Value="mother"/>
+					<ItemData ItemOID="sex" Value="F"/>
+					<ItemData ItemOID="dob" Value="1982-11-02"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.hearing_status" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="hearing_status" Value="normal"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.genetic_test" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="genetic_test" Value="1"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.other_features___1" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="other_features___1" Value="0"/>
+					<ItemData ItemOID="other_features___2" Value="0"/>
+					<ItemData ItemOID="other_features___a" Value="0"/>
+					<ItemData ItemOID="other_features____1" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.clinic_notes" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="clinic_notes" Value="Had carrier screening; result not relevant to the pedigree."/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.relatives_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="relatives_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.relatives" FormRepeatKey="4">
+				<ItemGroupData ItemGroupOID="relatives.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Sam"/>
+					<ItemData ItemOID="last_name" Value="Carver"/>
+					<ItemData ItemOID="relationship" Value="sibling"/>
+					<ItemData ItemOID="sex" Value="M"/>
+					<ItemData ItemOID="dob" Value="2015-05-09"/>
+					<ItemData ItemOID="status_unknown_note" Value="Hearing assessment booked."/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.other_features___1" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="other_features___1" Value="0"/>
+					<ItemData ItemOID="other_features___2" Value="0"/>
+					<ItemData ItemOID="other_features___a" Value="0"/>
+					<ItemData ItemOID="other_features____1" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.relatives_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="relatives_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="2" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.family_history" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="family_history.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="2"/>
+					<ItemData ItemOID="visit_date" Value="2025-09-17"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_history.family_history_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="family_history_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.relatives" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="relatives.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Leo"/>
+					<ItemData ItemOID="last_name" Value="Dunn"/>
+					<ItemData ItemOID="relationship" Value="proband"/>
+					<ItemData ItemOID="sex" Value="M"/>
+					<ItemData ItemOID="dob" Value="2018-01-20"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.hearing_status" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="hearing_status" Value="loss"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="diagnosis" Value="44057004"/>
+					<ItemData ItemOID="age_at_onset" Value="4"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.genetic_test" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="genetic_test" Value="1"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.test_result" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="test_result" Value="vus"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.other_features___1" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="other_features___1" Value="0"/>
+					<ItemData ItemOID="other_features___2" Value="1"/>
+					<ItemData ItemOID="other_features___a" Value="0"/>
+					<ItemData ItemOID="other_features____1" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.relatives_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="relatives_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.relatives" FormRepeatKey="2">
+				<ItemGroupData ItemGroupOID="relatives.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Mia"/>
+					<ItemData ItemOID="last_name" Value="Dunn"/>
+					<ItemData ItemOID="relationship" Value="mother"/>
+					<ItemData ItemOID="sex" Value="F"/>
+					<ItemData ItemOID="dob" Value="1988-06-30"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.hearing_status" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="hearing_status" Value="normal"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.genetic_test" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="genetic_test" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="not_tested_reason" Value="Not offered."/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.other_features___1" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="other_features___1" Value="0"/>
+					<ItemData ItemOID="other_features___2" Value="0"/>
+					<ItemData ItemOID="other_features___a" Value="0"/>
+					<ItemData ItemOID="other_features____1" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.relatives_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="relatives_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.relatives" FormRepeatKey="3">
+				<ItemGroupData ItemGroupOID="relatives.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Ben"/>
+					<ItemData ItemOID="last_name" Value="Dunn"/>
+					<ItemData ItemOID="relationship" Value="father"/>
+					<ItemData ItemOID="sex" Value="M"/>
+					<ItemData ItemOID="dob" Value="1987-02-11"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.hearing_status" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="hearing_status" Value="normal"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.other_features___1" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="other_features___1" Value="0"/>
+					<ItemData ItemOID="other_features___2" Value="0"/>
+					<ItemData ItemOID="other_features___a" Value="0"/>
+					<ItemData ItemOID="other_features____1" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="relatives.relatives_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="relatives_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+</ClinicalData>
+</ODM>
