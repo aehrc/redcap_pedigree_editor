@@ -1,0 +1,6 @@
+Variable / Field Name,Form Name,Section Header,Field Type,Field Label,"Choices, Calculations, OR Slider Labels",Field Note,Text Validation Type OR Show Slider Number,Text Validation Min,Text Validation Max,Identifier?,Branching Logic (Show field only if...),Required Field?,Custom Alignment,Question Number (surveys only),Matrix Group Name,Matrix Ranking?,Field Annotation
+record_id,family_history,,text,Family ID,,,,,,,,,,,,,
+family_name,family_history,,text,Family name,,,,,,,,,,,,,
+pedigree,family_history,,notes,Pedigree,,"Stored the project's way: GA4GH, compressed (Compress Data: Always compress).",,,,,,,,,,,@PEDIGREE=SHOW_TEXT
+pedigree_uncompressed,family_history,,notes,Pedigree (never compressed),,"NEVER_COMPRESS on this field's tag overrides the project's Compress Data, so the stored GA4GH JSON is readable here. Uncompressed, this pedigree is over the field's size limit, so it's stored without its diagram image and the form shows a placeholder.",,,,,,,,,,,"@PEDIGREE=SHOW_TEXT,NEVER_COMPRESS"
+pedigree_old_tag,family_history,,notes,Pedigree (tagged @PEDIGREE_HPO before 1.0.0),,"1.0.0 no longer recognises @PEDIGREE_HPO, so this is a plain notes field. Replace the tag with @PEDIGREE and set Default Terminology to HPO + omim.",,,,,,,,,,,@PEDIGREE_HPO
