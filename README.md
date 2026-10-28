@@ -950,7 +950,8 @@ REDCap's project XML doesn't carry locked records, so locking is a "try" step be
   Modules* > *View Logs*) says `Relationship row N no longer in the pedigree is locked, so kept.`
 - **Rename a record.** *Choose action for record* > *Rename record* on record 2, then open and save its pedigree:
   every person is still linked to a row of record `2`, which no longer exists, so no relationship row changes and the
-  log says the people are linked, but none to a row of this record (was the record renamed?).
+  log says `Relationships were not updated: the pedigree's people are linked, but none to a "members" row of this
+  record (was the record renamed?).`
 - **Re-link them.** Link each person in the renamed record to their row again and save: the relationship rows follow
   the pedigree again (delete Jonah and save, and his two rows go).
 
