@@ -628,6 +628,8 @@ instruments alone.
   the node form, checkbox codes REDCap renames in exports, and a hand-authored Questionnaire for *Advanced* mode.
 - [Storage and upgrade](#storage-and-upgrade) - storage formats, compression, and what a site upgrading from before
   1.0.0 sees: a legacy *fhir_v1* pedigree, and a field still tagged `@PEDIGREE_HPO`.
+- [Multi-arm and relationship edges](#multi-arm-and-relationship-edges) - linking and relationship rows in a project
+  with two arms, with no relationship-to-proband field, and what happens to locked rows and renamed records.
 
 ### Family registry (ADA2)
 
@@ -893,6 +895,66 @@ lookup errors in the browser's console for that code and for the *affected* stat
 - **Allow manual entry** (administrators only). Unless the system's *Allow Manual Entry* is on, the stored text is
   read-only on the form; tick the project's *Allow manual entry* and it can be typed into. Only an administrator should
   ever do that - the text must stay a valid pedigree in the project's storage format.
+
+### Multi-arm and relationship edges
+
+[`documentation/example-multi-arm/`](documentation/example-multi-arm/) holds a fictional familial
+hypercholesterolaemia cascade-screening study with two arms: *Index families*, and *Referred relatives* who come to the
+study through a relative elsewhere. Each record has its own pedigree, linked *Members* rows and
+[relationship rows](#relationships-in-redcap-fields), in its arm's first event.
+
+**What it shows**
+
+- A longitudinal project with two arms, each with a first event holding *Family History* (the diagram field,
+  `@PEDIGREE=HIDE_TEXT`), *Members* and *Relationships* (both repeating, in that event only), and a *Review 12m*
+  event:
+  - arm 1, *Index families*: *Enrolment* and *Review 12m*;
+  - arm 2, *Referred relatives*: *Referral* and *Review 12m*.
+
+  Linking needs the linked instrument to repeat in only one event per arm; each arm's search, import and relationship
+  rows use that arm's own event, since a record belongs to one arm.
+- *Members* maps first and last name, sex, date of birth and familial hypercholesterolaemia status (carrier status:
+  affected / carrier / pre-symptomatic). *Role in the study* and *LDL cholesterol* are linked but unmapped, and
+  *Screening notes* has no tag.
+- *Relationships* is filled by the module, but there's no relationship-to-proband field: it's optional.
+- Two families, both drawn with every person linked:
+  - **Record 1, the Hale family** (arm 1) - Ruth, the index case, her parents and brother, her partner and their
+    daughter: eight relationship rows (six parent-child, two partnerships).
+  - **Record 2, the Quinn family** (arm 2) - Lena, referred, with her parents and brother: five relationship rows.
+
+Record 2's home page - its rows, and the relationship rows the module wrote, in arm 2's *Referral* event:
+
+![Record 2's home page in arm 2: four Members rows and five Relationships rows in the Referral event](documentation/example-multi-arm/arm-2-record-home.png)
+
+**Importing it**
+
+1. *New Project* > *Upload a REDCap project XML file (CDISC ODM format)*, and choose
+   `documentation/example-multi-arm/pedigree-editor-example-multi-arm.REDCap.xml`.
+2. Enable the Pedigree Editor module on the new project.
+3. Configure the module:
+   - *Repeating instrument*: `members`
+   - *Search fields*: `first_name`, `last_name`, `role`
+   - *Node-edit form source*: *Tags only*
+   - *Storage Format*: *GA4GH - Recommended Format*
+   - *Compress Data*: *Compress Large Diagrams >65K*
+   - *Relationships*: read from `family_pedigree`; relationship instrument `relationships`, with `person_a`,
+     `person_b` and `relationship_type`; leave the relationship to proband field empty.
+
+REDCap's project XML doesn't carry locked records, so locking is a "try" step below.
+
+**Try this**
+
+- **A locked row is kept.** On record 1, lock the *Relationships* row `2 to 4: Biological father (KIN:028)` (Victor
+  to Felix; open it and tick *Lock this instrument?*, which needs the *Lock/Unlock Records* user right). Then delete
+  Felix from the pedigree and save the *Family History* form: Joan's row to Felix is deleted, but the locked one stays,
+  and the module's log (*External Modules* > *View Logs*) says
+  `Relationship row N no longer in the pedigree is locked, so kept.`
+- **Rename a record.** *Choose action for record* > *Rename record* on record 2, then open and save its pedigree:
+  every person is still linked to a row of record `2`, which no longer exists, so no relationship row changes and the
+  log says `Relationships were not updated: the pedigree's people are linked, but none to a "members" row of this
+  record (was the record renamed?).`
+- **Re-link them.** Link each person in the renamed record to their row again and save: the relationship rows follow
+  the pedigree again (delete Jonah and save, and his two rows go).
 
 # Upgrade Issues
 
