@@ -1,0 +1,19 @@
+Variable / Field Name,Form Name,Section Header,Field Type,Field Label,"Choices, Calculations, OR Slider Labels",Field Note,Text Validation Type OR Show Slider Number,Text Validation Min,Text Validation Max,Identifier?,Branching Logic (Show field only if...),Required Field?,Custom Alignment,Question Number (surveys only),Matrix Group Name,Matrix Ranking?,Field Annotation
+record_id,family_history,,text,Family ID,,,,,,,,,,,,,
+family_name,family_history,,text,Family name,,,,,,,,,,,,,
+family_pedigree,family_history,,notes,Family pedigree,,Draw the family here and link each person to their row on Members.,,,,,,,,,,,@PEDIGREE=HIDE_TEXT
+first_name,members,Person,text,First name,,,,,,y,,,,,,,"@PEDIGREE_FIELD(mapsTo=""given"")"
+last_name,members,,text,Last name,,,,,,y,,,,,,,"@PEDIGREE_FIELD(mapsTo=""family"")"
+sex,members,,radio,Sex,"F, Female | M, Male | U, Unknown",,,,,,,,,,,,"@PEDIGREE_FIELD(mapsTo=""gender"")"
+dob,members,,text,Date of birth,,,date_ymd,,,y,,,,,,,"@PEDIGREE_FIELD(mapsTo=""birthDate"")"
+role,members,,dropdown,Role in the study,"index, Index case | relative, Relative | referred, Referred relative",,,,,,,,,,,,@PEDIGREE_FIELD
+fh_status,members,Screening,radio,Familial hypercholesterolaemia status,"affected, Affected | carrier, Carrier (variant, normal LDL) | presymptomatic, Pre-symptomatic",Leave blank if not screened or unaffected.,,,,,,,,,,,"@PEDIGREE_FIELD(mapsTo=""carrierStatus"")"
+ldl_mmol,members,,text,LDL cholesterol (mmol/L),,,number,,,,,,,,,,@PEDIGREE_FIELD
+screening_notes,members,,notes,Screening notes (study staff only),,Not shown in the pedigree editor: this field has no @PEDIGREE_FIELD tag.,,,,,,,,,,,
+person_a,relationships,Relationship,text,Person A (Members row),,"The parent, for a parent relationship",integer,,,,,,,,,,@READONLY
+person_b,relationships,,text,Person B (Members row),,"The child, for a parent relationship",integer,,,,,,,,,,@READONLY
+relationship_type,relationships,,dropdown,Relationship,"KIN_027, Biological mother (KIN:027) | KIN_028, Biological father (KIN:028) | KIN_003, Biological parent (KIN:003) | KIN_022, Adoptive parent (KIN:022) | KIN_026, Partner (KIN:026) | KIN_048, Separated partner (KIN:048) | KIN_030, Consanguineous partner (KIN:030) | KIN_049, Separated consanguineous partner (KIN:049) | KIN_009, Twin (KIN:009) | KIN_010, Monozygotic twin (KIN:010) | KIN_011, Polyzygotic twin (KIN:011)",What person A is to person B (GA4GH KIN code).,,,,,,,,,,,@READONLY
+review_date,review,,text,Date of review,,,date_ymd,,,,,,,,,,
+ldl_12m,review,,text,LDL cholesterol at 12 months (mmol/L),,,number,,,,,,,,,,
+on_statin,review,,yesno,Taking a statin?,,,,,,,,,,,,,
+review_notes,review,,notes,Review notes,,,,,,,,,,,,,
