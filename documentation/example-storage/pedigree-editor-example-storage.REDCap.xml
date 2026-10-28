@@ -1,0 +1,3345 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" FileOID="000-00-0000" FileType="Snapshot" Description="Pedigree Editor example: storage and upgrade" AsOfDateTime="2026-10-28T07:28:48" CreationDateTime="2026-10-28T07:28:48" SourceSystem="REDCap" SourceSystemVersion="16.0.32">
+<Study OID="Project.PedigreeEditorExampleStorageAn">
+<GlobalVariables>
+	<StudyName>Pedigree Editor example: storage and upgrade</StudyName>
+	<StudyDescription>This file contains the metadata, events, and data for REDCap project "Pedigree Editor example: storage and upgrade".</StudyDescription>
+	<ProtocolName>Pedigree Editor example: storage and upgrade</ProtocolName>
+	<redcap:RecordAutonumberingEnabled>1</redcap:RecordAutonumberingEnabled>
+	<redcap:CustomRecordLabel></redcap:CustomRecordLabel>
+	<redcap:SecondaryUniqueField></redcap:SecondaryUniqueField>
+	<redcap:SecondaryUniqueFieldDisplayValue>1</redcap:SecondaryUniqueFieldDisplayValue>
+	<redcap:SecondaryUniqueFieldDisplayLabel>1</redcap:SecondaryUniqueFieldDisplayLabel>
+	<redcap:SchedulingEnabled>0</redcap:SchedulingEnabled>
+	<redcap:SurveysEnabled>0</redcap:SurveysEnabled>
+	<redcap:SurveyInvitationEmailField></redcap:SurveyInvitationEmailField>
+	<redcap:SurveyParticipantIdentifiers>0</redcap:SurveyParticipantIdentifiers>
+	<redcap:RandomizationEnabled>0</redcap:RandomizationEnabled>
+	<redcap:DisplayTodayNowButton>1</redcap:DisplayTodayNowButton>
+	<redcap:PreventBranchingEraseValues>0</redcap:PreventBranchingEraseValues>
+	<redcap:RequireChangeReason>0</redcap:RequireChangeReason>
+	<redcap:DataHistoryPopup>1</redcap:DataHistoryPopup>
+	<redcap:OrderRecordsByField></redcap:OrderRecordsByField>
+	<redcap:taskCompleteStatus>0</redcap:taskCompleteStatus>
+	<redcap:DataResolutionWorkflowEnabled>1</redcap:DataResolutionWorkflowEnabled>
+	<redcap:FieldCommentLogOptionEditDelete>1</redcap:FieldCommentLogOptionEditDelete>
+	<redcap:DataResolutionWorkflowHideClosedQueries>1</redcap:DataResolutionWorkflowHideClosedQueries>
+	<redcap:MyCapEnabled>0</redcap:MyCapEnabled>
+	<redcap:Purpose>0</redcap:Purpose>
+	<redcap:PurposeOther></redcap:PurposeOther>
+	<redcap:ProjectNotes></redcap:ProjectNotes>
+	<redcap:SurveyQueueCustomText></redcap:SurveyQueueCustomText>
+	<redcap:SurveyQueueHide>0</redcap:SurveyQueueHide>
+	<redcap:SurveyAuthEnabled>0</redcap:SurveyAuthEnabled>
+	<redcap:SurveyAuthField1></redcap:SurveyAuthField1>
+	<redcap:SurveyAuthEvent1></redcap:SurveyAuthEvent1>
+	<redcap:SurveyAuthField2></redcap:SurveyAuthField2>
+	<redcap:SurveyAuthEvent2></redcap:SurveyAuthEvent2>
+	<redcap:SurveyAuthField3></redcap:SurveyAuthField3>
+	<redcap:SurveyAuthEvent3></redcap:SurveyAuthEvent3>
+	<redcap:SurveyAuthMinFields></redcap:SurveyAuthMinFields>
+	<redcap:SurveyAuthApplyAllSurveys>1</redcap:SurveyAuthApplyAllSurveys>
+	<redcap:SurveyAuthCustomMessage></redcap:SurveyAuthCustomMessage>
+	<redcap:SurveyAuthFailLimit></redcap:SurveyAuthFailLimit>
+	<redcap:SurveyAuthFailWindow></redcap:SurveyAuthFailWindow>
+	<redcap:DataMartProjectEnabled>0</redcap:DataMartProjectEnabled>
+	<redcap:DatamartAllowRepeatRevision>0</redcap:DatamartAllowRepeatRevision>
+	<redcap:DatamartAllowCreateRevision>0</redcap:DatamartAllowCreateRevision>
+	<redcap:DatamartCronEnabled>0</redcap:DatamartCronEnabled>
+	<redcap:HideFilledForms>1</redcap:HideFilledForms>
+	<redcap:HideDisabledForms>0</redcap:HideDisabledForms>
+	<redcap:MissingDataCodes></redcap:MissingDataCodes>
+	<redcap:ProtectedEmailMode>0</redcap:ProtectedEmailMode>
+	<redcap:ProtectedEmailModeCustomText></redcap:ProtectedEmailModeCustomText>
+	<redcap:ProtectedEmailModeTrigger>ALL</redcap:ProtectedEmailModeTrigger>
+	<redcap:ProtectedEmailModeLogo></redcap:ProtectedEmailModeLogo>
+	<redcap:MycapProjectsGroup>
+		<redcap:MycapProjects/>
+	</redcap:MycapProjectsGroup>
+	<redcap:MycapThemesGroup>
+		<redcap:MycapThemes/>
+	</redcap:MycapThemesGroup>
+	<redcap:MultilanguageSettingsGroup>
+		<redcap:MultilanguageSettings settings="YToyMzp7czo3OiJ2ZXJzaW9uIjtzOjc6IjE2LjAuMzIiO3M6NToibGFuZ3MiO2E6MDp7fXM6OToicHJvamVjdElkIjtzOjI6IjUwIjtzOjE1OiJkZXNpZ25hdGVkRmllbGQiO3M6MDoiIjtzOjY6InN0YXR1cyI7czozOiJkZXYiO3M6NToiZGVidWciO2I6MDtzOjEzOiJhZG1pbi1lbmFibGVkIjtiOjA7czoxNDoiYWRtaW4tZGlzYWJsZWQiO2I6MDtzOjE1OiJhbGxvdy1mcm9tLWZpbGUiO2I6MDtzOjE4OiJhbGxvdy1mcm9tLXNjcmF0Y2giO2I6MDtzOjIxOiJvcHRpb25hbC1zdWJzY3JpcHRpb24iO2I6MDtzOjE4OiJhbGxvdy11aS1vdmVycmlkZXMiO2I6MDtzOjc6InJlZkxhbmciO3M6MDoiIjtzOjEyOiJmYWxsYmFja0xhbmciO3M6MDoiIjtzOjg6ImRpc2FibGVkIjtiOjA7czoyNToiaGlnaGxpZ2h0TWlzc2luZ0RhdGFlbnRyeSI7YjowO3M6MjI6ImhpZ2hsaWdodE1pc3NpbmdTdXJ2ZXkiO2I6MDtzOjIxOiJhdXRvRGV0ZWN0QnJvd3NlckxhbmciO2I6MDtzOjEyOiJhbGVydFNvdXJjZXMiO2E6MDp7fXM6MTA6ImFzaVNvdXJjZXMiO2E6MDp7fXM6MTQ6ImV4Y2x1ZGVkQWxlcnRzIjthOjA6e31zOjE0OiJleGNsdWRlZEZpZWxkcyI7YTowOnt9czoxNjoiZXhjbHVkZWRTZXR0aW5ncyI7YTowOnt9fQ=="/>
+	</redcap:MultilanguageSettingsGroup>
+</GlobalVariables>
+<MetaDataVersion OID="Metadata.PedigreeEditorExampleStorageAn_2026-10-28_0728" Name="Pedigree Editor example: storage and upgrade" redcap:RecordIdField="record_id">
+	<FormDef OID="Form.family_history" Name="Family History" Repeating="No" redcap:FormName="family_history">
+		<ItemGroupRef ItemGroupOID="family_history.record_id" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="family_history.family_history_complete" Mandatory="No"/>
+	</FormDef>
+	<ItemGroupDef OID="family_history.record_id" Name="Family History" Repeating="No">
+		<ItemRef ItemOID="record_id" Mandatory="No" redcap:Variable="record_id"/>
+		<ItemRef ItemOID="family_name" Mandatory="No" redcap:Variable="family_name"/>
+		<ItemRef ItemOID="pedigree" Mandatory="No" redcap:Variable="pedigree"/>
+		<ItemRef ItemOID="pedigree_uncompressed" Mandatory="No" redcap:Variable="pedigree_uncompressed"/>
+		<ItemRef ItemOID="pedigree_old_tag" Mandatory="No" redcap:Variable="pedigree_old_tag"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="family_history.family_history_complete" Name="Form Status" Repeating="No">
+		<ItemRef ItemOID="family_history_complete" Mandatory="No" redcap:Variable="family_history_complete"/>
+	</ItemGroupDef>
+	<ItemDef OID="record_id" Name="record_id" DataType="text" Length="999" redcap:Variable="record_id" redcap:FieldType="text">
+		<Question><TranslatedText>Family ID</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="family_name" Name="family_name" DataType="text" Length="999" redcap:Variable="family_name" redcap:FieldType="text">
+		<Question><TranslatedText>Family name</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="pedigree" Name="pedigree" DataType="text" Length="999" redcap:Variable="pedigree" redcap:FieldType="textarea" redcap:FieldNote="Stored the project&#039;s way: GA4GH, compressed (Compress Data: Always compress)." redcap:FieldAnnotation="@PEDIGREE=SHOW_TEXT">
+		<Question><TranslatedText>Pedigree</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="pedigree_uncompressed" Name="pedigree_uncompressed" DataType="text" Length="999" redcap:Variable="pedigree_uncompressed" redcap:FieldType="textarea" redcap:FieldNote="NEVER_COMPRESS on this field&#039;s tag overrides the project&#039;s Compress Data, so the stored GA4GH JSON is readable here. Uncompressed, this pedigree is over the field&#039;s size limit, so it&#039;s stored without its diagram image and the form shows a placeholder." redcap:FieldAnnotation="@PEDIGREE=SHOW_TEXT,NEVER_COMPRESS">
+		<Question><TranslatedText>Pedigree (never compressed)</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="pedigree_old_tag" Name="pedigree_old_tag" DataType="text" Length="999" redcap:Variable="pedigree_old_tag" redcap:FieldType="textarea" redcap:FieldNote="1.0.0 no longer recognises @PEDIGREE_HPO, so this is a plain notes field. Replace the tag with @PEDIGREE and set Default Terminology to HPO + omim." redcap:FieldAnnotation="@PEDIGREE_HPO">
+		<Question><TranslatedText>Pedigree (tagged @PEDIGREE_HPO before 1.0.0)</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="family_history_complete" Name="family_history_complete" DataType="text" Length="1" redcap:Variable="family_history_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+		<Question><TranslatedText>Complete?</TranslatedText></Question>
+		<CodeListRef CodeListOID="family_history_complete.choices"/>
+	</ItemDef>
+	<CodeList OID="family_history_complete.choices" Name="family_history_complete" DataType="text" redcap:Variable="family_history_complete">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+</MetaDataVersion>
+</Study>
+<ClinicalData StudyOID="Project.PedigreeEditorExampleStorageAn" MetaDataVersionOID="Metadata.PedigreeEditorExampleStorageAn_2026-10-28_0728">
+	<SubjectData SubjectKey="1" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.family_history" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="family_history.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1"/>
+					<ItemData ItemOID="family_name" Value="Fenwick"/>
+					<ItemData ItemOID="pedigree" Value="GZ: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"/>
+					<ItemData ItemOID="pedigree_uncompressed" Value="{
+  &quot;resourceType&quot;: &quot;Bundle&quot;,
+  &quot;identifier&quot;: {
+    &quot;system&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig&quot;,
+    &quot;value&quot;: &quot;urn:uuid:8a1e82d0-51e3-4bfe-9026-51c9d6bcfac2&quot;
+  },
+  &quot;type&quot;: &quot;document&quot;,
+  &quot;timestamp&quot;: &quot;2026-10-28T07:28:45+10:00&quot;,
+  &quot;entry&quot;: [
+    {
+      &quot;link&quot;: [
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:1cdf7f95-ba8d-4ada-83b2-811ba2b44a51&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:cb11f562-8561-4549-902e-466388fbd728&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:8478989c-26b8-4baa-bcbf-b1bc33e84416&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:fc24c644-d13d-47a1-98f7-d3061c2ddeb1&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:d5f4abe8-f49f-40d1-ae65-6a1d0e0aff00&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:3f7202c5-143d-4afb-b194-c275556932de&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:72041ccd-1867-442c-8c10-a703f427f445&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:3c73f284-9ae4-418c-bc9e-a368de4dc123&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:d9c78476-c6b6-428f-aa76-8b439f3fbfcf&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:dea9dc53-68f0-4f24-a471-db4d6e90d789&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:9bce6dd6-4ff0-4fe4-b39b-b5d5a4de5872&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:000c6ef9-5dfc-4700-9635-496cb5758930&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:fc995d17-2eda-4af7-93a0-da7cd856b080&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:715df6f5-9bc2-4b50-8edb-b4aac9a9091f&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:84bf0c5e-5f07-4b8c-a6ad-74a1e149889e&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:02103529-099c-437e-8184-eb6dbd2df969&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:cde3313a-1410-4453-876f-94a9f2a708f0&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:c3c329a5-406c-43e0-adb7-9dea3ce28e75&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:d84f88c5-9bbf-47b7-b89e-65aa492a515a&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:3a4ac28a-fe75-4945-b065-8a7230fd1df0&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:13921907-e1d3-409a-b9db-9fe89a8a016d&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:8168c110-2c13-43e4-8e8c-c28b08e3140d&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:87622be0-bf9b-4925-a2b1-c6489f7fac87&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:c15df933-fdbb-4004-b00b-cf3b8e96fdbb&quot;
+        },
+        {
+          &quot;relation&quot;: &quot;item&quot;,
+          &quot;url&quot;: &quot;urn:uuid:403aa620-2f36-4804-a08c-bb98f18269c5&quot;
+        }
+      ],
+      &quot;fullUrl&quot;: &quot;urn:uuid:c23837c8-a140-4733-900b-a3d2bfad83ff&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;Composition&quot;,
+        &quot;id&quot;: &quot;urn:uuid:c23837c8-a140-4733-900b-a3d2bfad83ff&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/Pedigree&quot;
+          ]
+        },
+        &quot;status&quot;: &quot;final&quot;,
+        &quot;type&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://snomed.info/sct&quot;,
+              &quot;code&quot;: &quot;422432008&quot;
+            }
+          ]
+        },
+        &quot;subject&quot;: {
+          &quot;type&quot;: &quot;Patient&quot;,
+          &quot;reference&quot;: &quot;urn:uuid:cb11f562-8561-4549-902e-466388fbd728&quot;
+        },
+        &quot;date&quot;: &quot;2026-10-28T07:28:45+10:00&quot;,
+        &quot;author&quot;: {
+          &quot;type&quot;: &quot;Organization&quot;,
+          &quot;reference&quot;: &quot;urn:uuid:1cdf7f95-ba8d-4ada-83b2-811ba2b44a51&quot;
+        },
+        &quot;title&quot;: &quot;Pedigree&quot;,
+        &quot;section&quot;: [
+          {
+            &quot;title&quot;: &quot;Proband&quot;,
+            &quot;code&quot;: {
+              &quot;coding&quot;: [
+                {
+                  &quot;system&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/CodeSystem/SectionType&quot;,
+                  &quot;code&quot;: &quot;proband&quot;
+                }
+              ]
+            },
+            &quot;entry&quot;: [
+              {
+                &quot;type&quot;: &quot;Patient&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:cb11f562-8561-4549-902e-466388fbd728&quot;
+              }
+            ]
+          },
+          {
+            &quot;title&quot;: &quot;Reason&quot;,
+            &quot;code&quot;: {
+              &quot;coding&quot;: [
+                {
+                  &quot;system&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/CodeSystem/SectionType&quot;,
+                  &quot;code&quot;: &quot;reason&quot;
+                }
+              ]
+            },
+            &quot;entry&quot;: []
+          },
+          {
+            &quot;title&quot;: &quot;Individuals&quot;,
+            &quot;code&quot;: {
+              &quot;coding&quot;: [
+                {
+                  &quot;system&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/CodeSystem/SectionType&quot;,
+                  &quot;code&quot;: &quot;individuals&quot;
+                }
+              ]
+            },
+            &quot;entry&quot;: [
+              {
+                &quot;type&quot;: &quot;Patient&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:cb11f562-8561-4549-902e-466388fbd728&quot;
+              },
+              {
+                &quot;type&quot;: &quot;Patient&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:8478989c-26b8-4baa-bcbf-b1bc33e84416&quot;
+              },
+              {
+                &quot;type&quot;: &quot;Patient&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:fc24c644-d13d-47a1-98f7-d3061c2ddeb1&quot;
+              },
+              {
+                &quot;type&quot;: &quot;Patient&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:d5f4abe8-f49f-40d1-ae65-6a1d0e0aff00&quot;
+              },
+              {
+                &quot;type&quot;: &quot;Patient&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:3f7202c5-143d-4afb-b194-c275556932de&quot;
+              },
+              {
+                &quot;type&quot;: &quot;Patient&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:72041ccd-1867-442c-8c10-a703f427f445&quot;
+              },
+              {
+                &quot;type&quot;: &quot;Patient&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:3c73f284-9ae4-418c-bc9e-a368de4dc123&quot;
+              }
+            ]
+          },
+          {
+            &quot;title&quot;: &quot;Relationships&quot;,
+            &quot;code&quot;: {
+              &quot;coding&quot;: [
+                {
+                  &quot;system&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/CodeSystem/SectionType&quot;,
+                  &quot;code&quot;: &quot;relationships&quot;
+                }
+              ]
+            },
+            &quot;entry&quot;: [
+              {
+                &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:d9c78476-c6b6-428f-aa76-8b439f3fbfcf&quot;
+              },
+              {
+                &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:dea9dc53-68f0-4f24-a471-db4d6e90d789&quot;
+              },
+              {
+                &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:9bce6dd6-4ff0-4fe4-b39b-b5d5a4de5872&quot;
+              },
+              {
+                &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:000c6ef9-5dfc-4700-9635-496cb5758930&quot;
+              },
+              {
+                &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:fc995d17-2eda-4af7-93a0-da7cd856b080&quot;
+              },
+              {
+                &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:715df6f5-9bc2-4b50-8edb-b4aac9a9091f&quot;
+              },
+              {
+                &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:84bf0c5e-5f07-4b8c-a6ad-74a1e149889e&quot;
+              },
+              {
+                &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:02103529-099c-437e-8184-eb6dbd2df969&quot;
+              },
+              {
+                &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:cde3313a-1410-4453-876f-94a9f2a708f0&quot;
+              },
+              {
+                &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:c3c329a5-406c-43e0-adb7-9dea3ce28e75&quot;
+              }
+            ]
+          },
+          {
+            &quot;title&quot;: &quot;Other&quot;,
+            &quot;code&quot;: {
+              &quot;coding&quot;: [
+                {
+                  &quot;system&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/CodeSystem/SectionType&quot;,
+                  &quot;code&quot;: &quot;other&quot;
+                }
+              ]
+            },
+            &quot;entry&quot;: []
+          },
+          {
+            &quot;title&quot;: &quot;Questionnaire Responses&quot;,
+            &quot;code&quot;: {
+              &quot;coding&quot;: [
+                {
+                  &quot;system&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/CodeSystem/SectionType&quot;,
+                  &quot;code&quot;: &quot;questionnaire-responses&quot;
+                }
+              ]
+            },
+            &quot;entry&quot;: [
+              {
+                &quot;type&quot;: &quot;QuestionnaireResponse&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:d84f88c5-9bbf-47b7-b89e-65aa492a515a&quot;
+              },
+              {
+                &quot;type&quot;: &quot;QuestionnaireResponse&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:3a4ac28a-fe75-4945-b065-8a7230fd1df0&quot;
+              },
+              {
+                &quot;type&quot;: &quot;QuestionnaireResponse&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:13921907-e1d3-409a-b9db-9fe89a8a016d&quot;
+              },
+              {
+                &quot;type&quot;: &quot;QuestionnaireResponse&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:8168c110-2c13-43e4-8e8c-c28b08e3140d&quot;
+              },
+              {
+                &quot;type&quot;: &quot;QuestionnaireResponse&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:87622be0-bf9b-4925-a2b1-c6489f7fac87&quot;
+              },
+              {
+                &quot;type&quot;: &quot;QuestionnaireResponse&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:c15df933-fdbb-4004-b00b-cf3b8e96fdbb&quot;
+              },
+              {
+                &quot;type&quot;: &quot;QuestionnaireResponse&quot;,
+                &quot;reference&quot;: &quot;urn:uuid:403aa620-2f36-4804-a08c-bb98f18269c5&quot;
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:1cdf7f95-ba8d-4ada-83b2-811ba2b44a51&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;Organization&quot;,
+        &quot;id&quot;: &quot;urn:uuid:1cdf7f95-ba8d-4ada-83b2-811ba2b44a51&quot;,
+        &quot;name&quot;: &quot;open-pedigree unknown author&quot;
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:cb11f562-8561-4549-902e-466388fbd728&quot;,
+      &quot;resource&quot;: {
+        &quot;id&quot;: &quot;urn:uuid:cb11f562-8561-4549-902e-466388fbd728&quot;,
+        &quot;resourceType&quot;: &quot;Patient&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeIndividual&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/patient-unborn&quot;,
+            &quot;valueBoolean&quot;: false
+          }
+        ],
+        &quot;gender&quot;: &quot;male&quot;,
+        &quot;birthDate&quot;: &quot;2006-07-07&quot;,
+        &quot;name&quot;: [
+          {
+            &quot;family&quot;: &quot;Fenwick&quot;,
+            &quot;given&quot;: [
+              &quot;Oliver&quot;
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:8478989c-26b8-4baa-bcbf-b1bc33e84416&quot;,
+      &quot;resource&quot;: {
+        &quot;id&quot;: &quot;urn:uuid:8478989c-26b8-4baa-bcbf-b1bc33e84416&quot;,
+        &quot;resourceType&quot;: &quot;Patient&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeIndividual&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/patient-unborn&quot;,
+            &quot;valueBoolean&quot;: false
+          }
+        ],
+        &quot;gender&quot;: &quot;male&quot;,
+        &quot;birthDate&quot;: &quot;1948-02-11&quot;,
+        &quot;name&quot;: [
+          {
+            &quot;family&quot;: &quot;Fenwick&quot;,
+            &quot;given&quot;: [
+              &quot;George&quot;
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:fc24c644-d13d-47a1-98f7-d3061c2ddeb1&quot;,
+      &quot;resource&quot;: {
+        &quot;id&quot;: &quot;urn:uuid:fc24c644-d13d-47a1-98f7-d3061c2ddeb1&quot;,
+        &quot;resourceType&quot;: &quot;Patient&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeIndividual&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/patient-unborn&quot;,
+            &quot;valueBoolean&quot;: false
+          }
+        ],
+        &quot;gender&quot;: &quot;female&quot;,
+        &quot;birthDate&quot;: &quot;1950-09-03&quot;,
+        &quot;name&quot;: [
+          {
+            &quot;family&quot;: &quot;Fenwick&quot;,
+            &quot;given&quot;: [
+              &quot;Iris&quot;
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:d5f4abe8-f49f-40d1-ae65-6a1d0e0aff00&quot;,
+      &quot;resource&quot;: {
+        &quot;id&quot;: &quot;urn:uuid:d5f4abe8-f49f-40d1-ae65-6a1d0e0aff00&quot;,
+        &quot;resourceType&quot;: &quot;Patient&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeIndividual&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/patient-unborn&quot;,
+            &quot;valueBoolean&quot;: false
+          }
+        ],
+        &quot;gender&quot;: &quot;male&quot;,
+        &quot;birthDate&quot;: &quot;1976-05-20&quot;,
+        &quot;name&quot;: [
+          {
+            &quot;family&quot;: &quot;Fenwick&quot;,
+            &quot;given&quot;: [
+              &quot;Alan&quot;
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:3f7202c5-143d-4afb-b194-c275556932de&quot;,
+      &quot;resource&quot;: {
+        &quot;id&quot;: &quot;urn:uuid:3f7202c5-143d-4afb-b194-c275556932de&quot;,
+        &quot;resourceType&quot;: &quot;Patient&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeIndividual&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/patient-unborn&quot;,
+            &quot;valueBoolean&quot;: false
+          }
+        ],
+        &quot;gender&quot;: &quot;female&quot;,
+        &quot;birthDate&quot;: &quot;1978-12-01&quot;,
+        &quot;name&quot;: [
+          {
+            &quot;family&quot;: &quot;Fenwick&quot;,
+            &quot;given&quot;: [
+              &quot;Clare&quot;
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:72041ccd-1867-442c-8c10-a703f427f445&quot;,
+      &quot;resource&quot;: {
+        &quot;id&quot;: &quot;urn:uuid:72041ccd-1867-442c-8c10-a703f427f445&quot;,
+        &quot;resourceType&quot;: &quot;Patient&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeIndividual&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/patient-unborn&quot;,
+            &quot;valueBoolean&quot;: false
+          }
+        ],
+        &quot;gender&quot;: &quot;female&quot;,
+        &quot;birthDate&quot;: &quot;1980-03-15&quot;,
+        &quot;name&quot;: [
+          {
+            &quot;family&quot;: &quot;Fenwick&quot;,
+            &quot;given&quot;: [
+              &quot;Nora&quot;
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:3c73f284-9ae4-418c-bc9e-a368de4dc123&quot;,
+      &quot;resource&quot;: {
+        &quot;id&quot;: &quot;urn:uuid:3c73f284-9ae4-418c-bc9e-a368de4dc123&quot;,
+        &quot;resourceType&quot;: &quot;Patient&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeIndividual&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/patient-unborn&quot;,
+            &quot;valueBoolean&quot;: false
+          }
+        ],
+        &quot;gender&quot;: &quot;female&quot;,
+        &quot;birthDate&quot;: &quot;2009-10-30&quot;,
+        &quot;name&quot;: [
+          {
+            &quot;family&quot;: &quot;Fenwick&quot;,
+            &quot;given&quot;: [
+              &quot;Pippa&quot;
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:d9c78476-c6b6-428f-aa76-8b439f3fbfcf&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+        &quot;id&quot;: &quot;urn:uuid:d9c78476-c6b6-428f-aa76-8b439f3fbfcf&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeRelationship&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/familymemberhistory-patient-record&quot;,
+            &quot;valueReference&quot;: {
+              &quot;reference&quot;: &quot;urn:uuid:fc24c644-d13d-47a1-98f7-d3061c2ddeb1&quot;
+            }
+          }
+        ],
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;patient&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:8478989c-26b8-4baa-bcbf-b1bc33e84416&quot;
+        },
+        &quot;relationship&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+              &quot;code&quot;: &quot;KIN:026&quot;,
+              &quot;display&quot;: &quot;isPartner&quot;
+            }
+          ]
+        }
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:dea9dc53-68f0-4f24-a471-db4d6e90d789&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+        &quot;id&quot;: &quot;urn:uuid:dea9dc53-68f0-4f24-a471-db4d6e90d789&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeRelationship&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/familymemberhistory-patient-record&quot;,
+            &quot;valueReference&quot;: {
+              &quot;reference&quot;: &quot;urn:uuid:8478989c-26b8-4baa-bcbf-b1bc33e84416&quot;
+            }
+          }
+        ],
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;patient&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:d5f4abe8-f49f-40d1-ae65-6a1d0e0aff00&quot;
+        },
+        &quot;relationship&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+              &quot;code&quot;: &quot;KIN:028&quot;,
+              &quot;display&quot;: &quot;isBiologicalFather&quot;
+            }
+          ]
+        }
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:9bce6dd6-4ff0-4fe4-b39b-b5d5a4de5872&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+        &quot;id&quot;: &quot;urn:uuid:9bce6dd6-4ff0-4fe4-b39b-b5d5a4de5872&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeRelationship&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/familymemberhistory-patient-record&quot;,
+            &quot;valueReference&quot;: {
+              &quot;reference&quot;: &quot;urn:uuid:fc24c644-d13d-47a1-98f7-d3061c2ddeb1&quot;
+            }
+          }
+        ],
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;patient&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:d5f4abe8-f49f-40d1-ae65-6a1d0e0aff00&quot;
+        },
+        &quot;relationship&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+              &quot;code&quot;: &quot;KIN:027&quot;,
+              &quot;display&quot;: &quot;isBiologicalMother&quot;
+            }
+          ]
+        }
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:000c6ef9-5dfc-4700-9635-496cb5758930&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+        &quot;id&quot;: &quot;urn:uuid:000c6ef9-5dfc-4700-9635-496cb5758930&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeRelationship&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/familymemberhistory-patient-record&quot;,
+            &quot;valueReference&quot;: {
+              &quot;reference&quot;: &quot;urn:uuid:3f7202c5-143d-4afb-b194-c275556932de&quot;
+            }
+          }
+        ],
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;patient&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:d5f4abe8-f49f-40d1-ae65-6a1d0e0aff00&quot;
+        },
+        &quot;relationship&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+              &quot;code&quot;: &quot;KIN:026&quot;,
+              &quot;display&quot;: &quot;isPartner&quot;
+            }
+          ]
+        }
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:fc995d17-2eda-4af7-93a0-da7cd856b080&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+        &quot;id&quot;: &quot;urn:uuid:fc995d17-2eda-4af7-93a0-da7cd856b080&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeRelationship&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/familymemberhistory-patient-record&quot;,
+            &quot;valueReference&quot;: {
+              &quot;reference&quot;: &quot;urn:uuid:d5f4abe8-f49f-40d1-ae65-6a1d0e0aff00&quot;
+            }
+          }
+        ],
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;patient&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:cb11f562-8561-4549-902e-466388fbd728&quot;
+        },
+        &quot;relationship&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+              &quot;code&quot;: &quot;KIN:028&quot;,
+              &quot;display&quot;: &quot;isBiologicalFather&quot;
+            }
+          ]
+        }
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:715df6f5-9bc2-4b50-8edb-b4aac9a9091f&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+        &quot;id&quot;: &quot;urn:uuid:715df6f5-9bc2-4b50-8edb-b4aac9a9091f&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeRelationship&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/familymemberhistory-patient-record&quot;,
+            &quot;valueReference&quot;: {
+              &quot;reference&quot;: &quot;urn:uuid:3f7202c5-143d-4afb-b194-c275556932de&quot;
+            }
+          }
+        ],
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;patient&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:cb11f562-8561-4549-902e-466388fbd728&quot;
+        },
+        &quot;relationship&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+              &quot;code&quot;: &quot;KIN:027&quot;,
+              &quot;display&quot;: &quot;isBiologicalMother&quot;
+            }
+          ]
+        }
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:84bf0c5e-5f07-4b8c-a6ad-74a1e149889e&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+        &quot;id&quot;: &quot;urn:uuid:84bf0c5e-5f07-4b8c-a6ad-74a1e149889e&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeRelationship&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/familymemberhistory-patient-record&quot;,
+            &quot;valueReference&quot;: {
+              &quot;reference&quot;: &quot;urn:uuid:8478989c-26b8-4baa-bcbf-b1bc33e84416&quot;
+            }
+          }
+        ],
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;patient&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:72041ccd-1867-442c-8c10-a703f427f445&quot;
+        },
+        &quot;relationship&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+              &quot;code&quot;: &quot;KIN:028&quot;,
+              &quot;display&quot;: &quot;isBiologicalFather&quot;
+            }
+          ]
+        }
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:02103529-099c-437e-8184-eb6dbd2df969&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+        &quot;id&quot;: &quot;urn:uuid:02103529-099c-437e-8184-eb6dbd2df969&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeRelationship&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/familymemberhistory-patient-record&quot;,
+            &quot;valueReference&quot;: {
+              &quot;reference&quot;: &quot;urn:uuid:fc24c644-d13d-47a1-98f7-d3061c2ddeb1&quot;
+            }
+          }
+        ],
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;patient&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:72041ccd-1867-442c-8c10-a703f427f445&quot;
+        },
+        &quot;relationship&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+              &quot;code&quot;: &quot;KIN:027&quot;,
+              &quot;display&quot;: &quot;isBiologicalMother&quot;
+            }
+          ]
+        }
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:cde3313a-1410-4453-876f-94a9f2a708f0&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+        &quot;id&quot;: &quot;urn:uuid:cde3313a-1410-4453-876f-94a9f2a708f0&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeRelationship&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/familymemberhistory-patient-record&quot;,
+            &quot;valueReference&quot;: {
+              &quot;reference&quot;: &quot;urn:uuid:d5f4abe8-f49f-40d1-ae65-6a1d0e0aff00&quot;
+            }
+          }
+        ],
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;patient&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:3c73f284-9ae4-418c-bc9e-a368de4dc123&quot;
+        },
+        &quot;relationship&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+              &quot;code&quot;: &quot;KIN:028&quot;,
+              &quot;display&quot;: &quot;isBiologicalFather&quot;
+            }
+          ]
+        }
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:c3c329a5-406c-43e0-adb7-9dea3ce28e75&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+        &quot;id&quot;: &quot;urn:uuid:c3c329a5-406c-43e0-adb7-9dea3ce28e75&quot;,
+        &quot;meta&quot;: {
+          &quot;profile&quot;: [
+            &quot;http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeRelationship&quot;
+          ]
+        },
+        &quot;extension&quot;: [
+          {
+            &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/familymemberhistory-patient-record&quot;,
+            &quot;valueReference&quot;: {
+              &quot;reference&quot;: &quot;urn:uuid:3f7202c5-143d-4afb-b194-c275556932de&quot;
+            }
+          }
+        ],
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;patient&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:3c73f284-9ae4-418c-bc9e-a368de4dc123&quot;
+        },
+        &quot;relationship&quot;: {
+          &quot;coding&quot;: [
+            {
+              &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+              &quot;code&quot;: &quot;KIN:027&quot;,
+              &quot;display&quot;: &quot;isBiologicalMother&quot;
+            }
+          ]
+        }
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:d84f88c5-9bbf-47b7-b89e-65aa492a515a&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;QuestionnaireResponse&quot;,
+        &quot;id&quot;: &quot;urn:uuid:d84f88c5-9bbf-47b7-b89e-65aa492a515a&quot;,
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;questionnaire&quot;: &quot;https://github.com/aehrc/open-pedigree/Questionnaire/default|1.0&quot;,
+        &quot;subject&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:cb11f562-8561-4549-902e-466388fbd728&quot;
+        },
+        &quot;item&quot;: [
+          {
+            &quot;linkId&quot;: &quot;gender&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;M&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;first_name&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Oliver&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;last_name&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Fenwick&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;date_of_birth&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueDate&quot;: &quot;2006-07-07&quot;
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:3a4ac28a-fe75-4945-b065-8a7230fd1df0&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;QuestionnaireResponse&quot;,
+        &quot;id&quot;: &quot;urn:uuid:3a4ac28a-fe75-4945-b065-8a7230fd1df0&quot;,
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;questionnaire&quot;: &quot;https://github.com/aehrc/open-pedigree/Questionnaire/default|1.0&quot;,
+        &quot;subject&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:d5f4abe8-f49f-40d1-ae65-6a1d0e0aff00&quot;
+        },
+        &quot;item&quot;: [
+          {
+            &quot;linkId&quot;: &quot;gender&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;M&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;first_name&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Alan&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;last_name&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Fenwick&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;date_of_birth&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueDate&quot;: &quot;1976-05-20&quot;
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:13921907-e1d3-409a-b9db-9fe89a8a016d&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;QuestionnaireResponse&quot;,
+        &quot;id&quot;: &quot;urn:uuid:13921907-e1d3-409a-b9db-9fe89a8a016d&quot;,
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;questionnaire&quot;: &quot;https://github.com/aehrc/open-pedigree/Questionnaire/default|1.0&quot;,
+        &quot;subject&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:8478989c-26b8-4baa-bcbf-b1bc33e84416&quot;
+        },
+        &quot;item&quot;: [
+          {
+            &quot;linkId&quot;: &quot;gender&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;M&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;first_name&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;George&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;last_name&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Fenwick&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;date_of_birth&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueDate&quot;: &quot;1948-02-11&quot;
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:8168c110-2c13-43e4-8e8c-c28b08e3140d&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;QuestionnaireResponse&quot;,
+        &quot;id&quot;: &quot;urn:uuid:8168c110-2c13-43e4-8e8c-c28b08e3140d&quot;,
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;questionnaire&quot;: &quot;https://github.com/aehrc/open-pedigree/Questionnaire/default|1.0&quot;,
+        &quot;subject&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:fc24c644-d13d-47a1-98f7-d3061c2ddeb1&quot;
+        },
+        &quot;item&quot;: [
+          {
+            &quot;linkId&quot;: &quot;gender&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;F&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;first_name&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Iris&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;last_name&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Fenwick&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;date_of_birth&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueDate&quot;: &quot;1950-09-03&quot;
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:87622be0-bf9b-4925-a2b1-c6489f7fac87&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;QuestionnaireResponse&quot;,
+        &quot;id&quot;: &quot;urn:uuid:87622be0-bf9b-4925-a2b1-c6489f7fac87&quot;,
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;questionnaire&quot;: &quot;https://github.com/aehrc/open-pedigree/Questionnaire/default|1.0&quot;,
+        &quot;subject&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:3f7202c5-143d-4afb-b194-c275556932de&quot;
+        },
+        &quot;item&quot;: [
+          {
+            &quot;linkId&quot;: &quot;gender&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;F&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;first_name&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Clare&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;last_name&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Fenwick&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;date_of_birth&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueDate&quot;: &quot;1978-12-01&quot;
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:c15df933-fdbb-4004-b00b-cf3b8e96fdbb&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;QuestionnaireResponse&quot;,
+        &quot;id&quot;: &quot;urn:uuid:c15df933-fdbb-4004-b00b-cf3b8e96fdbb&quot;,
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;questionnaire&quot;: &quot;https://github.com/aehrc/open-pedigree/Questionnaire/default|1.0&quot;,
+        &quot;subject&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:72041ccd-1867-442c-8c10-a703f427f445&quot;
+        },
+        &quot;item&quot;: [
+          {
+            &quot;linkId&quot;: &quot;gender&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;F&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;first_name&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Nora&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;last_name&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Fenwick&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;date_of_birth&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueDate&quot;: &quot;1980-03-15&quot;
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      &quot;fullUrl&quot;: &quot;urn:uuid:403aa620-2f36-4804-a08c-bb98f18269c5&quot;,
+      &quot;resource&quot;: {
+        &quot;resourceType&quot;: &quot;QuestionnaireResponse&quot;,
+        &quot;id&quot;: &quot;urn:uuid:403aa620-2f36-4804-a08c-bb98f18269c5&quot;,
+        &quot;status&quot;: &quot;completed&quot;,
+        &quot;questionnaire&quot;: &quot;https://github.com/aehrc/open-pedigree/Questionnaire/default|1.0&quot;,
+        &quot;subject&quot;: {
+          &quot;reference&quot;: &quot;urn:uuid:3c73f284-9ae4-418c-bc9e-a368de4dc123&quot;
+        },
+        &quot;item&quot;: [
+          {
+            &quot;linkId&quot;: &quot;gender&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;F&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;first_name&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Pippa&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;last_name&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueString&quot;: &quot;Fenwick&quot;
+              }
+            ]
+          },
+          {
+            &quot;linkId&quot;: &quot;date_of_birth&quot;,
+            &quot;answer&quot;: [
+              {
+                &quot;valueDate&quot;: &quot;2009-10-30&quot;
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_history.family_history_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="family_history_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="2" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.family_history" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="family_history.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="2"/>
+					<ItemData ItemOID="family_name" Value="Example"/>
+					<ItemData ItemOID="pedigree" Value="{
+  &quot;resourceType&quot;: &quot;Composition&quot;,
+  &quot;status&quot;: &quot;preliminary&quot;,
+  &quot;type&quot;: {
+    &quot;coding&quot;: {
+      &quot;system&quot;: &quot;http://loinc.org&quot;,
+      &quot;code&quot;: &quot;11488-4&quot;,
+      &quot;display&quot;: &quot;Consult note&quot;
+    }
+  },
+  &quot;subject&quot;: {
+    &quot;type&quot;: &quot;Patient&quot;,
+    &quot;reference&quot;: &quot;#pat&quot;
+  },
+  &quot;date&quot;: &quot;2026-09-30T07:17:44-10:00&quot;,
+  &quot;title&quot;: &quot;Pedigree Details&quot;,
+  &quot;section&quot;: [
+    {
+      &quot;title&quot;: &quot;Patient Condition&quot;,
+      &quot;entry&quot;: [
+        {
+          &quot;type&quot;: &quot;Condition&quot;,
+          &quot;reference&quot;: &quot;#cond_0&quot;
+        },
+        {
+          &quot;type&quot;: &quot;Condition&quot;,
+          &quot;reference&quot;: &quot;#cond_1&quot;
+        },
+        {
+          &quot;type&quot;: &quot;Observation&quot;,
+          &quot;reference&quot;: &quot;#fmh_clinical_0_0&quot;
+        },
+        {
+          &quot;type&quot;: &quot;Observation&quot;,
+          &quot;reference&quot;: &quot;#fmh_genes_0_0&quot;
+        }
+      ]
+    },
+    {
+      &quot;title&quot;: &quot;Family History&quot;,
+      &quot;code&quot;: {
+        &quot;coding&quot;: {
+          &quot;system&quot;: &quot;http://loinc.org&quot;,
+          &quot;code&quot;: &quot;10157-6&quot;,
+          &quot;display&quot;: &quot;History of family member diseases&quot;
+        }
+      },
+      &quot;entry&quot;: [
+        {
+          &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+          &quot;reference&quot;: &quot;#FMH_0&quot;
+        },
+        {
+          &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+          &quot;reference&quot;: &quot;#FMH_1&quot;
+        },
+        {
+          &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+          &quot;reference&quot;: &quot;#FMH_2&quot;
+        },
+        {
+          &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+          &quot;reference&quot;: &quot;#FMH_3&quot;
+        },
+        {
+          &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+          &quot;reference&quot;: &quot;#FMH_4&quot;
+        },
+        {
+          &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+          &quot;reference&quot;: &quot;#FMH_5&quot;
+        },
+        {
+          &quot;type&quot;: &quot;Observation&quot;,
+          &quot;reference&quot;: &quot;#fmh_carrierStatus_5&quot;
+        },
+        {
+          &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+          &quot;reference&quot;: &quot;#FMH_6&quot;
+        },
+        {
+          &quot;type&quot;: &quot;Observation&quot;,
+          &quot;reference&quot;: &quot;#fmh_carrierStatus_6&quot;
+        },
+        {
+          &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+          &quot;reference&quot;: &quot;#FMH_7&quot;
+        },
+        {
+          &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+          &quot;reference&quot;: &quot;#FMH_8&quot;
+        },
+        {
+          &quot;type&quot;: &quot;Observation&quot;,
+          &quot;reference&quot;: &quot;#fmh_carrierStatus_8&quot;
+        }
+      ]
+    },
+    {
+      &quot;title&quot;: &quot;Pedigree Diagram&quot;,
+      &quot;entry&quot;: [
+        {
+          &quot;type&quot;: &quot;DocumentReference&quot;,
+          &quot;reference&quot;: &quot;#pedigreeImage&quot;
+        }
+      ]
+    }
+  ],
+  &quot;contained&quot;: [
+    {
+      &quot;id&quot;: &quot;pat&quot;,
+      &quot;resourceType&quot;: &quot;Patient&quot;,
+      &quot;gender&quot;: &quot;female&quot;,
+      &quot;birthDate&quot;: &quot;2016-7-12&quot;,
+      &quot;name&quot;: [
+        {
+          &quot;family&quot;: &quot;Example&quot;,
+          &quot;given&quot;: [
+            &quot;Maya&quot;
+          ]
+        }
+      ]
+    },
+    {
+      &quot;id&quot;: &quot;pedigreeImage&quot;,
+      &quot;resourceType&quot;: &quot;DocumentReference&quot;,
+      &quot;status&quot;: &quot;current&quot;,
+      &quot;docStatus&quot;: &quot;preliminary&quot;,
+      &quot;subject&quot;: {
+        &quot;type&quot;: &quot;Patient&quot;,
+        &quot;reference&quot;: &quot;#pat&quot;
+      },
+      &quot;description&quot;: &quot;Pedigree Diagram of Family in SVG format&quot;,
+      &quot;content&quot;: {
+        &quot;attachment&quot;: {
+          &quot;contentType&quot;: &quot;image/svg+xml&quot;,
+          &quot;data&quot;: &quot;PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIvPg==&quot;
+        }
+      }
+    },
+    {
+      &quot;resourceType&quot;: &quot;Condition&quot;,
+      &quot;id&quot;: &quot;cond_0&quot;,
+      &quot;subject&quot;: {
+        &quot;type&quot;: &quot;Patient&quot;,
+        &quot;reference&quot;: &quot;#pat&quot;
+      },
+      &quot;code&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://www.omim.org&quot;,
+            &quot;code&quot;: &quot;615688&quot;,
+            &quot;display&quot;: &quot;loading...&quot;
+          }
+        ]
+      }
+    },
+    {
+      &quot;resourceType&quot;: &quot;Condition&quot;,
+      &quot;id&quot;: &quot;cond_1&quot;,
+      &quot;subject&quot;: {
+        &quot;type&quot;: &quot;Patient&quot;,
+        &quot;reference&quot;: &quot;#pat&quot;
+      },
+      &quot;code&quot;: {
+        &quot;text&quot;: &quot;affected&quot;
+      }
+    },
+    {
+      &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+      &quot;id&quot;: &quot;FMH_0&quot;,
+      &quot;status&quot;: &quot;completed&quot;,
+      &quot;patient&quot;: {
+        &quot;type&quot;: &quot;Patient&quot;,
+        &quot;reference&quot;: &quot;#pat&quot;
+      },
+      &quot;name&quot;: &quot;Maya Example&quot;,
+      &quot;sex&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://hl7.org/fhir/administrative-gender&quot;,
+            &quot;code&quot;: &quot;female&quot;,
+            &quot;display&quot;: &quot;Female&quot;
+          }
+        ]
+      },
+      &quot;relationship&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+            &quot;code&quot;: &quot;ONESELF&quot;,
+            &quot;display&quot;: &quot;self&quot;
+          }
+        ]
+      },
+      &quot;extension&quot;: [
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent&quot;,
+          &quot;extension&quot;: [
+            {
+              &quot;url&quot;: &quot;type&quot;,
+              &quot;valueCodeableConcept&quot;: {
+                &quot;coding&quot;: [
+                  {
+                    &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+                    &quot;code&quot;: &quot;NFTH&quot;,
+                    &quot;display&quot;: &quot;natural father&quot;
+                  }
+                ]
+              }
+            },
+            {
+              &quot;url&quot;: &quot;reference&quot;,
+              &quot;valueReference&quot;: {
+                &quot;reference&quot;: &quot;#FMH_5&quot;
+              }
+            }
+          ]
+        },
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent&quot;,
+          &quot;extension&quot;: [
+            {
+              &quot;url&quot;: &quot;type&quot;,
+              &quot;valueCodeableConcept&quot;: {
+                &quot;coding&quot;: [
+                  {
+                    &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+                    &quot;code&quot;: &quot;NMTH&quot;,
+                    &quot;display&quot;: &quot;natural mother&quot;
+                  }
+                ]
+              }
+            },
+            {
+              &quot;url&quot;: &quot;reference&quot;,
+              &quot;valueReference&quot;: {
+                &quot;reference&quot;: &quot;#FMH_6&quot;
+              }
+            }
+          ]
+        },
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-observation&quot;,
+          &quot;valueReference&quot;: {
+            &quot;type&quot;: &quot;Observation&quot;,
+            &quot;reference&quot;: &quot;#fmh_clinical_0_0&quot;
+          }
+        },
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-observation&quot;,
+          &quot;valueReference&quot;: {
+            &quot;type&quot;: &quot;Observation&quot;,
+            &quot;reference&quot;: &quot;#fmh_genes_0_0&quot;
+          }
+        }
+      ],
+      &quot;bornDate&quot;: &quot;2016-07-12&quot;,
+      &quot;condition&quot;: [
+        {
+          &quot;code&quot;: {
+            &quot;coding&quot;: [
+              {
+                &quot;system&quot;: &quot;http://www.omim.org&quot;,
+                &quot;code&quot;: &quot;615688&quot;,
+                &quot;display&quot;: &quot;loading...&quot;
+              }
+            ]
+          }
+        },
+        {
+          &quot;code&quot;: {
+            &quot;text&quot;: &quot;affected&quot;
+          }
+        }
+      ]
+    },
+    {
+      &quot;resourceType&quot;: &quot;Observation&quot;,
+      &quot;id&quot;: &quot;fmh_clinical_0_0&quot;,
+      &quot;status&quot;: &quot;preliminary&quot;,
+      &quot;valueCodeableConcept&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://purl.obolibrary.org/obo/hp.fhir&quot;,
+            &quot;code&quot;: &quot;HP:0001250&quot;,
+            &quot;display&quot;: &quot;loading...&quot;
+          }
+        ]
+      },
+      &quot;subject&quot;: {
+        &quot;type&quot;: &quot;Patient&quot;,
+        &quot;reference&quot;: &quot;#pat&quot;
+      }
+    },
+    {
+      &quot;resourceType&quot;: &quot;Observation&quot;,
+      &quot;id&quot;: &quot;fmh_genes_0_0&quot;,
+      &quot;status&quot;: &quot;preliminary&quot;,
+      &quot;valueCodeableConcept&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://www.genenames.org/geneId&quot;,
+            &quot;code&quot;: &quot;HGNC:1839&quot;,
+            &quot;display&quot;: &quot;ADA2&quot;
+          }
+        ]
+      },
+      &quot;subject&quot;: {
+        &quot;type&quot;: &quot;Patient&quot;,
+        &quot;reference&quot;: &quot;#pat&quot;
+      }
+    },
+    {
+      &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+      &quot;id&quot;: &quot;FMH_1&quot;,
+      &quot;status&quot;: &quot;completed&quot;,
+      &quot;patient&quot;: {
+        &quot;type&quot;: &quot;Patient&quot;,
+        &quot;reference&quot;: &quot;#pat&quot;
+      },
+      &quot;name&quot;: &quot;Arthur Example&quot;,
+      &quot;sex&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://hl7.org/fhir/administrative-gender&quot;,
+            &quot;code&quot;: &quot;male&quot;,
+            &quot;display&quot;: &quot;Male&quot;
+          }
+        ]
+      },
+      &quot;relationship&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+            &quot;code&quot;: &quot;EXT&quot;,
+            &quot;display&quot;: &quot;extended family member&quot;
+          }
+        ]
+      },
+      &quot;extension&quot;: [
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-partner&quot;,
+          &quot;extension&quot;: [
+            {
+              &quot;url&quot;: &quot;type&quot;,
+              &quot;valueCodeableConcept&quot;: {
+                &quot;coding&quot;: [
+                  {
+                    &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+                    &quot;code&quot;: &quot;KIN:026&quot;,
+                    &quot;display&quot;: &quot;isPartner&quot;
+                  }
+                ]
+              }
+            },
+            {
+              &quot;url&quot;: &quot;reference&quot;,
+              &quot;valueReference&quot;: {
+                &quot;reference&quot;: &quot;#FMH_2&quot;
+              }
+            }
+          ]
+        }
+      ],
+      &quot;bornDate&quot;: &quot;1950-01-15&quot;,
+      &quot;deceasedDate&quot;: &quot;2012-06-21&quot;
+    },
+    {
+      &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+      &quot;id&quot;: &quot;FMH_2&quot;,
+      &quot;status&quot;: &quot;completed&quot;,
+      &quot;patient&quot;: {
+        &quot;type&quot;: &quot;Patient&quot;,
+        &quot;reference&quot;: &quot;#pat&quot;
+      },
+      &quot;name&quot;: &quot;Edith Example&quot;,
+      &quot;sex&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://hl7.org/fhir/administrative-gender&quot;,
+            &quot;code&quot;: &quot;female&quot;,
+            &quot;display&quot;: &quot;Female&quot;
+          }
+        ]
+      },
+      &quot;relationship&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+            &quot;code&quot;: &quot;EXT&quot;,
+            &quot;display&quot;: &quot;extended family member&quot;
+          }
+        ]
+      },
+      &quot;extension&quot;: [
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-partner&quot;,
+          &quot;extension&quot;: [
+            {
+              &quot;url&quot;: &quot;type&quot;,
+              &quot;valueCodeableConcept&quot;: {
+                &quot;coding&quot;: [
+                  {
+                    &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+                    &quot;code&quot;: &quot;KIN:026&quot;,
+                    &quot;display&quot;: &quot;isPartner&quot;
+                  }
+                ]
+              }
+            },
+            {
+              &quot;url&quot;: &quot;reference&quot;,
+              &quot;valueReference&quot;: {
+                &quot;reference&quot;: &quot;#FMH_1&quot;
+              }
+            }
+          ]
+        }
+      ],
+      &quot;bornDate&quot;: &quot;1953-08-30&quot;
+    },
+    {
+      &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+      &quot;id&quot;: &quot;FMH_3&quot;,
+      &quot;status&quot;: &quot;completed&quot;,
+      &quot;patient&quot;: {
+        &quot;type&quot;: &quot;Patient&quot;,
+        &quot;reference&quot;: &quot;#pat&quot;
+      },
+      &quot;name&quot;: &quot;Ray Hartley&quot;,
+      &quot;sex&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://hl7.org/fhir/administrative-gender&quot;,
+            &quot;code&quot;: &quot;male&quot;,
+            &quot;display&quot;: &quot;Male&quot;
+          }
+        ]
+      },
+      &quot;relationship&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+            &quot;code&quot;: &quot;MGRFTH&quot;,
+            &quot;display&quot;: &quot;maternal grandfather&quot;
+          }
+        ]
+      },
+      &quot;extension&quot;: [
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-partner&quot;,
+          &quot;extension&quot;: [
+            {
+              &quot;url&quot;: &quot;type&quot;,
+              &quot;valueCodeableConcept&quot;: {
+                &quot;coding&quot;: [
+                  {
+                    &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+                    &quot;code&quot;: &quot;KIN:048&quot;,
+                    &quot;display&quot;: &quot;isBrokenPartner&quot;
+                  }
+                ]
+              }
+            },
+            {
+              &quot;url&quot;: &quot;reference&quot;,
+              &quot;valueReference&quot;: {
+                &quot;reference&quot;: &quot;#FMH_4&quot;
+              }
+            }
+          ]
+        }
+      ],
+      &quot;bornDate&quot;: &quot;1955-03-11&quot;
+    },
+    {
+      &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+      &quot;id&quot;: &quot;FMH_4&quot;,
+      &quot;status&quot;: &quot;completed&quot;,
+      &quot;patient&quot;: {
+        &quot;type&quot;: &quot;Patient&quot;,
+        &quot;reference&quot;: &quot;#pat&quot;
+      },
+      &quot;name&quot;: &quot;June Hartley&quot;,
+      &quot;sex&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://hl7.org/fhir/administrative-gender&quot;,
+            &quot;code&quot;: &quot;female&quot;,
+            &quot;display&quot;: &quot;Female&quot;
+          }
+        ]
+      },
+      &quot;relationship&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+            &quot;code&quot;: &quot;MGRMTH&quot;,
+            &quot;display&quot;: &quot;maternal grandmother&quot;
+          }
+        ]
+      },
+      &quot;extension&quot;: [
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-partner&quot;,
+          &quot;extension&quot;: [
+            {
+              &quot;url&quot;: &quot;type&quot;,
+              &quot;valueCodeableConcept&quot;: {
+                &quot;coding&quot;: [
+                  {
+                    &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+                    &quot;code&quot;: &quot;KIN:048&quot;,
+                    &quot;display&quot;: &quot;isBrokenPartner&quot;
+                  }
+                ]
+              }
+            },
+            {
+              &quot;url&quot;: &quot;reference&quot;,
+              &quot;valueReference&quot;: {
+                &quot;reference&quot;: &quot;#FMH_3&quot;
+              }
+            }
+          ]
+        }
+      ],
+      &quot;bornDate&quot;: &quot;1958-04-27&quot;
+    },
+    {
+      &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+      &quot;id&quot;: &quot;FMH_5&quot;,
+      &quot;status&quot;: &quot;completed&quot;,
+      &quot;patient&quot;: {
+        &quot;type&quot;: &quot;Patient&quot;,
+        &quot;reference&quot;: &quot;#pat&quot;
+      },
+      &quot;name&quot;: &quot;Tom Example&quot;,
+      &quot;sex&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://hl7.org/fhir/administrative-gender&quot;,
+            &quot;code&quot;: &quot;male&quot;,
+            &quot;display&quot;: &quot;Male&quot;
+          }
+        ]
+      },
+      &quot;relationship&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+            &quot;code&quot;: &quot;NFTH&quot;,
+            &quot;display&quot;: &quot;natural father&quot;
+          }
+        ]
+      },
+      &quot;extension&quot;: [
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent&quot;,
+          &quot;extension&quot;: [
+            {
+              &quot;url&quot;: &quot;type&quot;,
+              &quot;valueCodeableConcept&quot;: {
+                &quot;coding&quot;: [
+                  {
+                    &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+                    &quot;code&quot;: &quot;NFTH&quot;,
+                    &quot;display&quot;: &quot;natural father&quot;
+                  }
+                ]
+              }
+            },
+            {
+              &quot;url&quot;: &quot;reference&quot;,
+              &quot;valueReference&quot;: {
+                &quot;reference&quot;: &quot;#FMH_1&quot;
+              }
+            }
+          ]
+        },
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent&quot;,
+          &quot;extension&quot;: [
+            {
+              &quot;url&quot;: &quot;type&quot;,
+              &quot;valueCodeableConcept&quot;: {
+                &quot;coding&quot;: [
+                  {
+                    &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+                    &quot;code&quot;: &quot;NMTH&quot;,
+                    &quot;display&quot;: &quot;natural mother&quot;
+                  }
+                ]
+              }
+            },
+            {
+              &quot;url&quot;: &quot;reference&quot;,
+              &quot;valueReference&quot;: {
+                &quot;reference&quot;: &quot;#FMH_2&quot;
+              }
+            }
+          ]
+        },
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-partner&quot;,
+          &quot;extension&quot;: [
+            {
+              &quot;url&quot;: &quot;type&quot;,
+              &quot;valueCodeableConcept&quot;: {
+                &quot;coding&quot;: [
+                  {
+                    &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+                    &quot;code&quot;: &quot;KIN:030&quot;,
+                    &quot;display&quot;: &quot;isConsanguineousPartner&quot;
+                  }
+                ]
+              }
+            },
+            {
+              &quot;url&quot;: &quot;reference&quot;,
+              &quot;valueReference&quot;: {
+                &quot;reference&quot;: &quot;#FMH_6&quot;
+              }
+            }
+          ]
+        },
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-observation&quot;,
+          &quot;valueReference&quot;: {
+            &quot;type&quot;: &quot;Observation&quot;,
+            &quot;reference&quot;: &quot;#fmh_carrierStatus_5&quot;
+          }
+        }
+      ],
+      &quot;bornDate&quot;: &quot;1984-11-02&quot;
+    },
+    {
+      &quot;resourceType&quot;: &quot;Observation&quot;,
+      &quot;id&quot;: &quot;fmh_carrierStatus_5&quot;,
+      &quot;status&quot;: &quot;preliminary&quot;,
+      &quot;valueCodeableConcept&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://snomed.info/sct&quot;,
+            &quot;code&quot;: &quot;87955000&quot;,
+            &quot;display&quot;: &quot;Carrier state, disease expressed&quot;
+          }
+        ]
+      },
+      &quot;focus&quot;: {
+        &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+        &quot;reference&quot;: &quot;#FMH_5&quot;
+      }
+    },
+    {
+      &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+      &quot;id&quot;: &quot;FMH_6&quot;,
+      &quot;status&quot;: &quot;completed&quot;,
+      &quot;patient&quot;: {
+        &quot;type&quot;: &quot;Patient&quot;,
+        &quot;reference&quot;: &quot;#pat&quot;
+      },
+      &quot;name&quot;: &quot;Grace Example (Hartley)&quot;,
+      &quot;sex&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://hl7.org/fhir/administrative-gender&quot;,
+            &quot;code&quot;: &quot;female&quot;,
+            &quot;display&quot;: &quot;Female&quot;
+          }
+        ]
+      },
+      &quot;relationship&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+            &quot;code&quot;: &quot;NMTH&quot;,
+            &quot;display&quot;: &quot;natural mother&quot;
+          }
+        ]
+      },
+      &quot;extension&quot;: [
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent&quot;,
+          &quot;extension&quot;: [
+            {
+              &quot;url&quot;: &quot;type&quot;,
+              &quot;valueCodeableConcept&quot;: {
+                &quot;coding&quot;: [
+                  {
+                    &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+                    &quot;code&quot;: &quot;NFTH&quot;,
+                    &quot;display&quot;: &quot;natural father&quot;
+                  }
+                ]
+              }
+            },
+            {
+              &quot;url&quot;: &quot;reference&quot;,
+              &quot;valueReference&quot;: {
+                &quot;reference&quot;: &quot;#FMH_3&quot;
+              }
+            }
+          ]
+        },
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent&quot;,
+          &quot;extension&quot;: [
+            {
+              &quot;url&quot;: &quot;type&quot;,
+              &quot;valueCodeableConcept&quot;: {
+                &quot;coding&quot;: [
+                  {
+                    &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+                    &quot;code&quot;: &quot;NMTH&quot;,
+                    &quot;display&quot;: &quot;natural mother&quot;
+                  }
+                ]
+              }
+            },
+            {
+              &quot;url&quot;: &quot;reference&quot;,
+              &quot;valueReference&quot;: {
+                &quot;reference&quot;: &quot;#FMH_4&quot;
+              }
+            }
+          ]
+        },
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-partner&quot;,
+          &quot;extension&quot;: [
+            {
+              &quot;url&quot;: &quot;type&quot;,
+              &quot;valueCodeableConcept&quot;: {
+                &quot;coding&quot;: [
+                  {
+                    &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+                    &quot;code&quot;: &quot;KIN:030&quot;,
+                    &quot;display&quot;: &quot;isConsanguineousPartner&quot;
+                  }
+                ]
+              }
+            },
+            {
+              &quot;url&quot;: &quot;reference&quot;,
+              &quot;valueReference&quot;: {
+                &quot;reference&quot;: &quot;#FMH_5&quot;
+              }
+            }
+          ]
+        },
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-observation&quot;,
+          &quot;valueReference&quot;: {
+            &quot;type&quot;: &quot;Observation&quot;,
+            &quot;reference&quot;: &quot;#fmh_carrierStatus_6&quot;
+          }
+        }
+      ],
+      &quot;bornDate&quot;: &quot;1986-02-19&quot;,
+      &quot;note&quot;: [
+        {
+          &quot;text&quot;: &quot;Referred by GP&quot;
+        }
+      ]
+    },
+    {
+      &quot;resourceType&quot;: &quot;Observation&quot;,
+      &quot;id&quot;: &quot;fmh_carrierStatus_6&quot;,
+      &quot;status&quot;: &quot;preliminary&quot;,
+      &quot;valueCodeableConcept&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://snomed.info/sct&quot;,
+            &quot;code&quot;: &quot;87955000&quot;,
+            &quot;display&quot;: &quot;Carrier state, disease expressed&quot;
+          }
+        ]
+      },
+      &quot;focus&quot;: {
+        &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+        &quot;reference&quot;: &quot;#FMH_6&quot;
+      }
+    },
+    {
+      &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+      &quot;id&quot;: &quot;FMH_7&quot;,
+      &quot;status&quot;: &quot;completed&quot;,
+      &quot;patient&quot;: {
+        &quot;type&quot;: &quot;Patient&quot;,
+        &quot;reference&quot;: &quot;#pat&quot;
+      },
+      &quot;name&quot;: &quot;Ruby Example&quot;,
+      &quot;sex&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://hl7.org/fhir/administrative-gender&quot;,
+            &quot;code&quot;: &quot;female&quot;,
+            &quot;display&quot;: &quot;Female&quot;
+          }
+        ]
+      },
+      &quot;relationship&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+            &quot;code&quot;: &quot;NSIS&quot;,
+            &quot;display&quot;: &quot;natural sister&quot;
+          }
+        ]
+      },
+      &quot;extension&quot;: [
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent&quot;,
+          &quot;extension&quot;: [
+            {
+              &quot;url&quot;: &quot;type&quot;,
+              &quot;valueCodeableConcept&quot;: {
+                &quot;coding&quot;: [
+                  {
+                    &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+                    &quot;code&quot;: &quot;NFTH&quot;,
+                    &quot;display&quot;: &quot;natural father&quot;
+                  }
+                ]
+              }
+            },
+            {
+              &quot;url&quot;: &quot;reference&quot;,
+              &quot;valueReference&quot;: {
+                &quot;reference&quot;: &quot;#FMH_5&quot;
+              }
+            }
+          ]
+        },
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent&quot;,
+          &quot;extension&quot;: [
+            {
+              &quot;url&quot;: &quot;type&quot;,
+              &quot;valueCodeableConcept&quot;: {
+                &quot;coding&quot;: [
+                  {
+                    &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+                    &quot;code&quot;: &quot;NMTH&quot;,
+                    &quot;display&quot;: &quot;natural mother&quot;
+                  }
+                ]
+              }
+            },
+            {
+              &quot;url&quot;: &quot;reference&quot;,
+              &quot;valueReference&quot;: {
+                &quot;reference&quot;: &quot;#FMH_6&quot;
+              }
+            }
+          ]
+        },
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-sibling&quot;,
+          &quot;extension&quot;: [
+            {
+              &quot;url&quot;: &quot;type&quot;,
+              &quot;valueCodeableConcept&quot;: {
+                &quot;coding&quot;: [
+                  {
+                    &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+                    &quot;code&quot;: &quot;FTWINBRO&quot;,
+                    &quot;display&quot;: &quot;fraternal twin brother&quot;
+                  }
+                ]
+              }
+            },
+            {
+              &quot;url&quot;: &quot;reference&quot;,
+              &quot;valueReference&quot;: {
+                &quot;reference&quot;: &quot;#FMH_8&quot;
+              }
+            }
+          ]
+        }
+      ],
+      &quot;bornDate&quot;: &quot;2013-09-08&quot;
+    },
+    {
+      &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+      &quot;id&quot;: &quot;FMH_8&quot;,
+      &quot;status&quot;: &quot;completed&quot;,
+      &quot;patient&quot;: {
+        &quot;type&quot;: &quot;Patient&quot;,
+        &quot;reference&quot;: &quot;#pat&quot;
+      },
+      &quot;name&quot;: &quot;Leo Example&quot;,
+      &quot;sex&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://hl7.org/fhir/administrative-gender&quot;,
+            &quot;code&quot;: &quot;male&quot;,
+            &quot;display&quot;: &quot;Male&quot;
+          }
+        ]
+      },
+      &quot;relationship&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+            &quot;code&quot;: &quot;NBRO&quot;,
+            &quot;display&quot;: &quot;natural brother&quot;
+          }
+        ]
+      },
+      &quot;extension&quot;: [
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent&quot;,
+          &quot;extension&quot;: [
+            {
+              &quot;url&quot;: &quot;type&quot;,
+              &quot;valueCodeableConcept&quot;: {
+                &quot;coding&quot;: [
+                  {
+                    &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+                    &quot;code&quot;: &quot;NFTH&quot;,
+                    &quot;display&quot;: &quot;natural father&quot;
+                  }
+                ]
+              }
+            },
+            {
+              &quot;url&quot;: &quot;reference&quot;,
+              &quot;valueReference&quot;: {
+                &quot;reference&quot;: &quot;#FMH_5&quot;
+              }
+            }
+          ]
+        },
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent&quot;,
+          &quot;extension&quot;: [
+            {
+              &quot;url&quot;: &quot;type&quot;,
+              &quot;valueCodeableConcept&quot;: {
+                &quot;coding&quot;: [
+                  {
+                    &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+                    &quot;code&quot;: &quot;NMTH&quot;,
+                    &quot;display&quot;: &quot;natural mother&quot;
+                  }
+                ]
+              }
+            },
+            {
+              &quot;url&quot;: &quot;reference&quot;,
+              &quot;valueReference&quot;: {
+                &quot;reference&quot;: &quot;#FMH_6&quot;
+              }
+            }
+          ]
+        },
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-sibling&quot;,
+          &quot;extension&quot;: [
+            {
+              &quot;url&quot;: &quot;type&quot;,
+              &quot;valueCodeableConcept&quot;: {
+                &quot;coding&quot;: [
+                  {
+                    &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+                    &quot;code&quot;: &quot;FTWINSIS&quot;,
+                    &quot;display&quot;: &quot;fraternal twin sister&quot;
+                  }
+                ]
+              }
+            },
+            {
+              &quot;url&quot;: &quot;reference&quot;,
+              &quot;valueReference&quot;: {
+                &quot;reference&quot;: &quot;#FMH_7&quot;
+              }
+            }
+          ]
+        },
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-observation&quot;,
+          &quot;valueReference&quot;: {
+            &quot;type&quot;: &quot;Observation&quot;,
+            &quot;reference&quot;: &quot;#fmh_carrierStatus_8&quot;
+          }
+        }
+      ],
+      &quot;bornDate&quot;: &quot;2013-09-08&quot;
+    },
+    {
+      &quot;resourceType&quot;: &quot;Observation&quot;,
+      &quot;id&quot;: &quot;fmh_carrierStatus_8&quot;,
+      &quot;status&quot;: &quot;preliminary&quot;,
+      &quot;valueCodeableConcept&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://snomed.info/sct&quot;,
+            &quot;code&quot;: &quot;24800002&quot;,
+            &quot;display&quot;: &quot;Carrier state, disease not expressed&quot;
+          }
+        ]
+      },
+      &quot;focus&quot;: {
+        &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+        &quot;reference&quot;: &quot;#FMH_8&quot;
+      }
+    }
+  ]
+}"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_history.family_history_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="family_history_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="3" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.family_history" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="family_history.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="3"/>
+					<ItemData ItemOID="family_name" Value="Upgrade"/>
+					<ItemData ItemOID="pedigree_old_tag" Value="{
+  &quot;resourceType&quot;: &quot;Composition&quot;,
+  &quot;status&quot;: &quot;preliminary&quot;,
+  &quot;type&quot;: {
+    &quot;coding&quot;: {
+      &quot;system&quot;: &quot;http://loinc.org&quot;,
+      &quot;code&quot;: &quot;11488-4&quot;,
+      &quot;display&quot;: &quot;Consult note&quot;
+    }
+  },
+  &quot;subject&quot;: {
+    &quot;type&quot;: &quot;Patient&quot;,
+    &quot;reference&quot;: &quot;#pat&quot;
+  },
+  &quot;date&quot;: &quot;2026-09-30T07:17:44-10:00&quot;,
+  &quot;title&quot;: &quot;Pedigree Details&quot;,
+  &quot;section&quot;: [
+    {
+      &quot;title&quot;: &quot;Patient Condition&quot;,
+      &quot;entry&quot;: [
+        {
+          &quot;type&quot;: &quot;Condition&quot;,
+          &quot;reference&quot;: &quot;#cond_0&quot;
+        },
+        {
+          &quot;type&quot;: &quot;Condition&quot;,
+          &quot;reference&quot;: &quot;#cond_1&quot;
+        },
+        {
+          &quot;type&quot;: &quot;Observation&quot;,
+          &quot;reference&quot;: &quot;#fmh_clinical_0_0&quot;
+        },
+        {
+          &quot;type&quot;: &quot;Observation&quot;,
+          &quot;reference&quot;: &quot;#fmh_genes_0_0&quot;
+        }
+      ]
+    },
+    {
+      &quot;title&quot;: &quot;Family History&quot;,
+      &quot;code&quot;: {
+        &quot;coding&quot;: {
+          &quot;system&quot;: &quot;http://loinc.org&quot;,
+          &quot;code&quot;: &quot;10157-6&quot;,
+          &quot;display&quot;: &quot;History of family member diseases&quot;
+        }
+      },
+      &quot;entry&quot;: [
+        {
+          &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+          &quot;reference&quot;: &quot;#FMH_0&quot;
+        },
+        {
+          &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+          &quot;reference&quot;: &quot;#FMH_1&quot;
+        },
+        {
+          &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+          &quot;reference&quot;: &quot;#FMH_2&quot;
+        },
+        {
+          &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+          &quot;reference&quot;: &quot;#FMH_3&quot;
+        },
+        {
+          &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+          &quot;reference&quot;: &quot;#FMH_4&quot;
+        },
+        {
+          &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+          &quot;reference&quot;: &quot;#FMH_5&quot;
+        },
+        {
+          &quot;type&quot;: &quot;Observation&quot;,
+          &quot;reference&quot;: &quot;#fmh_carrierStatus_5&quot;
+        },
+        {
+          &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+          &quot;reference&quot;: &quot;#FMH_6&quot;
+        },
+        {
+          &quot;type&quot;: &quot;Observation&quot;,
+          &quot;reference&quot;: &quot;#fmh_carrierStatus_6&quot;
+        },
+        {
+          &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+          &quot;reference&quot;: &quot;#FMH_7&quot;
+        },
+        {
+          &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+          &quot;reference&quot;: &quot;#FMH_8&quot;
+        },
+        {
+          &quot;type&quot;: &quot;Observation&quot;,
+          &quot;reference&quot;: &quot;#fmh_carrierStatus_8&quot;
+        }
+      ]
+    },
+    {
+      &quot;title&quot;: &quot;Pedigree Diagram&quot;,
+      &quot;entry&quot;: [
+        {
+          &quot;type&quot;: &quot;DocumentReference&quot;,
+          &quot;reference&quot;: &quot;#pedigreeImage&quot;
+        }
+      ]
+    }
+  ],
+  &quot;contained&quot;: [
+    {
+      &quot;id&quot;: &quot;pat&quot;,
+      &quot;resourceType&quot;: &quot;Patient&quot;,
+      &quot;gender&quot;: &quot;female&quot;,
+      &quot;birthDate&quot;: &quot;2016-7-12&quot;,
+      &quot;name&quot;: [
+        {
+          &quot;family&quot;: &quot;Example&quot;,
+          &quot;given&quot;: [
+            &quot;Maya&quot;
+          ]
+        }
+      ]
+    },
+    {
+      &quot;id&quot;: &quot;pedigreeImage&quot;,
+      &quot;resourceType&quot;: &quot;DocumentReference&quot;,
+      &quot;status&quot;: &quot;current&quot;,
+      &quot;docStatus&quot;: &quot;preliminary&quot;,
+      &quot;subject&quot;: {
+        &quot;type&quot;: &quot;Patient&quot;,
+        &quot;reference&quot;: &quot;#pat&quot;
+      },
+      &quot;description&quot;: &quot;Pedigree Diagram of Family in SVG format&quot;,
+      &quot;content&quot;: {
+        &quot;attachment&quot;: {
+          &quot;contentType&quot;: &quot;image/svg+xml&quot;,
+          &quot;data&quot;: &quot;PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIvPg==&quot;
+        }
+      }
+    },
+    {
+      &quot;resourceType&quot;: &quot;Condition&quot;,
+      &quot;id&quot;: &quot;cond_0&quot;,
+      &quot;subject&quot;: {
+        &quot;type&quot;: &quot;Patient&quot;,
+        &quot;reference&quot;: &quot;#pat&quot;
+      },
+      &quot;code&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://www.omim.org&quot;,
+            &quot;code&quot;: &quot;615688&quot;,
+            &quot;display&quot;: &quot;loading...&quot;
+          }
+        ]
+      }
+    },
+    {
+      &quot;resourceType&quot;: &quot;Condition&quot;,
+      &quot;id&quot;: &quot;cond_1&quot;,
+      &quot;subject&quot;: {
+        &quot;type&quot;: &quot;Patient&quot;,
+        &quot;reference&quot;: &quot;#pat&quot;
+      },
+      &quot;code&quot;: {
+        &quot;text&quot;: &quot;affected&quot;
+      }
+    },
+    {
+      &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+      &quot;id&quot;: &quot;FMH_0&quot;,
+      &quot;status&quot;: &quot;completed&quot;,
+      &quot;patient&quot;: {
+        &quot;type&quot;: &quot;Patient&quot;,
+        &quot;reference&quot;: &quot;#pat&quot;
+      },
+      &quot;name&quot;: &quot;Maya Example&quot;,
+      &quot;sex&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://hl7.org/fhir/administrative-gender&quot;,
+            &quot;code&quot;: &quot;female&quot;,
+            &quot;display&quot;: &quot;Female&quot;
+          }
+        ]
+      },
+      &quot;relationship&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+            &quot;code&quot;: &quot;ONESELF&quot;,
+            &quot;display&quot;: &quot;self&quot;
+          }
+        ]
+      },
+      &quot;extension&quot;: [
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent&quot;,
+          &quot;extension&quot;: [
+            {
+              &quot;url&quot;: &quot;type&quot;,
+              &quot;valueCodeableConcept&quot;: {
+                &quot;coding&quot;: [
+                  {
+                    &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+                    &quot;code&quot;: &quot;NFTH&quot;,
+                    &quot;display&quot;: &quot;natural father&quot;
+                  }
+                ]
+              }
+            },
+            {
+              &quot;url&quot;: &quot;reference&quot;,
+              &quot;valueReference&quot;: {
+                &quot;reference&quot;: &quot;#FMH_5&quot;
+              }
+            }
+          ]
+        },
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent&quot;,
+          &quot;extension&quot;: [
+            {
+              &quot;url&quot;: &quot;type&quot;,
+              &quot;valueCodeableConcept&quot;: {
+                &quot;coding&quot;: [
+                  {
+                    &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+                    &quot;code&quot;: &quot;NMTH&quot;,
+                    &quot;display&quot;: &quot;natural mother&quot;
+                  }
+                ]
+              }
+            },
+            {
+              &quot;url&quot;: &quot;reference&quot;,
+              &quot;valueReference&quot;: {
+                &quot;reference&quot;: &quot;#FMH_6&quot;
+              }
+            }
+          ]
+        },
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-observation&quot;,
+          &quot;valueReference&quot;: {
+            &quot;type&quot;: &quot;Observation&quot;,
+            &quot;reference&quot;: &quot;#fmh_clinical_0_0&quot;
+          }
+        },
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-observation&quot;,
+          &quot;valueReference&quot;: {
+            &quot;type&quot;: &quot;Observation&quot;,
+            &quot;reference&quot;: &quot;#fmh_genes_0_0&quot;
+          }
+        }
+      ],
+      &quot;bornDate&quot;: &quot;2016-07-12&quot;,
+      &quot;condition&quot;: [
+        {
+          &quot;code&quot;: {
+            &quot;coding&quot;: [
+              {
+                &quot;system&quot;: &quot;http://www.omim.org&quot;,
+                &quot;code&quot;: &quot;615688&quot;,
+                &quot;display&quot;: &quot;loading...&quot;
+              }
+            ]
+          }
+        },
+        {
+          &quot;code&quot;: {
+            &quot;text&quot;: &quot;affected&quot;
+          }
+        }
+      ]
+    },
+    {
+      &quot;resourceType&quot;: &quot;Observation&quot;,
+      &quot;id&quot;: &quot;fmh_clinical_0_0&quot;,
+      &quot;status&quot;: &quot;preliminary&quot;,
+      &quot;valueCodeableConcept&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://purl.obolibrary.org/obo/hp.fhir&quot;,
+            &quot;code&quot;: &quot;HP:0001250&quot;,
+            &quot;display&quot;: &quot;loading...&quot;
+          }
+        ]
+      },
+      &quot;subject&quot;: {
+        &quot;type&quot;: &quot;Patient&quot;,
+        &quot;reference&quot;: &quot;#pat&quot;
+      }
+    },
+    {
+      &quot;resourceType&quot;: &quot;Observation&quot;,
+      &quot;id&quot;: &quot;fmh_genes_0_0&quot;,
+      &quot;status&quot;: &quot;preliminary&quot;,
+      &quot;valueCodeableConcept&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://www.genenames.org/geneId&quot;,
+            &quot;code&quot;: &quot;HGNC:1839&quot;,
+            &quot;display&quot;: &quot;ADA2&quot;
+          }
+        ]
+      },
+      &quot;subject&quot;: {
+        &quot;type&quot;: &quot;Patient&quot;,
+        &quot;reference&quot;: &quot;#pat&quot;
+      }
+    },
+    {
+      &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+      &quot;id&quot;: &quot;FMH_1&quot;,
+      &quot;status&quot;: &quot;completed&quot;,
+      &quot;patient&quot;: {
+        &quot;type&quot;: &quot;Patient&quot;,
+        &quot;reference&quot;: &quot;#pat&quot;
+      },
+      &quot;name&quot;: &quot;Arthur Example&quot;,
+      &quot;sex&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://hl7.org/fhir/administrative-gender&quot;,
+            &quot;code&quot;: &quot;male&quot;,
+            &quot;display&quot;: &quot;Male&quot;
+          }
+        ]
+      },
+      &quot;relationship&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+            &quot;code&quot;: &quot;EXT&quot;,
+            &quot;display&quot;: &quot;extended family member&quot;
+          }
+        ]
+      },
+      &quot;extension&quot;: [
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-partner&quot;,
+          &quot;extension&quot;: [
+            {
+              &quot;url&quot;: &quot;type&quot;,
+              &quot;valueCodeableConcept&quot;: {
+                &quot;coding&quot;: [
+                  {
+                    &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+                    &quot;code&quot;: &quot;KIN:026&quot;,
+                    &quot;display&quot;: &quot;isPartner&quot;
+                  }
+                ]
+              }
+            },
+            {
+              &quot;url&quot;: &quot;reference&quot;,
+              &quot;valueReference&quot;: {
+                &quot;reference&quot;: &quot;#FMH_2&quot;
+              }
+            }
+          ]
+        }
+      ],
+      &quot;bornDate&quot;: &quot;1950-01-15&quot;,
+      &quot;deceasedDate&quot;: &quot;2012-06-21&quot;
+    },
+    {
+      &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+      &quot;id&quot;: &quot;FMH_2&quot;,
+      &quot;status&quot;: &quot;completed&quot;,
+      &quot;patient&quot;: {
+        &quot;type&quot;: &quot;Patient&quot;,
+        &quot;reference&quot;: &quot;#pat&quot;
+      },
+      &quot;name&quot;: &quot;Edith Example&quot;,
+      &quot;sex&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://hl7.org/fhir/administrative-gender&quot;,
+            &quot;code&quot;: &quot;female&quot;,
+            &quot;display&quot;: &quot;Female&quot;
+          }
+        ]
+      },
+      &quot;relationship&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+            &quot;code&quot;: &quot;EXT&quot;,
+            &quot;display&quot;: &quot;extended family member&quot;
+          }
+        ]
+      },
+      &quot;extension&quot;: [
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-partner&quot;,
+          &quot;extension&quot;: [
+            {
+              &quot;url&quot;: &quot;type&quot;,
+              &quot;valueCodeableConcept&quot;: {
+                &quot;coding&quot;: [
+                  {
+                    &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+                    &quot;code&quot;: &quot;KIN:026&quot;,
+                    &quot;display&quot;: &quot;isPartner&quot;
+                  }
+                ]
+              }
+            },
+            {
+              &quot;url&quot;: &quot;reference&quot;,
+              &quot;valueReference&quot;: {
+                &quot;reference&quot;: &quot;#FMH_1&quot;
+              }
+            }
+          ]
+        }
+      ],
+      &quot;bornDate&quot;: &quot;1953-08-30&quot;
+    },
+    {
+      &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+      &quot;id&quot;: &quot;FMH_3&quot;,
+      &quot;status&quot;: &quot;completed&quot;,
+      &quot;patient&quot;: {
+        &quot;type&quot;: &quot;Patient&quot;,
+        &quot;reference&quot;: &quot;#pat&quot;
+      },
+      &quot;name&quot;: &quot;Ray Hartley&quot;,
+      &quot;sex&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://hl7.org/fhir/administrative-gender&quot;,
+            &quot;code&quot;: &quot;male&quot;,
+            &quot;display&quot;: &quot;Male&quot;
+          }
+        ]
+      },
+      &quot;relationship&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+            &quot;code&quot;: &quot;MGRFTH&quot;,
+            &quot;display&quot;: &quot;maternal grandfather&quot;
+          }
+        ]
+      },
+      &quot;extension&quot;: [
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-partner&quot;,
+          &quot;extension&quot;: [
+            {
+              &quot;url&quot;: &quot;type&quot;,
+              &quot;valueCodeableConcept&quot;: {
+                &quot;coding&quot;: [
+                  {
+                    &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+                    &quot;code&quot;: &quot;KIN:048&quot;,
+                    &quot;display&quot;: &quot;isBrokenPartner&quot;
+                  }
+                ]
+              }
+            },
+            {
+              &quot;url&quot;: &quot;reference&quot;,
+              &quot;valueReference&quot;: {
+                &quot;reference&quot;: &quot;#FMH_4&quot;
+              }
+            }
+          ]
+        }
+      ],
+      &quot;bornDate&quot;: &quot;1955-03-11&quot;
+    },
+    {
+      &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+      &quot;id&quot;: &quot;FMH_4&quot;,
+      &quot;status&quot;: &quot;completed&quot;,
+      &quot;patient&quot;: {
+        &quot;type&quot;: &quot;Patient&quot;,
+        &quot;reference&quot;: &quot;#pat&quot;
+      },
+      &quot;name&quot;: &quot;June Hartley&quot;,
+      &quot;sex&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://hl7.org/fhir/administrative-gender&quot;,
+            &quot;code&quot;: &quot;female&quot;,
+            &quot;display&quot;: &quot;Female&quot;
+          }
+        ]
+      },
+      &quot;relationship&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+            &quot;code&quot;: &quot;MGRMTH&quot;,
+            &quot;display&quot;: &quot;maternal grandmother&quot;
+          }
+        ]
+      },
+      &quot;extension&quot;: [
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-partner&quot;,
+          &quot;extension&quot;: [
+            {
+              &quot;url&quot;: &quot;type&quot;,
+              &quot;valueCodeableConcept&quot;: {
+                &quot;coding&quot;: [
+                  {
+                    &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+                    &quot;code&quot;: &quot;KIN:048&quot;,
+                    &quot;display&quot;: &quot;isBrokenPartner&quot;
+                  }
+                ]
+              }
+            },
+            {
+              &quot;url&quot;: &quot;reference&quot;,
+              &quot;valueReference&quot;: {
+                &quot;reference&quot;: &quot;#FMH_3&quot;
+              }
+            }
+          ]
+        }
+      ],
+      &quot;bornDate&quot;: &quot;1958-04-27&quot;
+    },
+    {
+      &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+      &quot;id&quot;: &quot;FMH_5&quot;,
+      &quot;status&quot;: &quot;completed&quot;,
+      &quot;patient&quot;: {
+        &quot;type&quot;: &quot;Patient&quot;,
+        &quot;reference&quot;: &quot;#pat&quot;
+      },
+      &quot;name&quot;: &quot;Tom Example&quot;,
+      &quot;sex&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://hl7.org/fhir/administrative-gender&quot;,
+            &quot;code&quot;: &quot;male&quot;,
+            &quot;display&quot;: &quot;Male&quot;
+          }
+        ]
+      },
+      &quot;relationship&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+            &quot;code&quot;: &quot;NFTH&quot;,
+            &quot;display&quot;: &quot;natural father&quot;
+          }
+        ]
+      },
+      &quot;extension&quot;: [
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent&quot;,
+          &quot;extension&quot;: [
+            {
+              &quot;url&quot;: &quot;type&quot;,
+              &quot;valueCodeableConcept&quot;: {
+                &quot;coding&quot;: [
+                  {
+                    &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+                    &quot;code&quot;: &quot;NFTH&quot;,
+                    &quot;display&quot;: &quot;natural father&quot;
+                  }
+                ]
+              }
+            },
+            {
+              &quot;url&quot;: &quot;reference&quot;,
+              &quot;valueReference&quot;: {
+                &quot;reference&quot;: &quot;#FMH_1&quot;
+              }
+            }
+          ]
+        },
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent&quot;,
+          &quot;extension&quot;: [
+            {
+              &quot;url&quot;: &quot;type&quot;,
+              &quot;valueCodeableConcept&quot;: {
+                &quot;coding&quot;: [
+                  {
+                    &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+                    &quot;code&quot;: &quot;NMTH&quot;,
+                    &quot;display&quot;: &quot;natural mother&quot;
+                  }
+                ]
+              }
+            },
+            {
+              &quot;url&quot;: &quot;reference&quot;,
+              &quot;valueReference&quot;: {
+                &quot;reference&quot;: &quot;#FMH_2&quot;
+              }
+            }
+          ]
+        },
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-partner&quot;,
+          &quot;extension&quot;: [
+            {
+              &quot;url&quot;: &quot;type&quot;,
+              &quot;valueCodeableConcept&quot;: {
+                &quot;coding&quot;: [
+                  {
+                    &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+                    &quot;code&quot;: &quot;KIN:030&quot;,
+                    &quot;display&quot;: &quot;isConsanguineousPartner&quot;
+                  }
+                ]
+              }
+            },
+            {
+              &quot;url&quot;: &quot;reference&quot;,
+              &quot;valueReference&quot;: {
+                &quot;reference&quot;: &quot;#FMH_6&quot;
+              }
+            }
+          ]
+        },
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-observation&quot;,
+          &quot;valueReference&quot;: {
+            &quot;type&quot;: &quot;Observation&quot;,
+            &quot;reference&quot;: &quot;#fmh_carrierStatus_5&quot;
+          }
+        }
+      ],
+      &quot;bornDate&quot;: &quot;1984-11-02&quot;
+    },
+    {
+      &quot;resourceType&quot;: &quot;Observation&quot;,
+      &quot;id&quot;: &quot;fmh_carrierStatus_5&quot;,
+      &quot;status&quot;: &quot;preliminary&quot;,
+      &quot;valueCodeableConcept&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://snomed.info/sct&quot;,
+            &quot;code&quot;: &quot;87955000&quot;,
+            &quot;display&quot;: &quot;Carrier state, disease expressed&quot;
+          }
+        ]
+      },
+      &quot;focus&quot;: {
+        &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+        &quot;reference&quot;: &quot;#FMH_5&quot;
+      }
+    },
+    {
+      &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+      &quot;id&quot;: &quot;FMH_6&quot;,
+      &quot;status&quot;: &quot;completed&quot;,
+      &quot;patient&quot;: {
+        &quot;type&quot;: &quot;Patient&quot;,
+        &quot;reference&quot;: &quot;#pat&quot;
+      },
+      &quot;name&quot;: &quot;Grace Example (Hartley)&quot;,
+      &quot;sex&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://hl7.org/fhir/administrative-gender&quot;,
+            &quot;code&quot;: &quot;female&quot;,
+            &quot;display&quot;: &quot;Female&quot;
+          }
+        ]
+      },
+      &quot;relationship&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+            &quot;code&quot;: &quot;NMTH&quot;,
+            &quot;display&quot;: &quot;natural mother&quot;
+          }
+        ]
+      },
+      &quot;extension&quot;: [
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent&quot;,
+          &quot;extension&quot;: [
+            {
+              &quot;url&quot;: &quot;type&quot;,
+              &quot;valueCodeableConcept&quot;: {
+                &quot;coding&quot;: [
+                  {
+                    &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+                    &quot;code&quot;: &quot;NFTH&quot;,
+                    &quot;display&quot;: &quot;natural father&quot;
+                  }
+                ]
+              }
+            },
+            {
+              &quot;url&quot;: &quot;reference&quot;,
+              &quot;valueReference&quot;: {
+                &quot;reference&quot;: &quot;#FMH_3&quot;
+              }
+            }
+          ]
+        },
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent&quot;,
+          &quot;extension&quot;: [
+            {
+              &quot;url&quot;: &quot;type&quot;,
+              &quot;valueCodeableConcept&quot;: {
+                &quot;coding&quot;: [
+                  {
+                    &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+                    &quot;code&quot;: &quot;NMTH&quot;,
+                    &quot;display&quot;: &quot;natural mother&quot;
+                  }
+                ]
+              }
+            },
+            {
+              &quot;url&quot;: &quot;reference&quot;,
+              &quot;valueReference&quot;: {
+                &quot;reference&quot;: &quot;#FMH_4&quot;
+              }
+            }
+          ]
+        },
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-partner&quot;,
+          &quot;extension&quot;: [
+            {
+              &quot;url&quot;: &quot;type&quot;,
+              &quot;valueCodeableConcept&quot;: {
+                &quot;coding&quot;: [
+                  {
+                    &quot;system&quot;: &quot;http://purl.org/ga4gh/kin.fhir&quot;,
+                    &quot;code&quot;: &quot;KIN:030&quot;,
+                    &quot;display&quot;: &quot;isConsanguineousPartner&quot;
+                  }
+                ]
+              }
+            },
+            {
+              &quot;url&quot;: &quot;reference&quot;,
+              &quot;valueReference&quot;: {
+                &quot;reference&quot;: &quot;#FMH_5&quot;
+              }
+            }
+          ]
+        },
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-observation&quot;,
+          &quot;valueReference&quot;: {
+            &quot;type&quot;: &quot;Observation&quot;,
+            &quot;reference&quot;: &quot;#fmh_carrierStatus_6&quot;
+          }
+        }
+      ],
+      &quot;bornDate&quot;: &quot;1986-02-19&quot;,
+      &quot;note&quot;: [
+        {
+          &quot;text&quot;: &quot;Referred by GP&quot;
+        }
+      ]
+    },
+    {
+      &quot;resourceType&quot;: &quot;Observation&quot;,
+      &quot;id&quot;: &quot;fmh_carrierStatus_6&quot;,
+      &quot;status&quot;: &quot;preliminary&quot;,
+      &quot;valueCodeableConcept&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://snomed.info/sct&quot;,
+            &quot;code&quot;: &quot;87955000&quot;,
+            &quot;display&quot;: &quot;Carrier state, disease expressed&quot;
+          }
+        ]
+      },
+      &quot;focus&quot;: {
+        &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+        &quot;reference&quot;: &quot;#FMH_6&quot;
+      }
+    },
+    {
+      &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+      &quot;id&quot;: &quot;FMH_7&quot;,
+      &quot;status&quot;: &quot;completed&quot;,
+      &quot;patient&quot;: {
+        &quot;type&quot;: &quot;Patient&quot;,
+        &quot;reference&quot;: &quot;#pat&quot;
+      },
+      &quot;name&quot;: &quot;Ruby Example&quot;,
+      &quot;sex&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://hl7.org/fhir/administrative-gender&quot;,
+            &quot;code&quot;: &quot;female&quot;,
+            &quot;display&quot;: &quot;Female&quot;
+          }
+        ]
+      },
+      &quot;relationship&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+            &quot;code&quot;: &quot;NSIS&quot;,
+            &quot;display&quot;: &quot;natural sister&quot;
+          }
+        ]
+      },
+      &quot;extension&quot;: [
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent&quot;,
+          &quot;extension&quot;: [
+            {
+              &quot;url&quot;: &quot;type&quot;,
+              &quot;valueCodeableConcept&quot;: {
+                &quot;coding&quot;: [
+                  {
+                    &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+                    &quot;code&quot;: &quot;NFTH&quot;,
+                    &quot;display&quot;: &quot;natural father&quot;
+                  }
+                ]
+              }
+            },
+            {
+              &quot;url&quot;: &quot;reference&quot;,
+              &quot;valueReference&quot;: {
+                &quot;reference&quot;: &quot;#FMH_5&quot;
+              }
+            }
+          ]
+        },
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent&quot;,
+          &quot;extension&quot;: [
+            {
+              &quot;url&quot;: &quot;type&quot;,
+              &quot;valueCodeableConcept&quot;: {
+                &quot;coding&quot;: [
+                  {
+                    &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+                    &quot;code&quot;: &quot;NMTH&quot;,
+                    &quot;display&quot;: &quot;natural mother&quot;
+                  }
+                ]
+              }
+            },
+            {
+              &quot;url&quot;: &quot;reference&quot;,
+              &quot;valueReference&quot;: {
+                &quot;reference&quot;: &quot;#FMH_6&quot;
+              }
+            }
+          ]
+        },
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-sibling&quot;,
+          &quot;extension&quot;: [
+            {
+              &quot;url&quot;: &quot;type&quot;,
+              &quot;valueCodeableConcept&quot;: {
+                &quot;coding&quot;: [
+                  {
+                    &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+                    &quot;code&quot;: &quot;FTWINBRO&quot;,
+                    &quot;display&quot;: &quot;fraternal twin brother&quot;
+                  }
+                ]
+              }
+            },
+            {
+              &quot;url&quot;: &quot;reference&quot;,
+              &quot;valueReference&quot;: {
+                &quot;reference&quot;: &quot;#FMH_8&quot;
+              }
+            }
+          ]
+        }
+      ],
+      &quot;bornDate&quot;: &quot;2013-09-08&quot;
+    },
+    {
+      &quot;resourceType&quot;: &quot;FamilyMemberHistory&quot;,
+      &quot;id&quot;: &quot;FMH_8&quot;,
+      &quot;status&quot;: &quot;completed&quot;,
+      &quot;patient&quot;: {
+        &quot;type&quot;: &quot;Patient&quot;,
+        &quot;reference&quot;: &quot;#pat&quot;
+      },
+      &quot;name&quot;: &quot;Leo Example&quot;,
+      &quot;sex&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://hl7.org/fhir/administrative-gender&quot;,
+            &quot;code&quot;: &quot;male&quot;,
+            &quot;display&quot;: &quot;Male&quot;
+          }
+        ]
+      },
+      &quot;relationship&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+            &quot;code&quot;: &quot;NBRO&quot;,
+            &quot;display&quot;: &quot;natural brother&quot;
+          }
+        ]
+      },
+      &quot;extension&quot;: [
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent&quot;,
+          &quot;extension&quot;: [
+            {
+              &quot;url&quot;: &quot;type&quot;,
+              &quot;valueCodeableConcept&quot;: {
+                &quot;coding&quot;: [
+                  {
+                    &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+                    &quot;code&quot;: &quot;NFTH&quot;,
+                    &quot;display&quot;: &quot;natural father&quot;
+                  }
+                ]
+              }
+            },
+            {
+              &quot;url&quot;: &quot;reference&quot;,
+              &quot;valueReference&quot;: {
+                &quot;reference&quot;: &quot;#FMH_5&quot;
+              }
+            }
+          ]
+        },
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-parent&quot;,
+          &quot;extension&quot;: [
+            {
+              &quot;url&quot;: &quot;type&quot;,
+              &quot;valueCodeableConcept&quot;: {
+                &quot;coding&quot;: [
+                  {
+                    &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+                    &quot;code&quot;: &quot;NMTH&quot;,
+                    &quot;display&quot;: &quot;natural mother&quot;
+                  }
+                ]
+              }
+            },
+            {
+              &quot;url&quot;: &quot;reference&quot;,
+              &quot;valueReference&quot;: {
+                &quot;reference&quot;: &quot;#FMH_6&quot;
+              }
+            }
+          ]
+        },
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-sibling&quot;,
+          &quot;extension&quot;: [
+            {
+              &quot;url&quot;: &quot;type&quot;,
+              &quot;valueCodeableConcept&quot;: {
+                &quot;coding&quot;: [
+                  {
+                    &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-RoleCode&quot;,
+                    &quot;code&quot;: &quot;FTWINSIS&quot;,
+                    &quot;display&quot;: &quot;fraternal twin sister&quot;
+                  }
+                ]
+              }
+            },
+            {
+              &quot;url&quot;: &quot;reference&quot;,
+              &quot;valueReference&quot;: {
+                &quot;reference&quot;: &quot;#FMH_7&quot;
+              }
+            }
+          ]
+        },
+        {
+          &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/family-member-history-genetics-observation&quot;,
+          &quot;valueReference&quot;: {
+            &quot;type&quot;: &quot;Observation&quot;,
+            &quot;reference&quot;: &quot;#fmh_carrierStatus_8&quot;
+          }
+        }
+      ],
+      &quot;bornDate&quot;: &quot;2013-09-08&quot;
+    },
+    {
+      &quot;resourceType&quot;: &quot;Observation&quot;,
+      &quot;id&quot;: &quot;fmh_carrierStatus_8&quot;,
+      &quot;status&quot;: &quot;preliminary&quot;,
+      &quot;valueCodeableConcept&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://snomed.info/sct&quot;,
+            &quot;code&quot;: &quot;24800002&quot;,
+            &quot;display&quot;: &quot;Carrier state, disease not expressed&quot;
+          }
+        ]
+      },
+      &quot;focus&quot;: {
+        &quot;type&quot;: &quot;FamilyMemberHistory&quot;,
+        &quot;reference&quot;: &quot;#FMH_8&quot;
+      }
+    }
+  ]
+}"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="family_history.family_history_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="family_history_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+</ClinicalData>
+</ODM>

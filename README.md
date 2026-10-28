@@ -626,6 +626,8 @@ instruments alone.
   and phenotypes legends, in a classic (non-longitudinal) project.
 - [Form logic and Advanced questionnaire](#form-logic-and-advanced-questionnaire) - REDCap branching logic carried into
   the node form, checkbox codes REDCap renames in exports, and a hand-authored Questionnaire for *Advanced* mode.
+- [Storage and upgrade](#storage-and-upgrade) - storage formats, compression, and what a site upgrading from before
+  1.0.0 sees: a legacy *fhir_v1* pedigree, and a field still tagged `@PEDIGREE_HPO`.
 
 ### Family registry (ADA2)
 
@@ -829,6 +831,68 @@ Each time the editor opens, the web server's PHP error log gets one notice for t
 
   Record 1's people were linked under *Tags only*, so their stored answers belong to that mode's Questionnaire and
   their node forms come up empty in *Advanced*: link them again to bring their rows in.
+
+### Storage and upgrade
+
+[`documentation/example-storage/`](documentation/example-storage/) holds a classic project with one form, *Family
+history*, and three diagram fields, with no linking: it's about how pedigrees are stored, and what changes for a site
+upgrading to 1.0.0.
+
+**What it shows**
+
+- *Pedigree* (`@PEDIGREE=SHOW_TEXT`) is stored the project's way - GA4GH, always compressed (`GZ:` followed by the
+  compressed data).
+- *Pedigree (never compressed)* (`@PEDIGREE=SHOW_TEXT,NEVER_COMPRESS`) overrides the project's *Compress Data* for that
+  field, so its GA4GH JSON is readable. It also shows the size limit at work: uncompressed, even a seven-person GA4GH
+  pedigree is over the field's limit (about 65K), so it's stored without its diagram image, and once the form is saved
+  and reopened it shows a placeholder instead of the diagram. The pedigree itself is all there, and opens in the editor
+  as usual.
+- *Pedigree (tagged @PEDIGREE_HPO before 1.0.0)* is tagged `@PEDIGREE_HPO`, which 1.0.0 no longer recognises, so it's a
+  plain notes field showing the stored text.
+- Three families:
+  - **Record 1, the Fenwick family** - the same three-generation family drawn in both of the first two fields.
+  - **Record 2, the Example family** - *Pedigree* holds a pedigree saved in the legacy *fhir_v1* format by version
+    0.3.2 (open-pedigree's own test fixture of the [ADA2 example](#family-registry-ada2)'s family). It opens, and is
+    saved in the GA4GH format the next time it's saved.
+  - **Record 3, the Upgrade family** - the same legacy pedigree in the `@PEDIGREE_HPO` field, as a site that hasn't
+    re-tagged its field would see it.
+
+![Record 1's form: the compressed pedigree with its diagram, the never-compressed one with a placeholder, and the old-tag field as a plain notes box](documentation/example-storage/storage-fields.png)
+
+**Importing it**
+
+1. *New Project* > *Upload a REDCap project XML file (CDISC ODM format)*, and choose
+   `documentation/example-storage/pedigree-editor-example-storage.REDCap.xml`.
+2. Enable the Pedigree Editor module on the new project.
+3. Configure the module:
+   - *Default Terminology*: *HPO + omim* - the legacy pedigree's terms are OMIM and HPO codes
+   - *Storage Format*: *GA4GH - Recommended Format*
+   - *Compress Data*: *Always compress*
+
+When record 2's pedigree is opened, Maya's gene and phenotype are named (ADA2, Seizure) and saved coded again. Her
+disorder, OMIM 615688, isn't in Ontoserver's OMIM, so it's shown and saved as its code, as text. Opening it also logs
+lookup errors in the browser's console for that code and for the *affected* status; they're expected.
+
+**Try this**
+
+- **Upgrade the old-tag field.** In the Online Designer, change *Pedigree (tagged @PEDIGREE_HPO before 1.0.0)*'s
+  action tag to `@PEDIGREE` (*Default Terminology* is already *HPO + omim*, as `@PEDIGREE_HPO` used to force): record
+  3's legacy pedigree now shows as a diagram, and opens.
+- **Storage formats.** Set *Storage Format* to *PED*, *PEDX*, *DADA2*, *DADA2X* or *Open-pedigree internal format*,
+  with *Compress Data* *Never compress* so the stored text is readable, and draw a pedigree on a new record:
+  - *PED* stores a line per person (`OPENPED 1 2 3 1 -9`: family, person, father, mother, sex, affected) and *DADA2*
+    the same with an extra column; neither keeps names, dates or a diagram image, so the form shows a placeholder;
+  - *PEDX* and *DADA2X* wrap the same lines in XML with the diagram's SVG image;
+  - *internal* stores open-pedigree's own graph JSON, with names and dates but no diagram image.
+
+  Records 1 and 2 hold GA4GH and legacy data, which none of these formats can read: the editor shows an *Error
+  importing pedigree* (or *Error loading pedigree*) alert, then opens empty with the template picker, and **saving would
+  replace the pedigree**. Close the editor without saving, and set the format back to *GA4GH* afterwards.
+- **Compression.** With *Compress Data* *Never compress*, a newly saved pedigree is stored as readable JSON, without its
+  diagram image once it's over the limit; with *Compress Large Diagrams >65K*, it's compressed only then.
+- **Allow manual entry** (administrators only). Unless the system's *Allow Manual Entry* is on, the stored text is
+  read-only on the form; tick the project's *Allow manual entry* and it can be typed into. Only an administrator should
+  ever do that - the text must stay a valid pedigree in the project's storage format.
 
 # Upgrade Issues
 
