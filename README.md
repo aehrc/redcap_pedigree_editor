@@ -814,6 +814,14 @@ Each time the editor opens, the web server's PHP error log gets one notice for t
 
 - **Change a row from the node form.** Use *Edit in REDCap* on Sam, give him a hearing status and save the row: his
   node form now hides *Hearing not recorded yet: why?* and shows the items for that status.
+- **Clear a value in REDCap.** Use *Edit in REDCap* on Tom, empty *Why not tested?* and *Save & Exit Form*: when the
+  window closes, his node form's *Why not tested?* is empty too - a value cleared in REDCap is cleared on the person,
+  not left as it was.
+- **Link before the record is saved.** *Add / Edit Records* > *Add new record*, open the new record's *Family
+  pedigree* and try *Link to existing record*: the editor says *Save this form first* and does nothing, since the
+  record doesn't exist in REDCap yet. Drawing still works; once the form is saved and the editor reopened, *Link to
+  existing record* opens the search (empty for this new family until it has *Relatives* rows - or use *Create in
+  REDCap*).
 - ***Advanced* mode with `questionnaire.json`.** Paste the file into *Advanced: FHIR Questionnaire JSON* and set
   *Node-edit form source* to *Advanced*. Then draw record 2 (the Dunn family) and link each person:
   - the *Personal* tab has the Questionnaire's own items: a *Link to a relative's row* button (`invokesAction`
