@@ -900,8 +900,8 @@ lookup errors in the browser's console for that code and for the *affected* stat
 
 [`documentation/example-multi-arm/`](documentation/example-multi-arm/) holds a fictional familial
 hypercholesterolaemia cascade-screening study with two arms: *Index families*, and *Referred relatives* who come to the
-study through a relative elsewhere. Each arm has its own pedigree, linking and
-[relationship rows](#relationships-in-redcap-fields).
+study through a relative elsewhere. Each record has its own pedigree, linked *Members* rows and
+[relationship rows](#relationships-in-redcap-fields), in its arm's first event.
 
 **What it shows**
 
@@ -944,10 +944,11 @@ REDCap's project XML doesn't carry locked records, so locking is a "try" step be
 
 **Try this**
 
-- **A locked row is kept.** On record 1, lock the *Relationships* row from Victor to Felix (open it and tick *Lock
-  this instrument?*, which needs the *Lock/Unlock Records* user right). Then delete Felix from the pedigree and save
-  the *Family History* form: Joan's row to Felix is deleted, but the locked one stays, and the module's log (*External
-  Modules* > *View Logs*) says `Relationship row N no longer in the pedigree is locked, so kept.`
+- **A locked row is kept.** On record 1, lock the *Relationships* row `2 to 4: Biological father (KIN:028)` (Victor
+  to Felix; open it and tick *Lock this instrument?*, which needs the *Lock/Unlock Records* user right). Then delete
+  Felix from the pedigree and save the *Family History* form: Joan's row to Felix is deleted, but the locked one stays,
+  and the module's log (*External Modules* > *View Logs*) says
+  `Relationship row N no longer in the pedigree is locked, so kept.`
 - **Rename a record.** *Choose action for record* > *Rename record* on record 2, then open and save its pedigree:
   every person is still linked to a row of record `2`, which no longer exists, so no relationship row changes and the
   log says `Relationships were not updated: the pedigree's people are linked, but none to a "members" row of this
