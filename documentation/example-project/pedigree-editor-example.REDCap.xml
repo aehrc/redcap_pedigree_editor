@@ -307,7 +307,7 @@
 		<CodeListRef CodeListOID="ada2_level.choices"/>
 	</ItemDef>
 	<ItemDef OID="notes" Name="notes" DataType="text" Length="999" redcap:Variable="notes" redcap:FieldType="textarea" redcap:SectionHeader="Notes" redcap:FieldAnnotation="@PEDIGREE_FIELD">
-		<Question><TranslatedText>Notes</TranslatedText></Question>
+		<Question><TranslatedText>Notes about this person</TranslatedText></Question>
 	</ItemDef>
 	<ItemDef OID="internal_contact_notes" Name="internal_contact_notes" DataType="text" Length="999" redcap:Variable="internal_contact_notes" redcap:FieldType="textarea" redcap:FieldNote="Not shown in the pedigree editor: this field has no @PEDIGREE_FIELD tag.">
 		<Question><TranslatedText>Contact notes (registry staff only)</TranslatedText></Question>
