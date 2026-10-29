@@ -120,7 +120,7 @@
         return this._configured && !!node && !node.getLinkedRecordRef();
     };
 
-    // GET, not POST: every action this endpoint supports (search/import/
+    // GET, not POST: every action this endpoint supports (search/import/import-rows/
     // questionnaire/nextInstance) only reads data, never writes - REDCap only
     // requires a `redcap_csrf_token` for POST requests to module pages, so
     // using GET here needs no token at all (avoiding an earlier version of
@@ -156,6 +156,42 @@
         return this._get({
             type: 'import', record: record, currentRecord: this._record, formEvent: this._formEvent,
             instance: instance, requireRow: '1'
+        });
+    };
+
+    // The linked rows' current state, for open-pedigree's check on opening a pedigree:
+    // { ref: { answers } | { missing: true } | { otherRecord: true } }, each answers list exactly
+    // as _importRow() would give it. One request (type=import-rows) brings every row of this
+    // record, keyed by ref; a ref not among them is a deleted row if it names this record, and
+    // another record's row otherwise. A ref that isn't a REDCap row's (e.g. from another host's
+    // pedigree) isn't answered, so it isn't reported. Before the record's first save it has no
+    // rows to check: {} (nothing reported).
+    RedcapInstrumentPatientProvider.prototype.fetchLinkedRows = function (refs) {
+        if (!this._configured || !this._recordExists) {
+            return Promise.resolve({});
+        }
+        var self = this;
+        return this._get({
+            type: 'import-rows', currentRecord: this._record, formEvent: this._formEvent
+        }).then(function (rows) {
+            // No prototype: a ref can't reach Object.prototype (e.g. '__proto__').
+            var answered = Object.create(null);
+            refs.forEach(function (ref) {
+                var decoded = decodeRef(ref);
+                if (!decoded) {
+                    return;
+                }
+                // Looked up in its canonical form (e.g. 'instance:01' is instance 1), as _importRow() parses it.
+                var key = encodeRef(decoded.record, decoded.instance);
+                if (Object.prototype.hasOwnProperty.call(rows, key)) {
+                    answered[ref] = { answers: rows[key] };
+                } else {
+                    // Case-insensitively, as REDCap's database matches record names.
+                    var sameRecord = decoded.record.toLowerCase() === String(self._record).toLowerCase();
+                    answered[ref] = sameRecord ? { missing: true } : { otherRecord: true };
+                }
+            });
+            return answered;
         });
     };
 

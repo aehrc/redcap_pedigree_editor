@@ -18,6 +18,7 @@ require_once __DIR__ . '/classes/QuestionnaireDerivation.php';
 require_once __DIR__ . '/classes/RedcapInstrumentReference.php';
 require_once __DIR__ . '/classes/RedcapInstrumentSearch.php';
 require_once __DIR__ . '/classes/RedcapInstrumentRowImporter.php';
+require_once __DIR__ . '/classes/RedcapInstrumentLinkedRows.php';
 require_once __DIR__ . '/classes/RedcapInstrumentGateway.php';
 require_once __DIR__ . '/classes/RedcapDataEntryUrl.php';
 require_once __DIR__ . '/classes/RedcapInstrumentEventChooser.php';
@@ -914,22 +915,77 @@ EOD;
         if ($row === null) {
             return [];
         }
-        $instrument = $this->getPedigreeImportInstrument($project_id);
+        $resolvedFields = $this->resolvePedigreeImportFields($project_id, $this->getPedigreeImportInstrument($project_id), $dataDictionary);
+        if ($resolvedFields === null) {
+            return [];
+        }
+        return RedcapInstrumentRowImporter::buildAnswers($row['fields'], $resolvedFields);
+    }
 
-        if ($this->getPedigreeQuestionnaireMode($project_id) === 'ADVANCED') {
+    /**
+     * Every row of the record's linked instrument at once, keyed by its link ref, for
+     * open-pedigree's check on opening a pedigree (`type=import-rows`): one `getData`, each row's
+     * answers exactly as {@see self::getPedigreeInstrumentRowAnswers()} shapes them.
+     *
+     * @return array|null ref => answers; null if nothing can be imported (no instrument, one that's
+     *   no longer in the project, or ADVANCED mode without a Questionnaire) - not "no rows", which
+     *   would read as every row deleted.
+     * @throws \Exception if the rows can't be read, the record no longer exists, or it isn't in
+     *   the user's Data Access Group, for the same reason.
+     */
+    public function getPedigreeInstrumentRowsAnswers($project_id, $record, $eventId): ?array
+    {
+        $instrument = $this->getPedigreeImportInstrument($project_id);
+        if (!$instrument) {
+            return null;
+        }
+        $dataDictionary = RedcapInstrumentGateway::fetchDataDictionary($project_id, $instrument);
+        if ($dataDictionary === []) {
+            return null;
+        }
+        $resolvedFields = $this->resolvePedigreeImportFields($project_id, $instrument, $dataDictionary);
+        if ($resolvedFields === null) {
+            return null;
+        }
+        // The record as stored (an editor window can outlive a rename or delete): one that's gone has
+        // no rows, which would read as every row deleted.
+        $storedRecord = $this->findStoredRecordName($project_id, $record);
+        if ($storedRecord === null) {
+            throw new \RuntimeException('The record no longer exists.');
+        }
+        $groupId = $this->getCurrentUserGroupId($project_id);
+        if ($groupId !== null && !RedcapInstrumentGateway::isRecordInGroup((int) $project_id, $storedRecord, $groupId)) {
+            throw new \RuntimeException('The record isn\'t in the user\'s Data Access Group.');
+        }
+        $rows = RedcapInstrumentGateway::fetchInstrumentRows(
+            $project_id,
+            array_keys($dataDictionary),
+            $groupId,
+            [$storedRecord],
+            $instrument,
+            (int) $eventId,
+            true
+        );
+        return RedcapInstrumentLinkedRows::answerAll($rows, $resolvedFields);
+    }
+
+    /**
+     * The instrument's fields to import, as {@see RedcapInstrumentRowImporter::buildAnswers()}
+     * takes them, or null in ADVANCED mode without a Questionnaire (nothing is imported).
+     */
+    private function resolvePedigreeImportFields($project_id, string $instrument, array $dataDictionary): ?array
+    {
+        $mode = $this->getPedigreeQuestionnaireMode($project_id);
+        if ($mode === 'ADVANCED') {
             $advanced = $this->getPedigreeAdvancedQuestionnaire($project_id);
             if ($advanced === null) {
-                return [];
+                return null;
             }
-            $resolvedFields = QuestionnaireDerivation::resolveFieldsFromQuestionnaire($advanced, $instrument, $dataDictionary);
-        } else {
-            $answerValueSets = RedcapInstrumentGateway::resolveAnswerValueSets($project_id, array_keys($dataDictionary));
-            // In "default + tags" mode the built-in form keeps the legends (see QuestionnaireDerivation::derive()).
-            $builtInLegends = $this->getPedigreeQuestionnaireMode($project_id) === 'DEFAULT_PLUS_TAGS';
-            $resolvedFields = QuestionnaireDerivation::resolveTaggedFields($dataDictionary, $answerValueSets, $builtInLegends);
+            return QuestionnaireDerivation::resolveFieldsFromQuestionnaire($advanced, $instrument, $dataDictionary);
         }
-
-        return RedcapInstrumentRowImporter::buildAnswers($row['fields'], $resolvedFields);
+        $answerValueSets = RedcapInstrumentGateway::resolveAnswerValueSets($project_id, array_keys($dataDictionary));
+        // In "default + tags" mode the built-in form keeps the legends (see QuestionnaireDerivation::derive()).
+        return QuestionnaireDerivation::resolveTaggedFields($dataDictionary, $answerValueSets, $mode === 'DEFAULT_PLUS_TAGS');
     }
 
     /**
