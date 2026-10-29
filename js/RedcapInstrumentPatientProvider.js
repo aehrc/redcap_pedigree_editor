@@ -163,8 +163,9 @@
     // { ref: { answers } | { missing: true } | { otherRecord: true } }, each answers list exactly
     // as _importRow() would give it. One request (type=import-rows) brings every row of this
     // record, keyed by ref; a ref not among them is a deleted row if it names this record, and
-    // another record's row otherwise (or if it isn't a REDCap ref at all). Before the record's
-    // first save it has no rows to check: {} (no ref answered - nothing reported).
+    // another record's row otherwise. A ref that isn't a REDCap row's (e.g. from another host's
+    // pedigree) isn't answered, so it isn't reported. Before the record's first save it has no
+    // rows to check: {} (nothing reported).
     RedcapInstrumentPatientProvider.prototype.fetchLinkedRows = function (refs) {
         if (!this._configured || !this._recordExists) {
             return Promise.resolve({});
@@ -176,11 +177,16 @@
             // No prototype: a ref can't reach Object.prototype (e.g. '__proto__').
             var answered = Object.create(null);
             refs.forEach(function (ref) {
-                if (Object.prototype.hasOwnProperty.call(rows, ref)) {
-                    answered[ref] = { answers: rows[ref] };
+                var decoded = decodeRef(ref);
+                if (!decoded) {
+                    return;
+                }
+                // Looked up in its canonical form (e.g. 'instance:01' is instance 1), as _importRow() parses it.
+                var key = encodeRef(decoded.record, decoded.instance);
+                if (Object.prototype.hasOwnProperty.call(rows, key)) {
+                    answered[ref] = { answers: rows[key] };
                 } else {
-                    var decoded = decodeRef(ref);
-                    answered[ref] = decoded && decoded.record === self._record ? { missing: true } : { otherRecord: true };
+                    answered[ref] = decoded.record === self._record ? { missing: true } : { otherRecord: true };
                 }
             });
             return answered;

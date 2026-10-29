@@ -927,9 +927,11 @@ EOD;
      * open-pedigree's check on opening a pedigree (`type=import-rows`): one `getData`, each row's
      * answers exactly as {@see self::getPedigreeInstrumentRowAnswers()} shapes them.
      *
-     * @return array|null ref => answers; null if nothing can be imported (no instrument, or ADVANCED
-     *   mode without a Questionnaire) - not "no rows", which would read as every row deleted.
-     * @throws \Exception if the rows can't be read, for the same reason.
+     * @return array|null ref => answers; null if nothing can be imported (no instrument, one that's
+     *   no longer in the project, or ADVANCED mode without a Questionnaire) - not "no rows", which
+     *   would read as every row deleted.
+     * @throws \Exception if the rows can't be read, or the record isn't in the user's Data Access
+     *   Group, for the same reason.
      */
     public function getPedigreeInstrumentRowsAnswers($project_id, $record, $eventId): ?array
     {
@@ -938,14 +940,21 @@ EOD;
             return null;
         }
         $dataDictionary = RedcapInstrumentGateway::fetchDataDictionary($project_id, $instrument);
+        if ($dataDictionary === []) {
+            return null;
+        }
         $resolvedFields = $this->resolvePedigreeImportFields($project_id, $instrument, $dataDictionary);
         if ($resolvedFields === null) {
             return null;
         }
+        $groupId = $this->getCurrentUserGroupId($project_id);
+        if ($groupId !== null && !RedcapInstrumentGateway::isRecordInGroup((int) $project_id, (string) $record, $groupId)) {
+            throw new \RuntimeException('The record isn\'t in the user\'s Data Access Group.');
+        }
         $rows = RedcapInstrumentGateway::fetchInstrumentRows(
             $project_id,
             array_keys($dataDictionary),
-            $this->getCurrentUserGroupId($project_id),
+            $groupId,
             [(string) $record],
             $instrument,
             (int) $eventId,

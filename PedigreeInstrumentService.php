@@ -113,19 +113,20 @@ if ('questionnaire' === $params['type']) {
     // open-pedigree's check on opening a pedigree: every row of this record's linked instrument,
     // keyed by its link ref, each with its answers as `import` shapes them. RedcapInstrumentPatientProvider
     // answers each ref from this: a ref not among them is a deleted row, or another record's.
-    // Anything that would make every row look deleted - nothing set up to import, or a failed
-    // read - is an error instead, so the check says nothing.
+    // Anything that would make every row look deleted - nothing set up to import, a failed read,
+    // a record outside the user's Data Access Group - is an error instead, so the check says nothing.
     $record = $requireString('currentRecord', 'import-rows');
     $eventId = $resolveEventId();
     try {
         $rows = $module->getPedigreeInstrumentRowsAnswers($project_id, $record, $eventId);
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
         $sendErrorResponse('Server Error', 'The linked instrument\'s rows could not be read.', 500);
     }
     if ($rows === null) {
         $sendErrorResponse('Not Configured', 'Nothing is set up to import from the linked instrument.');
     }
-    echo json_encode((object) $rows, JSON_UNESCAPED_SLASHES);
+    // A row with text that isn't valid UTF-8 (e.g. from an old import) mustn't empty the whole answer.
+    echo json_encode((object) $rows, JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE);
 } elseif ('nextInstance' === $params['type']) {
     // "Create in REDCap": where a new linked row on this record goes. Still read-only - REDCap
     // itself creates the row, when the user saves it in its own form.
