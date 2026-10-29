@@ -645,8 +645,8 @@ collects, and isn't any organisation's project.
   *Follow up 24m* hold a *Clinical follow-up* form.
 - *Family members* uses `@PEDIGREE_FIELD` with `mapsTo` for first and last name, sex, date of birth, adopted, vital
   status, date of death, ADA2 status (carrier status: affected / carrier / pre-symptomatic) and tested. Relationship,
-  ADA2 variants, ADA2 enzyme activity and notes are linked but unmapped, and *Contact notes* has no tag, so it never
-  reaches the diagram.
+  ADA2 variants, ADA2 enzyme activity and *Notes about this person* are linked but unmapped, and *Contact notes* has no
+  tag, so it never reaches the diagram.
 - [Relationships in REDCap fields](#relationships-in-redcap-fields): *Family relationships* repeats in the *Enrolment*
   event too, with a row per relationship between linked people, and *Family members* has a read-only *Relationship to
   the participant (from the pedigree)* beside the hand-entered *Relationship*. Both are written by the module when a
@@ -777,8 +777,9 @@ same fields.
 
   *Why not tested?* (`[genetic_test] = '0' or [genetic_test] = ''`) is an OR-chain, which isn't translated, so it's
   always shown.
-- *Other features* is a checkbox field with the option codes `1`, `2`, `A` and `-1`. REDCap renames the last two in
-  exports (`other_features___a`, `other_features____1`); they still come through ticked on the node form.
+- *Features noted* (under *Other features*) is a checkbox field with the option codes `1`, `2`, `A` and `-1`. REDCap
+  renames the last two in exports (`other_features___a`, `other_features____1`); they still come through ticked on the
+  node form.
 - Two families:
   - **Record 1, the Carver family** - drawn, with every person linked. Ella (the proband) has hearing loss and a
     pathogenic result, so everything but the "why?" item is shown, with tinnitus (`A`) ticked; her father Tom wasn't tested, so his test result is hidden and his reason shown, with "Not

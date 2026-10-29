@@ -158,7 +158,7 @@
 		<Question><TranslatedText>Date of birth</TranslatedText></Question>
 	</ItemDef>
 	<ItemDef OID="hearing_status" Name="hearing_status" DataType="text" Length="7" redcap:Variable="hearing_status" redcap:FieldType="radio" redcap:SectionHeader="Hearing" redcap:FieldAnnotation="@PEDIGREE_FIELD">
-		<Question><TranslatedText>Hearing</TranslatedText></Question>
+		<Question><TranslatedText>Hearing status</TranslatedText></Question>
 		<CodeListRef CodeListOID="hearing_status.choices"/>
 	</ItemDef>
 	<ItemDef OID="status_unknown_note" Name="status_unknown_note" DataType="text" Length="999" redcap:Variable="status_unknown_note" redcap:FieldType="text" redcap:FieldNote="Shown while Hearing is blank" redcap:BranchingLogic="[hearing_status] = &#039;&#039;" redcap:FieldAnnotation="@PEDIGREE_FIELD">
@@ -194,19 +194,19 @@
 		<Question><TranslatedText>Why not tested?</TranslatedText></Question>
 	</ItemDef>
 	<ItemDef OID="other_features___1" Name="other_features___1" DataType="boolean" Length="1" redcap:Variable="other_features" redcap:FieldType="checkbox" redcap:SectionHeader="Other features" redcap:FieldAnnotation="@PEDIGREE_FIELD">
-		<Question><TranslatedText>Other features</TranslatedText></Question>
+		<Question><TranslatedText>Features noted</TranslatedText></Question>
 		<CodeListRef CodeListOID="other_features___1.choices"/>
 	</ItemDef>
 	<ItemDef OID="other_features___2" Name="other_features___2" DataType="boolean" Length="1" redcap:Variable="other_features" redcap:FieldType="checkbox" redcap:SectionHeader="Other features" redcap:FieldAnnotation="@PEDIGREE_FIELD">
-		<Question><TranslatedText>Other features</TranslatedText></Question>
+		<Question><TranslatedText>Features noted</TranslatedText></Question>
 		<CodeListRef CodeListOID="other_features___2.choices"/>
 	</ItemDef>
 	<ItemDef OID="other_features___a" Name="other_features___a" DataType="boolean" Length="1" redcap:Variable="other_features" redcap:FieldType="checkbox" redcap:SectionHeader="Other features" redcap:FieldAnnotation="@PEDIGREE_FIELD">
-		<Question><TranslatedText>Other features</TranslatedText></Question>
+		<Question><TranslatedText>Features noted</TranslatedText></Question>
 		<CodeListRef CodeListOID="other_features___a.choices"/>
 	</ItemDef>
 	<ItemDef OID="other_features____1" Name="other_features____1" DataType="boolean" Length="1" redcap:Variable="other_features" redcap:FieldType="checkbox" redcap:SectionHeader="Other features" redcap:FieldAnnotation="@PEDIGREE_FIELD">
-		<Question><TranslatedText>Other features</TranslatedText></Question>
+		<Question><TranslatedText>Features noted</TranslatedText></Question>
 		<CodeListRef CodeListOID="other_features____1.choices"/>
 	</ItemDef>
 	<ItemDef OID="clinic_notes" Name="clinic_notes" DataType="text" Length="999" redcap:Variable="clinic_notes" redcap:FieldType="textarea" redcap:FieldNote="Not tagged, so never shown on the pedigree.">

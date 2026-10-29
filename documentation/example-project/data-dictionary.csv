@@ -26,7 +26,7 @@ carrier_status,family_members,ADA2 findings,radio,ADA2 deficiency status,"affect
 ada2_tested,family_members,,yesno,Has this person had ADA2 testing (genetic or enzyme)?,,,,,,,,,,,,,"@PEDIGREE_FIELD(mapsTo=""evaluated"")"
 ada2_variants,family_members,,radio,ADA2 variants found,"0, None | 1, One variant | 2, Two variants | not_tested, Not tested | unknown, Don't know",,,,,,,,,,,,@PEDIGREE_FIELD
 ada2_level,family_members,,radio,ADA2 enzyme activity,"normal, Normal | low, Low | absent, Absent | not_tested, Not tested | unknown, Don't know",,,,,,,,,,,,@PEDIGREE_FIELD
-notes,family_members,Notes,notes,Notes,,,,,,,,,,,,,@PEDIGREE_FIELD
+notes,family_members,Notes,notes,Notes about this person,,,,,,,,,,,,,@PEDIGREE_FIELD
 internal_contact_notes,family_members,,notes,Contact notes (registry staff only),,Not shown in the pedigree editor: this field has no @PEDIGREE_FIELD tag.,,,,,,,,,,,
 person_a,family_relationships,Relationship,text,Person A (Family members row),,"The parent, for a parent relationship",integer,,,,,,,,,,@READONLY
 person_b,family_relationships,,text,Person B (Family members row),,"The child, for a parent relationship",integer,,,,,,,,,,@READONLY

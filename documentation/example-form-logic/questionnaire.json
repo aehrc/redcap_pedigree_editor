@@ -272,7 +272,7 @@
         {
           "linkId": "hearing_status",
           "type": "choice",
-          "text": "Hearing",
+          "text": "Hearing status",
           "answerOption": [
             {
               "valueCoding": {
@@ -635,7 +635,7 @@
         {
           "linkId": "other_features",
           "type": "choice",
-          "text": "Other features",
+          "text": "Features noted",
           "repeats": true,
           "answerOption": [
             {
