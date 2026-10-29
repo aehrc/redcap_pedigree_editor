@@ -120,7 +120,7 @@
         return this._configured && !!node && !node.getLinkedRecordRef();
     };
 
-    // GET, not POST: every action this endpoint supports (search/import/
+    // GET, not POST: every action this endpoint supports (search/import/import-rows/
     // questionnaire/nextInstance) only reads data, never writes - REDCap only
     // requires a `redcap_csrf_token` for POST requests to module pages, so
     // using GET here needs no token at all (avoiding an earlier version of
@@ -156,6 +156,32 @@
         return this._get({
             type: 'import', record: record, currentRecord: this._record, formEvent: this._formEvent,
             instance: instance, requireRow: '1'
+        });
+    };
+
+    // Several linked rows at once (type=import-rows), for open-pedigree's check on opening a
+    // pedigree: { ref: { answers } | { missing: true } | { otherRecord: true } }, each answers list
+    // exactly as _importRow() would give it. The endpoint takes up to IMPORT_ROWS_PER_REQUEST
+    // refs (it's GET, so they ride in the URL), so a larger set goes in several requests. Before
+    // the record's first save it has no rows to check: {} (no ref answered - nothing reported).
+    var IMPORT_ROWS_PER_REQUEST = 100;
+
+    RedcapInstrumentPatientProvider.prototype.fetchLinkedRows = function (refs) {
+        if (!this._configured || !this._recordExists) {
+            return Promise.resolve({});
+        }
+        var self = this;
+        var batches = [];
+        for (var i = 0; i < refs.length; i += IMPORT_ROWS_PER_REQUEST) {
+            batches.push(refs.slice(i, i + IMPORT_ROWS_PER_REQUEST));
+        }
+        return Promise.all(batches.map(function (batch) {
+            return self._get({
+                type: 'import-rows', currentRecord: self._record, formEvent: self._formEvent,
+                refs: JSON.stringify(batch)
+            });
+        })).then(function (answered) {
+            return Object.assign.apply(Object, [{}].concat(answered));
         });
     };
 

@@ -1,8 +1,9 @@
 <?php
 /**
  * AJAX endpoint backing `RedcapInstrumentPatientProvider` (task 6.2):
- * search/import against the project's configured repeating instrument, and
- * the instance number for a new row (nextInstance).
+ * search/import against the project's configured repeating instrument, a
+ * batch of linked rows at once (import-rows), and the instance number for a
+ * new row (nextInstance).
  *
  * Deliberately NOT listed in config.json's `no-auth-pages` — REDCap
  * authenticates the session for this page like any other module page.
@@ -108,6 +109,19 @@ if ('questionnaire' === $params['type']) {
         $sendErrorResponse('Not Found', 'That row no longer exists in REDCap', 404);
     }
     echo json_encode($answers, JSON_UNESCAPED_SLASHES);
+} elseif ('import-rows' === $params['type']) {
+    // open-pedigree's check on opening a pedigree: several linked rows of this record at once.
+    // `refs` is a JSON array of encoded refs (at most RedcapInstrumentLinkedRows::MAX_REFS - GET
+    // keeps this endpoint free of CSRF tokens, so the list rides in the URL). Each ref is answered
+    // on its own - a missing row or another record's ref doesn't fail the rest.
+    $record = $requireString('currentRecord', 'import-rows');
+    $refs = \AEHRC\PedigreeEditorExternalModule\RedcapInstrumentLinkedRows::parseRefs($params['refs'] ?? null);
+    if ($refs === null) {
+        $sendErrorResponse('Invalid Request', 'Parameter "refs" must be a JSON array of at most '
+            . \AEHRC\PedigreeEditorExternalModule\RedcapInstrumentLinkedRows::MAX_REFS . ' strings.');
+    }
+    $eventId = $resolveEventId();
+    echo json_encode((object) $module->getPedigreeInstrumentRowsAnswers($project_id, $record, $eventId, $refs), JSON_UNESCAPED_SLASHES);
 } elseif ('nextInstance' === $params['type']) {
     // "Create in REDCap": where a new linked row on this record goes. Still read-only - REDCap
     // itself creates the row, when the user saves it in its own form.

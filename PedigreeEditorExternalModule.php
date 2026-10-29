@@ -18,6 +18,7 @@ require_once __DIR__ . '/classes/QuestionnaireDerivation.php';
 require_once __DIR__ . '/classes/RedcapInstrumentReference.php';
 require_once __DIR__ . '/classes/RedcapInstrumentSearch.php';
 require_once __DIR__ . '/classes/RedcapInstrumentRowImporter.php';
+require_once __DIR__ . '/classes/RedcapInstrumentLinkedRows.php';
 require_once __DIR__ . '/classes/RedcapInstrumentGateway.php';
 require_once __DIR__ . '/classes/RedcapDataEntryUrl.php';
 require_once __DIR__ . '/classes/RedcapInstrumentEventChooser.php';
@@ -914,22 +915,54 @@ EOD;
         if ($row === null) {
             return [];
         }
-        $instrument = $this->getPedigreeImportInstrument($project_id);
+        $resolvedFields = $this->resolvePedigreeImportFields($project_id, $dataDictionary);
+        if ($resolvedFields === null) {
+            return [];
+        }
+        return RedcapInstrumentRowImporter::buildAnswers($row['fields'], $resolvedFields);
+    }
 
+    /**
+     * Several linked rows of one record at once, for open-pedigree's check on opening a pedigree
+     * (`type=import-rows`): one `getData` for the record's rows of the instrument, each ref
+     * answered as {@see RedcapInstrumentLinkedRows::answer()} says - its answers exactly as
+     * {@see self::getPedigreeInstrumentRowAnswers()} shapes them, or `missing` / `otherRecord`.
+     *
+     * @param string[] $refs
+     */
+    public function getPedigreeInstrumentRowsAnswers($project_id, $record, $eventId, array $refs): array
+    {
+        $instrument = $this->getPedigreeImportInstrument($project_id);
+        $dataDictionary = $instrument ? RedcapInstrumentGateway::fetchDataDictionary($project_id, $instrument) : [];
+        $resolvedFields = $instrument ? $this->resolvePedigreeImportFields($project_id, $dataDictionary) : null;
+        $rows = $resolvedFields === null ? [] : RedcapInstrumentGateway::fetchInstrumentRows(
+            $project_id,
+            array_keys($dataDictionary),
+            $this->getCurrentUserGroupId($project_id),
+            [(string) $record],
+            $instrument,
+            (int) $eventId
+        );
+        return RedcapInstrumentLinkedRows::answer($refs, (string) $record, $rows, $resolvedFields ?? []);
+    }
+
+    /**
+     * The instrument's fields to import, as {@see RedcapInstrumentRowImporter::buildAnswers()}
+     * takes them, or null in ADVANCED mode without a Questionnaire (nothing is imported).
+     */
+    private function resolvePedigreeImportFields($project_id, array $dataDictionary): ?array
+    {
         if ($this->getPedigreeQuestionnaireMode($project_id) === 'ADVANCED') {
             $advanced = $this->getPedigreeAdvancedQuestionnaire($project_id);
             if ($advanced === null) {
-                return [];
+                return null;
             }
-            $resolvedFields = QuestionnaireDerivation::resolveFieldsFromQuestionnaire($advanced, $instrument, $dataDictionary);
-        } else {
-            $answerValueSets = RedcapInstrumentGateway::resolveAnswerValueSets($project_id, array_keys($dataDictionary));
-            // In "default + tags" mode the built-in form keeps the legends (see QuestionnaireDerivation::derive()).
-            $builtInLegends = $this->getPedigreeQuestionnaireMode($project_id) === 'DEFAULT_PLUS_TAGS';
-            $resolvedFields = QuestionnaireDerivation::resolveTaggedFields($dataDictionary, $answerValueSets, $builtInLegends);
+            return QuestionnaireDerivation::resolveFieldsFromQuestionnaire($advanced, $this->getPedigreeImportInstrument($project_id), $dataDictionary);
         }
-
-        return RedcapInstrumentRowImporter::buildAnswers($row['fields'], $resolvedFields);
+        $answerValueSets = RedcapInstrumentGateway::resolveAnswerValueSets($project_id, array_keys($dataDictionary));
+        // In "default + tags" mode the built-in form keeps the legends (see QuestionnaireDerivation::derive()).
+        $builtInLegends = $this->getPedigreeQuestionnaireMode($project_id) === 'DEFAULT_PLUS_TAGS';
+        return QuestionnaireDerivation::resolveTaggedFields($dataDictionary, $answerValueSets, $builtInLegends);
     }
 
     /**
