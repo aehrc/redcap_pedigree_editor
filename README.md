@@ -777,8 +777,9 @@ same fields.
 
   *Why not tested?* (`[genetic_test] = '0' or [genetic_test] = ''`) is an OR-chain, which isn't translated, so it's
   always shown.
-- *Other features* is a checkbox field with the option codes `1`, `2`, `A` and `-1`. REDCap renames the last two in
-  exports (`other_features___a`, `other_features____1`); they still come through ticked on the node form.
+- *Features noted* (under *Other features*) is a checkbox field with the option codes `1`, `2`, `A` and `-1`. REDCap
+  renames the last two in exports (`other_features___a`, `other_features____1`); they still come through ticked on the
+  node form.
 - Two families:
   - **Record 1, the Carver family** - drawn, with every person linked. Ella (the proband) has hearing loss and a
     pathogenic result, so everything but the "why?" item is shown, with tinnitus (`A`) ticked; her father Tom wasn't tested, so his test result is hidden and his reason shown, with "Not

@@ -7,7 +7,7 @@ last_name,relatives,,text,Last name,,,,,,,,,,,,,"@PEDIGREE_FIELD(mapsTo=""family
 relationship,relatives,,dropdown,Relationship to the proband,"proband, Proband | mother, Mother | father, Father | sibling, Brother or sister | child, Son or daughter | grandparent, Grandparent | aunt_uncle, Aunt or uncle | cousin, Cousin | other, Other",,,,,,,,,,,,@PEDIGREE_FIELD
 sex,relatives,,radio,Sex,"F, Female | M, Male | U, Unknown",,,,,,,,,,,,"@PEDIGREE_FIELD(mapsTo=""gender"")"
 dob,relatives,,text,Date of birth,,,date_ymd,,,,,,,,,,"@PEDIGREE_FIELD(mapsTo=""birthDate"")"
-hearing_status,relatives,Hearing,radio,Hearing,"normal, Normal hearing | loss, Hearing loss | unknown, Not known",,,,,,,,,,,,@PEDIGREE_FIELD
+hearing_status,relatives,Hearing,radio,Hearing status,"normal, Normal hearing | loss, Hearing loss | unknown, Not known",,,,,,,,,,,,@PEDIGREE_FIELD
 status_unknown_note,relatives,,text,Hearing not recorded yet: why?,,Shown while Hearing is blank,,,,,[hearing_status] = '',,,,,,@PEDIGREE_FIELD
 diagnosis,relatives,,dropdown,Type of hearing loss,"60700002, Sensorineural hearing loss | 44057004, Conductive hearing loss | 232328005, Dominant sensorineural hearing loss",Codes are SNOMED CT,,,,,[hearing_status] = 'loss',,,,,,@PEDIGREE_FIELD
 age_at_onset,relatives,,text,Age at onset (years),,,integer,0,,,[hearing_status] = 'loss',,,,,,@PEDIGREE_FIELD
@@ -16,5 +16,5 @@ genetic_test,relatives,Genetic testing,yesno,Genetic test done?,,,,,,,,,,,,,@PED
 test_result,relatives,,radio,Genetic test result,"pathogenic, Pathogenic variant found | vus, Variant of uncertain significance | negative, No variant found",,,,,,[genetic_test] = '1' and [hearing_status] = 'loss',,,,,,@PEDIGREE_FIELD
 hereditary_confirmed,relatives,,yesno,Hereditary hearing loss confirmed?,,,,,,,[test_result] = 'pathogenic',,,,,,@PEDIGREE_FIELD
 not_tested_reason,relatives,,text,Why not tested?,,"OR branching: not translated, so always shown on the pedigree",,,,,[genetic_test] = '0' or [genetic_test] = '',,,,,,@PEDIGREE_FIELD
-other_features,relatives,Other features,checkbox,Other features,"1, Vertigo | 2, Ear malformation | A, Tinnitus | -1, Not known",,,,,,,,,,,,@PEDIGREE_FIELD
+other_features,relatives,Other features,checkbox,Features noted,"1, Vertigo | 2, Ear malformation | A, Tinnitus | -1, Not known",,,,,,,,,,,,@PEDIGREE_FIELD
 clinic_notes,relatives,,notes,Clinic notes,,"Not tagged, so never shown on the pedigree.",,,,,,,,,,,
