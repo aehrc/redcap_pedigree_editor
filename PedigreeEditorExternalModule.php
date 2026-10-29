@@ -930,8 +930,8 @@ EOD;
      * @return array|null ref => answers; null if nothing can be imported (no instrument, one that's
      *   no longer in the project, or ADVANCED mode without a Questionnaire) - not "no rows", which
      *   would read as every row deleted.
-     * @throws \Exception if the rows can't be read, or the record isn't in the user's Data Access
-     *   Group, for the same reason.
+     * @throws \Exception if the rows can't be read, the record no longer exists, or it isn't in
+     *   the user's Data Access Group, for the same reason.
      */
     public function getPedigreeInstrumentRowsAnswers($project_id, $record, $eventId): ?array
     {
@@ -947,15 +947,21 @@ EOD;
         if ($resolvedFields === null) {
             return null;
         }
+        // The record as stored (an editor window can outlive a rename or delete): one that's gone has
+        // no rows, which would read as every row deleted.
+        $storedRecord = $this->findStoredRecordName($project_id, $record);
+        if ($storedRecord === null) {
+            throw new \RuntimeException('The record no longer exists.');
+        }
         $groupId = $this->getCurrentUserGroupId($project_id);
-        if ($groupId !== null && !RedcapInstrumentGateway::isRecordInGroup((int) $project_id, (string) $record, $groupId)) {
+        if ($groupId !== null && !RedcapInstrumentGateway::isRecordInGroup((int) $project_id, $storedRecord, $groupId)) {
             throw new \RuntimeException('The record isn\'t in the user\'s Data Access Group.');
         }
         $rows = RedcapInstrumentGateway::fetchInstrumentRows(
             $project_id,
             array_keys($dataDictionary),
             $groupId,
-            [(string) $record],
+            [$storedRecord],
             $instrument,
             (int) $eventId,
             true

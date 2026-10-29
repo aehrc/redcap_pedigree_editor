@@ -186,7 +186,9 @@
                 if (Object.prototype.hasOwnProperty.call(rows, key)) {
                     answered[ref] = { answers: rows[key] };
                 } else {
-                    answered[ref] = decoded.record === self._record ? { missing: true } : { otherRecord: true };
+                    // Case-insensitively, as REDCap's database matches record names.
+                    var sameRecord = decoded.record.toLowerCase() === String(self._record).toLowerCase();
+                    answered[ref] = sameRecord ? { missing: true } : { otherRecord: true };
                 }
             });
             return answered;
