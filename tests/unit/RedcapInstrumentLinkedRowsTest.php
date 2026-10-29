@@ -19,84 +19,27 @@ class RedcapInstrumentLinkedRowsTest extends TestCase
         ]];
     }
 
-    private function rows(): array
+    public function testEachRowIsKeyedByItsRefWithTheImportsAnswers(): void
     {
-        return [
+        $rows = [
             ['record' => '7', 'instance' => 1, 'fields' => ['comments' => 'First']],
             ['record' => '7', 'instance' => 2, 'fields' => ['comments' => '']],
         ];
-    }
-
-    public function testPresentRowsComeBackAsTheImportShapesThem(): void
-    {
-        $result = RedcapInstrumentLinkedRows::answer(
-            ['record:7/instance:1', 'record:7/instance:2'],
-            '7',
-            $this->rows(),
-            $this->fields()
-        );
         $this->assertSame([
-            'record:7/instance:1' => ['answers' => RedcapInstrumentRowImporter::buildAnswers(['comments' => 'First'], $this->fields())],
-            'record:7/instance:2' => ['answers' => [['linkId' => 'comments', 'value' => null]]],
-        ], $result);
+            'record:7/instance:1' => RedcapInstrumentRowImporter::buildAnswers(['comments' => 'First'], $this->fields()),
+            'record:7/instance:2' => [['linkId' => 'comments', 'value' => null]],
+        ], RedcapInstrumentLinkedRows::answerAll($rows, $this->fields()));
     }
 
-    public function testMissingInstanceIsAnsweredOnItsOwn(): void
+    public function testTheRecordNameIsKeptAsStored(): void
     {
-        $result = RedcapInstrumentLinkedRows::answer(['record:7/instance:9', 'record:7/instance:1'], '7', $this->rows(), $this->fields());
-        $this->assertSame(['missing' => true], $result['record:7/instance:9']);
-        $this->assertArrayHasKey('answers', $result['record:7/instance:1']);
+        // The ref is built from the name getData returns, so it matches the refs the pedigree saved.
+        $rows = [['record' => 'ABC-01', 'instance' => 3, 'fields' => ['comments' => 'x']]];
+        $this->assertSame(['record:ABC-01/instance:3'], array_keys(RedcapInstrumentLinkedRows::answerAll($rows, $this->fields())));
     }
 
-    public function testAnotherRecordsRefIsNotRead(): void
+    public function testNoRowsIsNoAnswers(): void
     {
-        // Even if that record's row were among the rows given, it isn't this record's.
-        $rows = array_merge($this->rows(), [['record' => '8', 'instance' => 1, 'fields' => ['comments' => 'Other']]]);
-        $result = RedcapInstrumentLinkedRows::answer(['record:8/instance:1'], '7', $rows, $this->fields());
-        $this->assertSame(['record:8/instance:1' => ['otherRecord' => true]], $result);
-    }
-
-    public function testRecordNamePrefixIsNotTheSameRecord(): void
-    {
-        $result = RedcapInstrumentLinkedRows::answer(['record:77/instance:1'], '7', $this->rows(), $this->fields());
-        $this->assertSame(['otherRecord' => true], $result['record:77/instance:1']);
-    }
-
-    public function testMalformedRefCountsAsAnotherRecords(): void
-    {
-        $result = RedcapInstrumentLinkedRows::answer(['Patient/123', 'record:7/instance:x'], '7', $this->rows(), $this->fields());
-        $this->assertSame([
-            'Patient/123' => ['otherRecord' => true],
-            'record:7/instance:x' => ['otherRecord' => true],
-        ], $result);
-    }
-
-    public function testRepeatedRefIsAnsweredOnce(): void
-    {
-        $result = RedcapInstrumentLinkedRows::answer(['record:7/instance:1', 'record:7/instance:1'], '7', $this->rows(), $this->fields());
-        $this->assertCount(1, $result);
-    }
-
-    public function testParseRefsTakesAJsonListOfStrings(): void
-    {
-        $this->assertSame(['record:7/instance:1'], RedcapInstrumentLinkedRows::parseRefs('["record:7/instance:1"]'));
-        $this->assertSame([], RedcapInstrumentLinkedRows::parseRefs('[]'));
-    }
-
-    public function testParseRefsRejectsOtherShapes(): void
-    {
-        $this->assertNull(RedcapInstrumentLinkedRows::parseRefs(null));
-        $this->assertNull(RedcapInstrumentLinkedRows::parseRefs(['record:7/instance:1']));
-        $this->assertNull(RedcapInstrumentLinkedRows::parseRefs('not json'));
-        $this->assertNull(RedcapInstrumentLinkedRows::parseRefs('"record:7/instance:1"'));
-        $this->assertNull(RedcapInstrumentLinkedRows::parseRefs('{"a":"record:7/instance:1"}'));
-        $this->assertNull(RedcapInstrumentLinkedRows::parseRefs('[1]'));
-    }
-
-    public function testParseRefsRejectsMoreThanTheCap(): void
-    {
-        $atCap = array_fill(0, RedcapInstrumentLinkedRows::MAX_REFS, 'record:7/instance:1');
-        $this->assertCount(RedcapInstrumentLinkedRows::MAX_REFS, RedcapInstrumentLinkedRows::parseRefs(json_encode($atCap)));
-        $this->assertNull(RedcapInstrumentLinkedRows::parseRefs(json_encode(array_merge($atCap, ['record:7/instance:2']))));
+        $this->assertSame([], RedcapInstrumentLinkedRows::answerAll([], $this->fields()));
     }
 }

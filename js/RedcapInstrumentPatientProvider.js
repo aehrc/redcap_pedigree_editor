@@ -159,29 +159,31 @@
         });
     };
 
-    // Several linked rows at once (type=import-rows), for open-pedigree's check on opening a
-    // pedigree: { ref: { answers } | { missing: true } | { otherRecord: true } }, each answers list
-    // exactly as _importRow() would give it. The endpoint takes up to IMPORT_ROWS_PER_REQUEST
-    // refs (it's GET, so they ride in the URL), so a larger set goes in several requests. Before
-    // the record's first save it has no rows to check: {} (no ref answered - nothing reported).
-    var IMPORT_ROWS_PER_REQUEST = 100;
-
+    // The linked rows' current state, for open-pedigree's check on opening a pedigree:
+    // { ref: { answers } | { missing: true } | { otherRecord: true } }, each answers list exactly
+    // as _importRow() would give it. One request (type=import-rows) brings every row of this
+    // record, keyed by ref; a ref not among them is a deleted row if it names this record, and
+    // another record's row otherwise (or if it isn't a REDCap ref at all). Before the record's
+    // first save it has no rows to check: {} (no ref answered - nothing reported).
     RedcapInstrumentPatientProvider.prototype.fetchLinkedRows = function (refs) {
         if (!this._configured || !this._recordExists) {
             return Promise.resolve({});
         }
         var self = this;
-        var batches = [];
-        for (var i = 0; i < refs.length; i += IMPORT_ROWS_PER_REQUEST) {
-            batches.push(refs.slice(i, i + IMPORT_ROWS_PER_REQUEST));
-        }
-        return Promise.all(batches.map(function (batch) {
-            return self._get({
-                type: 'import-rows', currentRecord: self._record, formEvent: self._formEvent,
-                refs: JSON.stringify(batch)
+        return this._get({
+            type: 'import-rows', currentRecord: this._record, formEvent: this._formEvent
+        }).then(function (rows) {
+            // No prototype: a ref can't reach Object.prototype (e.g. '__proto__').
+            var answered = Object.create(null);
+            refs.forEach(function (ref) {
+                if (Object.prototype.hasOwnProperty.call(rows, ref)) {
+                    answered[ref] = { answers: rows[ref] };
+                } else {
+                    var decoded = decodeRef(ref);
+                    answered[ref] = decoded && decoded.record === self._record ? { missing: true } : { otherRecord: true };
+                }
             });
-        })).then(function (answered) {
-            return Object.assign.apply(Object, [{}].concat(answered));
+            return answered;
         });
     };
 

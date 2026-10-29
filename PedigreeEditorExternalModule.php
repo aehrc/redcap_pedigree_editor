@@ -915,7 +915,7 @@ EOD;
         if ($row === null) {
             return [];
         }
-        $resolvedFields = $this->resolvePedigreeImportFields($project_id, $dataDictionary);
+        $resolvedFields = $this->resolvePedigreeImportFields($project_id, $this->getPedigreeImportInstrument($project_id), $dataDictionary);
         if ($resolvedFields === null) {
             return [];
         }
@@ -923,46 +923,54 @@ EOD;
     }
 
     /**
-     * Several linked rows of one record at once, for open-pedigree's check on opening a pedigree
-     * (`type=import-rows`): one `getData` for the record's rows of the instrument, each ref
-     * answered as {@see RedcapInstrumentLinkedRows::answer()} says - its answers exactly as
-     * {@see self::getPedigreeInstrumentRowAnswers()} shapes them, or `missing` / `otherRecord`.
+     * Every row of the record's linked instrument at once, keyed by its link ref, for
+     * open-pedigree's check on opening a pedigree (`type=import-rows`): one `getData`, each row's
+     * answers exactly as {@see self::getPedigreeInstrumentRowAnswers()} shapes them.
      *
-     * @param string[] $refs
+     * @return array|null ref => answers; null if nothing can be imported (no instrument, or ADVANCED
+     *   mode without a Questionnaire) - not "no rows", which would read as every row deleted.
+     * @throws \Exception if the rows can't be read, for the same reason.
      */
-    public function getPedigreeInstrumentRowsAnswers($project_id, $record, $eventId, array $refs): array
+    public function getPedigreeInstrumentRowsAnswers($project_id, $record, $eventId): ?array
     {
         $instrument = $this->getPedigreeImportInstrument($project_id);
-        $dataDictionary = $instrument ? RedcapInstrumentGateway::fetchDataDictionary($project_id, $instrument) : [];
-        $resolvedFields = $instrument ? $this->resolvePedigreeImportFields($project_id, $dataDictionary) : null;
-        $rows = $resolvedFields === null ? [] : RedcapInstrumentGateway::fetchInstrumentRows(
+        if (!$instrument) {
+            return null;
+        }
+        $dataDictionary = RedcapInstrumentGateway::fetchDataDictionary($project_id, $instrument);
+        $resolvedFields = $this->resolvePedigreeImportFields($project_id, $instrument, $dataDictionary);
+        if ($resolvedFields === null) {
+            return null;
+        }
+        $rows = RedcapInstrumentGateway::fetchInstrumentRows(
             $project_id,
             array_keys($dataDictionary),
             $this->getCurrentUserGroupId($project_id),
             [(string) $record],
             $instrument,
-            (int) $eventId
+            (int) $eventId,
+            true
         );
-        return RedcapInstrumentLinkedRows::answer($refs, (string) $record, $rows, $resolvedFields ?? []);
+        return RedcapInstrumentLinkedRows::answerAll($rows, $resolvedFields);
     }
 
     /**
      * The instrument's fields to import, as {@see RedcapInstrumentRowImporter::buildAnswers()}
      * takes them, or null in ADVANCED mode without a Questionnaire (nothing is imported).
      */
-    private function resolvePedigreeImportFields($project_id, array $dataDictionary): ?array
+    private function resolvePedigreeImportFields($project_id, string $instrument, array $dataDictionary): ?array
     {
-        if ($this->getPedigreeQuestionnaireMode($project_id) === 'ADVANCED') {
+        $mode = $this->getPedigreeQuestionnaireMode($project_id);
+        if ($mode === 'ADVANCED') {
             $advanced = $this->getPedigreeAdvancedQuestionnaire($project_id);
             if ($advanced === null) {
                 return null;
             }
-            return QuestionnaireDerivation::resolveFieldsFromQuestionnaire($advanced, $this->getPedigreeImportInstrument($project_id), $dataDictionary);
+            return QuestionnaireDerivation::resolveFieldsFromQuestionnaire($advanced, $instrument, $dataDictionary);
         }
         $answerValueSets = RedcapInstrumentGateway::resolveAnswerValueSets($project_id, array_keys($dataDictionary));
         // In "default + tags" mode the built-in form keeps the legends (see QuestionnaireDerivation::derive()).
-        $builtInLegends = $this->getPedigreeQuestionnaireMode($project_id) === 'DEFAULT_PLUS_TAGS';
-        return QuestionnaireDerivation::resolveTaggedFields($dataDictionary, $answerValueSets, $builtInLegends);
+        return QuestionnaireDerivation::resolveTaggedFields($dataDictionary, $answerValueSets, $mode === 'DEFAULT_PLUS_TAGS');
     }
 
     /**
