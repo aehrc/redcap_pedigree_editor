@@ -645,8 +645,8 @@ collects, and isn't any organisation's project.
   *Follow up 24m* hold a *Clinical follow-up* form.
 - *Family members* uses `@PEDIGREE_FIELD` with `mapsTo` for first and last name, sex, date of birth, adopted, vital
   status, date of death, ADA2 status (carrier status: affected / carrier / pre-symptomatic) and tested. Relationship,
-  ADA2 variants, ADA2 enzyme activity and notes are linked but unmapped, and *Contact notes* has no tag, so it never
-  reaches the diagram.
+  ADA2 variants, ADA2 enzyme activity and *Notes about this person* are linked but unmapped, and *Contact notes* has no
+  tag, so it never reaches the diagram.
 - [Relationships in REDCap fields](#relationships-in-redcap-fields): *Family relationships* repeats in the *Enrolment*
   event too, with a row per relationship between linked people, and *Family members* has a read-only *Relationship to
   the participant (from the pedigree)* beside the hand-entered *Relationship*. Both are written by the module when a
