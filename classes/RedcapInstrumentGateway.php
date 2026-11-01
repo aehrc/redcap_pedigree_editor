@@ -54,8 +54,11 @@ class RedcapInstrumentGateway
      * @param int $eventId Only this event's rows - the one
      *   {@see self::pickRepeatingEvent()} picks, so search, import and
      *   "Edit in REDCap" all read the same rows for a given instance.
+     * @param bool $throwOnFailure Let a failed read (getData throwing, or answering something other
+     *   than rows) throw, rather than read as no rows - for a caller that would otherwise report
+     *   every row as gone (import-rows).
      */
-    public static function fetchInstrumentRows(int $projectId, array $fieldNames, $groupId, array $records, string $instrument, int $eventId): array
+    public static function fetchInstrumentRows(int $projectId, array $fieldNames, $groupId, array $records, string $instrument, int $eventId, bool $throwOnFailure = false): array
     {
         $recordIdField = \REDCap::getRecordIdField($projectId);
         $fields = array_values(array_unique(array_merge([$recordIdField], $fieldNames)));
@@ -63,6 +66,16 @@ class RedcapInstrumentGateway
         try {
             $rawRows = \REDCap::getData($projectId, 'json-array', $records, $fields, [$eventId], $groupId);
         } catch (\Exception $e) {
+            if ($throwOnFailure) {
+                throw $e;
+            }
+            return [];
+        }
+        if (!is_array($rawRows)) {
+            // getData can answer an error instead of throwing.
+            if ($throwOnFailure) {
+                throw new \RuntimeException('REDCap::getData did not return rows.');
+            }
             return [];
         }
 

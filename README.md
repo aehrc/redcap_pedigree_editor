@@ -48,6 +48,8 @@ representation of the diagram, add compression for large diagrams.
   **Security**: fix two cross-site scripting holes - the terminology service echoed request parameters unescaped
   into an HTML error response, and a record's saved pedigree SVG was inserted into the form as raw HTML (it is now
   sanitised first).
+  Opening a saved pedigree checks its linked people's rows, and offers to bring in any changed in REDCap since the
+  pedigree was saved (see [Linking, editing and adding rows](#linking-editing-and-adding-rows)).
   An importable [example project](#family-registry-ada2) shows it all in a longitudinal registry with three fictional
   families.
   JSON pedigrees are stored so they survive moving a project by XML or re-importing its data (see
@@ -270,6 +272,22 @@ The tab offers:
   created. The *Save & Go to...* buttons still save the row, but the editor doesn't count that as this window's save,
   so it only tells you the row is there - link the person to it with *Link to existing record*. One new row at a
   time: while one is open, the button brings that window back to the front.
+
+**Rows changed in REDCap.** A person's values come in when they're linked, and when an *Edit in REDCap* window
+closes. A row changed in REDCap any other way - on its form directly, by a data import, by another user - isn't
+brought in by itself. So when the editor opens a saved pedigree, it checks every linked person's row (in one request)
+against what the pedigree last took in from it. If any have changed, a notice says how many, and each of those people
+gets an orange **!** mark on the diagram:
+
+- ***Update*** brings their rows in, exactly as closing *Edit in REDCap* would: only what changed in REDCap changes,
+  and values entered in the diagram are kept. It can be undone, and nothing is stored until you save the pedigree.
+- ***Dismiss*** hides the notice and the marks and changes nothing. The check runs again the next time the pedigree is
+  opened.
+
+A value changed in the diagram isn't a change in REDCap, so it isn't reported. The notice also names people linked
+to a row that no longer exists, and people linked to another record's row (for example after the record was
+renamed); they aren't updated - link them again. The check is only made in the editor: nothing on the REDCap form
+says a pedigree is out of date before it's opened.
 
 A few rules apply:
 
@@ -742,6 +760,10 @@ the code; the system is ignored, so a bare code works too.
 
 **Try this**
 
+- **A row changed in REDCap.** Give Ruth Ashby a carrier status (or another condition) on her *Relatives* row - not
+  through the pedigree editor - and save it. Open the Ashby family's pedigree: the editor says one person's linked
+  record has changed, and Ruth has an orange **!** mark. *Update* brings the change in; close without saving to leave
+  the pedigree as it was, and put Ruth's row back.
 - **Node-edit form source *Default + tags*.** The editor's own legends are used, editable in the editor, and the
   `legend=` tags are ignored: the four fields become ordinary linked items, and each time the editor opens, the web
   server's PHP error log gets one warning per field (`... but the built-in form already has that legend in "default +
