@@ -19,6 +19,7 @@ require_once __DIR__ . '/classes/RedcapInstrumentReference.php';
 require_once __DIR__ . '/classes/RedcapInstrumentSearch.php';
 require_once __DIR__ . '/classes/RedcapInstrumentRowImporter.php';
 require_once __DIR__ . '/classes/RedcapInstrumentLinkedRows.php';
+require_once __DIR__ . '/classes/RedcapInstrumentRowsResponse.php';
 require_once __DIR__ . '/classes/RedcapInstrumentGateway.php';
 require_once __DIR__ . '/classes/RedcapDataEntryUrl.php';
 require_once __DIR__ . '/classes/RedcapInstrumentEventChooser.php';
@@ -899,74 +900,61 @@ EOD;
     }
 
     /**
-     * Fetches one linked row's `@PEDIGREE_FIELD`-tagged answers as a
-     * `linkId`-keyed bag (task 6.5 — backs
-     * `RedcapInstrumentPatientProvider.openEditor`'s AJAX call).
+     * Reads every row of the record's linked instrument, each with its `@PEDIGREE_FIELD`-tagged
+     * answers as a `linkId`-keyed bag, keyed by its link ref - the one read behind both
+     * `type=import` (one row: linking, Edit in REDCap, Create in REDCap) and `type=import-rows`
+     * (every row: the check on opening a pedigree). {@see RedcapInstrumentRowsResponse} maps the
+     * result to each endpoint's answer, so the two agree about every row.
      *
      * @param int $eventId See searchPedigreeInstrumentRows().
-     * @param bool|null $rowFound Out-param: whether the row exists. [] is returned both for a
-     *   missing row and for one with nothing tagged to import; this tells them apart.
-     * @return array{linkId: string, value: mixed}[]
+     * @return array{status: string, rows: array, record: string|null} `status` is one of
+     *   RedcapInstrumentRowsResponse's constants; `rows` (for OK) is ref => answers, the refs built
+     *   from the record name as stored, which `record` holds.
      */
-    public function getPedigreeInstrumentRowAnswers($project_id, $record, $eventId, $instance, &$rowFound = null)
+    public function readPedigreeInstrumentRows($project_id, $record, $eventId): array
     {
-        $row = $this->findPedigreeInstrumentRow($project_id, $record, $eventId, $instance, $dataDictionary);
-        $rowFound = $row !== null;
-        if ($row === null) {
-            return [];
-        }
-        $resolvedFields = $this->resolvePedigreeImportFields($project_id, $this->getPedigreeImportInstrument($project_id), $dataDictionary);
-        if ($resolvedFields === null) {
-            return [];
-        }
-        return RedcapInstrumentRowImporter::buildAnswers($row['fields'], $resolvedFields);
-    }
-
-    /**
-     * Every row of the record's linked instrument at once, keyed by its link ref, for
-     * open-pedigree's check on opening a pedigree (`type=import-rows`): one `getData`, each row's
-     * answers exactly as {@see self::getPedigreeInstrumentRowAnswers()} shapes them.
-     *
-     * @return array|null ref => answers; null if nothing can be imported (no instrument, one that's
-     *   no longer in the project, or ADVANCED mode without a Questionnaire) - not "no rows", which
-     *   would read as every row deleted.
-     * @throws \Exception if the rows can't be read, the record no longer exists, or it isn't in
-     *   the user's Data Access Group, for the same reason.
-     */
-    public function getPedigreeInstrumentRowsAnswers($project_id, $record, $eventId): ?array
-    {
+        $result = function (string $status, array $rows = [], ?string $storedRecord = null): array {
+            return ['status' => $status, 'rows' => $rows, 'record' => $storedRecord];
+        };
         $instrument = $this->getPedigreeImportInstrument($project_id);
         if (!$instrument) {
-            return null;
+            return $result(RedcapInstrumentRowsResponse::NOT_CONFIGURED);
         }
         $dataDictionary = RedcapInstrumentGateway::fetchDataDictionary($project_id, $instrument);
         if ($dataDictionary === []) {
-            return null;
+            return $result(RedcapInstrumentRowsResponse::NOT_CONFIGURED);
         }
         $resolvedFields = $this->resolvePedigreeImportFields($project_id, $instrument, $dataDictionary);
         if ($resolvedFields === null) {
-            return null;
+            return $result(RedcapInstrumentRowsResponse::NOT_CONFIGURED);
         }
-        // The record as stored (an editor window can outlive a rename or delete): one that's gone has
-        // no rows, which would read as every row deleted.
+        // The record as stored: an editor window can outlive a rename or delete, and the name it
+        // was opened with may differ in case.
         $storedRecord = $this->findStoredRecordName($project_id, $record);
         if ($storedRecord === null) {
-            throw new \RuntimeException('The record no longer exists.');
+            return $result(RedcapInstrumentRowsResponse::RECORD_GONE);
         }
         $groupId = $this->getCurrentUserGroupId($project_id);
         if ($groupId !== null && !RedcapInstrumentGateway::isRecordInGroup((int) $project_id, $storedRecord, $groupId)) {
-            throw new \RuntimeException('The record isn\'t in the user\'s Data Access Group.');
+            error_log('Pedigree Editor (project ' . $project_id . '): record ' . $storedRecord . ' isn\'t in the user\'s Data Access Group');
+            return $result(RedcapInstrumentRowsResponse::NOT_IN_GROUP, [], $storedRecord);
         }
-        $rows = RedcapInstrumentGateway::fetchInstrumentRows(
-            $project_id,
-            array_keys($dataDictionary),
-            $groupId,
-            [$storedRecord],
-            $instrument,
-            (int) $eventId,
-            true
-        );
-        return RedcapInstrumentLinkedRows::answerAll($rows, $resolvedFields);
+        try {
+            $rows = RedcapInstrumentGateway::fetchInstrumentRows(
+                $project_id,
+                array_keys($dataDictionary),
+                $groupId,
+                [$storedRecord],
+                $instrument,
+                (int) $eventId,
+                true
+            );
+        } catch (\Throwable $e) {
+            // The editor only shows that the read failed, so say why here.
+            error_log('Pedigree Editor (project ' . $project_id . '): reading the linked rows failed: ' . $e->getMessage());
+            return $result(RedcapInstrumentRowsResponse::READ_FAILED, [], $storedRecord);
+        }
+        return $result(RedcapInstrumentRowsResponse::OK, RedcapInstrumentLinkedRows::answerAll($rows, $resolvedFields), $storedRecord);
     }
 
     /**
@@ -987,38 +975,6 @@ EOD;
         // In "default + tags" mode the built-in form keeps the legends (see QuestionnaireDerivation::derive()).
         return QuestionnaireDerivation::resolveTaggedFields($dataDictionary, $answerValueSets, $mode === 'DEFAULT_PLUS_TAGS');
     }
-
-    /**
-     * @param array|null $dataDictionary Out-param: the resolved instrument's
-     *   Data Dictionary, populated whenever a row is found (or the
-     *   instrument is configured at all, even if the row itself is not
-     *   found) so callers can reuse it without re-fetching.
-     */
-    private function findPedigreeInstrumentRow($project_id, $record, $eventId, $instance, &$dataDictionary)
-    {
-        $dataDictionary = [];
-        $instrument = $this->getPedigreeImportInstrument($project_id);
-        if (!$instrument) {
-            return null;
-        }
-        $dataDictionary = RedcapInstrumentGateway::fetchDataDictionary($project_id, $instrument);
-        $rows = RedcapInstrumentGateway::fetchInstrumentRows(
-            $project_id,
-            array_keys($dataDictionary),
-            $this->getCurrentUserGroupId($project_id),
-            [(string) $record],
-            $instrument,
-            (int) $eventId
-        );
-
-        foreach ($rows as $row) {
-            if ($row['record'] === (string) $record && $row['instance'] === (int) $instance) {
-                return $row;
-            }
-        }
-        return null;
-    }
-
 
     /**
      * @return string Errors from the relationship settings, one per line.
