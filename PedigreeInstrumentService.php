@@ -63,9 +63,14 @@ $resolveEventId = function () use ($params, $module, $project_id, $sendErrorResp
     return $resolved['eventId'];
 };
 
-// Sends a RedcapInstrumentRowsResponse answer. A row with text that isn't valid UTF-8 (e.g. from
-// an old import) mustn't empty the whole answer, so it's substituted.
-$respond = function (array $response) use ($sendErrorResponse) {
+// Sends a RedcapInstrumentRowsResponse answer for a read. A server-side error (a failed read, a
+// Data Access Group refusal, the opening check finding the record gone) logs the read's reason, as
+// the editor only shows that it failed. A row with text that isn't valid UTF-8 (e.g. from an old
+// import) mustn't empty the whole answer, so it's substituted.
+$respond = function (array $read, array $response) use ($sendErrorResponse, $project_id) {
+    if ($response['status'] >= 403 && $response['status'] !== 404 && $read['reason'] !== null) {
+        error_log('Pedigree Editor (project ' . $project_id . '): ' . $read['reason']);
+    }
     if ($response['status'] >= 400) {
         $sendErrorResponse($response['body']['error'], $response['body']['error_description'], $response['status']);
     }
@@ -114,10 +119,9 @@ if ('questionnaire' === $params['type']) {
     // requireRow=1 (what RedcapInstrumentPatientProvider always sends): say when the row doesn't
     // exist, rather than answer [] as for a row with nothing tagged to import. Without it (an editor
     // window from before this was added), a missing row still answers [].
-    $read = $module->readPedigreeInstrumentRows($project_id, $record, $eventId);
-    $ref = \AEHRC\PedigreeEditorExternalModule\RedcapInstrumentReference::encode($read['record'] ?? $record, (int) $instance);
-    $respond(\AEHRC\PedigreeEditorExternalModule\RedcapInstrumentRowsResponse::forImport(
-        $read, $ref, isset($params['requireRow']) && $params['requireRow'] === '1'
+    $read = $module->readPedigreeInstrumentRows($project_id, $record, $eventId, (int) $instance);
+    $respond($read, \AEHRC\PedigreeEditorExternalModule\RedcapInstrumentRowsResponse::forImport(
+        $read, $record, (int) $instance, isset($params['requireRow']) && $params['requireRow'] === '1'
     ));
 } elseif ('import-rows' === $params['type']) {
     // open-pedigree's check on opening a pedigree: every row of this record's linked instrument,
@@ -128,9 +132,8 @@ if ('questionnaire' === $params['type']) {
     // instead, so the check says nothing.
     $record = $requireString('currentRecord', 'import-rows');
     $eventId = $resolveEventId();
-    $respond(\AEHRC\PedigreeEditorExternalModule\RedcapInstrumentRowsResponse::forImportRows(
-        $module->readPedigreeInstrumentRows($project_id, $record, $eventId)
-    ));
+    $read = $module->readPedigreeInstrumentRows($project_id, $record, $eventId);
+    $respond($read, \AEHRC\PedigreeEditorExternalModule\RedcapInstrumentRowsResponse::forImportRows($read));
 } elseif ('nextInstance' === $params['type']) {
     // "Create in REDCap": where a new linked row on this record goes. Still read-only - REDCap
     // itself creates the row, when the user saves it in its own form.

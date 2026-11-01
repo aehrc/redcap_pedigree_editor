@@ -14,9 +14,15 @@ class RedcapInstrumentRowsResponseTest extends TestCase
     const REF = 'record:7/instance:2';
     const ANSWERS = [['linkId' => 'first_name', 'value' => 'Priya']];
 
-    private function read(string $status, array $rows = []): array
+    private function read(string $status, array $rows = [], ?string $record = '7'): array
     {
-        return ['status' => $status, 'rows' => $rows, 'record' => '7'];
+        return ['status' => $status, 'rows' => $rows, 'record' => $record, 'reason' => null];
+    }
+
+    // forImport for record 7, instance 2 (self::REF).
+    private function import(array $read, bool $requireRow): array
+    {
+        return Response::forImport($read, '7', 2, $requireRow);
     }
 
     private function assertError(int $status, string $error, array $response): void
@@ -29,50 +35,57 @@ class RedcapInstrumentRowsResponseTest extends TestCase
     public function testImportAnswersARowThatIsThere(): void
     {
         $read = $this->read(Response::OK, [self::REF => self::ANSWERS, 'record:7/instance:1' => []]);
-        $this->assertSame(['status' => 200, 'body' => self::ANSWERS], Response::forImport($read, self::REF, true));
-        $this->assertSame(['status' => 200, 'body' => self::ANSWERS], Response::forImport($read, self::REF, false));
+        $this->assertSame(['status' => 200, 'body' => self::ANSWERS], $this->import($read, true));
+        $this->assertSame(['status' => 200, 'body' => self::ANSWERS], $this->import($read, false));
     }
 
     public function testImportAnswersARowWithNothingToImportAsEmpty(): void
     {
         $read = $this->read(Response::OK, [self::REF => []]);
-        $this->assertSame(['status' => 200, 'body' => []], Response::forImport($read, self::REF, true));
+        $this->assertSame(['status' => 200, 'body' => []], $this->import($read, true));
     }
 
     public function testImportReportsAMissingRowOnlyWhenAskedTo(): void
     {
         $read = $this->read(Response::OK, ['record:7/instance:1' => self::ANSWERS]);
-        $this->assertError(404, 'Not Found', Response::forImport($read, self::REF, true));
+        $this->assertError(404, 'Not Found', $this->import($read, true));
         // An editor window from before requireRow: [] as before.
-        $this->assertSame(['status' => 200, 'body' => []], Response::forImport($read, self::REF, false));
+        $this->assertSame(['status' => 200, 'body' => []], $this->import($read, false));
+    }
+
+    public function testTheRowIsLookedUpUnderTheStoredRecordName(): void
+    {
+        // Asked as 'abc', stored as 'ABC': the read keys rows by the stored name.
+        $read = $this->read(Response::OK, ['record:ABC/instance:2' => self::ANSWERS], 'ABC');
+        $this->assertSame(['status' => 200, 'body' => self::ANSWERS], Response::forImport($read, 'abc', 2, true));
     }
 
     public function testImportReportsTheRowsOfARecordThatsGoneAsMissing(): void
     {
-        $read = $this->read(Response::RECORD_GONE);
-        $this->assertError(404, 'Not Found', Response::forImport($read, self::REF, true));
-        $this->assertSame(['status' => 200, 'body' => []], Response::forImport($read, self::REF, false));
+        $read = $this->read(Response::RECORD_GONE, [], null);
+        $this->assertError(404, 'Not Found', $this->import($read, true));
+        $this->assertSame(['status' => 200, 'body' => []], $this->import($read, false));
     }
 
     public function testImportAnswersNothingSetUpToImportAsEmpty(): void
     {
         // Not "Not Found": the editor explains this case itself (NOTHING_TO_IMPORT).
         $read = $this->read(Response::NOT_CONFIGURED);
-        $this->assertSame(['status' => 200, 'body' => []], Response::forImport($read, self::REF, true));
+        $this->assertSame(['status' => 200, 'body' => []], $this->import($read, true));
     }
 
     public function testImportDoesNotReportADataAccessGroupRefusalAsAMissingRow(): void
     {
-        $response = Response::forImport($this->read(Response::NOT_IN_GROUP), self::REF, true);
+        $response = $this->import($this->read(Response::NOT_IN_GROUP), true);
         $this->assertError(403, 'Not Available', $response);
         $this->assertStringContainsString('Data Access Group', $response['body']['error_description']);
-        $this->assertError(403, 'Not Available', Response::forImport($this->read(Response::NOT_IN_GROUP), self::REF, false));
+        $this->assertError(403, 'Not Available', $this->import($this->read(Response::NOT_IN_GROUP), false));
     }
 
     public function testImportDoesNotReportAFailedReadAsAMissingRow(): void
     {
-        $this->assertError(500, 'Server Error', Response::forImport($this->read(Response::READ_FAILED), self::REF, true));
-        $this->assertError(500, 'Server Error', Response::forImport($this->read(Response::READ_FAILED), self::REF, false));
+        $this->assertError(500, 'Server Error', $this->import($this->read(Response::READ_FAILED), true));
+        $this->assertError(500, 'Server Error', $this->import($this->read(Response::READ_FAILED), false));
     }
 
     public function testImportRowsAnswersEveryRowAsAnObject(): void

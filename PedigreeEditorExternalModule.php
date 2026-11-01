@@ -900,44 +900,46 @@ EOD;
     }
 
     /**
-     * Reads every row of the record's linked instrument, each with its `@PEDIGREE_FIELD`-tagged
+     * Reads the rows of the record's linked instrument, each with its `@PEDIGREE_FIELD`-tagged
      * answers as a `linkId`-keyed bag, keyed by its link ref - the one read behind both
      * `type=import` (one row: linking, Edit in REDCap, Create in REDCap) and `type=import-rows`
      * (every row: the check on opening a pedigree). {@see RedcapInstrumentRowsResponse} maps the
      * result to each endpoint's answer, so the two agree about every row.
      *
      * @param int $eventId See searchPedigreeInstrumentRows().
-     * @return array{status: string, rows: array, record: string|null} `status` is one of
-     *   RedcapInstrumentRowsResponse's constants; `rows` (for OK) is ref => answers, the refs built
-     *   from the record name as stored, which `record` holds.
+     * @param int|null $instance Only shape this instance's answers (the single import); null for
+     *   every row. The record's rows are read either way.
+     * @return array{status: string, rows: array, record: string|null, reason: string|null}
+     *   `status` is one of RedcapInstrumentRowsResponse's constants; `rows` (for OK) is ref =>
+     *   answers, the refs built from the record name as stored, which `record` holds; `reason` says
+     *   why it isn't OK, for the server's log (never the record name - it may identify someone).
      */
-    public function readPedigreeInstrumentRows($project_id, $record, $eventId): array
+    public function readPedigreeInstrumentRows($project_id, $record, $eventId, ?int $instance = null): array
     {
-        $result = function (string $status, array $rows = [], ?string $storedRecord = null): array {
-            return ['status' => $status, 'rows' => $rows, 'record' => $storedRecord];
+        $result = function (string $status, ?string $reason = null, array $rows = [], ?string $storedRecord = null): array {
+            return ['status' => $status, 'rows' => $rows, 'record' => $storedRecord, 'reason' => $reason];
         };
         $instrument = $this->getPedigreeImportInstrument($project_id);
         if (!$instrument) {
-            return $result(RedcapInstrumentRowsResponse::NOT_CONFIGURED);
+            return $result(RedcapInstrumentRowsResponse::NOT_CONFIGURED, 'no linked instrument is configured');
         }
         $dataDictionary = RedcapInstrumentGateway::fetchDataDictionary($project_id, $instrument);
         if ($dataDictionary === []) {
-            return $result(RedcapInstrumentRowsResponse::NOT_CONFIGURED);
+            return $result(RedcapInstrumentRowsResponse::NOT_CONFIGURED, 'the linked instrument is no longer in the project');
         }
         $resolvedFields = $this->resolvePedigreeImportFields($project_id, $instrument, $dataDictionary);
         if ($resolvedFields === null) {
-            return $result(RedcapInstrumentRowsResponse::NOT_CONFIGURED);
+            return $result(RedcapInstrumentRowsResponse::NOT_CONFIGURED, 'Advanced mode has no Questionnaire');
         }
         // The record as stored: an editor window can outlive a rename or delete, and the name it
         // was opened with may differ in case.
         $storedRecord = $this->findStoredRecordName($project_id, $record);
         if ($storedRecord === null) {
-            return $result(RedcapInstrumentRowsResponse::RECORD_GONE);
+            return $result(RedcapInstrumentRowsResponse::RECORD_GONE, 'the record no longer exists');
         }
         $groupId = $this->getCurrentUserGroupId($project_id);
         if ($groupId !== null && !RedcapInstrumentGateway::isRecordInGroup((int) $project_id, $storedRecord, $groupId)) {
-            error_log('Pedigree Editor (project ' . $project_id . '): record ' . $storedRecord . ' isn\'t in the user\'s Data Access Group');
-            return $result(RedcapInstrumentRowsResponse::NOT_IN_GROUP, [], $storedRecord);
+            return $result(RedcapInstrumentRowsResponse::NOT_IN_GROUP, 'the record isn\'t in the user\'s Data Access Group', [], $storedRecord);
         }
         try {
             $rows = RedcapInstrumentGateway::fetchInstrumentRows(
@@ -950,11 +952,14 @@ EOD;
                 true
             );
         } catch (\Throwable $e) {
-            // The editor only shows that the read failed, so say why here.
-            error_log('Pedigree Editor (project ' . $project_id . '): reading the linked rows failed: ' . $e->getMessage());
-            return $result(RedcapInstrumentRowsResponse::READ_FAILED, [], $storedRecord);
+            return $result(RedcapInstrumentRowsResponse::READ_FAILED, 'reading the linked rows failed: ' . $e->getMessage(), [], $storedRecord);
         }
-        return $result(RedcapInstrumentRowsResponse::OK, RedcapInstrumentLinkedRows::answerAll($rows, $resolvedFields), $storedRecord);
+        if ($instance !== null) {
+            $rows = array_filter($rows, function ($row) use ($instance) {
+                return $row['instance'] === $instance;
+            });
+        }
+        return $result(RedcapInstrumentRowsResponse::OK, null, RedcapInstrumentLinkedRows::answerAll($rows, $resolvedFields), $storedRecord);
     }
 
     /**

@@ -176,14 +176,20 @@
         }).then(function (rows) {
             // No prototype: a ref can't reach Object.prototype (e.g. '__proto__').
             var answered = Object.create(null);
+            // The rows are keyed by the record name as stored; a ref may spell it in another case
+            // (REDCap's database matches record names case-insensitively, and so does _importRow()).
+            var byLowerKey = Object.create(null);
+            Object.keys(rows).forEach(function (key) {
+                byLowerKey[key.toLowerCase()] = key;
+            });
             refs.forEach(function (ref) {
                 var decoded = decodeRef(ref);
                 if (!decoded) {
                     return;
                 }
                 // Looked up in its canonical form (e.g. 'instance:01' is instance 1), as _importRow() parses it.
-                var key = encodeRef(decoded.record, decoded.instance);
-                if (Object.prototype.hasOwnProperty.call(rows, key)) {
+                var key = byLowerKey[encodeRef(decoded.record, decoded.instance).toLowerCase()];
+                if (key !== undefined) {
                     answered[ref] = { answers: rows[key] };
                 } else {
                     // Case-insensitively, as REDCap's database matches record names.
