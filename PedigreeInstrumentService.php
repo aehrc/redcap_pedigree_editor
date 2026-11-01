@@ -63,6 +63,20 @@ $resolveEventId = function () use ($params, $module, $project_id, $sendErrorResp
     return $resolved['eventId'];
 };
 
+// Sends a RedcapInstrumentRowsResponse answer for a read. A server-side error (a failed read, a
+// Data Access Group refusal, the opening check finding the record gone) logs the read's reason, as
+// the editor only shows that it failed. A row with text that isn't valid UTF-8 (e.g. from an old
+// import) mustn't empty the whole answer, so it's substituted.
+$respond = function (array $read, array $response) use ($sendErrorResponse, $project_id) {
+    if ($response['log'] && $read['reason'] !== null) {
+        error_log('Pedigree Editor (project ' . $project_id . '): ' . $read['reason']);
+    }
+    if ($response['status'] >= 400) {
+        $sendErrorResponse($response['body']['error'], $response['body']['error_description'], $response['status']);
+    }
+    echo json_encode($response['body'], JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE);
+};
+
 header('Content-type: application/json');
 
 if ('questionnaire' === $params['type']) {
@@ -97,39 +111,31 @@ if ('questionnaire' === $params['type']) {
     // come from the client, and the user can already read any row in their DAG
     // through REDCap itself. The real enforcement is RedcapInstrumentPatientProvider
     // refusing cross-record links before asking.
-    if ($requireString('currentRecord', 'import') !== $record) {
+    // Case-insensitively, as REDCap's database matches record names (and the read finds the
+    // record by its stored name).
+    if (strcasecmp($requireString('currentRecord', 'import'), $record) !== 0) {
         $sendErrorResponse('Invalid Request', 'Import is only allowed from a row on the current record ("currentRecord").');
     }
     $eventId = $resolveEventId();
-    $answers = $module->getPedigreeInstrumentRowAnswers($project_id, $record, $eventId, $instance, $rowFound);
+    // The same read as import-rows, so the two agree about the row (RedcapInstrumentRowsResponse).
     // requireRow=1 (what RedcapInstrumentPatientProvider always sends): say when the row doesn't
     // exist, rather than answer [] as for a row with nothing tagged to import. Without it (an editor
     // window from before this was added), a missing row still answers [].
-    if (!$rowFound && isset($params['requireRow']) && $params['requireRow'] === '1') {
-        $sendErrorResponse('Not Found', 'That row no longer exists in REDCap', 404);
-    }
-    echo json_encode($answers, JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE);
+    $read = $module->readPedigreeInstrumentRows($project_id, $record, $eventId, (int) $instance);
+    $respond($read, \AEHRC\PedigreeEditorExternalModule\RedcapInstrumentRowsResponse::forImport(
+        $read, $record, (int) $instance, isset($params['requireRow']) && $params['requireRow'] === '1'
+    ));
 } elseif ('import-rows' === $params['type']) {
     // open-pedigree's check on opening a pedigree: every row of this record's linked instrument,
-    // keyed by its link ref, each with its answers as `import` shapes them. RedcapInstrumentPatientProvider
-    // answers each ref from this: a ref not among them is a deleted row, or another record's.
-    // Anything that would make every row look deleted - nothing set up to import, a failed read,
-    // a record outside the user's Data Access Group - is an error instead, so the check says nothing.
+    // keyed by its link ref, each with its answers as `import` shapes them (the same read).
+    // RedcapInstrumentPatientProvider answers each ref from this: a ref not among them is a deleted
+    // row, or another record's. Anything that would make every row look deleted - nothing set up to
+    // import, a failed read, a record gone or outside the user's Data Access Group - is an error
+    // instead, so the check says nothing.
     $record = $requireString('currentRecord', 'import-rows');
     $eventId = $resolveEventId();
-    try {
-        $rows = $module->getPedigreeInstrumentRowsAnswers($project_id, $record, $eventId);
-    } catch (\Throwable $e) {
-        // The editor only logs that the check failed, so say why here.
-        error_log('Pedigree Editor import-rows (project ' . $project_id . '): ' . $e->getMessage());
-        $sendErrorResponse('Server Error', 'The linked instrument\'s rows could not be read.', 500);
-    }
-    if ($rows === null) {
-        $sendErrorResponse('Not Configured', 'Nothing is set up to import from the linked instrument.');
-    }
-    // A row with text that isn't valid UTF-8 (e.g. from an old import) mustn't empty the whole
-    // answer. `import` encodes the same way, so the two agree about such a row.
-    echo json_encode((object) $rows, JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE);
+    $read = $module->readPedigreeInstrumentRows($project_id, $record, $eventId);
+    $respond($read, \AEHRC\PedigreeEditorExternalModule\RedcapInstrumentRowsResponse::forImportRows($read));
 } elseif ('nextInstance' === $params['type']) {
     // "Create in REDCap": where a new linked row on this record goes. Still read-only - REDCap
     // itself creates the row, when the user saves it in its own form.

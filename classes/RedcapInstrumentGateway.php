@@ -14,19 +14,24 @@ namespace AEHRC\PedigreeEditorExternalModule;
 class RedcapInstrumentGateway
 {
     /**
+     * @param bool $throwOnFailure Let a failed read throw, rather than read as an instrument with no
+     *   fields - for a caller that would otherwise report a setup problem (the linked-row read).
      * @return array Field-name-keyed Data Dictionary rows for the instrument,
      *   or `[]` if the instrument doesn't exist / has no fields.
      */
-    public static function fetchDataDictionary(int $projectId, string $instrument): array
+    public static function fetchDataDictionary(int $projectId, string $instrument, bool $throwOnFailure = false): array
     {
-        return self::dataDictionary($projectId, null, $instrument);
+        return self::dataDictionary($projectId, null, $instrument, $throwOnFailure);
     }
 
-    private static function dataDictionary(int $projectId, ?array $fieldNames, ?string $instrument): array
+    private static function dataDictionary(int $projectId, ?array $fieldNames, ?string $instrument, bool $throwOnFailure = false): array
     {
         try {
             return \REDCap::getDataDictionary($projectId, 'array', false, $fieldNames, $instrument) ?: [];
         } catch (\Exception $e) {
+            if ($throwOnFailure) {
+                throw $e;
+            }
             return [];
         }
     }
@@ -170,15 +175,23 @@ class RedcapInstrumentGateway
 
     /**
      * @param string|int $groupId The user's Data Access Group.
+     * @param bool $throwOnFailure Let a failed read throw, rather than read as "not in the group" -
+     *   for a caller that would otherwise tell the user the record isn't in their group.
      * @return bool Whether `$record` is in that group - REDCap's own export
      *   filter, so it matches what the user can see anywhere else.
      */
-    public static function isRecordInGroup(int $projectId, string $record, $groupId): bool
+    public static function isRecordInGroup(int $projectId, string $record, $groupId, bool $throwOnFailure = false): bool
     {
         try {
             $rows = \REDCap::getData($projectId, 'array', [$record], [\REDCap::getRecordIdField($projectId)], null, $groupId);
         } catch (\Exception $e) {
+            if ($throwOnFailure) {
+                throw $e;
+            }
             return false;
+        }
+        if (!is_array($rows) && $throwOnFailure) {
+            throw new \RuntimeException('REDCap::getData did not return rows.');
         }
         return !empty($rows);
     }
