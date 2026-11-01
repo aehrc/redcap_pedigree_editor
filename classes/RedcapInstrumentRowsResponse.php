@@ -16,7 +16,7 @@ class RedcapInstrumentRowsResponse
 {
     /** The rows were read: `rows` holds them, keyed by link ref. */
     const OK = 'ok';
-    /** Nothing is set up to import: no instrument, one no longer in the project, or ADVANCED mode without a Questionnaire. */
+    /** The rows can't be read for want of setup: no instrument, or one no longer in the project. (ADVANCED mode without a Questionnaire is OK, every row answering no values.) */
     const NOT_CONFIGURED = 'notConfigured';
     /** The record no longer exists (deleted, or renamed, since the editor was opened). */
     const RECORD_GONE = 'recordGone';
@@ -28,9 +28,10 @@ class RedcapInstrumentRowsResponse
     /**
      * `type=import`: one row's answers. A row that isn't there - including every row of a record
      * that's gone - is `Not Found` when asked with requireRow (RedcapInstrumentPatientProvider always
-     * is), and `[]` otherwise (editor windows from before requireRow). Nothing set up to import is
-     * `[]` too: the editor explains that itself. A Data Access Group refusal or a failed read says so,
-     * rather than reading as a deleted row.
+     * is), and `[]` otherwise (editor windows from before requireRow). `[]` with requireRow always
+     * means the row exists (with nothing to import - the editor explains that itself), so rows that
+     * can't be read for want of setup, a Data Access Group refusal and a failed read each say so,
+     * rather than reading as an empty or a deleted row.
      *
      * @param array $read A read result ({@see PedigreeEditorExternalModule::readPedigreeInstrumentRows()}).
      * @param string $record The record asked for; the row is looked up under the record name as
@@ -43,7 +44,7 @@ class RedcapInstrumentRowsResponse
         // so it's a lower-case fragment without a full stop.
         switch ($read['status']) {
             case self::NOT_CONFIGURED:
-                return self::answer([]);
+                return self::error(400, 'Not Configured', 'nothing is set up to read the linked instrument\'s rows');
             case self::NOT_IN_GROUP:
                 return self::error(403, 'Not Available', 'this record isn\'t in your Data Access Group');
             case self::READ_FAILED:

@@ -919,29 +919,29 @@ EOD;
         $result = function (string $status, ?string $reason = null, array $rows = [], ?string $storedRecord = null): array {
             return ['status' => $status, 'rows' => $rows, 'record' => $storedRecord, 'reason' => $reason];
         };
-        $instrument = $this->getPedigreeImportInstrument($project_id);
-        if (!$instrument) {
-            return $result(RedcapInstrumentRowsResponse::NOT_CONFIGURED, 'no linked instrument is configured');
-        }
-        $dataDictionary = RedcapInstrumentGateway::fetchDataDictionary($project_id, $instrument);
-        if ($dataDictionary === []) {
-            return $result(RedcapInstrumentRowsResponse::NOT_CONFIGURED, 'the linked instrument is no longer in the project');
-        }
-        $resolvedFields = $this->resolvePedigreeImportFields($project_id, $instrument, $dataDictionary);
-        if ($resolvedFields === null) {
-            return $result(RedcapInstrumentRowsResponse::NOT_CONFIGURED, 'Advanced mode has no Questionnaire');
-        }
-        // The record as stored: an editor window can outlive a rename or delete, and the name it
-        // was opened with may differ in case.
-        $storedRecord = $this->findStoredRecordName($project_id, $record);
-        if ($storedRecord === null) {
-            return $result(RedcapInstrumentRowsResponse::RECORD_GONE, 'the record no longer exists');
-        }
-        $groupId = $this->getCurrentUserGroupId($project_id);
-        if ($groupId !== null && !RedcapInstrumentGateway::isRecordInGroup((int) $project_id, $storedRecord, $groupId)) {
-            return $result(RedcapInstrumentRowsResponse::NOT_IN_GROUP, 'the record isn\'t in the user\'s Data Access Group', [], $storedRecord);
-        }
+        $storedRecord = null;
         try {
+            $instrument = $this->getPedigreeImportInstrument($project_id);
+            if (!$instrument) {
+                return $result(RedcapInstrumentRowsResponse::NOT_CONFIGURED, 'no linked instrument is configured');
+            }
+            $dataDictionary = RedcapInstrumentGateway::fetchDataDictionary($project_id, $instrument);
+            if ($dataDictionary === []) {
+                return $result(RedcapInstrumentRowsResponse::NOT_CONFIGURED, 'the linked instrument is no longer in the project');
+            }
+            // Advanced mode without a Questionnaire: nothing to import, but the rows are still read, so
+            // a row that exists answers no values and one that doesn't is still missing.
+            $resolvedFields = $this->resolvePedigreeImportFields($project_id, $instrument, $dataDictionary) ?? [];
+            // The record as stored: an editor window can outlive a rename or delete, and the name it
+            // was opened with may differ in case.
+            $storedRecord = $this->findStoredRecordName($project_id, $record);
+            if ($storedRecord === null) {
+                return $result(RedcapInstrumentRowsResponse::RECORD_GONE, 'the record no longer exists');
+            }
+            $groupId = $this->getCurrentUserGroupId($project_id);
+            if ($groupId !== null && !RedcapInstrumentGateway::isRecordInGroup((int) $project_id, $storedRecord, $groupId, true)) {
+                return $result(RedcapInstrumentRowsResponse::NOT_IN_GROUP, 'the record isn\'t in the user\'s Data Access Group', [], $storedRecord);
+            }
             $rows = RedcapInstrumentGateway::fetchInstrumentRows(
                 $project_id,
                 array_keys($dataDictionary),
@@ -951,15 +951,21 @@ EOD;
                 (int) $eventId,
                 true
             );
+            if ($instance !== null) {
+                $rows = array_filter($rows, function ($row) use ($instance) {
+                    return $row['instance'] === $instance;
+                });
+            }
+            return $result(RedcapInstrumentRowsResponse::OK, null, RedcapInstrumentLinkedRows::answerAll($rows, $resolvedFields), $storedRecord);
         } catch (\Throwable $e) {
-            return $result(RedcapInstrumentRowsResponse::READ_FAILED, 'reading the linked rows failed: ' . $e->getMessage(), [], $storedRecord);
+            // Anything thrown on the way (getData, a settings or Questionnaire problem, the database)
+            // is a failed read. Its message may quote the record (e.g. in SQL), which isn't logged.
+            $message = $e->getMessage();
+            foreach (array_filter([(string) $record, (string) $storedRecord], 'strlen') as $name) {
+                $message = str_replace($name, '[record]', $message);
+            }
+            return $result(RedcapInstrumentRowsResponse::READ_FAILED, 'reading the linked rows failed: ' . get_class($e) . ': ' . $message, [], $storedRecord);
         }
-        if ($instance !== null) {
-            $rows = array_filter($rows, function ($row) use ($instance) {
-                return $row['instance'] === $instance;
-            });
-        }
-        return $result(RedcapInstrumentRowsResponse::OK, null, RedcapInstrumentLinkedRows::answerAll($rows, $resolvedFields), $storedRecord);
     }
 
     /**

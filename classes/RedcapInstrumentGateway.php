@@ -170,15 +170,23 @@ class RedcapInstrumentGateway
 
     /**
      * @param string|int $groupId The user's Data Access Group.
+     * @param bool $throwOnFailure Let a failed read throw, rather than read as "not in the group" -
+     *   for a caller that would otherwise tell the user the record isn't in their group.
      * @return bool Whether `$record` is in that group - REDCap's own export
      *   filter, so it matches what the user can see anywhere else.
      */
-    public static function isRecordInGroup(int $projectId, string $record, $groupId): bool
+    public static function isRecordInGroup(int $projectId, string $record, $groupId, bool $throwOnFailure = false): bool
     {
         try {
             $rows = \REDCap::getData($projectId, 'array', [$record], [\REDCap::getRecordIdField($projectId)], null, $groupId);
         } catch (\Exception $e) {
+            if ($throwOnFailure) {
+                throw $e;
+            }
             return false;
+        }
+        if (!is_array($rows) && $throwOnFailure) {
+            throw new \RuntimeException('REDCap::getData did not return rows.');
         }
         return !empty($rows);
     }

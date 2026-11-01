@@ -67,11 +67,12 @@ class RedcapInstrumentRowsResponseTest extends TestCase
         $this->assertSame(['status' => 200, 'body' => []], $this->import($read, false));
     }
 
-    public function testImportAnswersNothingSetUpToImportAsEmpty(): void
+    public function testImportDoesNotAnswerRowsThatCantBeReadAsEmpty(): void
     {
-        // Not "Not Found": the editor explains this case itself (NOTHING_TO_IMPORT).
-        $read = $this->read(Response::NOT_CONFIGURED);
-        $this->assertSame(['status' => 200, 'body' => []], $this->import($read, true));
+        // [] with requireRow means the row exists; with no instrument to read, that isn't known.
+        $read = $this->read(Response::NOT_CONFIGURED, [], null);
+        $this->assertError(400, 'Not Configured', $this->import($read, true));
+        $this->assertError(400, 'Not Configured', $this->import($read, false));
     }
 
     public function testImportDoesNotReportADataAccessGroupRefusalAsAMissingRow(): void
