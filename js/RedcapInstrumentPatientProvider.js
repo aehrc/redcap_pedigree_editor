@@ -177,7 +177,7 @@
             // No prototype: a ref can't reach Object.prototype (e.g. '__proto__').
             var answered = Object.create(null);
             // The rows are keyed by the record name as stored; a ref may spell it in another case
-            // (REDCap's database matches record names case-insensitively, and so does _importRow()).
+            // (REDCap's database matches record names case-insensitively, and so does type=import).
             var byLowerKey = Object.create(null);
             Object.keys(rows).forEach(function (key) {
                 byLowerKey[key.toLowerCase()] = key;

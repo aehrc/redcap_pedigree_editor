@@ -68,7 +68,7 @@ $resolveEventId = function () use ($params, $module, $project_id, $sendErrorResp
 // the editor only shows that it failed. A row with text that isn't valid UTF-8 (e.g. from an old
 // import) mustn't empty the whole answer, so it's substituted.
 $respond = function (array $read, array $response) use ($sendErrorResponse, $project_id) {
-    if ($response['status'] >= 403 && $response['status'] !== 404 && $read['reason'] !== null) {
+    if ($response['log'] && $read['reason'] !== null) {
         error_log('Pedigree Editor (project ' . $project_id . '): ' . $read['reason']);
     }
     if ($response['status'] >= 400) {
@@ -111,7 +111,9 @@ if ('questionnaire' === $params['type']) {
     // come from the client, and the user can already read any row in their DAG
     // through REDCap itself. The real enforcement is RedcapInstrumentPatientProvider
     // refusing cross-record links before asking.
-    if ($requireString('currentRecord', 'import') !== $record) {
+    // Case-insensitively, as REDCap's database matches record names (and the read finds the
+    // record by its stored name).
+    if (strcasecmp($requireString('currentRecord', 'import'), $record) !== 0) {
         $sendErrorResponse('Invalid Request', 'Import is only allowed from a row on the current record ("currentRecord").');
     }
     $eventId = $resolveEventId();

@@ -925,7 +925,7 @@ EOD;
             if (!$instrument) {
                 return $result(RedcapInstrumentRowsResponse::NOT_CONFIGURED, 'no linked instrument is configured');
             }
-            $dataDictionary = RedcapInstrumentGateway::fetchDataDictionary($project_id, $instrument);
+            $dataDictionary = RedcapInstrumentGateway::fetchDataDictionary($project_id, $instrument, true);
             if ($dataDictionary === []) {
                 return $result(RedcapInstrumentRowsResponse::NOT_CONFIGURED, 'the linked instrument is no longer in the project');
             }
@@ -958,13 +958,13 @@ EOD;
             }
             return $result(RedcapInstrumentRowsResponse::OK, null, RedcapInstrumentLinkedRows::answerAll($rows, $resolvedFields), $storedRecord);
         } catch (\Throwable $e) {
-            // Anything thrown on the way (getData, a settings or Questionnaire problem, the database)
-            // is a failed read. Its message may quote the record (e.g. in SQL), which isn't logged.
-            $message = $e->getMessage();
-            foreach (array_filter([(string) $record, (string) $storedRecord], 'strlen') as $name) {
-                $message = str_replace($name, '[record]', $message);
-            }
-            return $result(RedcapInstrumentRowsResponse::READ_FAILED, 'reading the linked rows failed: ' . get_class($e) . ': ' . $message, [], $storedRecord);
+            // Anything thrown on the way (getData, the data dictionary, the group check, settings, the
+            // database) is a failed read. Its message isn't logged: it may quote the record (e.g. in
+            // SQL), and the record name may identify someone. Where it was thrown is enough to look.
+            return $result(RedcapInstrumentRowsResponse::READ_FAILED, sprintf(
+                'reading the linked rows failed: %s (code %s) at %s:%d',
+                get_class($e), $e->getCode(), basename($e->getFile()), $e->getLine()
+            ), [], $storedRecord);
         }
     }
 

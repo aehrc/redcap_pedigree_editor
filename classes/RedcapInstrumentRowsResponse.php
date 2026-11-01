@@ -9,8 +9,8 @@ namespace AEHRC\PedigreeEditorExternalModule;
  * `type=import-rows` (every row - the check on opening a pedigree). One read, mapped two ways
  * (pedigree-editor-single-row-import-via-batch design D2), so the two can't disagree about a row.
  *
- * Pure/testable: a read result in, `['status' => HTTP status, 'body' => array]` out. The service
- * logs the read's `reason` when it answers a server-side error.
+ * Pure/testable: a read result in, `['status' => HTTP status, 'body' => array, 'log' => bool]`
+ * out; `log` says whether the service logs the read's `reason` (a server-side failure).
  */
 class RedcapInstrumentRowsResponse
 {
@@ -46,14 +46,19 @@ class RedcapInstrumentRowsResponse
             case self::NOT_CONFIGURED:
                 return self::error(400, 'Not Configured', 'nothing is set up to read the linked instrument\'s rows');
             case self::NOT_IN_GROUP:
-                return self::error(403, 'Not Available', 'this record isn\'t in your Data Access Group');
+                return self::error(403, 'Not Available', 'this record isn\'t in your Data Access Group', true);
             case self::READ_FAILED:
-                return self::error(500, 'Server Error', 'the read failed - the web server\'s error log has the reason');
+                return self::error(500, 'Server Error', 'the read failed - the web server\'s error log has the reason', true);
             case self::OK:
                 if (array_key_exists($ref, $read['rows'])) {
                     return self::answer($read['rows'][$ref]);
                 }
                 break;
+            case self::RECORD_GONE:
+                break;
+            default:
+                // A status this doesn't know: not a deleted row.
+                return self::error(500, 'Server Error', 'the read failed - the web server\'s error log has the reason', true);
         }
         // OK without the row, or RECORD_GONE: the row isn't there.
         return $requireRow ? self::error(404, 'Not Found', 'That row no longer exists in REDCap') : self::answer([]);
@@ -73,17 +78,18 @@ class RedcapInstrumentRowsResponse
             case self::NOT_CONFIGURED:
                 return self::error(400, 'Not Configured', 'Nothing is set up to import from the linked instrument.');
             default:
-                return self::error(500, 'Server Error', 'The linked instrument\'s rows could not be read.');
+                return self::error(500, 'Server Error', 'The linked instrument\'s rows could not be read.', true);
         }
     }
 
     private static function answer($body): array
     {
-        return ['status' => 200, 'body' => $body];
+        return ['status' => 200, 'body' => $body, 'log' => false];
     }
 
-    private static function error(int $status, string $error, string $description): array
+    /** @param bool $log Whether the service logs the read's reason: for server-side failures, not a missing row or a setup problem. */
+    private static function error(int $status, string $error, string $description, bool $log = false): array
     {
-        return ['status' => $status, 'body' => ['error' => $error, 'error_description' => $description]];
+        return ['status' => $status, 'body' => ['error' => $error, 'error_description' => $description], 'log' => $log];
     }
 }
