@@ -354,10 +354,10 @@ fields are never included - this is opt-in, the same way `@PEDIGREE` marks the o
   | `candidate_genes` | HGNC (`http://purl.bioontology.org/ontology/HGNC/hgnc.owl`) | HGNC (same) | the custom gene system |
 
   A code from another system gets no name (it's shown as the code) and is saved as text, without a code system.
-  **Changing *Default Terminology* once pedigrees have been saved** changes how they're read back: a saved value coded in
-  the old system is read as its display text (disorders) or left out (phenotypes), and is saved that way the next time
-  the pedigree is saved. Choose the terminology before entering data, or check what a change does on a copy of the
-  project first.
+  **Changing *Default Terminology* once pedigrees have been saved** keeps their values: a saved disorder, phenotype or
+  gene coded in the old system is shown by its name, and saved again with its old code. It isn't looked up in the new
+  terminology, though, so it can't be searched for there, and the same condition picked from the new terminology is a
+  separate legend entry. Choose the terminology before entering data where you can.
 
   The value is read as the ontology providers store it by default: `code|system` (redcap_fhir_ontology_provider)
   or a bare code (advanced_fhir_ontology_provider). A field whose provider has a different code template (e.g.
@@ -768,11 +768,11 @@ the code; the system is ignored, so a bare code works too.
   `legend=` tags are ignored: the four fields become ordinary linked items, and each time the editor opens, the web
   server's PHP error log gets one warning per field (`... but the built-in form already has that legend in "default +
   tags" mode ...`). A pedigree keeps the legend entries it already has.
-- ***Default Terminology* HPO + omim** - try this on a copy of the project, or close the editor without saving: it
-  shows why the terminology should be chosen before data is entered. The stored pedigrees' SNOMED CT values don't
-  belong to the HPO terminology's code systems, so the disorders are read back as plain text (their names, without
-  codes), the phenotypes are left out of the pedigree, and saving would store them that way. The genes are unaffected,
-  as HGNC is used either way.
+- ***Default Terminology* HPO + omim** - shows what changing the terminology does to pedigrees already saved. The
+  stored SNOMED CT disorders and phenotypes don't belong to the HPO terminology's code systems, so the legends show
+  them by name only (e.g. *Hypertrophic cardiomyopathy*), and they can't be searched for in the pickers. Saving keeps
+  their SNOMED CT codes, so set it back to *SnomedCT* and the legends are as before. The genes are unaffected, as HGNC
+  is used either way. This is why the terminology is best chosen before data is entered.
 - ***Default Terminology* Custom**, set up as SnomedCT is (the setting's help lists each value): *Disorder Code
   System* `http://snomed.info/sct` with *Disorder Value Set* `http://snomed.info/sct?fhir_vs=refset/32570581000036105`;
   *Phenotype Code System* `http://snomed.info/sct` with *Phenotype Value Set* `http://ga4gh.org/fhir/ValueSet/phenotype`;
