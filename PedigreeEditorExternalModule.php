@@ -183,6 +183,10 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
      * failure reach the user's save - REDCap has already committed it.
      */
     function redcap_save_record($project_id, $record, $instrument, $event_id, $group_id = null, $survey_hash = null, $response_id = null, $repeat_instance = 1) {
+        // First: it's cheap, and "Create in REDCap" may be asking about it already.
+        if ($survey_hash === null) {
+            $this->noteLinkedRowSaved((int) $project_id, (string) $record, (string) $instrument, (int) $event_id, $repeat_instance);
+        }
         $messages = [];
         try {
             $this->syncRelationships((int) $project_id, (string) $record, (string) $instrument, (int) $event_id, $repeat_instance, $messages);
@@ -192,6 +196,88 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
         if ($messages) {
             $this->logRelationships(implode(' ', $messages), $record);
         }
+    }
+
+    /** The module-log message noting a stored save of a linked-instrument row (pedigree-editor-create-row-save-confirmed). */
+    const ROW_SAVED_MESSAGE = 'pedigree-row-saved';
+
+    /** How long a row's save note is kept: only saves since a Create in REDCap window opened are asked about. */
+    const ROW_SAVED_KEEP_SECONDS = 86400;
+
+    /** Old notes are pruned on about one save in this many, not on every save. */
+    const ROW_SAVED_PRUNE_EVERY = 20;
+
+    /**
+     * Notes a stored save of a row of the project's linked instrument in the module log - this
+     * hook only runs once REDCap has stored the save - so "Create in REDCap" can ask whether
+     * this user saved the new row ({@see wasRowSavedSince()}), whichever button saved it. Only
+     * data-entry saves (the caller leaves out surveys). Old notes are pruned here now and then.
+     * Never lets a failure reach the user's save.
+     */
+    private function noteLinkedRowSaved($projectId, $record, $instrument, $eventId, $repeatInstance)
+    {
+        try {
+            $linked = $this->getPedigreeImportInstrument($projectId);
+            if ($linked === null || $instrument !== $linked) {
+                return;
+            }
+            $this->log(self::ROW_SAVED_MESSAGE, [
+                'project_id' => $projectId,
+                'record' => $record,
+                'event_id' => $eventId,
+                'instance' => (int) ($repeatInstance ?: 1),
+            ]);
+        } catch (\Throwable $e) {
+            error_log('[redcap_pedigree_editor] Couldn\'t note a save of ' . $instrument . ': ' . $e->getMessage());
+            return;
+        }
+        try {
+            if (mt_rand(1, self::ROW_SAVED_PRUNE_EVERY) !== 1) {
+                return;
+            }
+            // The cutoff by the database's clock, which stamps the log (now()), not PHP's.
+            $result = $this->query('SELECT NOW() - INTERVAL ? SECOND', [self::ROW_SAVED_KEEP_SECONDS]);
+            $row = $result ? $result->fetch_row() : null;
+            if (!$row || !$row[0]) {
+                return;
+            }
+            $this->removeLogs('message = ? and project_id = ? and timestamp < ?', [self::ROW_SAVED_MESSAGE, $projectId, $row[0]]);
+        } catch (\Throwable $e) {
+            error_log('[redcap_pedigree_editor] Couldn\'t prune old save notes: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Where the module log is now, for "Create in REDCap" to ask later whether the new row was
+     * saved since ({@see wasRowSavedSince()}): the latest log id, 0 if there's none. Log ids only
+     * go up, so this needs no clock.
+     */
+    public function getRowSavedMarker($projectId)
+    {
+        $result = $this->queryLogs('select log_id where project_id = ? order by log_id desc limit 1', [(int) $projectId]);
+        $row = $result ? $result->fetch_assoc() : null;
+        return $row ? (int) $row['log_id'] : 0;
+    }
+
+    /**
+     * Whether the current user stored a save of this row of the linked instrument after the
+     * marker ({@see getRowSavedMarker()}). The user is the session's, never the request's.
+     *
+     * @param string $record The record, found by its name as stored (as the import finds it).
+     */
+    public function wasRowSavedSince($projectId, $record, $eventId, $instance, $marker)
+    {
+        $record = $this->findStoredRecordName($projectId, $record);
+        if ($record === null) {
+            return false;
+        }
+        $username = $this->getUser()->getUsername();
+        $result = $this->queryLogs(
+            'select log_id where message = ? and project_id = ? and record = ? and event_id = ? and instance = ?'
+            . ' and username = ? and log_id > ? limit 1',
+            [self::ROW_SAVED_MESSAGE, (int) $projectId, (string) $record, (int) $eventId, (int) $instance, $username, (int) $marker]
+        );
+        return (bool) ($result && $result->fetch_assoc());
     }
 
     function add_pedigree_to_form ($project_id, $record, $instrument, $event_id, $group_id, $repeat_instance, $isSurvey = false) {
@@ -1162,7 +1248,8 @@ EOD;
     private function logRelationships($message, $record)
     {
         try {
-            $last = $this->queryLogs('select message where record = ? order by log_id desc limit 1', [(string) $record]);
+            // Not the save notes, which come between (noteLinkedRowSaved).
+            $last = $this->queryLogs('select message where record = ? and message != ? order by log_id desc limit 1', [(string) $record, self::ROW_SAVED_MESSAGE]);
             $row = $last ? $last->fetch_assoc() : null;
             if (($row['message'] ?? null) === $message) {
                 return;

@@ -267,11 +267,12 @@ The tab offers:
   to carry on; switching back to the pedigree editor refreshes the person anyway. Closing it without saving changes
   nothing.
 - ***Create in REDCap*** (for a person not linked yet) - opens REDCap's form for a new row, the next instance on this
-  record, in the same way. Save it with *Save & Exit Form*, *Save & Exit Record* or *Save & Stay*; when the window
-  closes, the person is linked to the new row and its values are brought in. Close it without saving and nothing is
-  created. The *Save & Go to...* buttons still save the row, but the editor doesn't count that as this window's save,
-  so it only tells you the row is there - link the person to it with *Link to existing record*. One new row at a
-  time: while one is open, the button brings that window back to the front.
+  record, in the same way. Save it with any of the form's save buttons. Once the window closes or moves on from the
+  form (e.g. *Save & Go to Next Form*), the person is linked to the new row and its values are brought in; a window
+  that moved on stays open as an ordinary REDCap window. The module checks with REDCap that you saved the row from
+  that window, so a row someone else saved at the same instance number isn't linked by mistake. Close it without
+  saving (or *Cancel*) and nothing is created. One new row at a time: while one is open on its form, the button
+  brings that window back to the front.
 
 **Rows changed in REDCap.** A person's values come in when they're linked, and when an *Edit in REDCap* window
 closes. A row changed in REDCap any other way - on its form directly, by a data import, by another user - isn't
