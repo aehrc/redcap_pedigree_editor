@@ -976,8 +976,22 @@ EOD;
                 . 'be added to it. Save the form once, then reopen the pedigree editor from it.'];
         }
         $groupId = $this->getCurrentUserGroupId($project_id);
-        if ($groupId !== null && !RedcapInstrumentGateway::isRecordInGroup((int) $project_id, $storedRecord, $groupId)) {
-            return ['instance' => null, 'problem' => 'This record isn\'t in your Data Access Group, so rows can\'t be added to it.'];
+        if ($groupId !== null) {
+            // A failed read isn't "not in your group" (as the import path tells them apart). Its
+            // message isn't logged: it may quote the record, which may identify someone.
+            try {
+                $inGroup = RedcapInstrumentGateway::isRecordInGroup((int) $project_id, $storedRecord, $groupId, true);
+            } catch (\Throwable $e) {
+                error_log(sprintf(
+                    '[redcap_pedigree_editor] Checking a record\'s Data Access Group for a new row failed (project %s): %s (code %s) at %s:%d',
+                    $project_id, get_class($e), $e->getCode(), basename($e->getFile()), $e->getLine()
+                ));
+                return ['instance' => null, 'problem' => 'REDCap couldn\'t check this record\'s Data Access Group, so no row was '
+                    . 'added. Try again.'];
+            }
+            if (!$inGroup) {
+                return ['instance' => null, 'problem' => 'This record isn\'t in your Data Access Group, so rows can\'t be added to it.'];
+            }
         }
         $instance = RedcapInstrumentGateway::findNextInstance((int) $project_id, $storedRecord, (int) $eventId, $instrument);
         return $instance === null
