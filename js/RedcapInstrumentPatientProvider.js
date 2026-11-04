@@ -64,7 +64,7 @@
         this._editUrl = options.editUrl || '';
         // One entry per open REDCap window: { window, node, nodeId, ref, onDone, timer }
         // for "Edit in REDCap" (openEditor()), and { window, node, nodeId, ref, create:
-        // true, createUrl, createForm, savedAfter, movedOn, onCreated, timer } for "Create in REDCap"
+        // true, createForm, savedAfter, movedOn, onCreated, timer } for "Create in REDCap"
         // (createNew()).
         this._editSessions = [];
         // The "Create in REDCap" session until its row is linked (or not) - see createNew().
@@ -122,7 +122,7 @@
     };
 
     // GET, not POST: every action this endpoint supports (search/import/import-rows/
-    // questionnaire/nextInstance) only reads data, never writes - REDCap only
+    // questionnaire/nextInstance/rowSaved) only reads data, never writes - REDCap only
     // requires a `redcap_csrf_token` for POST requests to module pages, so
     // using GET here needs no token at all (avoiding an earlier version of
     // this file that carried one in the URL, where it would end up in
@@ -571,9 +571,11 @@
     // The data-entry script, wherever REDCap's webroot puts it.
     var DATA_ENTRY_PAGE = '/DataEntry/index.php';
 
-    // Whether the "Create in REDCap" window shows a page other than the new row's form. Not before
-    // the form's URL is known, nor while the window still shows the blank page it opened with, and
-    // not while it's on another site (it can't be read). The form is any data-entry page for the
+    // Whether the "Create in REDCap" window shows a REDCap page other than the new row's form. Not
+    // before the form's URL is known, nor while the window still shows the blank page it opened with,
+    // nor while it's anywhere outside REDCap's own pages (the form's version directory): on another
+    // site (it can't be read), or a same-site sign-on handler a save can pass through (e.g.
+    // /Shibboleth.sso/ after an expired session) before REDCap stores it. The form is any data-entry page for the
     // same project, instrument, event and instance - not compared on its path (REDCap's "Save &
     // Stay" redirect uses the script's own path, which a proxy can make differ from the webroot),
     // nor on its record: REDCap puts the record's name in that redirect unencoded (a '+', '&' or
@@ -586,8 +588,12 @@
         if (!landed || (landed.protocol !== 'http:' && landed.protocol !== 'https:')) {
             return false;
         }
-        return !(landed.origin === form.origin
-            && landed.pathname.slice(-DATA_ENTRY_PAGE.length) === DATA_ENTRY_PAGE
+        var redcapPages = form.pathname.slice(-DATA_ENTRY_PAGE.length) === DATA_ENTRY_PAGE
+            ? form.pathname.slice(0, -DATA_ENTRY_PAGE.length) + '/' : '/';
+        if (landed.origin !== form.origin || landed.pathname.indexOf(redcapPages) !== 0) {
+            return false;
+        }
+        return !(landed.pathname.slice(-DATA_ENTRY_PAGE.length) === DATA_ENTRY_PAGE
             && ['pid', 'page', 'event_id', 'instance'].every(function (key) {
                 return landed.searchParams.get(key) === form.searchParams.get(key);
             }));
@@ -769,7 +775,7 @@
         // ref is set once the instance is known; until then the window can only be closed.
         var session = {
             window: createWindow, node: node, nodeId: nodeId, ref: '', create: true,
-            createUrl: '', createForm: null, savedAfter: null, movedOn: false, onCreated: onCreated, timer: null
+            createForm: null, savedAfter: null, movedOn: false, onCreated: onCreated, timer: null
         };
         this._editSessions.push(session);
         this._createInProgress = session;
@@ -784,7 +790,6 @@
                     return;
                 }
                 session.ref = encodeRef(self._record, json.instance);
-                session.createUrl = url;
                 session.createForm = new URL(url);
                 session.savedAfter = json.savedAfter;
                 createWindow.location.href = url;
