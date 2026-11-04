@@ -64,7 +64,8 @@
         this._editUrl = options.editUrl || '';
         // One entry per open REDCap window: { window, node, nodeId, ref, onDone, timer }
         // for "Edit in REDCap" (openEditor()), and { window, node, nodeId, ref, create:
-        // true, createUrl, saved, onCreated, timer } for "Create in REDCap" (createNew()).
+        // true, createForm, savedAfter, movedOn, onCreated, timer } for "Create in REDCap"
+        // (createNew()).
         this._editSessions = [];
         // The "Create in REDCap" session until its row is linked (or not) - see createNew().
         this._createInProgress = null;
@@ -121,7 +122,7 @@
     };
 
     // GET, not POST: every action this endpoint supports (search/import/import-rows/
-    // questionnaire/nextInstance) only reads data, never writes - REDCap only
+    // questionnaire/nextInstance/rowSaved) only reads data, never writes - REDCap only
     // requires a `redcap_csrf_token` for POST requests to module pages, so
     // using GET here needs no token at all (avoiding an earlier version of
     // this file that carried one in the URL, where it would end up in
@@ -204,6 +205,12 @@
     var ROW_NOT_FOUND = 'Not Found';
     function isRowNotFound(e) {
         return !!e && e.code === ROW_NOT_FOUND;
+    }
+
+    // Asking whether a "Create in REDCap" row was saved failed (see _confirmRowSaved) - told
+    // apart from a failed import of the row.
+    function SaveCheckFailed(cause) {
+        this.cause = cause;
     }
 
     // Shown when a row answers nothing: nothing is set up to import from it.
@@ -500,13 +507,24 @@
     RedcapInstrumentPatientProvider.prototype._watchEditWindow = function (session) {
         var self = this;
         session.timer = setInterval(function () {
-            if (session.create && !session.window.closed && self._landedAfterSave(session.window)) {
-                session.saved = true;
-            }
             // Saved and done: close it for the user (closed is true straight away, so the
             // session finishes in this same tick).
             if (!session.window.closed && self._savedAndExited(session.window)) {
                 session.window.close();
+            }
+            // "Create in REDCap" also finishes once its window has moved on from the new row's
+            // form (pedigree-editor-create-row-save-confirmed D4): the next page only comes once
+            // REDCap has stored any save, so whether it was saved is known now. The window stays
+            // open, as an ordinary REDCap window - e.g. on the next instance after "Save & Add New
+            // Instance", which is no longer this person's.
+            if (session.create && !session.window.closed) {
+                if (!self._movedOnFromCreateForm(session)) {
+                    return;
+                }
+                self._endSession(session);
+                session.movedOn = true;
+                self._linkCreatedRow(session);
+                return;
             }
             if (!session.window.closed) {
                 return;
@@ -550,14 +568,35 @@
         }
     }
 
-    // Whether the window has landed on a page REDCap shows after a save: msg=edit
-    // (or add/draft-preview) on Record Home ("Save & Exit") or on the form itself
-    // ("Save & Stay"). "Create in REDCap" links a new row only after seeing this,
-    // so a row someone else saved at the same instance number isn't taken for it.
-    RedcapInstrumentPatientProvider.prototype._landedAfterSave = function (editWindow) {
-        var landed = landedUrl(editWindow);
-        return !!landed && landed.origin === window.location.origin
-            && SAVED_AND_EXITED_MESSAGES.indexOf(landed.searchParams.get('msg')) !== -1;
+    // The data-entry script, wherever REDCap's webroot puts it.
+    var DATA_ENTRY_PAGE = '/DataEntry/index.php';
+
+    // Whether the "Create in REDCap" window shows a REDCap page other than the new row's form. Not
+    // before the form's URL is known, nor while the window still shows the blank page it opened with,
+    // nor while it's anywhere outside REDCap's own pages (the form's version directory): on another
+    // site (it can't be read), or a same-site sign-on handler a save can pass through (e.g.
+    // /Shibboleth.sso/ after an expired session) before REDCap stores it. The form is any data-entry page for the
+    // same project, instrument, event and instance - not compared on its path (REDCap's "Save &
+    // Stay" redirect uses the script's own path, which a proxy can make differ from the webroot),
+    // nor on its record: REDCap puts the record's name in that redirect unencoded (a '+', '&' or
+    // '#' in it comes back changed), and a page it shows straight from the save (a login page for
+    // an expired session, which then saves; a CSRF error) has no id at all. A save of another
+    // record at this instance isn't confirmed by rowSaved anyway.
+    RedcapInstrumentPatientProvider.prototype._movedOnFromCreateForm = function (session) {
+        var form = session.createForm;
+        var landed = form && landedUrl(session.window);
+        if (!landed || (landed.protocol !== 'http:' && landed.protocol !== 'https:')) {
+            return false;
+        }
+        var redcapPages = form.pathname.slice(-DATA_ENTRY_PAGE.length) === DATA_ENTRY_PAGE
+            ? form.pathname.slice(0, -DATA_ENTRY_PAGE.length) + '/' : '/';
+        if (landed.origin !== form.origin || landed.pathname.indexOf(redcapPages) !== 0) {
+            return false;
+        }
+        return !(landed.pathname.slice(-DATA_ENTRY_PAGE.length) === DATA_ENTRY_PAGE
+            && ['pid', 'page', 'event_id', 'instance'].every(function (key) {
+                return landed.searchParams.get(key) === form.searchParams.get(key);
+            }));
     };
 
     // Record Home's msg= after a clean save: an edit, a record's first save, or any
@@ -710,10 +749,12 @@
                 + '(the linked instrument isn\'t set up as repeating in this record\'s arm).');
             return;
         }
-        // Also while a closed window's row is still being linked - the person may be
-        // about to get it.
+        // Also while a finished window's row is still being linked - the person may be
+        // about to get it. Only a window still on its new row's form is brought back: one that
+        // has left it is an ordinary REDCap window now.
         if (this._createInProgress) {
-            if (!this._createInProgress.window.closed) {
+            var watched = this._editSessions.indexOf(this._createInProgress) !== -1;
+            if (watched && !this._createInProgress.window.closed) {
                 this._createInProgress.window.focus();
             }
             return;
@@ -734,7 +775,7 @@
         // ref is set once the instance is known; until then the window can only be closed.
         var session = {
             window: createWindow, node: node, nodeId: nodeId, ref: '', create: true,
-            createUrl: '', saved: false, onCreated: onCreated, timer: null
+            createForm: null, savedAfter: null, movedOn: false, onCreated: onCreated, timer: null
         };
         this._editSessions.push(session);
         this._createInProgress = session;
@@ -749,7 +790,8 @@
                     return;
                 }
                 session.ref = encodeRef(self._record, json.instance);
-                session.createUrl = url;
+                session.createForm = new URL(url);
+                session.savedAfter = json.savedAfter;
                 createWindow.location.href = url;
             })
             .catch(function (e) {
@@ -764,8 +806,34 @@
             });
     };
 
-    // After a "Create in REDCap" window closes: if it was seen saving the row, link
-    // the person to it and apply its values (open-pedigree's onCreated does both).
+    // How long to wait before asking once more whether the new row was saved, when a window
+    // closed before REDCap had finished storing it (pedigree-editor-create-row-save-confirmed D7).
+    var ROW_SAVED_RETRY_MS = 2000;
+
+    // Whether the current user saved the session's new row since its window opened, as the
+    // module's save hook noted it (rowSaved). If not yet, and the window was closed (perhaps while
+    // REDCap was still saving), asked once more after a pause. Not when the window moved on from
+    // the form: the next page only comes once any save is stored, so the answer is final.
+    RedcapInstrumentPatientProvider.prototype._confirmRowSaved = function (session, ref) {
+        var self = this;
+        var ask = function () {
+            return self._get({
+                type: 'rowSaved', record: ref.record, instance: ref.instance, currentRecord: self._record,
+                formEvent: self._formEvent, savedAfter: session.savedAfter
+            }).then(function (json) {
+                return !!(json && json.saved === true);
+            });
+        };
+        return ask().then(function (saved) {
+            return (saved || session.movedOn) ? saved : new Promise(function (resolve) {
+                setTimeout(resolve, ROW_SAVED_RETRY_MS);
+            }).then(ask);
+        });
+    };
+
+    // After a "Create in REDCap" window closes or leaves the new row's form: if this user
+    // saved the row from it, link the person to it and apply its values (open-pedigree's
+    // onCreated does both).
     RedcapInstrumentPatientProvider.prototype._linkCreatedRow = function (session) {
         var self = this;
         var done = function () {
@@ -777,11 +845,20 @@
         }
         var ref = decodeRef(session.ref);
         var notLinked = 'Use Link to existing record to link this person to it.';
-        this._importRow(ref.record, ref.instance)
+        var saved = false;
+        this._confirmRowSaved(session, ref)
+            .then(function (confirmed) {
+                saved = confirmed;
+            }, function (e) {
+                throw new SaveCheckFailed(e);
+            })
+            .then(function () {
+                return self._importRow(ref.record, ref.instance);
+            })
             .then(function (answers) {
                 // The row exists (a missing one is ROW_NOT_FOUND, below); it may answer nothing.
                 var hasValues = Array.isArray(answers) && answers.length > 0;
-                if (!session.saved) {
+                if (!saved) {
                     // Closed without saving - yet a row is at this instance, saved some other way
                     // or by someone else, which may not be this person.
                     showMessage('Create in REDCap', 'REDCap has a row at instance ' + ref.instance
@@ -804,10 +881,16 @@
                         + 'of its values could be brought in. ' + NOTHING_TO_IMPORT);
                 }
             }, function (e) {
+                if (e instanceof SaveCheckFailed) {
+                    showMessage('Create in REDCap', 'Couldn\'t check with REDCap whether the new row was saved from '
+                        + 'this window, so this person wasn\'t linked: ' + String(e.cause && e.cause.message || e.cause)
+                        + '. If it was, ' + notLinked.charAt(0).toLowerCase() + notLinked.slice(1));
+                    return;
+                }
                 if (isRowNotFound(e)) {
                     // Nothing at the instance: closed without saving (quiet), or a save that didn't
                     // land where expected.
-                    if (session.saved) {
+                    if (saved) {
                         showMessage('Create in REDCap', 'The new row wasn\'t found in REDCap at instance '
                             + ref.instance + ' after saving, so this person wasn\'t linked. If it was saved as '
                             + 'another row, ' + notLinked.charAt(0).toLowerCase() + notLinked.slice(1));

@@ -2,8 +2,9 @@
 /**
  * AJAX endpoint backing `RedcapInstrumentPatientProvider` (task 6.2):
  * search/import against the project's configured repeating instrument, all of
- * a record's linked rows at once (import-rows), and the instance number for a
- * new row (nextInstance).
+ * a record's linked rows at once (import-rows), the instance number for a
+ * new row (nextInstance), and whether this user has saved that new row since
+ * (rowSaved).
  *
  * Deliberately NOT listed in config.json's `no-auth-pages` — REDCap
  * authenticates the session for this page like any other module page.
@@ -145,7 +146,25 @@ if ('questionnaire' === $params['type']) {
     if ($next['instance'] === null) {
         $sendErrorResponse('Not Available', $next['problem']);
     }
-    echo json_encode(['instance' => $next['instance']]);
+    // savedAfter: where the module log is now, for rowSaved to ask about saves since
+    // (pedigree-editor-create-row-save-confirmed).
+    echo json_encode(['instance' => $next['instance'], 'savedAfter' => $module->getRowSavedMarker($project_id)]);
+} elseif ('rowSaved' === $params['type']) {
+    // "Create in REDCap": has the current user saved this new row since its window opened
+    // (savedAfter, from nextInstance)? Answered from the notes the save hook makes once REDCap
+    // has stored a save - not from anything the window showed. Read-only, and only about the
+    // session's own user.
+    $record = $requireString('record', 'rowSaved');
+    $instance = $requireString('instance', 'rowSaved');
+    if (strcasecmp($requireString('currentRecord', 'rowSaved'), $record) !== 0) {
+        $sendErrorResponse('Invalid Request', 'Only a row on the current record ("currentRecord") can be asked about.');
+    }
+    $savedAfter = $requireString('savedAfter', 'rowSaved');
+    if (!ctype_digit($savedAfter)) {
+        $sendErrorResponse('Invalid Request', 'Parameter "savedAfter" must be a whole number.');
+    }
+    $eventId = $resolveEventId();
+    echo json_encode(['saved' => $module->wasRowSavedSince($project_id, $record, $eventId, (int) $instance, (int) $savedAfter)]);
 } else {
     $sendErrorResponse('Invalid Request', 'Invalid "type" parameter "' . $params['type'] . '".');
 }
