@@ -89,7 +89,7 @@ try {
         if ($questionnaire === null) {
             $sendErrorResponse('Not Configured', 'No repeating instrument is configured for pedigree import on this project.');
         }
-        echo json_encode($questionnaire, JSON_UNESCAPED_SLASHES);
+        echo json_encode($questionnaire, JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE | JSON_THROW_ON_ERROR);
     } elseif ('search' === $params['type']) {
         // Required, never defaulted to "all records" - see searchPedigreeInstrumentRows().
         $record = $requireString('record', 'search');
@@ -107,7 +107,7 @@ try {
                 ['M', 'F', 'U']
             ));
         }
-        echo json_encode($module->searchPedigreeInstrumentRows($project_id, $record, $eventId, $query, $allowedGenders), JSON_UNESCAPED_SLASHES);
+        echo json_encode($module->searchPedigreeInstrumentRows($project_id, $record, $eventId, $query, $allowedGenders), JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE | JSON_THROW_ON_ERROR);
     } elseif ('import' === $params['type']) {
         $record = $requireString('record', 'import');
         $instance = $requireString('instance', 'import');
