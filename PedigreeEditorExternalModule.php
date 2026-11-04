@@ -228,7 +228,7 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
                 'instance' => (int) ($repeatInstance ?: 1),
             ]);
         } catch (\Throwable $e) {
-            error_log('[redcap_pedigree_editor] Couldn\'t note a save of ' . $instrument . ': ' . $e->getMessage());
+            error_log('[redcap_pedigree_editor] Couldn\'t note a save of ' . $instrument . ': ' . self::describeFailure($e));
             return;
         }
         try {
@@ -243,7 +243,7 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
             }
             $this->removeLogs('message = ? and project_id = ? and timestamp < ?', [self::ROW_SAVED_MESSAGE, $projectId, $row[0]]);
         } catch (\Throwable $e) {
-            error_log('[redcap_pedigree_editor] Couldn\'t prune old save notes: ' . $e->getMessage());
+            error_log('[redcap_pedigree_editor] Couldn\'t prune old save notes: ' . self::describeFailure($e));
         }
     }
 
@@ -961,13 +961,14 @@ EOD;
      * would create.
      *
      * @param int $eventId See searchPedigreeInstrumentRows().
-     * @return array{instance: int|null, problem: string|null} The instance, or
-     *   why there isn't one, for the editor to show.
+     * @return array{instance: int|null, problem: string|null, failed?: bool} The instance, or
+     *   why there isn't one, for the editor to show; `failed` when something went wrong (a server
+     *   fault, worth trying again) rather than a refusal.
      */
     public function getNextPedigreeInstrumentInstance($project_id, $record, $eventId)
     {
         // Anything that fails on the way (the lookups, the group check, the instance count) is a
-        // failed read, never "not saved" or "not in your group", which would be untrue.
+        // failure, never "not saved" or "not in your group", which would be untrue.
         try {
             $instrument = $this->getPedigreeImportInstrument($project_id);
             if (!$instrument) {
@@ -986,7 +987,8 @@ EOD;
         } catch (\Throwable $e) {
             error_log('[redcap_pedigree_editor] Working out the next row for Create in REDCap failed (project '
                 . $project_id . '): ' . self::describeFailure($e));
-            return ['instance' => null, 'problem' => 'REDCap couldn\'t read this record, so no row was added. Try again.'];
+            return ['instance' => null, 'failed' => true,
+                'problem' => 'Something went wrong working out where the new row goes, so no row was added. Try again.'];
         }
         return $instance === null
             ? ['instance' => null, 'problem' => 'REDCap couldn\'t work out the next row number for this record. Try again.']
@@ -997,7 +999,7 @@ EOD;
      * Where an exception was thrown, for a log: its class, code, file and line, never its message,
      * which may quote the record (e.g. in SQL), and a record name may identify someone.
      */
-    private static function describeFailure(\Throwable $e): string
+    public static function describeFailure(\Throwable $e): string
     {
         return sprintf('%s (code %s) at %s:%d', get_class($e), $e->getCode(), basename($e->getFile()), $e->getLine());
     }

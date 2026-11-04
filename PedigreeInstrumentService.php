@@ -144,11 +144,22 @@ if ('questionnaire' === $params['type']) {
     $eventId = $resolveEventId();
     $next = $module->getNextPedigreeInstrumentInstance($project_id, $record, $eventId);
     if ($next['instance'] === null) {
+        // A failure is a server fault (500, as import's failed read), a refusal is 400.
+        if (!empty($next['failed'])) {
+            $sendErrorResponse('Server Error', $next['problem'], 500);
+        }
         $sendErrorResponse('Not Available', $next['problem']);
     }
     // savedAfter: where the module log is now, for rowSaved to ask about saves since
     // (pedigree-editor-create-row-save-confirmed).
-    echo json_encode(['instance' => $next['instance'], 'savedAfter' => $module->getRowSavedMarker($project_id)]);
+    try {
+        $savedAfter = $module->getRowSavedMarker($project_id);
+    } catch (\Throwable $e) {
+        error_log('[redcap_pedigree_editor] Reading the module log for Create in REDCap failed (project ' . $project_id . '): '
+            . \AEHRC\PedigreeEditorExternalModule\PedigreeEditorExternalModule::describeFailure($e));
+        $sendErrorResponse('Server Error', 'Something went wrong working out where the new row goes, so no row was added. Try again.', 500);
+    }
+    echo json_encode(['instance' => $next['instance'], 'savedAfter' => $savedAfter]);
 } elseif ('rowSaved' === $params['type']) {
     // "Create in REDCap": has the current user saved this new row since its window opened
     // (savedAfter, from nextInstance)? Answered from the notes the save hook makes once REDCap
