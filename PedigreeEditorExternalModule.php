@@ -991,7 +991,7 @@ EOD;
                 'problem' => 'Something went wrong working out where the new row goes, so no row was added. Try again.'];
         }
         return $instance === null
-            ? ['instance' => null, 'problem' => 'REDCap couldn\'t work out the next row number for this record. Try again.']
+            ? ['instance' => null, 'failed' => true, 'problem' => 'REDCap couldn\'t work out the next row number for this record. Try again.']
             : ['instance' => $instance, 'problem' => null];
     }
 
