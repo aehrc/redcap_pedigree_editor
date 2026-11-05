@@ -370,6 +370,11 @@ fields are never included - this is opt-in, the same way `@PEDIGREE` marks the o
 
 `mapsTo`/`legend`/`predicate` are independent and may be combined, e.g. `@PEDIGREE_FIELD(mapsTo="gestationAge",predicate="isFetus")`.
 
+**Defaults.** A tagged field's REDCap `@DEFAULT` comes into the pedigree with the person's REDCap row. *Create in
+REDCap* opens REDCap's own form, which applies `@DEFAULT` as any new form does. Once the row is saved, its values,
+the default included, are brought into the pedigree. The editor doesn't apply `@DEFAULT` to people without a row:
+tagged fields show only what a linked row holds.
+
 Field types with no reasonable mechanical translation (`calc`, `sql`, `file`, `slider`, `descriptive`) are skipped with
 a logged warning rather than blocking derivation of the rest of the form.
 
