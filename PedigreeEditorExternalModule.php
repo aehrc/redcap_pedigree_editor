@@ -988,11 +988,14 @@ EOD;
             error_log('[redcap_pedigree_editor] Working out the next row for Create in REDCap failed (project '
                 . $project_id . '): ' . self::describeFailure($e));
             return ['instance' => null, 'failed' => true,
-                'problem' => 'Something went wrong working out where the new row goes, so no row was added. Try again.'];
+                'problem' => 'Something went wrong working out where the new row goes. Try again.'];
         }
-        return $instance === null
-            ? ['instance' => null, 'failed' => true, 'problem' => 'REDCap couldn\'t work out the next row number for this record. Try again.']
-            : ['instance' => $instance, 'problem' => null];
+        if ($instance === null) {
+            error_log('[redcap_pedigree_editor] Working out the next row for Create in REDCap failed (project '
+                . $project_id . '): the project couldn\'t be resolved');
+            return ['instance' => null, 'failed' => true, 'problem' => 'REDCap couldn\'t work out the next row number for this record. Try again.'];
+        }
+        return ['instance' => $instance, 'problem' => null];
     }
 
     /**

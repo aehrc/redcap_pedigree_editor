@@ -75,7 +75,8 @@ $respond = function (array $read, array $response) use ($sendErrorResponse, $pro
     if ($response['status'] >= 400) {
         $sendErrorResponse($response['body']['error'], $response['body']['error_description'], $response['status']);
     }
-    echo json_encode($response['body'], JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE);
+    // (any other encoding failure throws to the endpoint's catch: a JSON 500, not an empty 200)
+    echo json_encode($response['body'], JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE | JSON_THROW_ON_ERROR);
 };
 
 header('Content-type: application/json');
