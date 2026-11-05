@@ -228,7 +228,7 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
                 'instance' => (int) ($repeatInstance ?: 1),
             ]);
         } catch (\Throwable $e) {
-            error_log('[redcap_pedigree_editor] Couldn\'t note a save of ' . $instrument . ': ' . $e->getMessage());
+            error_log('[redcap_pedigree_editor] Couldn\'t note a save of ' . $instrument . ': ' . self::describeFailure($e));
             return;
         }
         try {
@@ -243,7 +243,7 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
             }
             $this->removeLogs('message = ? and project_id = ? and timestamp < ?', [self::ROW_SAVED_MESSAGE, $projectId, $row[0]]);
         } catch (\Throwable $e) {
-            error_log('[redcap_pedigree_editor] Couldn\'t prune old save notes: ' . $e->getMessage());
+            error_log('[redcap_pedigree_editor] Couldn\'t prune old save notes: ' . self::describeFailure($e));
         }
     }
 
@@ -961,28 +961,50 @@ EOD;
      * would create.
      *
      * @param int $eventId See searchPedigreeInstrumentRows().
-     * @return array{instance: int|null, problem: string|null} The instance, or
-     *   why there isn't one, for the editor to show.
+     * @return array{instance: int|null, problem: string|null, failed?: bool} The instance, or
+     *   why there isn't one, for the editor to show; `failed` when something went wrong (a server
+     *   fault, worth trying again) rather than a refusal.
      */
     public function getNextPedigreeInstrumentInstance($project_id, $record, $eventId)
     {
-        $instrument = $this->getPedigreeImportInstrument($project_id);
-        if (!$instrument) {
-            return ['instance' => null, 'problem' => 'No repeating instrument is configured for pedigree import on this project.'];
+        // Anything that fails on the way (the lookups, the group check, the instance count) is a
+        // failure, never "not saved" or "not in your group", which would be untrue.
+        try {
+            $instrument = $this->getPedigreeImportInstrument($project_id);
+            if (!$instrument) {
+                return ['instance' => null, 'problem' => 'No repeating instrument is configured for pedigree import on this project.'];
+            }
+            $storedRecord = $this->findStoredRecordName($project_id, $record);
+            if ($storedRecord === null) {
+                return ['instance' => null, 'problem' => 'This record hasn\'t been saved yet, so a family member row can\'t '
+                    . 'be added to it. Save the form once, then reopen the pedigree editor from it.'];
+            }
+            $groupId = $this->getCurrentUserGroupId($project_id);
+            if ($groupId !== null && !RedcapInstrumentGateway::isRecordInGroup((int) $project_id, $storedRecord, $groupId)) {
+                return ['instance' => null, 'problem' => 'This record isn\'t in your Data Access Group, so rows can\'t be added to it.'];
+            }
+            $instance = RedcapInstrumentGateway::findNextInstance((int) $project_id, $storedRecord, (int) $eventId, $instrument);
+        } catch (\Throwable $e) {
+            error_log('[redcap_pedigree_editor] Working out the next row for Create in REDCap failed (project '
+                . $project_id . '): ' . self::describeFailure($e));
+            return ['instance' => null, 'failed' => true,
+                'problem' => 'Something went wrong working out where the new row goes. Try again.'];
         }
-        $storedRecord = $this->findStoredRecordName($project_id, $record);
-        if ($storedRecord === null) {
-            return ['instance' => null, 'problem' => 'This record hasn\'t been saved yet, so a family member row can\'t '
-                . 'be added to it. Save the form once, then reopen the pedigree editor from it.'];
+        if ($instance === null) {
+            error_log('[redcap_pedigree_editor] Working out the next row for Create in REDCap failed (project '
+                . $project_id . '): the project couldn\'t be resolved');
+            return ['instance' => null, 'failed' => true, 'problem' => 'REDCap couldn\'t work out the next row number for this record. Try again.'];
         }
-        $groupId = $this->getCurrentUserGroupId($project_id);
-        if ($groupId !== null && !RedcapInstrumentGateway::isRecordInGroup((int) $project_id, $storedRecord, $groupId)) {
-            return ['instance' => null, 'problem' => 'This record isn\'t in your Data Access Group, so rows can\'t be added to it.'];
-        }
-        $instance = RedcapInstrumentGateway::findNextInstance((int) $project_id, $storedRecord, (int) $eventId, $instrument);
-        return $instance === null
-            ? ['instance' => null, 'problem' => 'REDCap couldn\'t work out the next row number for this record. Try again.']
-            : ['instance' => $instance, 'problem' => null];
+        return ['instance' => $instance, 'problem' => null];
+    }
+
+    /**
+     * Where an exception was thrown, for a log: its class, code, file and line, never its message,
+     * which may quote the record (e.g. in SQL), and a record name may identify someone.
+     */
+    public static function describeFailure(\Throwable $e): string
+    {
+        return sprintf('%s (code %s) at %s:%d', get_class($e), $e->getCode(), basename($e->getFile()), $e->getLine());
     }
 
     /**
@@ -1025,7 +1047,7 @@ EOD;
                 return $result(RedcapInstrumentRowsResponse::RECORD_GONE, 'the record no longer exists');
             }
             $groupId = $this->getCurrentUserGroupId($project_id);
-            if ($groupId !== null && !RedcapInstrumentGateway::isRecordInGroup((int) $project_id, $storedRecord, $groupId, true)) {
+            if ($groupId !== null && !RedcapInstrumentGateway::isRecordInGroup((int) $project_id, $storedRecord, $groupId)) {
                 return $result(RedcapInstrumentRowsResponse::NOT_IN_GROUP, 'the record isn\'t in the user\'s Data Access Group', [], $storedRecord);
             }
             $rows = RedcapInstrumentGateway::fetchInstrumentRows(
@@ -1047,10 +1069,8 @@ EOD;
             // Anything thrown on the way (getData, the data dictionary, the group check, settings, the
             // database) is a failed read. Its message isn't logged: it may quote the record (e.g. in
             // SQL), and the record name may identify someone. Where it was thrown is enough to look.
-            return $result(RedcapInstrumentRowsResponse::READ_FAILED, sprintf(
-                'reading the linked rows failed: %s (code %s) at %s:%d',
-                get_class($e), $e->getCode(), basename($e->getFile()), $e->getLine()
-            ), [], $storedRecord);
+            return $result(RedcapInstrumentRowsResponse::READ_FAILED, 'reading the linked rows failed: '
+                . self::describeFailure($e), [], $storedRecord);
         }
     }
 
