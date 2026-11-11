@@ -1116,9 +1116,13 @@ OPENPED Proband 0 0 1 -9
 OPENPED Partner 0 0 2 -9
 OPENPED _placeholder_1 Proband Partner 3 -9
 ```
-Another program reading the file sees one child of unknown sex under the couple. A row with a reserved ID that isn't
-like this (it has children of its own, a partner, no parents or a known sex) is read as an ordinary person. The same
-goes for DADA2, PEDX and DADA2X.
+Another program reading the file sees one child of unknown sex under the couple. DADA2 writes the same row with its
+life-status column (`DADA2 _placeholder_1 Proband Partner 3 -9 1`), and PEDX and DADA2X wrap these lines as usual.
+
+On reading, a reserved-ID row only means "no children" exactly as the editor writes it: a child of the couple, of
+unknown sex, with no affected status or other data, and no partners or children of its own. If the couple also has
+other children, the row is left out. Any other row with a reserved ID is an ordinary person. So the IDs stay reserved,
+a person whose own ID starts with `_placeholder_` is written with an extra `_` in front (`__placeholder_A`).
 
 ## DADA2 format
 The format is based on PED, but there is a field for life status and adopted, and the phenotype
