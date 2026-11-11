@@ -537,9 +537,9 @@ also write the pedigree's relationships into ordinary REDCap fields. Each time t
 (on a data entry form or a survey), it writes:
 
 - **one row of a *relationship instrument* per direct relationship** between two people linked to rows of the
-  [linked instrument](#linking-pedigree-nodes-to-a-repeating-instrument) - a parent and their child, two partners,
-  two twins - saying who (their row numbers) and how (a KIN code, from the kinship code system of the
-  [GA4GH pedigree FHIR IG](https://github.com/GA4GH-Pedigree-Standard/pedigree-fhir-ig));
+  [linked instrument](#linking-pedigree-nodes-to-a-repeating-instrument) - a parent and their child, two partners
+  (with or without children), two twins - saying who (their row numbers) and how (a KIN code, from the kinship code
+  system of the [GA4GH pedigree FHIR IG](https://github.com/GA4GH-Pedigree-Standard/pedigree-fhir-ig));
 - optionally, **each linked person's relationship to the proband** (`mother`, `grandparent_maternal`, ...), on their
   own row of the linked instrument.
 
@@ -1106,6 +1106,19 @@ OPENPED Mother 0 0 2 2
 OPENPED Father 0 0 1 -9
 OPENPED Sister Father Mother 2 2
 ```
+
+**A couple with no children.** PED records only each person's parents, so it can't hold two partners who have no
+children together. The editor writes such a couple with one extra row for a child of unknown sex whose ID is reserved,
+`_placeholder_1` (then `_placeholder_2`, ...), and reads that row back as the couple having no children: nothing is
+drawn for it. Here the proband has a partner, Partner, and no children:
+```
+OPENPED Proband 0 0 1 -9
+OPENPED Partner 0 0 2 -9
+OPENPED _placeholder_1 Proband Partner 3 -9
+```
+Another program reading the file sees one child of unknown sex under the couple. A row with a reserved ID that isn't
+like this (it has children of its own, a partner, no parents or a known sex) is read as an ordinary person. The same
+goes for DADA2, PEDX and DADA2X.
 
 ## DADA2 format
 The format is based on PED, but there is a field for life status and adopted, and the phenotype
