@@ -232,8 +232,8 @@ The *Export* dialog uses the same numbers:
   the pedigree de-identified, whether or not numbering is on:
   - *Remove personal information (names, IDs and dates; ages as bands)* leaves out names, external IDs and dates,
     shows each person's age as a band (`infant` under 1, `child` 1-9, `teen` 10-19, then `20s`, `30s` ...; `d. 70s`
-    for someone deceased, at their age at death), and labels each person with their generation number. Free-form
-    comments are kept.
+    for someone deceased, at their age at death, or `d.` alone without both a birth and a death date; a pregnancy
+    keeps its weeks), and labels each person with their generation number. Free-form comments are kept.
   - *Remove personal information and free-form comments* also leaves out comments.
 - **PED.** *Generation number (e.g. II-3)* is one of the ID choices, for each person and for their parents.
 
@@ -1141,8 +1141,9 @@ program reading the file sees one child of unknown sex under the couple.
 On reading, a reserved-ID row only means "no children" exactly as the editor writes it: not the first row (the
 proband), a child of the couple, unknown sex, a missing phenotype (`-9` or `0`; in DADA2 also alive and not adopted),
 and no partners or children of its own. If the couple also has other children, the row is left out. Any other row with
-a reserved ID is an ordinary person. (In the *Export* dialog, where people can be written by name or external ID, a
-person whose own ID starts with `_placeholder_` is written with an extra `_` in front, so it can't be taken for one.)
+a reserved ID is an ordinary person. (In the *Export* dialog, where people can be written by name, external ID or
+generation number, a person whose own ID starts with `_placeholder_` is written with an extra `_` in front, so it can't
+be taken for one.)
 
 ## DADA2 format
 The format is based on PED, but there is a field for life status and adopted, and the phenotype
