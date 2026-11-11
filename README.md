@@ -537,9 +537,9 @@ also write the pedigree's relationships into ordinary REDCap fields. Each time t
 (on a data entry form or a survey), it writes:
 
 - **one row of a *relationship instrument* per direct relationship** between two people linked to rows of the
-  [linked instrument](#linking-pedigree-nodes-to-a-repeating-instrument) - a parent and their child, two partners,
-  two twins - saying who (their row numbers) and how (a KIN code, from the kinship code system of the
-  [GA4GH pedigree FHIR IG](https://github.com/GA4GH-Pedigree-Standard/pedigree-fhir-ig));
+  [linked instrument](#linking-pedigree-nodes-to-a-repeating-instrument) - a parent and their child, two partners
+  (with or without children), two twins - saying who (their row numbers) and how (a KIN code, from the kinship code
+  system of the [GA4GH pedigree FHIR IG](https://github.com/GA4GH-Pedigree-Standard/pedigree-fhir-ig));
 - optionally, **each linked person's relationship to the proband** (`mother`, `grandparent_maternal`, ...), on their
   own row of the linked instrument.
 
@@ -1106,6 +1106,25 @@ OPENPED Mother 0 0 2 2
 OPENPED Father 0 0 1 -9
 OPENPED Sister Father Mother 2 2
 ```
+
+**A couple with no children.** PED records only each person's parents, so it can't hold two partners who have no
+children together. The editor writes such a couple with one extra row: a child of unknown sex whose ID is reserved,
+`_placeholder_` and a number (`_placeholder_1`, `_placeholder_2`, ...). It reads that row back as the couple having no
+children, and nothing is drawn for it. Here the proband (1) and their partner (2) have no children, as a *PED* or
+*PEDX* field stores it (the editor numbers people when it stores PED):
+```
+OPENPED 1 0 0 1 -9
+OPENPED 2 0 0 2 -9
+OPENPED _placeholder_1 1 2 3 -9
+```
+*DADA2* and *DADA2X* store the same row with their life-status column: `DADA2 _placeholder_1 1 2 3 -9 1`. Another
+program reading the file sees one child of unknown sex under the couple.
+
+On reading, a reserved-ID row only means "no children" exactly as the editor writes it: not the first row (the
+proband), a child of the couple, unknown sex, a missing phenotype (`-9` or `0`; in DADA2 also alive and not adopted),
+and no partners or children of its own. If the couple also has other children, the row is left out. Any other row with
+a reserved ID is an ordinary person. (In the *Export* dialog, where people can be written by name or external ID, a
+person whose own ID starts with `_placeholder_` is written with an extra `_` in front, so it can't be taken for one.)
 
 ## DADA2 format
 The format is based on PED, but there is a field for life status and adopted, and the phenotype
