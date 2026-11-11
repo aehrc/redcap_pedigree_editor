@@ -219,6 +219,24 @@ If the pedigree data does not contain an image a placeholder image is shown.
 
 ![Data Entry (Placeholder as no diagram in pedigree data)](documentation/pedigree_v0.2_data_placeholder_show.png)
 
+### Generation numbers and the de-identified export
+
+The editor's **Numbers** toolbar button numbers the pedigree as it's done on paper: generations in Roman numerals down
+the left (I, II, III), and under each person their generation and their place in it from the left (`II-3`). It's a
+view setting only: off whenever the editor opens, not saved with the pedigree, and never in the diagram image the form
+shows. A group of people drawn as one symbol takes one number.
+
+The *Export* dialog uses the same numbers:
+
+- **SVG and PDF.** With *All data*, the export has the numbering when it's switched on. The two privacy options draw
+  the pedigree de-identified, whether or not numbering is on:
+  - *Remove personal information (names, IDs and dates; ages as bands)* leaves out names, external IDs and dates,
+    shows each person's age as a band (`infant` under 1, `child` 1-9, `teen` 10-19, then `20s`, `30s` ...; `d. 70s`
+    for someone deceased, at their age at death), and labels each person with their generation number. Free-form
+    comments are kept.
+  - *Remove personal information and free-form comments* also leaves out comments.
+- **PED.** *Generation number (e.g. II-3)* is one of the ID choices, for each person and for their parents.
+
 
 ## Linking Pedigree Nodes to a Repeating Instrument
 
