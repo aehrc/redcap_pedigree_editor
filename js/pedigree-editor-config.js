@@ -20,10 +20,6 @@
     pedigreeEditorEM.customEditorPage = scriptEl.dataset.customEditorPage;
     pedigreeEditorEM.emptyIcon = '#__pedigree_empty_svg';
     pedigreeEditorEM.dataIcon = '#__pedigree_with_data_svg';
-    // Set by pedigreeEditorEM.js: this page's own editor window name, and the
-    // current handoff with that window (pedigree-editor-window-transport).
-    pedigreeEditorEM.windowName = null;
-    pedigreeEditorEM.handoff = null;
     pedigreeEditorEM.format = scriptEl.dataset.format;
     pedigreeEditorEM.allowEdit = scriptEl.dataset.allowEdit;
 })();

@@ -5,6 +5,11 @@
 
 var pedigreeEditorEM = pedigreeEditorEM || {};
 
+// This page's own editor window name (set in start), and the current handoff with that window:
+// { id, field, window } (pedigree-editor-window-transport).
+pedigreeEditorEM.windowName = null;
+pedigreeEditorEM.handoff = null;
+
 pedigreeEditorEM.log = function() {
 	// Make console logging more resilient to Redmond
 	try {
@@ -276,9 +281,9 @@ pedigreeEditorEM.edit = function(field) {
 	// A new handoff each time: the editor names it in every message, so an editor
 	// opened for an earlier Edit (or another field) is no longer answered.
 	var handoff = pedigreeEditorEM.randomId();
-	var url = new URL(pageToOpen, window.location.href);
-	url.searchParams.set('pedigreeHandoff', handoff);
-	var editorWindow = window.open(url.toString(), pedigreeEditorEM.windowName);
+	// (appended to the URL as PHP built it, rather than re-serialising its query)
+	var url = pageToOpen + (pageToOpen.indexOf('?') === -1 ? '?' : '&') + 'pedigreeHandoff=' + encodeURIComponent(handoff);
+	var editorWindow = window.open(url, pedigreeEditorEM.windowName);
 	if (!editorWindow) {
 		pedigreeEditorEM.handoff = null;
 		alert('Your browser blocked the pedigree editor window. Allow pop-ups for this site, then try again.');
@@ -305,14 +310,22 @@ pedigreeEditorEM.currentValue = function(field) {
 	return value;
 };
 
-// A random id for a handoff or a window name. crypto.randomUUID needs a secure
-// context; getRandomValues doesn't.
+// A random id for a handoff or a window name: it tells handoffs apart, it isn't a secret (a
+// message is only answered from the exact window, on this origin). crypto.randomUUID needs a
+// secure context; getRandomValues doesn't.
 pedigreeEditorEM.randomId = function() {
-	if (window.crypto && typeof window.crypto.randomUUID === 'function') {
-		return window.crypto.randomUUID();
+	var crypto = window.crypto;
+	if (crypto && typeof crypto.randomUUID === 'function') {
+		return crypto.randomUUID();
 	}
 	var words = new Uint32Array(4);
-	window.crypto.getRandomValues(words);
+	if (crypto && typeof crypto.getRandomValues === 'function') {
+		crypto.getRandomValues(words);
+	} else {
+		for (var i = 0; i < words.length; i++) {
+			words[i] = Math.floor(Math.random() * 0x100000000);
+		}
+	}
 	return Array.prototype.map.call(words, function(word) { return word.toString(16); }).join('-');
 };
 
@@ -352,6 +365,8 @@ pedigreeEditorEM.storedLength = function(value) {
 	return new TextEncoder().encode(value.replace(/\r?\n/g, '\r\n')).length;
 };
 
+// Stores a pedigree from the editor in the field and its thumbnail. Returns true, or why the
+// field wasn't updated (the editor shows it, and stays open).
 pedigreeEditorEM.save = function(field, value, svg) {
 	var fieldData;
 
@@ -363,7 +378,7 @@ pedigreeEditorEM.save = function(field, value, svg) {
 	}
 	if (!fieldData) {
 		pedigreeEditorEM.log("Failed to find data for field '" + field + "'");
-		return false;
+		return 'The form has no pedigree field ' + field + '.';
 	}
 	var tr = $('tr[sq_id=' + field + ']');
 	// Before the length checks below, so they count what's actually stored.
@@ -374,9 +389,7 @@ pedigreeEditorEM.save = function(field, value, svg) {
 		if (pedigreeEditorEM.storedLength(compressedValue) > 65300) {
 			compressedValue = 'GZ:' + btoa(pako.gzip(pedigreeEditorEM.removeDiagramFromFhir(value),{ to: 'string' }));
 			if (pedigreeEditorEM.storedLength(compressedValue) > 65300) {
-				alert('Pedigree Diagram is too large, even when compressed, not updating');
-				window.focus();
-				return false;
+				return 'The pedigree is too large for the field, even when compressed, so the form was not updated.';
 			}
 		}
 		$('textarea[name="' + fieldData.field + '"]', tr).val(compressedValue);
@@ -389,9 +402,7 @@ pedigreeEditorEM.save = function(field, value, svg) {
 				if (pedigreeEditorEM.storedLength(compressedValue) > 65300) {
 					compressedValue = 'GZ:' + btoa(pako.gzip(compressedValue,{ to: 'string' }));
 					if (pedigreeEditorEM.storedLength(compressedValue) > 65300) {
-						alert('Pedigree Diagram is too large, even when compressed, not updating');
-						window.focus();
-						return false;
+						return 'The pedigree is too large for the field, even when compressed, so the form was not updated.';
 					}
 				}
 			}
@@ -405,9 +416,7 @@ pedigreeEditorEM.save = function(field, value, svg) {
 		if (pedigreeEditorEM.storedLength(value) > 65300) {
 			var compressedValue = pedigreeEditorEM.removeDiagramFromFhir(value);
 			if (pedigreeEditorEM.storedLength(compressedValue) > 65300) {
-				alert('Pedigree Diagram is too large, not updating');
-				window.focus();
-				return false;
+				return 'The pedigree is too large for the field, so the form was not updated.';
 			}
 			$('textarea[name="' + fieldData.field + '"]', tr).val(compressedValue);
 		}
@@ -434,8 +443,8 @@ pedigreeEditorEM.save = function(field, value, svg) {
  * The form's half of the handoff with the editor window (pedigree-editor-window-transport):
  * - `pedigree:ready` from the editor is answered with this field's current value;
  * - `pedigree:save` is applied to the field, and answered with `pedigree:saved` (`ok` false
- *   when the field wasn't updated, e.g. the pedigree is too large), so the editor closes
- *   only once its pedigree is here.
+ *   and `message` saying why when the field wasn't updated, e.g. the pedigree is too large),
+ *   so the editor closes only once its pedigree is here, and otherwise says why.
  * Only a message from the editor window this form opened, from this origin, naming the
  * current handoff is answered: never another tab's, or a superseded editor's.
  */
@@ -454,9 +463,19 @@ pedigreeEditorEM.onMessage = function(event) {
 		}, origin);
 	} else if (data.type === 'pedigree:save') {
 		pedigreeEditorEM.log("Got data from editor");
-		// The field is this handoff's, whatever the message says.
-		var ok = pedigreeEditorEM.save(handoff.field, data.value, data.svg) === true;
-		event.source.postMessage({ type: 'pedigree:saved', handoff: handoff.id, ok: ok }, origin);
+		var result;
+		try {
+			// The field is this handoff's, whatever the message says.
+			result = pedigreeEditorEM.save(handoff.field, data.value, data.svg);
+		} catch (e) {
+			console.error(e);
+			result = 'The form could not store the pedigree (' + e + ').';
+		}
+		// Answered at once, before anything else can hold up this window.
+		event.source.postMessage({
+			type: 'pedigree:saved', handoff: handoff.id, ok: result === true,
+			message: result === true ? undefined : String(result)
+		}, origin);
 	}
 };
 

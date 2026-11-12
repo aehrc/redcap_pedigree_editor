@@ -181,10 +181,10 @@
       // The editor's half of the handoff with the REDCap form (its other half is
       // pedigreeEditorEM.onMessage): every message names this window's handoff, goes only to
       // the window that opened this one, on this origin, and only its answers are accepted.
-      // The form answers at once, so a missing answer means it was closed, reloaded or moved
-      // on to another Edit.
+      // The form answers straight away, so a missing answer means it was closed, reloaded or
+      // moved on to another Edit (the wait allows for a slow machine and a large pedigree).
       function redcapFormTransport(handoff) {
-        var ANSWER_TIMEOUT_MS = 5000;
+        var ANSWER_TIMEOUT_MS = 15000;
         var form = window.opener;
         function ask(message, answerType) {
           return new Promise(function (resolve, reject) {
@@ -231,8 +231,9 @@
               .then(function (answer) {
                 if (answer.ok !== true) {
                   var refused = new Error('The REDCap form did not accept the pedigree');
-                  refused.pedigreeMessage = 'The REDCap form did not take this pedigree (it shows why). '
-                    + 'Your changes are still here: keep this window open, or use Export to keep a copy.';
+                  refused.pedigreeMessage = (typeof answer.message === 'string' && answer.message
+                    ? answer.message : 'The REDCap form did not take this pedigree.')
+                    + ' Your changes are still here: keep this window open, or use Export to keep a copy.';
                   throw refused;
                 }
               });
