@@ -185,17 +185,25 @@
       // moved on to another Edit (the wait allows for a slow machine and a large pedigree).
       function redcapFormTransport(handoff) {
         var ANSWER_TIMEOUT_MS = 15000;
+        // How often 'ready' is sent again until the form answers (e.g. it was reloading when the
+        // first one went).
+        var READY_REPEAT_MS = 1000;
         var form = window.opener;
-        function ask(message, answerType) {
+        // Set once the form's pedigree has arrived: until then this editor never saves, so it
+        // can't put a blank pedigree over one it didn't get.
+        var received = false;
+        function ask(message, answerType, repeatMs) {
           return new Promise(function (resolve, reject) {
             if (!handoff || !form || form.closed) {
               reject(new Error('This editor has no REDCap form to talk to'));
               return;
             }
             var timer = null;
+            var repeat = null;
             function done() {
               window.removeEventListener('message', onAnswer);
               clearTimeout(timer);
+              clearInterval(repeat);
             }
             function onAnswer(event) {
               var answer = event.data;
@@ -211,22 +219,36 @@
               done();
               reject(new Error('The REDCap form did not answer'));
             }, ANSWER_TIMEOUT_MS);
-            try {
-              message.handoff = handoff;
-              form.postMessage(message, window.location.origin);
-            } catch (e) {
-              done();
-              reject(e);
+            message.handoff = handoff;
+            function post() {
+              try {
+                form.postMessage(message, window.location.origin);
+              } catch (e) {
+                done();
+                reject(e);
+              }
+            }
+            post();
+            if (repeatMs) {
+              repeat = setInterval(post, repeatMs);
             }
           });
         }
         return {
           receive: function () {
-            return ask({ type: 'pedigree:ready' }, 'pedigree:data').then(function (answer) {
+            return ask({ type: 'pedigree:ready' }, 'pedigree:data', READY_REPEAT_MS).then(function (answer) {
+              received = true;
               return { value: answer.value, context: answer.context };
             });
           },
           send: function (key, data) {
+            if (!received) {
+              var notLoaded = new Error('The pedigree never arrived from the REDCap form');
+              notLoaded.pedigreeMessage = 'This editor could not get the pedigree from the REDCap form, so it '
+                + "won't save over it. Close this window and click the pedigree on the form again (use Export "
+                + 'to keep a copy of what you drew).';
+              return Promise.reject(notLoaded);
+            }
             return ask({ type: 'pedigree:save', value: data.value, svg: data.svg, context: data.context }, 'pedigree:saved')
               .then(function (answer) {
                 if (answer.ok !== true) {

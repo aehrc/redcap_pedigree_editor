@@ -38,11 +38,7 @@ pedigreeEditorEM.start = function() {
 		// pedigreeEditorEM.log("length = " +
 		// pedigreeEditorEM.fieldsOfInterest.length);
 
-		for (var i = 0; i < pedigreeEditorEM.fieldsOfInterest.length; i++) {
-			// pedigreeEditorEM.log("Render field for '" +
-			// pedigreeEditorEM.fieldsOfInterest[i].field + "'");
-			pedigreeEditorEM.render(pedigreeEditorEM.fieldsOfInterest[i]);
-		}
+		// First, so the form answers its editor even if a field fails to render.
 		// The pedigree goes straight between this form and the editor window it opens
 		// (pedigree-editor-window-transport); earlier versions passed it through
 		// localStorage, so remove anything they left behind.
@@ -51,6 +47,12 @@ pedigreeEditorEM.start = function() {
 		} catch (e) { /* storage blocked: nothing of ours can be in it */ }
 		pedigreeEditorEM.restoreHandoffs();
 		window.addEventListener('message', pedigreeEditorEM.onMessage, false);
+
+		for (var i = 0; i < pedigreeEditorEM.fieldsOfInterest.length; i++) {
+			// pedigreeEditorEM.log("Render field for '" +
+			// pedigreeEditorEM.fieldsOfInterest[i].field + "'");
+			pedigreeEditorEM.render(pedigreeEditorEM.fieldsOfInterest[i]);
+		}
 	});
 };
 
@@ -313,10 +315,11 @@ pedigreeEditorEM.sameRecord = function(a, b) {
 		&& a.instance === b.instance && (!a.event || !b.event || a.event === b.event);
 };
 
-// The key this tab's handoffs are stored under. A window opened from this one starts with a copy
-// of its sessionStorage but has its own window.name, so it never takes these up.
+// The key this tab's handoffs are stored under: its window.name, given one if it has none. A
+// window opened from this one starts with a copy of its sessionStorage but has its own name, so
+// it never takes these up.
 pedigreeEditorEM.tabKey = function() {
-	if (!window.name || window.name.indexOf('pedigreeForm_') !== 0) {
+	if (!window.name) {
 		window.name = 'pedigreeForm_' + pedigreeEditorEM.randomId();
 	}
 	return pedigreeEditorEM.HANDOFF_STORE_KEY + ':' + window.name;
@@ -327,8 +330,12 @@ pedigreeEditorEM.restoreHandoffs = function() {
 	try {
 		stored = JSON.parse(window.sessionStorage.getItem(pedigreeEditorEM.tabKey()));
 	} catch (e) { /* storage blocked or unreadable: start afresh */ }
-	if (stored && typeof stored.windowName === 'string' && stored.handoffs && typeof stored.handoffs === 'object'
-			&& pedigreeEditorEM.sameRecord(stored.record, pedigreeEditorEM.pageRecord())) {
+	var record = pedigreeEditorEM.pageRecord();
+	// Only a data entry page that names its record takes up stored handoffs (a survey page's URL
+	// doesn't say whose record it is).
+	if (record.pid && record.id && stored && typeof stored.windowName === 'string'
+			&& stored.handoffs && typeof stored.handoffs === 'object'
+			&& pedigreeEditorEM.sameRecord(stored.record, record)) {
 		pedigreeEditorEM.windowName = stored.windowName;
 		pedigreeEditorEM.handoffs = stored.handoffs;
 	} else {
@@ -447,6 +454,7 @@ pedigreeEditorEM.storedLength = function(value) {
 };
 
 pedigreeEditorEM.TOO_LARGE = 'The pedigree is too large for the field, so the form was not updated.';
+pedigreeEditorEM.TOO_LARGE_COMPRESSED = 'The pedigree is too large for the field, even when compressed, so the form was not updated.';
 
 // Stores a pedigree from the editor in the field and its thumbnail. Returns true, or why the
 // field wasn't updated (the editor shows it, and stays open).
@@ -472,7 +480,7 @@ pedigreeEditorEM.save = function(field, value, svg) {
 		if (pedigreeEditorEM.storedLength(compressedValue) > 65300) {
 			compressedValue = 'GZ:' + btoa(pako.gzip(pedigreeEditorEM.removeDiagramFromFhir(value),{ to: 'string' }));
 			if (pedigreeEditorEM.storedLength(compressedValue) > 65300) {
-				return pedigreeEditorEM.TOO_LARGE;
+				return pedigreeEditorEM.TOO_LARGE_COMPRESSED;
 			}
 		}
 		$('textarea[name="' + fieldData.field + '"]', tr).val(compressedValue);
@@ -485,7 +493,7 @@ pedigreeEditorEM.save = function(field, value, svg) {
 				if (pedigreeEditorEM.storedLength(compressedValue) > 65300) {
 					compressedValue = 'GZ:' + btoa(pako.gzip(compressedValue,{ to: 'string' }));
 					if (pedigreeEditorEM.storedLength(compressedValue) > 65300) {
-						return pedigreeEditorEM.TOO_LARGE;
+						return pedigreeEditorEM.TOO_LARGE_COMPRESSED;
 					}
 				}
 			}
