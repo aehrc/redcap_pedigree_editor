@@ -49,9 +49,10 @@ pedigreeEditorEM.start = function() {
 		try {
 			pedigreeEditorEM.restoreHandoffs();
 		} catch (e) {
-			// (the fields still render; this page's handoffs just start afresh)
+			// (the fields still render; this page's handoffs just start afresh, both together)
 			console.error('Could not restore the pedigree editor handoffs', e);
-			pedigreeEditorEM.windowName = pedigreeEditorEM.windowName || ('pedigreeEditor_' + pedigreeEditorEM.randomId());
+			pedigreeEditorEM.windowName = 'pedigreeEditor_' + pedigreeEditorEM.randomId();
+			pedigreeEditorEM.handoffs = {};
 		}
 
 		for (var i = 0; i < pedigreeEditorEM.fieldsOfInterest.length; i++) {
@@ -487,6 +488,10 @@ pedigreeEditorEM.save = function(field, value, svg) {
 		return 'The form has no pedigree field ' + field + '.';
 	}
 	var tr = $('tr[sq_id=' + field + ']');
+	// (e.g. a survey's next page, which doesn't show this field: never report a save that went nowhere)
+	if ($('textarea[name="' + fieldData.field + '"]', tr).length === 0) {
+		return 'This page no longer shows the pedigree field, so the form was not updated.';
+	}
 	// Before the length checks below, so they count what's actually stored.
 	value = pedigreeEditorEM.importSafeJson(value);
 
