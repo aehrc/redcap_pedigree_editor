@@ -20,17 +20,10 @@
     pedigreeEditorEM.customEditorPage = scriptEl.dataset.customEditorPage;
     pedigreeEditorEM.emptyIcon = '#__pedigree_empty_svg';
     pedigreeEditorEM.dataIcon = '#__pedigree_with_data_svg';
-    pedigreeEditorEM.windowName = 'pedigreeEditor';
-    pedigreeEditorEM.editorWindow = null;
+    // Set by pedigreeEditorEM.js: this page's own editor window name, and the
+    // current handoff with that window (pedigree-editor-window-transport).
+    pedigreeEditorEM.windowName = null;
+    pedigreeEditorEM.handoff = null;
     pedigreeEditorEM.format = scriptEl.dataset.format;
     pedigreeEditorEM.allowEdit = scriptEl.dataset.allowEdit;
-    pedigreeEditorEM.transportType = scriptEl.dataset.transportType;
-
-    if (pedigreeEditorEM.transportType === 'message') {
-        pedigreeEditorEM.sendWhenReady = false;
-        pedigreeEditorEM.messageData = null;
-        pedigreeEditorEM.editorPageOrigin = scriptEl.dataset.editorPageOrigin;
-    } else {
-        pedigreeEditorEM.openPedigreeDataKey = 'pedigreeData';
-    }
 })();

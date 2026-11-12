@@ -293,7 +293,6 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
         $neverCompressOption = 'NEVER_COMPRESS';
         $compressLargeOption = 'COMPRESS_LARGE';
         $alwaysCompressOption = 'ALWAYS_COMPRESS';
-        $transportType = 'local';
         
         $hideText = $this->getSystemSetting('hide_text');
         $systemCompression = $this->getSystemSetting('system_compression');
@@ -521,15 +520,6 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
             $customEditorUrl = $customEditorPage;
         }
         
-        $editorUrlOrigin = '';
-        if ($transportType == 'message'){
-            $urlData = parse_url($hpoEditorUrl);
-            $scheme   = isset($urlData['scheme']) ? $urlData['scheme'] . '://' : '';
-            $host     = isset($urlData['host']) ? $urlData['host'] : '';
-            $port     = isset($urlData['port']) ? ':' . $urlData['port'] : '';
-            $editorUrlOrigin = $scheme . $host . $port;
-        }
-
         // Config previously PHP-interpolated into an inline script tag's body is
         // now passed as data-* attributes read by js/pedigree-editor-config.js (see
         // pedigree-editor-inline-js-extraction) - each value HTML-attribute-escaped,
@@ -542,8 +532,6 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
             'data-custom-editor-page' => $customEditorUrl,
             'data-format' => $format,
             'data-allow-edit' => $allowEdit,
-            'data-transport-type' => $transportType,
-            'data-editor-page-origin' => $editorUrlOrigin,
         ];
         $configDataAttrsHtml = '';
         foreach ($configDataAttrs as $attrName => $attrValue) {

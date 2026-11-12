@@ -178,6 +178,68 @@
 
       console.log("creating editor");
 
+      // The editor's half of the handoff with the REDCap form (its other half is
+      // pedigreeEditorEM.onMessage): every message names this window's handoff, goes only to
+      // the window that opened this one, on this origin, and only its answers are accepted.
+      // The form answers at once, so a missing answer means it was closed, reloaded or moved
+      // on to another Edit.
+      function redcapFormTransport(handoff) {
+        var ANSWER_TIMEOUT_MS = 5000;
+        var form = window.opener;
+        function ask(message, answerType) {
+          return new Promise(function (resolve, reject) {
+            if (!handoff || !form || form.closed) {
+              reject(new Error('This editor has no REDCap form to talk to'));
+              return;
+            }
+            var timer = null;
+            function done() {
+              window.removeEventListener('message', onAnswer);
+              clearTimeout(timer);
+            }
+            function onAnswer(event) {
+              var answer = event.data;
+              if (event.source !== form || event.origin !== window.location.origin || !answer
+                  || typeof answer !== 'object' || answer.handoff !== handoff || answer.type !== answerType) {
+                return;
+              }
+              done();
+              resolve(answer);
+            }
+            window.addEventListener('message', onAnswer);
+            timer = setTimeout(function () {
+              done();
+              reject(new Error('The REDCap form did not answer'));
+            }, ANSWER_TIMEOUT_MS);
+            try {
+              message.handoff = handoff;
+              form.postMessage(message, window.location.origin);
+            } catch (e) {
+              done();
+              reject(e);
+            }
+          });
+        }
+        return {
+          receive: function () {
+            return ask({ type: 'pedigree:ready' }, 'pedigree:data').then(function (answer) {
+              return { value: answer.value, context: answer.context };
+            });
+          },
+          send: function (key, data) {
+            return ask({ type: 'pedigree:save', value: data.value, svg: data.svg, context: data.context }, 'pedigree:saved')
+              .then(function (answer) {
+                if (answer.ok !== true) {
+                  var refused = new Error('The REDCap form did not accept the pedigree');
+                  refused.pedigreeMessage = 'The REDCap form did not take this pedigree (it shows why). '
+                    + 'Your changes are still here: keep this window open, or use Export to keep a copy.';
+                  throw refused;
+                }
+              });
+          }
+        };
+      }
+
       // redcap_pedigree_editor-specific addition (see pedigree-repeating-instrument-import
       // and pedigree-editor-redcap-extension-extraction OpenSpec changes) - not in
       // upstream open-pedigree's localEditor.html. Keep it if upstream changes to that
@@ -200,11 +262,14 @@
       var pedigreeQuestionnaireUrl = getParameterByName('pedigreeQuestionnaireUrl');
       var questionnaireOptions = pedigreeQuestionnaireUrl ? { questionnaireUrl: pedigreeQuestionnaireUrl } : {};
 
+      // redcap_pedigree_editor-specific (pedigree-editor-window-transport): the pedigree comes
+      // from, and goes back to, the REDCap form that opened this window, directly - never
+      // through localStorage, which every page on the REDCap origin can read, and which every
+      // other open form would pick up.
       var editorOptions = {
-        // patientDataUrl: 'local:pedigreeData?format='+format+'&closeOnSave=true' + (qData?('&qData='+qData):''),
         patientDataUrl: 'local:pedigreeData?format='+format+'&closeOnSave=true',
         returnUrl: '#CloseWindow',
-        backend: OpenPedigree.localStorageBackend,
+        backend: OpenPedigree.createTransportBackend(redcapFormTransport(getParameterByName('pedigreeHandoff'))),
         ...terminologyOptions,
         ...recordLinkProviderOptions,
         ...questionnaireOptions};
