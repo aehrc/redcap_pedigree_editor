@@ -219,6 +219,21 @@ If the pedigree data does not contain an image a placeholder image is shown.
 
 ![Data Entry (Placeholder as no diagram in pedigree data)](documentation/pedigree_v0.2_data_placeholder_show.png)
 
+### Saving from the editor window
+
+Saving in the editor sends the pedigree straight back to the form that opened it. The pedigree is put in the form's
+field, and the editor closes once the form has it. Save the form as usual to store it in REDCap.
+
+- **Only that form.** Other REDCap tabs never receive it, including another record's form, or the same form opened
+  again elsewhere. The pedigree isn't kept in the browser's storage either.
+- **Save & Stay is fine.** If the form is saved and reloaded while the editor is still open, the editor's next save
+  still reaches it. If that tab has moved on to another record, the save doesn't land there.
+- **If it can't be delivered,** the editor stays open with your changes and says why. For example, the form was
+  closed, or the pedigree is too large for the field. Keep the window open and save again from a reopened form, or
+  use *Export* to keep a copy.
+- **One editor per tab.** Clicking a pedigree again in the same form reuses its editor window. A form in another tab
+  opens its own.
+
 ### Generation numbers and the de-identified export
 
 The editor's **Numbers** toolbar button numbers the pedigree as it's done on paper: generations in Roman numerals down
@@ -235,6 +250,8 @@ The *Export* dialog uses the same numbers:
     for someone deceased, at their age at death, or `d.` alone without both a birth and a death date; a pregnancy
     keeps its weeks), and labels each person with their generation number. Free-form comments are kept.
   - *Remove personal information and free-form comments* also leaves out comments.
+- **GA4GH FHIR.** The same two privacy options apply. The first leaves out names, external IDs, dates and links to
+  REDCap records. The second also leaves out comments and other free text.
 - **PED.** *Generation number (e.g. II-3)* is one of the ID choices, for each person and for their parents.
 
 
