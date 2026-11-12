@@ -185,6 +185,9 @@
       // moved on to another Edit (the wait allows for a slow machine and a large pedigree).
       function redcapFormTransport(handoff) {
         var ANSWER_TIMEOUT_MS = 15000;
+        // The first answer can wait for the form to (re)load, e.g. after Save & Stay: a longer wait,
+        // still inside open-pedigree's own 30 s.
+        var READY_TIMEOUT_MS = 25000;
         // How often 'ready' is sent again until the form answers (e.g. it was reloading when the
         // first one went).
         var READY_REPEAT_MS = 1000;
@@ -192,7 +195,7 @@
         // Set once the form's pedigree has arrived: until then this editor never saves, so it
         // can't put a blank pedigree over one it didn't get.
         var received = false;
-        function ask(message, answerType, repeatMs) {
+        function ask(message, answerType, repeatMs, timeoutMs) {
           return new Promise(function (resolve, reject) {
             if (!handoff || !form || form.closed) {
               reject(new Error('This editor has no REDCap form to talk to'));
@@ -218,10 +221,13 @@
             timer = setTimeout(function () {
               done();
               reject(new Error('The REDCap form did not answer'));
-            }, ANSWER_TIMEOUT_MS);
+            }, timeoutMs || ANSWER_TIMEOUT_MS);
             message.handoff = handoff;
             function post() {
               try {
+                if (form.closed) {
+                  throw new Error('The REDCap form has been closed');
+                }
                 form.postMessage(message, window.location.origin);
               } catch (e) {
                 done();
@@ -236,7 +242,12 @@
         }
         return {
           receive: function () {
-            return ask({ type: 'pedigree:ready' }, 'pedigree:data', READY_REPEAT_MS).then(function (answer) {
+            return ask({ type: 'pedigree:ready' }, 'pedigree:data', READY_REPEAT_MS, READY_TIMEOUT_MS).then(function (answer) {
+              if (answer.error) {
+                // (not received: this editor mustn't save a new pedigree over the stored one)
+                alert(answer.error + ' This editor will not save over it; use Export to keep anything you draw.');
+                throw new Error(answer.error);
+              }
               received = true;
               return { value: answer.value, context: answer.context };
             });

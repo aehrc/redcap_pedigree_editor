@@ -45,8 +45,14 @@ pedigreeEditorEM.start = function() {
 		try {
 			window.localStorage.removeItem('pedigreeData');
 		} catch (e) { /* storage blocked: nothing of ours can be in it */ }
-		pedigreeEditorEM.restoreHandoffs();
 		window.addEventListener('message', pedigreeEditorEM.onMessage, false);
+		try {
+			pedigreeEditorEM.restoreHandoffs();
+		} catch (e) {
+			// (the fields still render; this page's handoffs just start afresh)
+			console.error('Could not restore the pedigree editor handoffs', e);
+			pedigreeEditorEM.windowName = pedigreeEditorEM.windowName || ('pedigreeEditor_' + pedigreeEditorEM.randomId());
+		}
 
 		for (var i = 0; i < pedigreeEditorEM.fieldsOfInterest.length; i++) {
 			// pedigreeEditorEM.log("Render field for '" +
@@ -300,26 +306,37 @@ pedigreeEditorEM.edit = function(field) {
 	return true;
 }
 
-// This form page's record, from its URL: a stored handoff is only taken up again by the same
-// record's form (a missing event_id matches any).
+// This page's record: on a data entry page, from its URL; on a survey page, the survey and the
+// response it's showing (REDCap's __response_hash__ field). A stored handoff is only taken up
+// again by the same record's page (a missing event_id matches any).
 pedigreeEditorEM.pageRecord = function() {
 	var query = new URLSearchParams(window.location.search);
+	var response = document.querySelector('input[name="__response_hash__"]');
 	return {
 		pid: query.get('pid') || '', id: query.get('id') || '', page: query.get('page') || '',
-		instance: query.get('instance') || '1', event: query.get('event_id') || ''
+		instance: query.get('instance') || '1', event: query.get('event_id') || '',
+		survey: query.get('s') || '', response: (response && response.value) || ''
 	};
+};
+
+// Whether a page's record is known well enough to take up stored handoffs.
+pedigreeEditorEM.recordKnown = function(record) {
+	return Boolean((record.pid && record.id) || (record.survey && record.response));
 };
 
 pedigreeEditorEM.sameRecord = function(a, b) {
 	return Boolean(a && b) && a.pid === b.pid && a.id === b.id && a.page === b.page
-		&& a.instance === b.instance && (!a.event || !b.event || a.event === b.event);
+		&& a.instance === b.instance && (!a.event || !b.event || a.event === b.event)
+		&& (a.survey || '') === (b.survey || '') && (a.response || '') === (b.response || '');
 };
 
 // The key this tab's handoffs are stored under: its window.name, given one if it has none. A
 // window opened from this one starts with a copy of its sessionStorage but has its own name, so
 // it never takes these up.
 pedigreeEditorEM.tabKey = function() {
-	if (!window.name) {
+	// (a window named as an editor window - e.g. one that has moved on to a form - is renamed, so
+	// this form's own Edit never targets itself)
+	if (!window.name || window.name.indexOf('pedigreeEditor_') === 0) {
 		window.name = 'pedigreeForm_' + pedigreeEditorEM.randomId();
 	}
 	return pedigreeEditorEM.HANDOFF_STORE_KEY + ':' + window.name;
@@ -331,9 +348,9 @@ pedigreeEditorEM.restoreHandoffs = function() {
 		stored = JSON.parse(window.sessionStorage.getItem(pedigreeEditorEM.tabKey()));
 	} catch (e) { /* storage blocked or unreadable: start afresh */ }
 	var record = pedigreeEditorEM.pageRecord();
-	// Only a data entry page that names its record takes up stored handoffs (a survey page's URL
-	// doesn't say whose record it is).
-	if (record.pid && record.id && stored && typeof stored.windowName === 'string'
+	// Only a page whose record is known takes up stored handoffs (e.g. not a survey's first page,
+	// which has no response yet).
+	if (pedigreeEditorEM.recordKnown(record) && stored && typeof stored.windowName === 'string'
 			&& stored.handoffs && typeof stored.handoffs === 'object'
 			&& pedigreeEditorEM.sameRecord(stored.record, record)) {
 		pedigreeEditorEM.windowName = stored.windowName;
@@ -382,18 +399,14 @@ pedigreeEditorEM.fromOwnEditor = function(source) {
 	}
 };
 
-// The field's stored pedigree as the editor reads it: decompressed when stored as 'GZ:'.
+// The field's stored pedigree as the editor reads it: decompressed when stored as 'GZ:'. Throws
+// when a compressed value can't be read, rather than passing it off as empty (an editor would
+// then save a new pedigree over it).
 pedigreeEditorEM.currentValue = function(field) {
 	var tr = $('tr[sq_id=' + field + ']');
 	var value = $('textarea[name="' + field + '"]', tr).val() || '';
-	try {
-		if (value.startsWith('GZ:')){
-			value = pako.ungzip(atob(value.slice(3)),{ to: 'string' });
-		}
-	}
-	catch (e) {
-		console.log('Error decompressing', e);
-		value = '';
+	if (value.startsWith('GZ:')){
+		value = pako.ungzip(atob(value.slice(3)),{ to: 'string' });
 	}
 	return value;
 };
@@ -453,8 +466,10 @@ pedigreeEditorEM.storedLength = function(value) {
 	return new TextEncoder().encode(value.replace(/\r?\n/g, '\r\n')).length;
 };
 
-pedigreeEditorEM.TOO_LARGE = 'The pedigree is too large for the field, so the form was not updated.';
-pedigreeEditorEM.TOO_LARGE_COMPRESSED = 'The pedigree is too large for the field, even when compressed, so the form was not updated.';
+pedigreeEditorEM.tooLarge = function(compressed) {
+	return 'The pedigree is too large for the field' + (compressed ? ', even when compressed,' : '')
+		+ ' so the form was not updated.';
+};
 
 // Stores a pedigree from the editor in the field and its thumbnail. Returns true, or why the
 // field wasn't updated (the editor shows it, and stays open).
@@ -480,7 +495,7 @@ pedigreeEditorEM.save = function(field, value, svg) {
 		if (pedigreeEditorEM.storedLength(compressedValue) > 65300) {
 			compressedValue = 'GZ:' + btoa(pako.gzip(pedigreeEditorEM.removeDiagramFromFhir(value),{ to: 'string' }));
 			if (pedigreeEditorEM.storedLength(compressedValue) > 65300) {
-				return pedigreeEditorEM.TOO_LARGE_COMPRESSED;
+				return pedigreeEditorEM.tooLarge(true);
 			}
 		}
 		$('textarea[name="' + fieldData.field + '"]', tr).val(compressedValue);
@@ -493,7 +508,7 @@ pedigreeEditorEM.save = function(field, value, svg) {
 				if (pedigreeEditorEM.storedLength(compressedValue) > 65300) {
 					compressedValue = 'GZ:' + btoa(pako.gzip(compressedValue,{ to: 'string' }));
 					if (pedigreeEditorEM.storedLength(compressedValue) > 65300) {
-						return pedigreeEditorEM.TOO_LARGE_COMPRESSED;
+						return pedigreeEditorEM.tooLarge(true);
 					}
 				}
 			}
@@ -507,7 +522,7 @@ pedigreeEditorEM.save = function(field, value, svg) {
 		if (pedigreeEditorEM.storedLength(value) > 65300) {
 			var compressedValue = pedigreeEditorEM.removeDiagramFromFhir(value);
 			if (pedigreeEditorEM.storedLength(compressedValue) > 65300) {
-				return pedigreeEditorEM.TOO_LARGE;
+				return pedigreeEditorEM.tooLarge(false);
 			}
 			$('textarea[name="' + fieldData.field + '"]', tr).val(compressedValue);
 		}
@@ -555,10 +570,14 @@ pedigreeEditorEM.onMessage = function(event) {
 	var field = pedigreeEditorEM.handoffs[data.handoff];
 	var origin = window.location.origin;
 	if (data.type === 'pedigree:ready') {
-		event.source.postMessage({
-			type: 'pedigree:data', handoff: data.handoff,
-			value: pedigreeEditorEM.currentValue(field), context: { field: field }
-		}, origin);
+		var answer = { type: 'pedigree:data', handoff: data.handoff, context: { field: field } };
+		try {
+			answer.value = pedigreeEditorEM.currentValue(field);
+		} catch (e) {
+			console.error('Could not read the stored pedigree', e);
+			answer.error = 'The pedigree stored in the form could not be read.';
+		}
+		event.source.postMessage(answer, origin);
 	} else if (data.type === 'pedigree:save') {
 		pedigreeEditorEM.log("Got data from editor");
 		var result;
