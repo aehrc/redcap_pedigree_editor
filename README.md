@@ -219,6 +219,41 @@ If the pedigree data does not contain an image a placeholder image is shown.
 
 ![Data Entry (Placeholder as no diagram in pedigree data)](documentation/pedigree_v0.2_data_placeholder_show.png)
 
+### Saving from the editor window
+
+Saving in the editor sends the pedigree straight back to the form that opened it. The pedigree is put in the form's
+field, and the editor closes once the form has it. Save the form as usual to store it in REDCap.
+
+- **Only that form.** Other REDCap tabs never receive it, including another record's form, or the same form opened
+  again elsewhere. The pedigree isn't kept in the browser's storage either.
+- **Save & Stay is fine.** If the form is saved and reloaded while the editor is still open, the editor's next save
+  still reaches it. If that tab has moved on to another record, the save doesn't land there.
+- **If it can't be delivered,** the editor stays open with your changes and says why. For example, the form was
+  closed, or the pedigree is too large for the field. Keep the window open and save again from a reopened form, or
+  use *Export* to keep a copy.
+- **One editor per tab.** Clicking a pedigree again in the same form reuses its editor window. A form in another tab
+  opens its own.
+
+### Generation numbers and the de-identified export
+
+The editor's **Numbers** toolbar button numbers the pedigree as it's done on paper: generations in Roman numerals down
+the left (I, II, III), and under each person their generation and their place in it from the left (`II-3`). It's a
+view setting only: off whenever the editor opens, not saved with the pedigree, and never in the diagram image the form
+shows. A group of people drawn as one symbol takes one number.
+
+The *Export* dialog uses the same numbers:
+
+- **SVG and PDF.** With *All data*, the export has the numbering when it's switched on. The two privacy options draw
+  the pedigree de-identified, whether or not numbering is on:
+  - *Remove personal information (names, IDs and dates; ages as bands)* leaves out names, external IDs and dates,
+    shows each person's age as a band (`infant` under 1, `child` 1-9, `teen` 10-19, then `20s`, `30s` ...; `d. 70s`
+    for someone deceased, at their age at death, or `d.` alone without both a birth and a death date; a pregnancy
+    keeps its weeks), and labels each person with their generation number. Free-form comments are kept.
+  - *Remove personal information and free-form comments* also leaves out comments.
+- **GA4GH FHIR.** The same two privacy options apply. The first leaves out names, external IDs, dates and links to
+  REDCap records. The second also leaves out comments and other free text.
+- **PED.** *Generation number (e.g. II-3)* is one of the ID choices, for each person and for their parents.
+
 
 ## Linking Pedigree Nodes to a Repeating Instrument
 
@@ -1123,8 +1158,9 @@ program reading the file sees one child of unknown sex under the couple.
 On reading, a reserved-ID row only means "no children" exactly as the editor writes it: not the first row (the
 proband), a child of the couple, unknown sex, a missing phenotype (`-9` or `0`; in DADA2 also alive and not adopted),
 and no partners or children of its own. If the couple also has other children, the row is left out. Any other row with
-a reserved ID is an ordinary person. (In the *Export* dialog, where people can be written by name or external ID, a
-person whose own ID starts with `_placeholder_` is written with an extra `_` in front, so it can't be taken for one.)
+a reserved ID is an ordinary person. (In the *Export* dialog, where people can be written by name, external ID or
+generation number, a person whose own ID starts with `_placeholder_` is written with an extra `_` in front, so it can't
+be taken for one.)
 
 ## DADA2 format
 The format is based on PED, but there is a field for life status and adopted, and the phenotype
