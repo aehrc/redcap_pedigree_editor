@@ -548,7 +548,7 @@ together by the derived modes above and should be here too:
   "definition": "http://hl7.org/fhir/StructureDefinition/Patient#Patient.identifier",
   "extension": [
     { "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-field-mapping", "valueCode": "mapsToField" },
-    { "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source" },
+    { "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source", "valueBoolean": true },
     {
       "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-redcap-source",
       "extension": [

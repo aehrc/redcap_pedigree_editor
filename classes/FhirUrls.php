@@ -38,6 +38,12 @@ final class FhirUrls
     public static function retiredUrlsIn(string $json): array
     {
         $questionnaire = json_decode($json, true);
+        return is_array($questionnaire) ? self::retiredUrlsInQuestionnaire($questionnaire) : [];
+    }
+
+    /** {@see retiredUrlsIn()}, for a Questionnaire already decoded. */
+    public static function retiredUrlsInQuestionnaire(array $questionnaire): array
+    {
         $found = [];
         if (is_array($questionnaire)) {
             self::collectRetired($questionnaire['item'] ?? [], $found);

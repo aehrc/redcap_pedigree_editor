@@ -42,16 +42,24 @@ function rewrite(text) {
 }
 
 // rewrite(), and inside each compressed value too.
+// (in a JSON export the base64's slashes may be escaped, \/: read through them, and write the new
+// value back the same way)
 function rewriteAll(text) {
-  return rewrite(text).replace(/GZ:([A-Za-z0-9+/]+=*)/g, (whole, base64) => {
+  return rewrite(text).replace(/GZ:((?:[A-Za-z0-9+]|\\?\/)+=*)/g, (whole, found) => {
+    const escaped = found.includes('\\/');
     let inner;
     try {
-      inner = zlib.gunzipSync(Buffer.from(base64, 'base64')).toString('utf8');
+      inner = zlib.gunzipSync(Buffer.from(found.replace(/\\\//g, '/'), 'base64')).toString('utf8');
     } catch (e) {
+      console.warn('Left a compressed value it could not read: GZ:' + found.slice(0, 20) + '...');
       return whole;
     }
     const rewritten = rewrite(inner);
-    return rewritten === inner ? whole : 'GZ:' + zlib.gzipSync(Buffer.from(rewritten, 'utf8')).toString('base64');
+    if (rewritten === inner) {
+      return whole;
+    }
+    const base64 = zlib.gzipSync(Buffer.from(rewritten, 'utf8')).toString('base64');
+    return 'GZ:' + (escaped ? base64.replace(/\//g, '\\/') : base64);
   });
 }
 

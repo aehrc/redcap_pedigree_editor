@@ -35,7 +35,8 @@
               ]
             },
             {
-              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source"
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source",
+              "valueBoolean": true
             }
           ]
         },
@@ -63,7 +64,8 @@
               ]
             },
             {
-              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source"
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source",
+              "valueBoolean": true
             }
           ]
         },
@@ -142,7 +144,8 @@
               ]
             },
             {
-              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source"
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source",
+              "valueBoolean": true
             }
           ]
         },
@@ -190,7 +193,8 @@
               ]
             },
             {
-              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source"
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source",
+              "valueBoolean": true
             }
           ]
         },
@@ -218,7 +222,8 @@
               ]
             },
             {
-              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source"
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source",
+              "valueBoolean": true
             }
           ]
         },
@@ -308,7 +313,8 @@
               ]
             },
             {
-              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source"
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source",
+              "valueBoolean": true
             }
           ]
         },
@@ -331,7 +337,8 @@
               ]
             },
             {
-              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source"
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source",
+              "valueBoolean": true
             }
           ],
           "enableWhen": [
@@ -368,7 +375,8 @@
               ]
             },
             {
-              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source"
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source",
+              "valueBoolean": true
             }
           ],
           "enableWhen": [
@@ -401,7 +409,8 @@
               ]
             },
             {
-              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source"
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source",
+              "valueBoolean": true
             }
           ],
           "enableWhen": [
@@ -434,7 +443,8 @@
               ]
             },
             {
-              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source"
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source",
+              "valueBoolean": true
             }
           ],
           "enableWhen": [
@@ -472,7 +482,8 @@
               ]
             },
             {
-              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source"
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source",
+              "valueBoolean": true
             }
           ]
         },
@@ -519,7 +530,8 @@
               ]
             },
             {
-              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source"
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source",
+              "valueBoolean": true
             }
           ],
           "enableWhen": [
@@ -568,7 +580,8 @@
               ]
             },
             {
-              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source"
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source",
+              "valueBoolean": true
             }
           ],
           "enableWhen": [
@@ -608,7 +621,8 @@
               ]
             },
             {
-              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source"
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source",
+              "valueBoolean": true
             }
           ],
           "enableWhen": [
@@ -678,7 +692,8 @@
               ]
             },
             {
-              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source"
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source",
+              "valueBoolean": true
             }
           ]
         }

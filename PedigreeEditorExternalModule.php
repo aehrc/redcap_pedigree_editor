@@ -759,10 +759,12 @@ EOD;
             error_log('[redcap_pedigree_editor] project_pedigree_advanced_questionnaire (project ' . $project_id . ') is not valid Questionnaire JSON');
             return null;
         }
-        // (saved before open-pedigree 2.0.0: still used, but its old URLs are ignored - say which)
-        foreach (FhirUrls::retiredUrlsIn($raw) as $retired => $replacement) {
+        // (saved before open-pedigree 2.0.0: still used, but its old URLs are ignored - say so, once)
+        $retired = FhirUrls::retiredUrlsInQuestionnaire($parsed);
+        if ($retired) {
             error_log('[redcap_pedigree_editor] project_pedigree_advanced_questionnaire (project ' . $project_id
-                . ') uses ' . $retired . ', which is no longer read: use ' . $replacement . ' instead (save the module settings to see every one)');
+                . ') uses ' . count($retired) . ' URL(s) open-pedigree no longer reads, e.g. ' . array_key_first($retired)
+                . ': save the module settings to see each one and its replacement');
         }
         return $parsed;
     }

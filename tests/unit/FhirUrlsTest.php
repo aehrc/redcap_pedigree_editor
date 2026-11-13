@@ -53,7 +53,8 @@ class FhirUrlsTest extends TestCase
         $root = dirname(__DIR__, 2);
         // (the bundled open-pedigree too: it and the module must agree)
         $files = array_merge(glob($root . '/classes/*.php'), glob($root . '/*.php'), glob($root . '/js/*.js'),
-            [$root . '/open-pedigree/localEditor.html', $root . '/open-pedigree/dist/pedigree.min.js']);
+            [$root . '/open-pedigree/localEditor.html', $root . '/open-pedigree/dist/pedigree.min.js',
+                $root . '/open-pedigree/dist/defaultQuestionnaire.json']);
         $offenders = [];
         foreach ($files as $file) {
             if (preg_match('#github\.com/aehrc/open-pedigree/(StructureDefinition|Questionnaire|questionnaire-)#', file_get_contents($file))) {
