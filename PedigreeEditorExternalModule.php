@@ -163,7 +163,7 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
                     $errors .= "The advanced Questionnaire setting must be a FHIR Questionnaire (resourceType: \"Questionnaire\").\n";
                 } else {
                     // open-pedigree 2.0.0 moved its extensions; old URLs would silently lose mappings.
-                    foreach (FhirUrls::retiredUrlsIn($advancedJson) as $retired => $replacement) {
+                    foreach (FhirUrls::retiredUrlsInQuestionnaire($parsed) as $retired => $replacement) {
                         $errors .= "The advanced Questionnaire uses $retired, which is no longer read: use $replacement instead.\n";
                     }
                 }
@@ -764,7 +764,7 @@ EOD;
         if ($retired) {
             error_log('[redcap_pedigree_editor] project_pedigree_advanced_questionnaire (project ' . $project_id
                 . ') uses ' . count($retired) . ' URL(s) open-pedigree no longer reads, e.g. ' . array_key_first($retired)
-                . ': save the module settings to see each one and its replacement');
+                . ' (now ' . reset($retired) . '): save the module settings to see each one and its replacement');
         }
         return $parsed;
     }

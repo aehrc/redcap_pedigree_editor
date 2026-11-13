@@ -66,15 +66,19 @@ class FhirUrlsTest extends TestCase
 
     public function testNoExampleProjectOrFixtureHoldsAnOldUrl(): void
     {
+        $compressedSeen = 0;
         $root = dirname(__DIR__, 2);
         $files = array_merge(glob($root . '/documentation/*/*.xml'), glob($root . '/documentation/*/*.json'), glob($root . '/tests/fixtures/*'));
         $offenders = [];
         foreach ($files as $file) {
             $text = file_get_contents($file);
             // (and inside each compressed pedigree)
-            preg_match_all('#GZ:([A-Za-z0-9+/]+=*)#', $text, $compressed);
+            // (as scripts/rewrite-fhir-urls.js reads them: base64 whose slashes JSON may escape)
+            preg_match_all('#GZ:([A-Za-z0-9+/\\\\]+=*)#', $text, $compressed);
+            $this->assertSame(PREG_NO_ERROR, preg_last_error());
+            $compressedSeen += count($compressed[1]);
             foreach ($compressed[1] as $base64) {
-                $inner = @gzdecode((string) base64_decode($base64, true));
+                $inner = @gzdecode((string) base64_decode(str_replace('\\/', '/', $base64), true));
                 $this->assertIsString($inner, 'a compressed value in ' . basename($file) . ' could not be read');
                 $text .= $inner;
             }
@@ -83,6 +87,8 @@ class FhirUrlsTest extends TestCase
             }
         }
         $this->assertNotEmpty($files);
+        // (the examples hold compressed pedigrees: the scan must have read them)
+        $this->assertGreaterThan(0, $compressedSeen);
         $this->assertSame([], $offenders);
     }
 }

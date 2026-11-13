@@ -45,10 +45,8 @@ final class FhirUrls
     public static function retiredUrlsInQuestionnaire(array $questionnaire): array
     {
         $found = [];
-        if (is_array($questionnaire)) {
-            self::collectRetired($questionnaire['item'] ?? [], $found);
-            self::collectRetired($questionnaire['extension'] ?? [], $found);
-        }
+        self::collectRetired($questionnaire['item'] ?? [], $found);
+        self::collectRetired($questionnaire['extension'] ?? [], $found);
         return $found;
     }
 
