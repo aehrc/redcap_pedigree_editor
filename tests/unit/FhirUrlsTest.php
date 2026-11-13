@@ -39,12 +39,21 @@ class FhirUrlsTest extends TestCase
             'https://github.com/aehrc/open-pedigree/questionnaire-redcap-source' => FhirUrls::QUESTIONNAIRE_REDCAP_SOURCE,
         ], FhirUrls::retiredUrlsIn($json));
         $this->assertSame([], FhirUrls::retiredUrlsIn('{"url":"' . FhirUrls::QUESTIONNAIRE_ACTION . '"}'));
+        // Free text and the Questionnaire's own canonical aren't read as extensions.
+        $this->assertSame([], FhirUrls::retiredUrlsIn(json_encode([
+            'resourceType' => 'Questionnaire',
+            'url' => 'https://github.com/aehrc/open-pedigree/Questionnaire/default',
+            'description' => 'Migrated from https://github.com/aehrc/open-pedigree/questionnaire-field-mapping',
+            'item' => [['linkId' => 'x', 'text' => 'see https://github.com/aehrc/open-pedigree/questionnaire-action']],
+        ])));
     }
 
     public function testNoCodeNamesAnOldUrl(): void
     {
         $root = dirname(__DIR__, 2);
-        $files = array_merge(glob($root . '/classes/*.php'), glob($root . '/*.php'), glob($root . '/js/*.js'), [$root . '/open-pedigree/localEditor.html']);
+        // (the bundled open-pedigree too: it and the module must agree)
+        $files = array_merge(glob($root . '/classes/*.php'), glob($root . '/*.php'), glob($root . '/js/*.js'),
+            [$root . '/open-pedigree/localEditor.html', $root . '/open-pedigree/dist/pedigree.min.js']);
         $offenders = [];
         foreach ($files as $file) {
             if (preg_match('#github\.com/aehrc/open-pedigree/(StructureDefinition|Questionnaire|questionnaire-)#', file_get_contents($file))) {
@@ -64,7 +73,9 @@ class FhirUrlsTest extends TestCase
             // (and inside each compressed pedigree)
             preg_match_all('#GZ:([A-Za-z0-9+/]+=*)#', $text, $compressed);
             foreach ($compressed[1] as $base64) {
-                $text .= (string) @gzdecode(base64_decode($base64));
+                $inner = @gzdecode((string) base64_decode($base64, true));
+                $this->assertIsString($inner, 'a compressed value in ' . basename($file) . ' could not be read');
+                $text .= $inner;
             }
             if (preg_match('#github\.com\\\\?/aehrc\\\\?/open-pedigree\\\\?/(StructureDefinition|Questionnaire|questionnaire-)#', $text)) {
                 $offenders[] = substr($file, strlen($root) + 1);

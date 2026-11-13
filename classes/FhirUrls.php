@@ -30,21 +30,42 @@ final class FhirUrls
     const RETIRED_BASE = 'https://github.com/aehrc/open-pedigree/';
 
     /**
-     * The retired URLs a Questionnaire (as JSON) still uses, each with its replacement:
-     * [retired => replacement], in the order first found. Identifier systems and plain links to the
-     * repository aren't included.
+     * The retired URLs a Questionnaire (as JSON) still uses where they are read - extension `url`s
+     * and item `definition`s - each with its replacement: [retired => replacement], in the order
+     * first found. Free text, the Questionnaire's own canonical, identifier systems and plain links
+     * to the repository aren't included.
      */
     public static function retiredUrlsIn(string $json): array
     {
+        $questionnaire = json_decode($json, true);
         $found = [];
-        // (JSON may escape the slashes)
-        $text = str_replace('\\/', '/', $json);
-        if (preg_match_all('#https://github\.com/aehrc/open-pedigree/((?:StructureDefinition/|Questionnaire/)[A-Za-z-]+|questionnaire-[a-z-]+)#', $text, $matches)) {
-            foreach ($matches[0] as $i => $retired) {
-                $rest = $matches[1][$i];
-                $found[$retired] = self::BASE . (strpos($rest, 'questionnaire-') === 0 ? 'StructureDefinition/' : '') . $rest;
-            }
+        if (is_array($questionnaire)) {
+            self::collectRetired($questionnaire['item'] ?? [], $found);
+            self::collectRetired($questionnaire['extension'] ?? [], $found);
         }
         return $found;
+    }
+
+    /** Walks items and extensions, noting each retired extension url and item definition. */
+    private static function collectRetired($node, array &$found): void
+    {
+        if (!is_array($node)) {
+            return;
+        }
+        foreach (['url', 'definition'] as $key) {
+            $value = $node[$key] ?? null;
+            if (is_string($value) && strpos($value, self::RETIRED_BASE) === 0) {
+                $retired = explode('#', $value)[0];
+                $rest = substr($retired, strlen(self::RETIRED_BASE));
+                if (preg_match('#^(questionnaire-[a-z-]+|StructureDefinition/[A-Za-z-]+)$#', $rest)) {
+                    $found[$retired] = self::BASE . (strpos($rest, 'questionnaire-') === 0 ? 'StructureDefinition/' : '') . $rest;
+                }
+            }
+        }
+        foreach ($node as $key => $child) {
+            if (is_array($child)) {
+                self::collectRetired($child, $found);
+            }
+        }
     }
 }
