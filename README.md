@@ -255,6 +255,21 @@ The *Export* dialog uses the same numbers:
 - **PED.** *Generation number (e.g. II-3)* is one of the ID choices, for each person and for their parents.
 
 
+### Gene results
+
+Each gene in a person's **Genes** list can have a result: what testing found. In the node edit form, each selected gene has a result drop-down under the Genes picker, and each tested gene is drawn as a line under the symbol:
+
+| Result | Drawn as |
+| --- | --- |
+| Heterozygous | `BRCA1 +/−` |
+| Homozygous | `BRCA1 +/+` |
+| Hemizygous (e.g. an X-linked gene in a male) | `BRCA1 +/0` |
+| Heteroplasmic, Homoplasmic (mitochondrial genes) | `MT-ND4 + (heteroplasmic)` |
+| Positive, zygosity unknown | `BRCA1 +` |
+| Negative | `BRCA1 −/−` |
+
+A gene left *Not tested* draws nothing. Removing a gene removes its result. The de-identified exports keep the lines, as they keep the genes. In the GA4GH storage format a result is saved on the gene's own Observation with standard LOINC codes (69548-6 *Genetic variant assessment*, 53034-5 *Allelic state*), so other FHIR readers see the gene as before. Results can't be filled from a linked repeating-instrument row yet.
+
 ## Linking Pedigree Nodes to a Repeating Instrument
 
 Beyond the single *@PEDIGREE* field that stores the diagram itself, the module can link an individual pedigree node
