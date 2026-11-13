@@ -297,11 +297,11 @@
             "valueBoolean": false
           },
           {
-            "url": "https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-ref",
+            "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/linked-record-ref",
             "valueString": "record:3/instance:1"
           },
           {
-            "url": "https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-snapshot",
+            "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/linked-record-snapshot",
             "valueString": "{\u0022first_name\u0022:\u0022Noah\u0022,\u0022last_name\u0022:\u0022Demo\u0022,\u0022relationship\u0022:\u0022participant\u0022,\u0022sex\u0022:\u0022M\u0022,\u0022dob\u0022:\u00222020-02-11\u0022,\u0022adopted\u0022:false,\u0022life_status\u0022:\u0022alive\u0022,\u0022carrier_status\u0022:\u0022affected\u0022,\u0022ada2_tested\u0022:true,\u0022ada2_variants\u0022:\u0022unknown\u0022,\u0022ada2_level\u0022:\u0022low\u0022,\u0022notes\u0022:\u0022Genetic testing in progress.\u0022}"
           }
         ],
@@ -333,11 +333,11 @@
             "valueBoolean": false
           },
           {
-            "url": "https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-ref",
+            "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/linked-record-ref",
             "valueString": "record:3/instance:3"
           },
           {
-            "url": "https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-snapshot",
+            "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/linked-record-snapshot",
             "valueString": "{\u0022first_name\u0022:\u0022Ivan\u0022,\u0022last_name\u0022:\u0022Demo\u0022,\u0022relationship\u0022:\u0022father\u0022,\u0022sex\u0022:\u0022M\u0022,\u0022dob\u0022:\u00221988-05-17\u0022,\u0022adopted\u0022:false,\u0022life_status\u0022:\u0022alive\u0022,\u0022ada2_tested\u0022:false,\u0022ada2_variants\u0022:\u0022not_tested\u0022,\u0022ada2_level\u0022:\u0022not_tested\u0022}"
           }
         ],
@@ -369,11 +369,11 @@
             "valueBoolean": false
           },
           {
-            "url": "https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-ref",
+            "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/linked-record-ref",
             "valueString": "record:3/instance:2"
           },
           {
-            "url": "https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-snapshot",
+            "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/linked-record-snapshot",
             "valueString": "{\u0022first_name\u0022:\u0022Clare\u0022,\u0022last_name\u0022:\u0022Demo\u0022,\u0022relationship\u0022:\u0022mother\u0022,\u0022sex\u0022:\u0022F\u0022,\u0022dob\u0022:\u00221990-08-03\u0022,\u0022adopted\u0022:false,\u0022life_status\u0022:\u0022alive\u0022,\u0022ada2_tested\u0022:false,\u0022ada2_variants\u0022:\u0022not_tested\u0022,\u0022ada2_level\u0022:\u0022not_tested\u0022}"
           }
         ],

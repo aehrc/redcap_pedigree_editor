@@ -11,6 +11,7 @@ use ExternalModules\AbstractExternalModule;
 // Deployed modules aren't `composer install`-ed, so classes/ can't rely on
 // the Composer autoloader (dev/test-only here, see composer.json) - require
 // each class explicitly.
+require_once __DIR__ . '/classes/FhirUrls.php';
 require_once __DIR__ . '/classes/PedigreeFieldTag.php';
 require_once __DIR__ . '/classes/BranchingLogicTranslator.php';
 require_once __DIR__ . '/classes/OntologyValueSetResolver.php';
@@ -160,6 +161,11 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
                     $errors .= "The advanced Questionnaire setting is not valid JSON.\n";
                 } elseif (($parsed['resourceType'] ?? null) !== 'Questionnaire') {
                     $errors .= "The advanced Questionnaire setting must be a FHIR Questionnaire (resourceType: \"Questionnaire\").\n";
+                } else {
+                    // open-pedigree 2.0.0 moved its extensions; old URLs would silently lose mappings.
+                    foreach (FhirUrls::retiredUrlsIn($advancedJson) as $retired => $replacement) {
+                        $errors .= "The advanced Questionnaire uses $retired, which is no longer read: use $replacement instead.\n";
+                    }
                 }
             }
         }

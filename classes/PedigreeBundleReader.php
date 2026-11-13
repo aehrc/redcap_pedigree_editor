@@ -23,7 +23,7 @@ class PedigreeBundleReader
 {
     const KIN_SYSTEM = 'http://purl.org/ga4gh/kin.fhir';
     const RELATIVE_EXTENSION_URL = 'http://hl7.org/fhir/StructureDefinition/familymemberhistory-patient-record';
-    const LINK_EXTENSION_URL = 'https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-ref';
+    const LINK_EXTENSION_URL = FhirUrls::LINKED_RECORD_REF;
     const RELATIONSHIP_PROFILE = 'http://purl.org/ga4gh/pedigree-fhir-ig/StructureDefinition/PedigreeRelationship';
     const COMPRESSED_PREFIX = 'GZ:';
     /** The failure reason for a field with nothing in it (no pedigree drawn yet). */

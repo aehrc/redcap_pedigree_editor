@@ -453,7 +453,7 @@ class QuestionnaireDerivationTest extends TestCase
         $dd = ['a_field' => $this->field(['field_annotation' => '@PEDIGREE_FIELD'])];
         $item = $this->flatten(QuestionnaireDerivation::derive($dd, 'family_members')['questionnaire'])['a_field'];
         $this->assertContains(
-            ['url' => QuestionnaireDerivation::LINKED_RECORD_SOURCE_EXTENSION_URL],
+            ['url' => QuestionnaireDerivation::LINKED_RECORD_SOURCE_EXTENSION_URL, 'valueBoolean' => true],
             $item['extension']
         );
     }

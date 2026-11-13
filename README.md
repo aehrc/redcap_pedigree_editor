@@ -457,7 +457,7 @@ automatically:
   "text": "Some field",
   "extension": [
     {
-      "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+      "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-redcap-source",
       "extension": [
         { "url": "instrument", "valueString": "family_members" },
         { "url": "field", "valueString": "first_name" }
@@ -482,9 +482,9 @@ A few starting examples:
   "text": "Identifier",
   "definition": "http://hl7.org/fhir/StructureDefinition/Patient#Patient.identifier",
   "extension": [
-    { "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping", "valueCode": "mapsToField" },
+    { "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-field-mapping", "valueCode": "mapsToField" },
     {
-      "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+      "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-redcap-source",
       "extension": [
         { "url": "instrument", "valueString": "family_members" },
         { "url": "field", "valueString": "external_id" }
@@ -506,16 +506,16 @@ tagged `@PEDIGREE_FIELD(legend="disorders")`, plus the `questionnaire-linked-rec
   "repeats": true,
   "answerValueSet": "http://snomed.info/sct?fhir_vs=refset/32570581000036105",
   "extension": [
-    { "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping", "valueCode": "mapsToLegendCondition" },
+    { "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-field-mapping", "valueCode": "mapsToLegendCondition" },
     {
-      "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+      "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-redcap-source",
       "extension": [
         { "url": "instrument", "valueString": "family_members" },
         { "url": "field", "valueString": "condition_primary" }
       ]
     },
     {
-      "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+      "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-redcap-source",
       "extension": [
         { "url": "instrument", "valueString": "family_members" },
         { "url": "field", "valueString": "condition_secondary" }
@@ -547,10 +547,10 @@ together by the derived modes above and should be here too:
   "text": "Identifier",
   "definition": "http://hl7.org/fhir/StructureDefinition/Patient#Patient.identifier",
   "extension": [
-    { "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping", "valueCode": "mapsToField" },
-    { "url": "https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source" },
+    { "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-field-mapping", "valueCode": "mapsToField" },
+    { "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source" },
     {
-      "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+      "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-redcap-source",
       "extension": [
         { "url": "instrument", "valueString": "family_members" },
         { "url": "field", "valueString": "external_id" }

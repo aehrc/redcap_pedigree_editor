@@ -566,11 +566,11 @@
             &quot;valueBoolean&quot;: false
           },
           {
-            &quot;url&quot;: &quot;https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-ref&quot;,
+            &quot;url&quot;: &quot;https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/linked-record-ref&quot;,
             &quot;valueString&quot;: &quot;record:1/instance:1&quot;
           },
           {
-            &quot;url&quot;: &quot;https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-snapshot&quot;,
+            &quot;url&quot;: &quot;https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/linked-record-snapshot&quot;,
             &quot;valueString&quot;: &quot;{\u0022first_name\u0022:\u0022Ella\u0022,\u0022last_name\u0022:\u0022Carver\u0022,\u0022relationship\u0022:\u0022proband\u0022,\u0022sex\u0022:\u0022F\u0022,\u0022dob\u0022:\u00222012-03-14\u0022,\u0022hearing_status\u0022:\u0022loss\u0022,\u0022diagnosis\u0022:\u002260700002\u0022,\u0022age_at_onset\u0022:2,\u0022onset_notes\u0022:\u0022Passed newborn screening; loss picked up at a preschool check.\u0022,\u0022genetic_test\u0022:true,\u0022test_result\u0022:\u0022pathogenic\u0022,\u0022hereditary_confirmed\u0022:true,\u0022other_features\u0022:[\u0022A\u0022]}&quot;
           }
         ],
@@ -602,11 +602,11 @@
             &quot;valueBoolean&quot;: false
           },
           {
-            &quot;url&quot;: &quot;https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-ref&quot;,
+            &quot;url&quot;: &quot;https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/linked-record-ref&quot;,
             &quot;valueString&quot;: &quot;record:1/instance:2&quot;
           },
           {
-            &quot;url&quot;: &quot;https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-snapshot&quot;,
+            &quot;url&quot;: &quot;https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/linked-record-snapshot&quot;,
             &quot;valueString&quot;: &quot;{\u0022first_name\u0022:\u0022Tom\u0022,\u0022last_name\u0022:\u0022Carver\u0022,\u0022relationship\u0022:\u0022father\u0022,\u0022sex\u0022:\u0022M\u0022,\u0022dob\u0022:\u00221980-07-22\u0022,\u0022hearing_status\u0022:\u0022loss\u0022,\u0022diagnosis\u0022:\u0022232328005\u0022,\u0022age_at_onset\u0022:30,\u0022genetic_test\u0022:false,\u0022not_tested_reason\u0022:\u0022Declined testing for now.\u0022,\u0022other_features\u0022:[\u0022-1\u0022]}&quot;
           }
         ],
@@ -638,11 +638,11 @@
             &quot;valueBoolean&quot;: false
           },
           {
-            &quot;url&quot;: &quot;https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-ref&quot;,
+            &quot;url&quot;: &quot;https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/linked-record-ref&quot;,
             &quot;valueString&quot;: &quot;record:1/instance:3&quot;
           },
           {
-            &quot;url&quot;: &quot;https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-snapshot&quot;,
+            &quot;url&quot;: &quot;https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/linked-record-snapshot&quot;,
             &quot;valueString&quot;: &quot;{\u0022first_name\u0022:\u0022Rose\u0022,\u0022last_name\u0022:\u0022Carver\u0022,\u0022relationship\u0022:\u0022mother\u0022,\u0022sex\u0022:\u0022F\u0022,\u0022dob\u0022:\u00221982-11-02\u0022,\u0022hearing_status\u0022:\u0022normal\u0022,\u0022genetic_test\u0022:true}&quot;
           }
         ],
@@ -674,11 +674,11 @@
             &quot;valueBoolean&quot;: false
           },
           {
-            &quot;url&quot;: &quot;https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-ref&quot;,
+            &quot;url&quot;: &quot;https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/linked-record-ref&quot;,
             &quot;valueString&quot;: &quot;record:1/instance:4&quot;
           },
           {
-            &quot;url&quot;: &quot;https://github.com/aehrc/open-pedigree/StructureDefinition/linked-record-snapshot&quot;,
+            &quot;url&quot;: &quot;https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/linked-record-snapshot&quot;,
             &quot;valueString&quot;: &quot;{\u0022first_name\u0022:\u0022Sam\u0022,\u0022last_name\u0022:\u0022Carver\u0022,\u0022relationship\u0022:\u0022sibling\u0022,\u0022sex\u0022:\u0022M\u0022,\u0022dob\u0022:\u00222015-05-09\u0022,\u0022status_unknown_note\u0022:\u0022Hearing assessment booked.\u0022}&quot;
           }
         ],

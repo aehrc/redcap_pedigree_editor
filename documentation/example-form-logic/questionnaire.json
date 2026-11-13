@@ -18,11 +18,11 @@
           "definition": "http://hl7.org/fhir/StructureDefinition/Patient#Patient.name.given",
           "extension": [
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-field-mapping",
               "valueCode": "mapsToField"
             },
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-redcap-source",
               "extension": [
                 {
                   "url": "instrument",
@@ -35,7 +35,7 @@
               ]
             },
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source"
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source"
             }
           ]
         },
@@ -46,11 +46,11 @@
           "definition": "http://hl7.org/fhir/StructureDefinition/Patient#Patient.name.family",
           "extension": [
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-field-mapping",
               "valueCode": "mapsToField"
             },
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-redcap-source",
               "extension": [
                 {
                   "url": "instrument",
@@ -63,7 +63,7 @@
               ]
             },
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source"
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source"
             }
           ]
         },
@@ -129,7 +129,7 @@
           ],
           "extension": [
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-redcap-source",
               "extension": [
                 {
                   "url": "instrument",
@@ -142,7 +142,7 @@
               ]
             },
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source"
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source"
             }
           ]
         },
@@ -173,11 +173,11 @@
           "definition": "http://hl7.org/fhir/StructureDefinition/Patient#Patient.gender",
           "extension": [
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-field-mapping",
               "valueCode": "mapsToField"
             },
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-redcap-source",
               "extension": [
                 {
                   "url": "instrument",
@@ -190,7 +190,7 @@
               ]
             },
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source"
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source"
             }
           ]
         },
@@ -201,11 +201,11 @@
           "definition": "http://hl7.org/fhir/StructureDefinition/Patient#Patient.birthDate",
           "extension": [
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-field-mapping",
               "valueCode": "mapsToField"
             },
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-redcap-source",
               "extension": [
                 {
                   "url": "instrument",
@@ -218,7 +218,7 @@
               ]
             },
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source"
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source"
             }
           ]
         },
@@ -228,11 +228,11 @@
           "text": "Link to a relative's row",
           "extension": [
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-field-mapping",
               "valueCode": "invokesAction"
             },
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-action",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-action",
               "valueCode": "linkRecord"
             }
           ],
@@ -240,7 +240,7 @@
             {
               "extension": [
                 {
-                  "url": "https://github.com/aehrc/open-pedigree/questionnaire-enable-predicate",
+                  "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-enable-predicate",
                   "valueCode": "canLinkRecord"
                 }
               ]
@@ -255,7 +255,7 @@
             {
               "extension": [
                 {
-                  "url": "https://github.com/aehrc/open-pedigree/questionnaire-enable-predicate",
+                  "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-enable-predicate",
                   "valueCode": "isFetus"
                 }
               ]
@@ -295,7 +295,7 @@
           ],
           "extension": [
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-redcap-source",
               "extension": [
                 {
                   "url": "instrument",
@@ -308,7 +308,7 @@
               ]
             },
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source"
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source"
             }
           ]
         },
@@ -318,7 +318,7 @@
           "text": "Hearing not recorded yet: why?",
           "extension": [
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-redcap-source",
               "extension": [
                 {
                   "url": "instrument",
@@ -331,7 +331,7 @@
               ]
             },
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source"
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source"
             }
           ],
           "enableWhen": [
@@ -351,11 +351,11 @@
           "answerValueSet": "http://snomed.info/sct?fhir_vs=refset/32570581000036105",
           "extension": [
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-field-mapping",
               "valueCode": "mapsToLegendCondition"
             },
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-redcap-source",
               "extension": [
                 {
                   "url": "instrument",
@@ -368,7 +368,7 @@
               ]
             },
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source"
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source"
             }
           ],
           "enableWhen": [
@@ -388,7 +388,7 @@
           "text": "Age at onset (years)",
           "extension": [
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-redcap-source",
               "extension": [
                 {
                   "url": "instrument",
@@ -401,7 +401,7 @@
               ]
             },
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source"
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source"
             }
           ],
           "enableWhen": [
@@ -421,7 +421,7 @@
           "text": "Onset notes",
           "extension": [
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-redcap-source",
               "extension": [
                 {
                   "url": "instrument",
@@ -434,7 +434,7 @@
               ]
             },
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source"
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source"
             }
           ],
           "enableWhen": [
@@ -459,7 +459,7 @@
           "text": "Genetic test done?",
           "extension": [
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-redcap-source",
               "extension": [
                 {
                   "url": "instrument",
@@ -472,7 +472,7 @@
               ]
             },
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source"
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source"
             }
           ]
         },
@@ -502,11 +502,11 @@
           ],
           "extension": [
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-field-mapping",
               "valueCode": "mapsToObservation"
             },
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-redcap-source",
               "extension": [
                 {
                   "url": "instrument",
@@ -519,7 +519,7 @@
               ]
             },
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source"
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source"
             }
           ],
           "enableWhen": [
@@ -551,11 +551,11 @@
           "text": "Hereditary hearing loss",
           "extension": [
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-field-mapping",
               "valueCode": "mapsToCondition"
             },
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-redcap-source",
               "extension": [
                 {
                   "url": "instrument",
@@ -568,7 +568,7 @@
               ]
             },
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source"
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source"
             }
           ],
           "enableWhen": [
@@ -595,7 +595,7 @@
           "text": "Why not tested?",
           "extension": [
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-redcap-source",
               "extension": [
                 {
                   "url": "instrument",
@@ -608,7 +608,7 @@
               ]
             },
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source"
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source"
             }
           ],
           "enableWhen": [
@@ -665,7 +665,7 @@
           ],
           "extension": [
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-redcap-source",
               "extension": [
                 {
                   "url": "instrument",
@@ -678,7 +678,7 @@
               ]
             },
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source"
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source"
             }
           ]
         }
