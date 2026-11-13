@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.1.0](https://github.com/aehrc/redcap_pedigree_editor/compare/v1.0.0...v1.1.0) (2026-11-13)
+
+
+### Features
+
+* bundle open-pedigree 1.6.0 - a partner without a child, and fixes for issues 7 and 8 ([#76](https://github.com/aehrc/redcap_pedigree_editor/issues/76)) ([cd012d1](https://github.com/aehrc/redcap_pedigree_editor/commit/cd012d1539afc6687015b13b0a7a6c67f0517627))
+
+
+### Bug Fixes
+
+* hand the pedigree directly between the form and the editor window ([#79](https://github.com/aehrc/redcap_pedigree_editor/issues/79)) ([b2a232a](https://github.com/aehrc/redcap_pedigree_editor/commit/b2a232a032a10c8418db87dc58bf82c42f2fa547))
+* use open-pedigree's resolvable FHIR definition URLs ([#80](https://github.com/aehrc/redcap_pedigree_editor/issues/80)) ([b88d1ef](https://github.com/aehrc/redcap_pedigree_editor/commit/b88d1ef8ddda883b5006c86a3b15baa15684e45b))
+
 ## [1.0.0](https://github.com/aehrc/redcap_pedigree_editor/compare/v0.4.1...v1.0.0) (2026-11-05)
 
 
