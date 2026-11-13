@@ -16,10 +16,10 @@ namespace AEHRC\PedigreeEditorExternalModule;
  */
 class QuestionnaireDerivation
 {
-    const MAPPING_EXTENSION_URL = 'https://github.com/aehrc/open-pedigree/questionnaire-field-mapping';
-    const PREDICATE_EXTENSION_URL = 'https://github.com/aehrc/open-pedigree/questionnaire-enable-predicate';
-    const ACTION_EXTENSION_URL = 'https://github.com/aehrc/open-pedigree/questionnaire-action';
-    const REDCAP_SOURCE_EXTENSION_URL = 'https://github.com/aehrc/open-pedigree/questionnaire-redcap-source';
+    const MAPPING_EXTENSION_URL = FhirUrls::QUESTIONNAIRE_FIELD_MAPPING;
+    const PREDICATE_EXTENSION_URL = FhirUrls::QUESTIONNAIRE_ENABLE_PREDICATE;
+    const ACTION_EXTENSION_URL = FhirUrls::QUESTIONNAIRE_ACTION;
+    const REDCAP_SOURCE_EXTENSION_URL = FhirUrls::QUESTIONNAIRE_REDCAP_SOURCE;
 
     // Generic, non-REDCap-named marker (see record-link-provider's
     // linked-record-questionnaire-rendering capability) attached alongside
@@ -27,7 +27,7 @@ class QuestionnaireDerivation
     // pedigree-upgrade's own always-disabled/regrouped-onto-the-reserved-tab
     // rendering, entirely independent of REDCAP_SOURCE_EXTENSION_URL (which
     // only routes RedcapInstrumentPatientProvider's import).
-    const LINKED_RECORD_SOURCE_EXTENSION_URL = 'https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source';
+    const LINKED_RECORD_SOURCE_EXTENSION_URL = FhirUrls::QUESTIONNAIRE_LINKED_RECORD_SOURCE;
 
     const UNSUPPORTED_FIELD_TYPES = ['calc', 'sql', 'file', 'slider', 'descriptive'];
 
@@ -62,15 +62,15 @@ class QuestionnaireDerivation
         'identifier' => 'http://hl7.org/fhir/StructureDefinition/Patient#Patient.identifier',
         'birthDate' => 'http://hl7.org/fhir/StructureDefinition/Patient#Patient.birthDate',
         'deceasedDateTime' => 'http://hl7.org/fhir/StructureDefinition/Patient#Patient.deceasedDateTime',
-        'lifeStatus' => 'https://github.com/aehrc/open-pedigree/StructureDefinition/PedigreeIndividual#PedigreeIndividual.lifeStatus',
-        'gestationAge' => 'https://github.com/aehrc/open-pedigree/StructureDefinition/PedigreeIndividual#PedigreeIndividual.gestationAge',
-        'carrierStatus' => 'https://github.com/aehrc/open-pedigree/StructureDefinition/PedigreeIndividual#PedigreeIndividual.carrierStatus',
-        'comments' => 'https://github.com/aehrc/open-pedigree/StructureDefinition/PedigreeIndividual#PedigreeIndividual.comments',
-        'childlessStatus' => 'https://github.com/aehrc/open-pedigree/StructureDefinition/PedigreeIndividual#PedigreeIndividual.childlessStatus',
-        'isAdopted' => 'https://github.com/aehrc/open-pedigree/StructureDefinition/PedigreeIndividual#PedigreeIndividual.isAdopted',
-        'monozygotic' => 'https://github.com/aehrc/open-pedigree/StructureDefinition/PedigreeIndividual#PedigreeIndividual.monozygotic',
-        'evaluated' => 'https://github.com/aehrc/open-pedigree/StructureDefinition/PedigreeIndividual#PedigreeIndividual.evaluated',
-        'lostContact' => 'https://github.com/aehrc/open-pedigree/StructureDefinition/PedigreeIndividual#PedigreeIndividual.lostContact',
+        'lifeStatus' => FhirUrls::PEDIGREE_INDIVIDUAL . '#PedigreeIndividual.lifeStatus',
+        'gestationAge' => FhirUrls::PEDIGREE_INDIVIDUAL . '#PedigreeIndividual.gestationAge',
+        'carrierStatus' => FhirUrls::PEDIGREE_INDIVIDUAL . '#PedigreeIndividual.carrierStatus',
+        'comments' => FhirUrls::PEDIGREE_INDIVIDUAL . '#PedigreeIndividual.comments',
+        'childlessStatus' => FhirUrls::PEDIGREE_INDIVIDUAL . '#PedigreeIndividual.childlessStatus',
+        'isAdopted' => FhirUrls::PEDIGREE_INDIVIDUAL . '#PedigreeIndividual.isAdopted',
+        'monozygotic' => FhirUrls::PEDIGREE_INDIVIDUAL . '#PedigreeIndividual.monozygotic',
+        'evaluated' => FhirUrls::PEDIGREE_INDIVIDUAL . '#PedigreeIndividual.evaluated',
+        'lostContact' => FhirUrls::PEDIGREE_INDIVIDUAL . '#PedigreeIndividual.lostContact',
     ];
 
     /**
@@ -413,7 +413,8 @@ class QuestionnaireDerivation
             // Distinct from REDCAP_SOURCE_EXTENSION_URL above - see the
             // constant's own doc comment. Both must be attached together,
             // never independently (record-link-provider design's risk note).
-            $extensions[] = ['url' => self::LINKED_RECORD_SOURCE_EXTENSION_URL];
+            // (a marker: its definition fixes the value at true)
+            $extensions[] = ['url' => self::LINKED_RECORD_SOURCE_EXTENSION_URL, 'valueBoolean' => true];
             $item['extension'] = $extensions;
 
             $items[$fieldName] = $item;

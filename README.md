@@ -457,7 +457,7 @@ automatically:
   "text": "Some field",
   "extension": [
     {
-      "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+      "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-redcap-source",
       "extension": [
         { "url": "instrument", "valueString": "family_members" },
         { "url": "field", "valueString": "first_name" }
@@ -482,9 +482,9 @@ A few starting examples:
   "text": "Identifier",
   "definition": "http://hl7.org/fhir/StructureDefinition/Patient#Patient.identifier",
   "extension": [
-    { "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping", "valueCode": "mapsToField" },
+    { "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-field-mapping", "valueCode": "mapsToField" },
     {
-      "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+      "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-redcap-source",
       "extension": [
         { "url": "instrument", "valueString": "family_members" },
         { "url": "field", "valueString": "external_id" }
@@ -506,16 +506,16 @@ tagged `@PEDIGREE_FIELD(legend="disorders")`, plus the `questionnaire-linked-rec
   "repeats": true,
   "answerValueSet": "http://snomed.info/sct?fhir_vs=refset/32570581000036105",
   "extension": [
-    { "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping", "valueCode": "mapsToLegendCondition" },
+    { "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-field-mapping", "valueCode": "mapsToLegendCondition" },
     {
-      "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+      "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-redcap-source",
       "extension": [
         { "url": "instrument", "valueString": "family_members" },
         { "url": "field", "valueString": "condition_primary" }
       ]
     },
     {
-      "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+      "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-redcap-source",
       "extension": [
         { "url": "instrument", "valueString": "family_members" },
         { "url": "field", "valueString": "condition_secondary" }
@@ -547,10 +547,10 @@ together by the derived modes above and should be here too:
   "text": "Identifier",
   "definition": "http://hl7.org/fhir/StructureDefinition/Patient#Patient.identifier",
   "extension": [
-    { "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping", "valueCode": "mapsToField" },
-    { "url": "https://github.com/aehrc/open-pedigree/questionnaire-linked-record-source" },
+    { "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-field-mapping", "valueCode": "mapsToField" },
+    { "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-linked-record-source", "valueBoolean": true },
     {
-      "url": "https://github.com/aehrc/open-pedigree/questionnaire-redcap-source",
+      "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-redcap-source",
       "extension": [
         { "url": "instrument", "valueString": "family_members" },
         { "url": "field", "valueString": "external_id" }
@@ -1048,6 +1048,16 @@ authentication. Along with this change, the default Fhir server changed from
 some changes in the FHIR valuesets used. This may mean that opening a previously saved diagram may have
 problems reloading the disorder, genes and phenotypic features fields. In version 0.5 these defaults were changed again
 to use `https://tx.ontoserver.csiro.au/fhir` along with the corresponding code systems and value sets found on this server.
+
+**open-pedigree 2.0.0 (this version): resolvable FHIR definition URLs.** open-pedigree's own FHIR extensions and
+definitions moved from `https://github.com/aehrc/open-pedigree/...` (which never resolved) to
+[`https://aehrc.github.io/open-pedigree/fhir/`](https://aehrc.github.io/open-pedigree/fhir/), where each one is
+described; the module's Questionnaires use the new URLs too. The old URLs are no longer read. This only affects
+pedigrees saved by module 1.0.0 or 1.1.0 (versions up to 0.4 used none of these URLs): reopened, they lose their
+fetus dates of death, the adoption of a person with no parents in the pedigree, and their links to repeating-instrument
+rows. An advanced-mode Questionnaire that still uses an old URL is refused when the module settings are saved, naming
+the URL to use. `scripts/rewrite-fhir-urls.js <file>...` rewrites a project's XML or a data export to the new URLs
+(compressed values included) before it is imported again.
 
 ## Terminology Changes
 

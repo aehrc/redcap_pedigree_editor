@@ -1,6 +1,6 @@
 {
   "resourceType": "Questionnaire",
-  "url": "https://github.com/aehrc/open-pedigree/Questionnaire/default",
+  "url": "https://aehrc.github.io/open-pedigree/fhir/Questionnaire/default",
   "version": "1.0",
   "title": "Open Pedigree default node-edit form",
   "status": "active",
@@ -38,7 +38,7 @@
           "definition": "http://hl7.org/fhir/StructureDefinition/Patient#Patient.gender",
           "extension": [
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-field-mapping",
               "valueCode": "mapsToField"
             },
             {
@@ -63,7 +63,7 @@
           "definition": "http://hl7.org/fhir/StructureDefinition/Patient#Patient.name.given",
           "extension": [
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-field-mapping",
               "valueCode": "mapsToField"
             }
           ]
@@ -75,7 +75,7 @@
           "definition": "http://hl7.org/fhir/StructureDefinition/Patient#Patient.name.family",
           "extension": [
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-field-mapping",
               "valueCode": "mapsToField"
             }
           ]
@@ -86,11 +86,11 @@
           "text": "Link to patient",
           "extension": [
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-field-mapping",
               "valueCode": "invokesAction"
             },
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-action",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-action",
               "valueCode": "linkPatient"
             }
           ],
@@ -98,7 +98,7 @@
             {
               "extension": [
                 {
-                  "url": "https://github.com/aehrc/open-pedigree/questionnaire-enable-predicate",
+                  "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-enable-predicate",
                   "valueCode": "canLinkPatient"
                 }
               ]
@@ -112,7 +112,7 @@
           "definition": "http://hl7.org/fhir/StructureDefinition/Patient#Patient.identifier",
           "extension": [
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-field-mapping",
               "valueCode": "mapsToField"
             }
           ]
@@ -124,7 +124,7 @@
           "definition": "http://hl7.org/fhir/StructureDefinition/Patient#Patient.birthDate",
           "extension": [
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-field-mapping",
               "valueCode": "mapsToField"
             }
           ],
@@ -132,7 +132,7 @@
             {
               "extension": [
                 {
-                  "url": "https://github.com/aehrc/open-pedigree/questionnaire-enable-predicate",
+                  "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-enable-predicate",
                   "valueCode": "isFetus"
                 }
               ],
@@ -147,7 +147,7 @@
           "definition": "http://hl7.org/fhir/StructureDefinition/Patient#Patient.deceasedDateTime",
           "extension": [
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-field-mapping",
               "valueCode": "mapsToField"
             }
           ],
@@ -155,7 +155,7 @@
             {
               "extension": [
                 {
-                  "url": "https://github.com/aehrc/open-pedigree/questionnaire-enable-predicate",
+                  "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-enable-predicate",
                   "valueCode": "isFetus"
                 }
               ],
@@ -206,10 +206,10 @@
             }
           ],
           "columns": 3,
-          "definition": "https://github.com/aehrc/open-pedigree/StructureDefinition/PedigreeIndividual#PedigreeIndividual.lifeStatus",
+          "definition": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/PedigreeIndividual#PedigreeIndividual.lifeStatus",
           "extension": [
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-field-mapping",
               "valueCode": "mapsToField"
             },
             {
@@ -240,10 +240,10 @@
             ]
           },
           "nullValue": true,
-          "definition": "https://github.com/aehrc/open-pedigree/StructureDefinition/PedigreeIndividual#PedigreeIndividual.gestationAge",
+          "definition": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/PedigreeIndividual#PedigreeIndividual.gestationAge",
           "extension": [
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-field-mapping",
               "valueCode": "mapsToField"
             }
           ],
@@ -251,7 +251,7 @@
             {
               "extension": [
                 {
-                  "url": "https://github.com/aehrc/open-pedigree/questionnaire-enable-predicate",
+                  "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-enable-predicate",
                   "valueCode": "isFetus"
                 }
               ]
@@ -282,10 +282,10 @@
               }
             }
           ],
-          "definition": "https://github.com/aehrc/open-pedigree/StructureDefinition/PedigreeIndividual#PedigreeIndividual.childlessStatus",
+          "definition": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/PedigreeIndividual#PedigreeIndividual.childlessStatus",
           "extension": [
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-field-mapping",
               "valueCode": "mapsToField"
             }
           ],
@@ -293,7 +293,7 @@
             {
               "extension": [
                 {
-                  "url": "https://github.com/aehrc/open-pedigree/questionnaire-enable-predicate",
+                  "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-enable-predicate",
                   "valueCode": "isFetus"
                 }
               ],
@@ -305,10 +305,10 @@
           "linkId": "adopted",
           "type": "boolean",
           "text": "Adopted",
-          "definition": "https://github.com/aehrc/open-pedigree/StructureDefinition/PedigreeIndividual#PedigreeIndividual.isAdopted",
+          "definition": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/PedigreeIndividual#PedigreeIndividual.isAdopted",
           "extension": [
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-field-mapping",
               "valueCode": "mapsToField"
             }
           ],
@@ -316,7 +316,7 @@
             {
               "extension": [
                 {
-                  "url": "https://github.com/aehrc/open-pedigree/questionnaire-enable-predicate",
+                  "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-enable-predicate",
                   "valueCode": "isFetus"
                 }
               ],
@@ -325,7 +325,7 @@
             {
               "extension": [
                 {
-                  "url": "https://github.com/aehrc/open-pedigree/questionnaire-enable-predicate",
+                  "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-enable-predicate",
                   "valueCode": "hasToBeAdopted"
                 }
               ],
@@ -338,10 +338,10 @@
           "linkId": "monozygotic",
           "type": "boolean",
           "text": "Monozygotic twin",
-          "definition": "https://github.com/aehrc/open-pedigree/StructureDefinition/PedigreeIndividual#PedigreeIndividual.monozygotic",
+          "definition": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/PedigreeIndividual#PedigreeIndividual.monozygotic",
           "extension": [
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-field-mapping",
               "valueCode": "mapsToField"
             }
           ],
@@ -349,7 +349,7 @@
             {
               "extension": [
                 {
-                  "url": "https://github.com/aehrc/open-pedigree/questionnaire-enable-predicate",
+                  "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-enable-predicate",
                   "valueCode": "isTwin"
                 }
               ]
@@ -359,7 +359,7 @@
             {
               "extension": [
                 {
-                  "url": "https://github.com/aehrc/open-pedigree/questionnaire-enable-predicate",
+                  "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-enable-predicate",
                   "valueCode": "isTwinWithConsistentGender"
                 }
               ]
@@ -370,10 +370,10 @@
           "linkId": "nocontact",
           "type": "boolean",
           "text": "Not in contact with proband",
-          "definition": "https://github.com/aehrc/open-pedigree/StructureDefinition/PedigreeIndividual#PedigreeIndividual.lostContact",
+          "definition": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/PedigreeIndividual#PedigreeIndividual.lostContact",
           "extension": [
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-field-mapping",
               "valueCode": "mapsToField"
             }
           ],
@@ -381,7 +381,7 @@
             {
               "extension": [
                 {
-                  "url": "https://github.com/aehrc/open-pedigree/questionnaire-enable-predicate",
+                  "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-enable-predicate",
                   "valueCode": "isProband"
                 }
               ],
@@ -390,7 +390,7 @@
             {
               "extension": [
                 {
-                  "url": "https://github.com/aehrc/open-pedigree/questionnaire-enable-predicate",
+                  "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-enable-predicate",
                   "valueCode": "isRelatedToProband"
                 }
               ]
@@ -406,7 +406,7 @@
             {
               "extension": [
                 {
-                  "url": "https://github.com/aehrc/open-pedigree/questionnaire-enable-predicate",
+                  "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-enable-predicate",
                   "valueCode": "isProband"
                 }
               ]
@@ -414,7 +414,7 @@
             {
               "extension": [
                 {
-                  "url": "https://github.com/aehrc/open-pedigree/questionnaire-enable-predicate",
+                  "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-enable-predicate",
                   "valueCode": "isProband"
                 }
               ],
@@ -460,10 +460,10 @@
               }
             }
           ],
-          "definition": "https://github.com/aehrc/open-pedigree/StructureDefinition/PedigreeIndividual#PedigreeIndividual.carrierStatus",
+          "definition": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/PedigreeIndividual#PedigreeIndividual.carrierStatus",
           "extension": [
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-field-mapping",
               "valueCode": "mapsToField"
             },
             {
@@ -485,10 +485,10 @@
           "linkId": "evaluated",
           "type": "boolean",
           "text": "Documented evaluation",
-          "definition": "https://github.com/aehrc/open-pedigree/StructureDefinition/PedigreeIndividual#PedigreeIndividual.evaluated",
+          "definition": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/PedigreeIndividual#PedigreeIndividual.evaluated",
           "extension": [
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-field-mapping",
               "valueCode": "mapsToField"
             }
           ]
@@ -501,7 +501,7 @@
           "answerValueSet": "http://purl.bioontology.org/ontology/OMIM",
           "extension": [
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-field-mapping",
               "valueCode": "mapsToLegendCondition"
             }
           ]
@@ -512,11 +512,11 @@
           "text": "Import from record",
           "extension": [
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-field-mapping",
               "valueCode": "invokesAction"
             },
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-action",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-action",
               "valueCode": "importClinicalData"
             }
           ],
@@ -524,7 +524,7 @@
             {
               "extension": [
                 {
-                  "url": "https://github.com/aehrc/open-pedigree/questionnaire-enable-predicate",
+                  "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-enable-predicate",
                   "valueCode": "canImportClinicalData"
                 }
               ]
@@ -539,7 +539,7 @@
           "answerValueSet": "http://www.genenames.org",
           "extension": [
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-field-mapping",
               "valueCode": "mapsToLegendObservation"
             }
           ]
@@ -552,7 +552,7 @@
           "answerValueSet": "http://purl.obolibrary.org/obo/hp.owl",
           "extension": [
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-field-mapping",
               "valueCode": "mapsToLegendObservation"
             }
           ]
@@ -561,10 +561,10 @@
           "linkId": "comments",
           "type": "text",
           "text": "Comments",
-          "definition": "https://github.com/aehrc/open-pedigree/StructureDefinition/PedigreeIndividual#PedigreeIndividual.comments",
+          "definition": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/PedigreeIndividual#PedigreeIndividual.comments",
           "extension": [
             {
-              "url": "https://github.com/aehrc/open-pedigree/questionnaire-field-mapping",
+              "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-field-mapping",
               "valueCode": "mapsToField"
             }
           ]

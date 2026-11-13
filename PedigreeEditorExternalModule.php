@@ -11,6 +11,7 @@ use ExternalModules\AbstractExternalModule;
 // Deployed modules aren't `composer install`-ed, so classes/ can't rely on
 // the Composer autoloader (dev/test-only here, see composer.json) - require
 // each class explicitly.
+require_once __DIR__ . '/classes/FhirUrls.php';
 require_once __DIR__ . '/classes/PedigreeFieldTag.php';
 require_once __DIR__ . '/classes/BranchingLogicTranslator.php';
 require_once __DIR__ . '/classes/OntologyValueSetResolver.php';
@@ -160,6 +161,11 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
                     $errors .= "The advanced Questionnaire setting is not valid JSON.\n";
                 } elseif (($parsed['resourceType'] ?? null) !== 'Questionnaire') {
                     $errors .= "The advanced Questionnaire setting must be a FHIR Questionnaire (resourceType: \"Questionnaire\").\n";
+                } else {
+                    // open-pedigree 2.0.0 moved its extensions; old URLs would silently lose mappings.
+                    foreach (FhirUrls::retiredUrlsInQuestionnaire($parsed) as $retired => $replacement) {
+                        $errors .= "The advanced Questionnaire uses $retired, which is no longer read: use $replacement instead.\n";
+                    }
                 }
             }
         }
@@ -752,6 +758,13 @@ EOD;
         if (!is_array($parsed) || ($parsed['resourceType'] ?? null) !== 'Questionnaire') {
             error_log('[redcap_pedigree_editor] project_pedigree_advanced_questionnaire (project ' . $project_id . ') is not valid Questionnaire JSON');
             return null;
+        }
+        // (saved before open-pedigree 2.0.0: still used, but its old URLs are ignored - say so, once)
+        $retired = FhirUrls::retiredUrlsInQuestionnaire($parsed);
+        if ($retired) {
+            error_log('[redcap_pedigree_editor] project_pedigree_advanced_questionnaire (project ' . $project_id
+                . ') uses ' . count($retired) . ' URL(s) open-pedigree no longer reads, e.g. ' . array_key_first($retired)
+                . ' (now ' . reset($retired) . '): save the module settings to see each one and its replacement');
         }
         return $parsed;
     }
