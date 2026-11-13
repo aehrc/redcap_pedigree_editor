@@ -1049,6 +1049,16 @@ some changes in the FHIR valuesets used. This may mean that opening a previously
 problems reloading the disorder, genes and phenotypic features fields. In version 0.5 these defaults were changed again
 to use `https://tx.ontoserver.csiro.au/fhir` along with the corresponding code systems and value sets found on this server.
 
+**open-pedigree 2.0.0 (this version): resolvable FHIR definition URLs.** open-pedigree's own FHIR extensions and
+definitions moved from `https://github.com/aehrc/open-pedigree/...` (which never resolved) to
+[`https://aehrc.github.io/open-pedigree/fhir/`](https://aehrc.github.io/open-pedigree/fhir/), where each one is
+described; the module's Questionnaires use the new URLs too. The old URLs are no longer read. This only affects
+pedigrees saved by module 1.0.0 or 1.1.0 (versions up to 0.4 used none of these URLs): reopened, they lose their
+fetus dates of death, the adoption of a person with no parents in the pedigree, and their links to repeating-instrument
+rows. An advanced-mode Questionnaire that still uses an old URL is refused when the module settings are saved, naming
+the URL to use. `scripts/rewrite-fhir-urls.js <file>...` rewrites a project's XML or a data export to the new URLs
+(compressed values included) before it is imported again.
+
 ## Terminology Changes
 
 | Field                | <v0.3 Value                                             | v0.3 Value                                              |
