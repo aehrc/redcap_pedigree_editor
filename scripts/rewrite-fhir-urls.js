@@ -14,15 +14,18 @@ const zlib = require('zlib');
 const OLD = 'https://github.com/aehrc/open-pedigree/';
 const NEW = 'https://aehrc.github.io/open-pedigree/fhir/';
 
+// NEW as JSON writes it with escaped slashes.
+const NEW_ESCAPED = 'https:\\/\\/aehrc.github.io\\/open-pedigree\\/fhir\\/';
+
 function rewrite(text) {
   let out = text
     .replace(/https:\/\/github\.com\/aehrc\/open-pedigree\/(questionnaire-[a-z-]+)/g, NEW + 'StructureDefinition/$1')
     .replace(/https:\/\/github\.com\/aehrc\/open-pedigree\/((?:StructureDefinition|Questionnaire)\/)/g, NEW + '$1')
     // JSON-escaped slashes
     .replace(/https:\\\/\\\/github\.com\\\/aehrc\\\/open-pedigree\\\/(questionnaire-[a-z-]+)/g,
-      NEW.replace(/\//g, '\\/') + 'StructureDefinition\\/$1')
+      NEW_ESCAPED + 'StructureDefinition\\/$1')
     .replace(/https:\\\/\\\/github\.com\\\/aehrc\\\/open-pedigree\\\/((?:StructureDefinition|Questionnaire)\\\/)/g,
-      NEW.replace(/\//g, '\\/') + '$1');
+      NEW_ESCAPED + '$1');
   // The adopted extension's value: true -> "in", in an object that names the adopted url, whichever
   // order its keys are in, in any quoting style (plain, JSON-escaped, XML-escaped).
   out = out.replace(/\{[^{}]*\}/g, (object) => {
