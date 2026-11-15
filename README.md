@@ -257,7 +257,7 @@ The *Export* dialog uses the same numbers:
 
 ### Gene results
 
-Each gene in a person's **Genes** list can have a result: what testing found. In the node edit form, each selected gene has a result drop-down under the Genes picker, and each tested gene is drawn as a line under the symbol:
+Each gene in a person's **Genes** list can have a result: what testing found. In the node edit form, each selected gene has a result drop-down under the Genes picker, and each tested gene is drawn as a line under the symbol. The Genes picker is in the built-in form (*Default + tags*), or comes from a field tagged `legend="candidate_genes"` (*Tags only*, see [Node-edit form source](#node-edit-form-source)):
 
 | Result | Drawn as |
 | --- | --- |
@@ -268,7 +268,9 @@ Each gene in a person's **Genes** list can have a result: what testing found. In
 | Positive, zygosity unknown | `BRCA1 +` |
 | Negative | `BRCA1 −/−` |
 
-A gene left *Not tested* draws nothing. Removing a gene removes its result. The de-identified exports keep the lines, as they keep the genes. In the GA4GH storage format a result is saved on the gene's own Observation with standard LOINC codes (69548-6 *Genetic variant assessment*, 53034-5 *Allelic state*), so other FHIR readers see the gene as before. Results can't be filled from a linked repeating-instrument row yet.
+A gene left *Not tested* draws nothing. Removing a gene removes its result. The de-identified exports keep the lines, as they keep the genes. In the GA4GH storage format a result is saved on the gene's own Observation with standard LOINC codes (69548-6 *Genetic variant assessment*, 53034-5 *Allelic state*), so other FHIR readers see the gene as before. Only the GA4GH and *internal* formats keep results; *PED*, *PEDX*, *DADA2* and *DADA2X* keep only the pedigree's structure, without genes or results.
+
+Results can't be filled from a linked repeating-instrument row yet. When a person's genes come from their linked row, the genes are read-only in the editor, and so are their results. To record a test outcome in REDCap instead, use a tagged Observation field, as the example project's *Genetic test result* (LOINC 51968-6) does; that field and a gene's result are kept separately, and neither updates the other.
 
 ## Linking Pedigree Nodes to a Repeating Instrument
 
