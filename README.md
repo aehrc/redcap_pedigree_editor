@@ -272,6 +272,12 @@ A gene left *Not tested* draws nothing. Removing a gene removes its result. The 
 
 Results can't be filled from a linked repeating-instrument row yet. When a person's genes come from their linked row, the genes are read-only in the editor, and so are their results. To record a test outcome in REDCap instead, use a tagged Observation field, as the example project's *Genetic test result* (LOINC 51968-6) does; that field and a gene's result are kept separately, and neither updates the other.
 
+### Importing a pedigree file
+
+The editor's **Import** button reads PED/LINKAGE, GEDCOM, BOADICEA, GA4GH FHIR and DADA2 files. A file with problems imports nothing, but every problem the editor can find is listed in one message, so the file can be fixed in one go. Examples are rows with too few columns, duplicate IDs, a parent ID that matches no one, a parent whose sex contradicts their role, and parts of the family not connected to the rest. A file that can't be read at all, such as one that isn't valid JSON or has more than one family, is reported on its own.
+
+An import that works but leaves something out says so afterwards, in one "Imported, with N notes" message. That covers a child's parents beyond the two the editor shows, a gene result that couldn't be read, or details saved by an older version. These notes appear only when you import a file yourself. Opening a record's saved pedigree never shows them.
+
 ## Linking Pedigree Nodes to a Repeating Instrument
 
 Beyond the single *@PEDIGREE* field that stores the diagram itself, the module can link an individual pedigree node
