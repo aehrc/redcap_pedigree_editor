@@ -254,6 +254,17 @@ The *Export* dialog uses the same numbers:
   REDCap records. The second also leaves out comments and other free text.
 - **PED.** *Generation number (e.g. II-3)* is one of the ID choices, for each person and for their parents.
 
+### Black-and-white patterns and PNG export
+
+The editor's **Patterns** toolbar button, next to *Numbers*, fills each disorder, gene and custom legend entry with a
+black-and-white pattern instead of a colour, for printing and for colour-blind readers. The legends show the same
+patterns. The first entry is solid black, as in a classic pedigree, then hatching, dots and lines. Each entry's
+pattern comes from its place in the legends (disorders, then genes, then custom legends), so adding or removing an
+entry can change the patterns of the entries after it. Like *Numbers*, it's a view setting only: off whenever the
+editor opens and not saved with the pedigree. The diagram image the form shows is always in colour.
+
+The *Export* dialog's SVG, PDF and **PNG** exports draw what's shown, patterns included. PNG gives the same drawing as
+SVG, privacy options included, on a white background at 150, 300 (the default) or 600 DPI.
 
 ### Gene results
 
