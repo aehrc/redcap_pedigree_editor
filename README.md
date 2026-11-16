@@ -801,7 +801,7 @@ feed the pedigree's legends once the relative is linked.
 **What it shows**
 
 - A classic (non-longitudinal) project: *Family history* holds the diagram field (`@PEDIGREE=HIDE_TEXT,COMPRESS_LARGE`,
-  so the Ashby family's pedigree, which is over the field's size limit, is stored compressed whatever the project's
+  so both families' pedigrees, each over the field's size limit, are stored compressed whatever the project's
   *Compress Data* setting) and *Relatives* repeats, one row per relative, so linking works without events too.
 - *Relatives* maps first and last name, sex, date of birth and carrier status with `mapsTo`, and has four ontology
   fields tagged with [`@PEDIGREE_FIELD(legend=...)`](#the-pedigree_field-action-tag):
