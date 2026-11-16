@@ -100,6 +100,89 @@ class QuestionnaireDerivation
     ];
 
     /**
+     * The linkId a linked row's gene results travel under, `{<gene code>: <result>}` - reserved in
+     * open-pedigree like the legends (pedigree-gene-results-from-linked-rows).
+     */
+    const GENE_RESULTS_LINK_ID = 'gene_results';
+
+    /**
+     * A `geneResult=` field's choice codes read as results: open-pedigree's own, and the LOINC
+     * answer codes for the same results (69548-6 Genetic variant assessment / 53034-5 Allelic state).
+     * Labels aren't read; any other code is "not tested".
+     */
+    const GENE_RESULT_CODES = [
+        'heterozygous' => 'heterozygous', 'LA6706-1' => 'heterozygous',
+        'homozygous' => 'homozygous', 'LA6705-3' => 'homozygous',
+        'hemizygous' => 'hemizygous', 'LA6707-9' => 'hemizygous',
+        'heteroplasmic' => 'heteroplasmic', 'LA6703-8' => 'heteroplasmic',
+        'homoplasmic' => 'homoplasmic', 'LA6704-6' => 'homoplasmic',
+        'positive' => 'positive', 'LA9633-4' => 'positive',
+        'negative' => 'negative', 'LA9634-2' => 'negative',
+    ];
+
+    /**
+     * The valid `@PEDIGREE_FIELD(geneResult="<gene field>")` pairings (design D2): a `radio` or
+     * `dropdown` field naming a field of the same instrument that validly feeds the
+     * `candidate_genes` legend (so never in "default + tags" mode), the first result field per
+     * gene field. Used by both {@see derive()} and {@see resolveTaggedFields()}, so the form and the
+     * import agree. A pairing that isn't valid is left out with a warning, and its field is derived
+     * as a plain item.
+     *
+     * @return array{pairs: array<string, string>, warnings: string[]} result field => gene field
+     */
+    public static function geneResultPairings(array $dataDictionary, array $fieldAnswerValueSets = [], bool $builtInLegends = false): array
+    {
+        $pairs = [];
+        $warnings = [];
+        $paired = [];
+        foreach ($dataDictionary as $fieldName => $field) {
+            $tag = PedigreeFieldTag::parse($field['field_annotation'] ?? null);
+            if (!$tag->present || $tag->geneResult === null) {
+                continue;
+            }
+            $geneField = $tag->geneResult;
+            $prefix = 'Field "' . $fieldName . '" has @PEDIGREE_FIELD(geneResult="' . $geneField . '")';
+            $fallback = ' — pairing omitted, field derived as a plain item.';
+            $reason = null;
+            if (!in_array($field['field_type'] ?? '', ['radio', 'dropdown'], true)) {
+                $reason = ' but isn\'t a radio or drop-down field';
+            } elseif ($builtInLegends) {
+                $reason = ', but the built-in form keeps its own Genes, results included, in "default + tags" mode';
+            } elseif (!isset($dataDictionary[$geneField])) {
+                $reason = ', but this instrument has no field "' . $geneField . '"';
+            } elseif (!self::feedsGenesLegend($dataDictionary[$geneField], $fieldAnswerValueSets[$geneField] ?? null)) {
+                $reason = ', but "' . $geneField . '" isn\'t a field tagged legend="candidate_genes" (a single-value text field bound to a FHIR ontology value set)';
+            } elseif (isset($paired[$geneField])) {
+                $reason = ', but "' . $paired[$geneField] . '" already holds that gene\'s result';
+            }
+            if ($reason !== null) {
+                $warnings[] = $prefix . $reason . $fallback;
+                continue;
+            }
+            $pairs[$fieldName] = $geneField;
+            $paired[$geneField] = $fieldName;
+            foreach (self::parseChoices($field['select_choices_or_calculations'] ?? '') as $option) {
+                $code = (string) $option['valueCoding']['code'];
+                if (!isset(self::GENE_RESULT_CODES[$code])) {
+                    $warnings[] = 'Field "' . $fieldName . '" (geneResult) has the choice code "' . $code . '", which isn\'t a result:'
+                        . ' use heterozygous, homozygous, hemizygous, heteroplasmic, homoplasmic, positive or negative, or their LOINC'
+                        . ' answer codes — a row holding it gives its gene no result.';
+                }
+            }
+        }
+        return ['pairs' => $pairs, 'warnings' => $warnings];
+    }
+
+    /** Whether a field validly feeds the `candidate_genes` legend (its tag and its type). */
+    private static function feedsGenesLegend(array $field, ?string $answerValueSet): bool
+    {
+        $tag = PedigreeFieldTag::parse($field['field_annotation'] ?? null);
+        $typeInfo = self::mapFieldType($field);
+        return $tag->present && $tag->legend === 'candidate_genes' && $typeInfo !== null
+            && self::legendMappingIsValid($typeInfo, $answerValueSet, 'candidate_genes');
+    }
+
+    /**
      * Resolves each `@PEDIGREE_FIELD`-tagged, supported field to its
      * effective Questionnaire `linkId`/`type`, without building the full
      * Questionnaire — used both by {@see derive()} and by the
@@ -107,7 +190,9 @@ class QuestionnaireDerivation
      * linkId-resolution rules, including the legend-target `linkId`
      * override, to correctly key the answer bag it returns).
      *
-     * @return array Ordered list of `['redcapField', 'linkId', 'type', 'repeats', 'choices', 'mapsTo', 'legend']`,
+     * @return array Ordered list of `['redcapField', 'linkId', 'type', 'repeats', 'choices', 'mapsTo', 'legend']`
+     *   (plus `geneResultFor`, the gene field, on a valid `geneResult=` field, whose linkId is
+     *   {@see GENE_RESULTS_LINK_ID}),
      *   where `choices` is the field's parsed `code => display` choice map
      *   (empty for non-choice types), and `mapsTo` is the tag's validly-typed
      *   `mapsTo=` target (e.g. `'gender'`), or `null` if untagged/invalid -
@@ -120,6 +205,7 @@ class QuestionnaireDerivation
     public static function resolveTaggedFields(array $dataDictionary, array $fieldAnswerValueSets = [], bool $builtInLegends = false): array
     {
         $resolved = [];
+        $geneResultPairs = self::geneResultPairings($dataDictionary, $fieldAnswerValueSets, $builtInLegends)['pairs'];
         foreach ($dataDictionary as $fieldName => $field) {
             $tag = PedigreeFieldTag::parse($field['field_annotation'] ?? null);
             if (!$tag->present) {
@@ -165,7 +251,7 @@ class QuestionnaireDerivation
                 }
             }
 
-            $resolved[] = [
+            $entry = [
                 'redcapField' => $fieldName,
                 'linkId' => $linkId,
                 'type' => $typeInfo['type'],
@@ -174,6 +260,14 @@ class QuestionnaireDerivation
                 'mapsTo' => $mapsTo,
                 'legend' => $legend,
             ];
+            if (isset($geneResultPairs[$fieldName])) {
+                // (its value is the named gene's result, not an item of its own)
+                $entry['linkId'] = self::GENE_RESULTS_LINK_ID;
+                $entry['mapsTo'] = null;
+                $entry['legend'] = false;
+                $entry['geneResultFor'] = $geneResultPairs[$fieldName];
+            }
+            $resolved[] = $entry;
         }
         return $resolved;
     }
@@ -327,7 +421,8 @@ class QuestionnaireDerivation
      */
     public static function derive(array $dataDictionary, string $instrumentName, array $fieldAnswerValueSets = [], bool $builtInLegends = false): array
     {
-        $warnings = [];
+        $geneResults = self::geneResultPairings($dataDictionary, $fieldAnswerValueSets, $builtInLegends);
+        $warnings = $geneResults['warnings'];
         // legend target => the field whose item is that legend's item
         $legendItemField = [];
         // fields whose item is a legend fed by more than one field
@@ -346,6 +441,14 @@ class QuestionnaireDerivation
 
             $tag = PedigreeFieldTag::parse($field['field_annotation'] ?? null);
             if (!$tag->present) {
+                continue;
+            }
+            if (isset($geneResults['pairs'][$fieldName])) {
+                // A gene's result: shown beside the gene (the Genes item's result drop-down), not as
+                // an item of its own (design D2).
+                if ($tag->mapsTo !== null || $tag->legend !== null) {
+                    $warnings[] = 'Field "' . $fieldName . '" holds a gene\'s result (geneResult=), so its mapsTo/legend is ignored.';
+                }
                 continue;
             }
 

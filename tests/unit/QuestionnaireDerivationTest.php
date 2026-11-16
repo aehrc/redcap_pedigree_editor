@@ -3,6 +3,7 @@
 namespace AEHRC\PedigreeEditorExternalModule\Tests;
 
 use AEHRC\PedigreeEditorExternalModule\QuestionnaireDerivation;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class QuestionnaireDerivationTest extends TestCase
@@ -753,5 +754,113 @@ class QuestionnaireDerivationTest extends TestCase
 
         $resolved = QuestionnaireDerivation::resolveFieldsFromQuestionnaire($questionnaire, 'family_members', $dd);
         $this->assertSame('disorders', $resolved[0]['linkId']);
+    }
+
+    // --- geneResult= (pedigree-gene-results-from-linked-rows) ---
+
+    private const GENES_VS = 'http://www.genenames.org/vs';
+
+    /** An instrument with a gene field and `$extra` fields. */
+    private function genesDictionary(array $extra): array
+    {
+        return array_merge([
+            'gene' => $this->ontologyField('@PEDIGREE_FIELD(legend="candidate_genes")', ['field_label' => 'Gene with a variant']),
+        ], $extra);
+    }
+
+    private function zygosity(string $annotation = '@PEDIGREE_FIELD(geneResult="gene")', array $overrides = []): array
+    {
+        return $this->field(array_merge([
+            'field_type' => 'radio',
+            'field_label' => 'Zygosity',
+            'field_annotation' => $annotation,
+            'select_choices_or_calculations' => 'heterozygous, Heterozygous | homozygous, Homozygous | LA9634-2, Not found',
+        ], $overrides));
+    }
+
+    public function testAGeneResultFieldIsPairedAndDerivesNoItem(): void
+    {
+        $dd = $this->genesDictionary(['gene_zygosity' => $this->zygosity()]);
+        $result = QuestionnaireDerivation::derive($dd, 'family_members', ['gene' => self::GENES_VS]);
+        $this->assertSame([], $result['warnings']);
+        $this->assertSame(['candidate_genes'], array_keys($this->flatten($result['questionnaire'])));
+
+        $resolved = QuestionnaireDerivation::resolveTaggedFields($dd, ['gene' => self::GENES_VS]);
+        $byField = array_column($resolved, null, 'redcapField');
+        $this->assertSame('gene_results', $byField['gene_zygosity']['linkId']);
+        $this->assertSame('gene', $byField['gene_zygosity']['geneResultFor']);
+        $this->assertArrayNotHasKey('geneResultFor', $byField['gene']);
+    }
+
+    /** @return array<string, array{0: array, 1: array, 2: bool, 3: string}> */
+    public static function invalidGeneResultPairings(): array
+    {
+        return [
+            'no such field' => [['gene_zygosity' => ['geneResult' => 'gnee']], ['gene' => self::GENES_VS], false, 'no field "gnee"'],
+            'not a genes legend field' => [['notes' => true, 'gene_zygosity' => ['geneResult' => 'notes']], ['gene' => self::GENES_VS], false, 'isn\'t a field tagged legend="candidate_genes"'],
+            'gene field without a value set' => [['gene_zygosity' => []], [], false, 'isn\'t a field tagged legend="candidate_genes"'],
+            'default + tags' => [['gene_zygosity' => []], ['gene' => self::GENES_VS], true, '"default + tags"'],
+            'a checkbox' => [['gene_zygosity' => ['field_type' => 'checkbox']], ['gene' => self::GENES_VS], false, 'isn\'t a radio or drop-down'],
+        ];
+    }
+
+    #[DataProvider('invalidGeneResultPairings')]
+    public function testAGeneResultPairingThatCantWorkFallsBackToAPlainItem(array $fields, array $valueSets, bool $builtIn, string $why): void
+    {
+        $dd = $this->genesDictionary([]);
+        foreach ($fields as $name => $spec) {
+            if ($name === 'notes') {
+                $dd['notes'] = $this->field(['field_annotation' => '@PEDIGREE_FIELD']);
+                continue;
+            }
+            $annotation = '@PEDIGREE_FIELD(geneResult="' . ($spec['geneResult'] ?? 'gene') . '")';
+            $dd[$name] = $this->zygosity($annotation, isset($spec['field_type']) ? ['field_type' => $spec['field_type']] : []);
+        }
+        $result = QuestionnaireDerivation::derive($dd, 'family_members', $valueSets, $builtIn);
+        $this->assertArrayHasKey('gene_zygosity', $this->flatten($result['questionnaire']));
+        $matching = array_filter($result['warnings'], function ($w) use ($why) {
+            return strpos($w, 'gene_zygosity') !== false && strpos($w, $why) !== false && strpos($w, 'pairing omitted') !== false;
+        });
+        $this->assertCount(1, $matching, implode("\n", $result['warnings']));
+
+        $byField = array_column(QuestionnaireDerivation::resolveTaggedFields($dd, $valueSets, $builtIn), null, 'redcapField');
+        $this->assertSame('gene_zygosity', $byField['gene_zygosity']['linkId']);
+        $this->assertArrayNotHasKey('geneResultFor', $byField['gene_zygosity']);
+    }
+
+    public function testASecondResultFieldForOneGeneFieldIsAPlainItem(): void
+    {
+        $dd = $this->genesDictionary(['first' => $this->zygosity(), 'second' => $this->zygosity()]);
+        $result = QuestionnaireDerivation::derive($dd, 'family_members', ['gene' => self::GENES_VS]);
+        $flat = $this->flatten($result['questionnaire']);
+        $this->assertArrayNotHasKey('first', $flat);
+        $this->assertArrayHasKey('second', $flat);
+        $this->assertCount(1, $result['warnings']);
+        $this->assertStringContainsString('"first" already holds that gene\'s result', $result['warnings'][0]);
+    }
+
+    public function testAResultChoiceThatIsntAResultIsWarnedAbout(): void
+    {
+        $dd = $this->genesDictionary(['gene_zygosity' => $this->zygosity('@PEDIGREE_FIELD(geneResult="gene")', [
+            'select_choices_or_calculations' => 'LA6706-1, Heterozygous | vus, Uncertain | negative, Negative',
+        ])]);
+        $result = QuestionnaireDerivation::derive($dd, 'family_members', ['gene' => self::GENES_VS]);
+        $this->assertCount(1, $result['warnings']);
+        $this->assertStringContainsString('"gene_zygosity" (geneResult) has the choice code "vus"', $result['warnings'][0]);
+        // still paired
+        $this->assertArrayNotHasKey('gene_zygosity', $this->flatten($result['questionnaire']));
+    }
+
+    public function testEveryAcceptedResultCode(): void
+    {
+        $this->assertSame([
+            'heterozygous' => 'heterozygous', 'LA6706-1' => 'heterozygous',
+            'homozygous' => 'homozygous', 'LA6705-3' => 'homozygous',
+            'hemizygous' => 'hemizygous', 'LA6707-9' => 'hemizygous',
+            'heteroplasmic' => 'heteroplasmic', 'LA6703-8' => 'heteroplasmic',
+            'homoplasmic' => 'homoplasmic', 'LA6704-6' => 'homoplasmic',
+            'positive' => 'positive', 'LA9633-4' => 'positive',
+            'negative' => 'negative', 'LA9634-2' => 'negative',
+        ], QuestionnaireDerivation::GENE_RESULT_CODES);
     }
 }
