@@ -862,8 +862,20 @@ class QuestionnaireDerivationTest extends TestCase
     public function testAResultFieldShownOnceAGeneIsFilledInIsNotWarnedAbout(): void
     {
         // the README's own advice: [gene] <> ''
-        $dd = $this->genesDictionary(['gene_zygosity' => $this->zygosity('@PEDIGREE_FIELD(geneResult="gene")', ['branching_logic' => "[gene] <> ''"])]);
-        $this->assertSame([], QuestionnaireDerivation::derive($dd, 'family_members', ['gene' => self::GENES_VS])['warnings']);
+        foreach (["[gene] <> ''", '[gene]!=""'] as $logic) {
+            $dd = $this->genesDictionary(['gene_zygosity' => $this->zygosity('@PEDIGREE_FIELD(geneResult="gene")', ['branching_logic' => $logic])]);
+            $this->assertSame([], QuestionnaireDerivation::derive($dd, 'family_members', ['gene' => self::GENES_VS])['warnings'], $logic);
+        }
+    }
+
+    public function testAResultFieldsOtherBranchingIsWarnedAboutAsIgnored(): void
+    {
+        foreach (["[consent] = '1'", "[gene] <> '' and [tested] = '1'", "[other_gene] <> ''"] as $logic) {
+            $dd = $this->genesDictionary(['gene_zygosity' => $this->zygosity('@PEDIGREE_FIELD(geneResult="gene")', ['branching_logic' => $logic])]);
+            $warnings = QuestionnaireDerivation::derive($dd, 'family_members', ['gene' => self::GENES_VS])['warnings'];
+            $this->assertCount(1, $warnings, $logic);
+            $this->assertStringContainsString('branching logic are ignored', $warnings[0], $logic);
+        }
     }
 
     public function testBranchingOnAResultFieldIsTreatedAsOnAMappedField(): void

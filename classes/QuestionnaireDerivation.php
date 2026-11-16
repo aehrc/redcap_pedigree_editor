@@ -447,11 +447,14 @@ class QuestionnaireDerivation
             if (isset($geneResults['pairs'][$fieldName])) {
                 // A gene's result: shown beside the gene (the Genes item's result drop-down), not as
                 // an item of its own (design D2). Another field's branching logic can't compare it,
-                // like a mapped field's (so it's recorded as one). Its own branching logic is for
-                // REDCap's form (e.g. [gene] <> ''), so it isn't warned about.
-                if ($tag->mapsTo !== null || $tag->legend !== null || $tag->predicate !== null) {
+                // like a mapped field's (so it's recorded as one). Its own branching logic is ignored
+                // too - not worth a warning when it only waits for the gene ([gene] <> ''), as the
+                // README advises, since the result is shown with its gene anyway.
+                $branching = trim((string) ($field['branching_logic'] ?? ''));
+                $waitsForGene = (bool) preg_match('/^\[' . preg_quote($geneResults['pairs'][$fieldName], '/') . '\]\s*(<>|!=)\s*(\'\'|"")$/', $branching);
+                if ($tag->mapsTo !== null || $tag->legend !== null || $tag->predicate !== null || ($branching !== '' && !$waitsForGene)) {
                     $warnings[] = 'Field "' . $fieldName . '" holds a gene\'s result (geneResult=), shown beside its gene, so its'
-                        . ' mapsTo/legend/predicate is ignored.';
+                        . ' mapsTo/legend/predicate and branching logic are ignored.';
                 }
                 $itemTypesByField[$fieldName] = 'choice';
                 $mappedFieldNames[$fieldName] = true;
