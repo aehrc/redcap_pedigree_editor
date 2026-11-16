@@ -72,8 +72,10 @@ class RedcapInstrumentRowImporter
      * each result field's accepted code (open-pedigree's or LOINC's, see
      * QuestionnaireDerivation::GENE_RESULT_CODES), keyed by its gene field's code, as that gene's
      * legend entry carries it. A gene field left empty, or a result field empty or holding any other
-     * code, gives nothing. Null when the fields have no pairing (nothing to send); otherwise the
-     * row's full state, `{}` included, so a result the row no longer holds is cleared.
+     * code, gives nothing; a gene sent by two gene fields keeps the first one's result. Null - nothing
+     * sent - when the fields have no pairing, or when a paired field is absent from the row (not
+     * fetched: unknown, not empty, as for every field); otherwise the row's full state, `{}`
+     * included, so a result the row no longer holds is cleared.
      *
      * @return array<string, string>|null
      */
@@ -90,7 +92,10 @@ class RedcapInstrumentRowImporter
             }
             $results = $results ?? [];
             $geneField = $byField[$field['geneResultFor']] ?? null;
-            $code = (string) ($rowData[$field['redcapField']] ?? '');
+            if (!array_key_exists($field['redcapField'], $rowData) || ($geneField !== null && !self::isPresent($rowData, $geneField))) {
+                return null; // (the row's results are unknown)
+            }
+            $code = (string) $rowData[$field['redcapField']];
             if ($geneField === null || !isset(QuestionnaireDerivation::GENE_RESULT_CODES[$code])) {
                 continue;
             }
@@ -98,7 +103,7 @@ class RedcapInstrumentRowImporter
             if (!is_array($gene) || !isset($gene[0]['id'])) {
                 continue;
             }
-            $results[(string) $gene[0]['id']] = QuestionnaireDerivation::GENE_RESULT_CODES[$code];
+            $results[(string) $gene[0]['id']] = $results[(string) $gene[0]['id']] ?? QuestionnaireDerivation::GENE_RESULT_CODES[$code];
         }
         return $results;
     }

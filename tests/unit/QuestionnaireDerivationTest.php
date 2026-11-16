@@ -851,6 +851,27 @@ class QuestionnaireDerivationTest extends TestCase
         $this->assertArrayNotHasKey('gene_zygosity', $this->flatten($result['questionnaire']));
     }
 
+    public function testAPairedResultFieldsPredicateAndBranchingAreIgnoredWithAWarning(): void
+    {
+        $dd = $this->genesDictionary(['gene_zygosity' => $this->zygosity('@PEDIGREE_FIELD(geneResult="gene",predicate="isProband")',
+            ['branching_logic' => "[gene] <> ''"])]);
+        $result = QuestionnaireDerivation::derive($dd, 'family_members', ['gene' => self::GENES_VS]);
+        $this->assertCount(1, $result['warnings']);
+        $this->assertStringContainsString('"gene_zygosity" holds a gene\'s result', $result['warnings'][0]);
+    }
+
+    public function testBranchingOnAResultFieldIsTreatedAsOnAMappedField(): void
+    {
+        $dd = $this->genesDictionary([
+            'gene_zygosity' => $this->zygosity(),
+            'notes' => $this->field(['field_annotation' => '@PEDIGREE_FIELD', 'branching_logic' => "[gene_zygosity] = 'positive'"]),
+        ]);
+        $result = QuestionnaireDerivation::derive($dd, 'family_members', ['gene' => self::GENES_VS]);
+        $this->assertArrayNotHasKey('enableWhen', $this->flatten($result['questionnaire'])['notes']);
+        $this->assertCount(1, $result['warnings']);
+        $this->assertStringNotContainsString('not an @PEDIGREE_FIELD-tagged field', $result['warnings'][0]);
+    }
+
     public function testEveryAcceptedResultCode(): void
     {
         $this->assertSame([

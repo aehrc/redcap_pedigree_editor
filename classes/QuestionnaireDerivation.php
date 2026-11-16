@@ -108,7 +108,8 @@ class QuestionnaireDerivation
     /**
      * A `geneResult=` field's choice codes read as results: open-pedigree's own, and the LOINC
      * answer codes for the same results (69548-6 Genetic variant assessment / 53034-5 Allelic state).
-     * Labels aren't read; any other code is "not tested".
+     * Labels aren't read; any other code is "not tested". Mirrors open-pedigree's GENE_RESULT_CODES
+     * (model/geneResults.ts, as of 2.3.0): a result open-pedigree adds needs adding here too.
      */
     const GENE_RESULT_CODES = [
         'heterozygous' => 'heterozygous', 'LA6706-1' => 'heterozygous',
@@ -445,10 +446,14 @@ class QuestionnaireDerivation
             }
             if (isset($geneResults['pairs'][$fieldName])) {
                 // A gene's result: shown beside the gene (the Genes item's result drop-down), not as
-                // an item of its own (design D2).
-                if ($tag->mapsTo !== null || $tag->legend !== null) {
-                    $warnings[] = 'Field "' . $fieldName . '" holds a gene\'s result (geneResult=), so its mapsTo/legend is ignored.';
+                // an item of its own (design D2). Another field's branching logic can't compare it,
+                // like a mapped field's (so it's recorded as one).
+                if ($tag->mapsTo !== null || $tag->legend !== null || $tag->predicate !== null || !empty($field['branching_logic'])) {
+                    $warnings[] = 'Field "' . $fieldName . '" holds a gene\'s result (geneResult=), shown beside its gene, so its'
+                        . ' mapsTo/legend/predicate and branching logic are ignored.';
                 }
+                $itemTypesByField[$fieldName] = 'choice';
+                $mappedFieldNames[$fieldName] = true;
                 continue;
             }
 

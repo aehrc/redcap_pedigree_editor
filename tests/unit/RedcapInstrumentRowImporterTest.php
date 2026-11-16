@@ -346,11 +346,31 @@ class RedcapInstrumentRowImporterTest extends TestCase
     public function testNoResultIsSentForAnEmptyGeneAnEmptyResultOrACodeThatIsntOne(): void
     {
         foreach ([['gene' => '', 'gene_zygosity' => 'heterozygous'], ['gene' => 'BRCA1', 'gene_zygosity' => ''],
-            ['gene' => 'BRCA1', 'gene_zygosity' => 'vus'], ['gene' => 'BRCA1']] as $row) {
+            ['gene' => 'BRCA1', 'gene_zygosity' => 'vus']] as $row) {
             $answers = RedcapInstrumentRowImporter::buildAnswers($row, $this->geneFields());
             // the row's full state: {} clears a result it no longer holds
             $this->assertSame(['linkId' => 'gene_results', 'value' => []], end($answers), json_encode($row));
         }
+    }
+
+    public function testNoGeneResultsAnswerWhenAPairedFieldWasntFetched(): void
+    {
+        // absent is unknown, not empty: nothing is sent, so nothing is cleared
+        foreach ([['gene' => 'BRCA1'], ['gene_zygosity' => 'heterozygous']] as $row) {
+            $answers = RedcapInstrumentRowImporter::buildAnswers($row, $this->geneFields());
+            $this->assertNotContains('gene_results', array_column($answers, 'linkId'), json_encode($row));
+        }
+    }
+
+    public function testAGeneSentByTwoGeneFieldsKeepsTheFirstResult(): void
+    {
+        $fields = array_merge($this->geneFields(), [
+            $this->field(['redcapField' => 'gene2', 'linkId' => 'candidate_genes', 'legend' => true]),
+            $this->field(['redcapField' => 'gene2_zygosity', 'linkId' => 'gene_results', 'type' => 'choice', 'geneResultFor' => 'gene2']),
+        ]);
+        $answers = RedcapInstrumentRowImporter::buildAnswers(
+            ['gene' => 'BRCA1', 'gene_zygosity' => 'heterozygous', 'gene2' => 'BRCA1', 'gene2_zygosity' => 'negative'], $fields);
+        $this->assertSame(['BRCA1' => 'heterozygous'], end($answers)['value']);
     }
 
     public function testNoGeneResultsAnswerWithoutAPairing(): void
