@@ -12,5 +12,6 @@ carrier_status,relatives,,radio,Carrier status,"affected, Affected | carrier, Ca
 primary_condition,relatives,Clinical findings,text,Primary condition,FHIR:http://snomed.info/sct?fhir_vs=refset/32570581000036105,"SNOMED CT, searched on Ontoserver",,,,,,,,,,,"@PEDIGREE_FIELD(legend=""disorders"")"
 other_condition,relatives,,text,Other condition,FHIR:http://snomed.info/sct?fhir_vs=refset/32570581000036105,"SNOMED CT, searched on Ontoserver",,,,,,,,,,,"@PEDIGREE_FIELD(legend=""disorders"")"
 gene,relatives,,text,Gene with a variant,FHIR:http://www.genenames.org,"HGNC, searched on Ontoserver",,,,,,,,,,,"@PEDIGREE_FIELD(legend=""candidate_genes"")"
+gene_zygosity,relatives,,radio,Zygosity,"heterozygous, Heterozygous (+/−) | homozygous, Homozygous (+/+) | hemizygous, Hemizygous (+/0) | positive, Positive, zygosity unknown (+) | negative, Negative (−/−)","The result for the gene above, drawn beside it",,,,,[gene] <> '',,,,,,"@PEDIGREE_FIELD(geneResult=""gene"")"
 features,relatives,,text,Main clinical feature,FHIR:http://ga4gh.org/fhir/ValueSet/phenotype,"SNOMED CT, searched on Ontoserver",,,,,,,,,,,"@PEDIGREE_FIELD(legend=""hpo_positive"")"
 clinic_notes,relatives,,notes,Clinic notes,,"Not tagged, so never shown on the pedigree.",,,,,,,,,,,
