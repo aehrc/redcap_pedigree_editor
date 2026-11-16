@@ -72,7 +72,7 @@ class RedcapInstrumentRowImporter
      * each result field's accepted code (open-pedigree's or LOINC's, see
      * QuestionnaireDerivation::GENE_RESULT_CODES), keyed by its gene field's code, as that gene's
      * legend entry carries it. A gene field left empty, or a result field empty or holding any other
-     * code, gives nothing; a gene sent by two gene fields keeps the first one's result. Null - nothing
+     * code, gives nothing; a gene sent by two gene fields keeps the first result given for it. Null - nothing
      * sent - when the fields have no pairing, or when a paired field is absent from the row (not
      * fetched: unknown, not empty, as for every field); otherwise the row's full state, `{}`
      * included, so a result the row no longer holds is cleared.
@@ -92,7 +92,7 @@ class RedcapInstrumentRowImporter
             }
             $results = $results ?? [];
             $geneField = $byField[$field['geneResultFor']] ?? null;
-            if (!array_key_exists($field['redcapField'], $rowData) || ($geneField !== null && !self::isPresent($rowData, $geneField))) {
+            if (!self::isPresent($rowData, $field) || ($geneField !== null && !self::isPresent($rowData, $geneField))) {
                 return null; // (the row's results are unknown)
             }
             $code = (string) $rowData[$field['redcapField']];

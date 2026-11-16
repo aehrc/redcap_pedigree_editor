@@ -851,13 +851,19 @@ class QuestionnaireDerivationTest extends TestCase
         $this->assertArrayNotHasKey('gene_zygosity', $this->flatten($result['questionnaire']));
     }
 
-    public function testAPairedResultFieldsPredicateAndBranchingAreIgnoredWithAWarning(): void
+    public function testAPairedResultFieldsPredicateIsIgnoredWithAWarning(): void
     {
-        $dd = $this->genesDictionary(['gene_zygosity' => $this->zygosity('@PEDIGREE_FIELD(geneResult="gene",predicate="isProband")',
-            ['branching_logic' => "[gene] <> ''"])]);
+        $dd = $this->genesDictionary(['gene_zygosity' => $this->zygosity('@PEDIGREE_FIELD(geneResult="gene",predicate="isProband")')]);
         $result = QuestionnaireDerivation::derive($dd, 'family_members', ['gene' => self::GENES_VS]);
         $this->assertCount(1, $result['warnings']);
         $this->assertStringContainsString('"gene_zygosity" holds a gene\'s result', $result['warnings'][0]);
+    }
+
+    public function testAResultFieldShownOnceAGeneIsFilledInIsNotWarnedAbout(): void
+    {
+        // the README's own advice: [gene] <> ''
+        $dd = $this->genesDictionary(['gene_zygosity' => $this->zygosity('@PEDIGREE_FIELD(geneResult="gene")', ['branching_logic' => "[gene] <> ''"])]);
+        $this->assertSame([], QuestionnaireDerivation::derive($dd, 'family_members', ['gene' => self::GENES_VS])['warnings']);
     }
 
     public function testBranchingOnAResultFieldIsTreatedAsOnAMappedField(): void
@@ -869,7 +875,7 @@ class QuestionnaireDerivationTest extends TestCase
         $result = QuestionnaireDerivation::derive($dd, 'family_members', ['gene' => self::GENES_VS]);
         $this->assertArrayNotHasKey('enableWhen', $this->flatten($result['questionnaire'])['notes']);
         $this->assertCount(1, $result['warnings']);
-        $this->assertStringNotContainsString('not an @PEDIGREE_FIELD-tagged field', $result['warnings'][0]);
+        $this->assertStringContainsString('references field "gene_zygosity" which is mapped via mapsTo/legend or holds a gene\'s result (geneResult)', $result['warnings'][0]);
     }
 
     public function testEveryAcceptedResultCode(): void
