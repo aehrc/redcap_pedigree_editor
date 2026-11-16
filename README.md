@@ -270,7 +270,7 @@ Each gene in a person's **Genes** list can have a result: what testing found. In
 
 A gene left *Not tested* draws nothing. Removing a gene removes its result. The de-identified exports keep the lines, as they keep the genes. In the GA4GH storage format a result is saved on the gene's own Observation with standard LOINC codes (69548-6 *Genetic variant assessment*, 53034-5 *Allelic state*), so other FHIR readers see the gene as before. Only the GA4GH and *internal* formats keep results; *PED*, *PEDX*, *DADA2* and *DADA2X* keep only the pedigree's structure, without genes or results.
 
-Results can't be filled from a linked repeating-instrument row yet. When a person's genes come from their linked row, the genes are read-only in the editor, and so are their results. To record a test outcome in REDCap instead, use a tagged Observation field, as the example project's *Genetic test result* (LOINC 51968-6) does; that field and a gene's result are kept separately, and neither updates the other.
+When a person's genes come from their linked row, the genes are read-only in the editor, and so are their results. A row's result comes from a field tagged [`@PEDIGREE_FIELD(geneResult="<gene field>")`](#the-pedigree_field-action-tag), as the legends example's *Zygosity* does: change it in REDCap, and *Edit in REDCap* or the check on opening the pedigree brings it in like any linked value. A variant's classification (pathogenic, VUS) is a different thing: record it in a tagged Observation field, as the form-logic example's *Genetic test result* (LOINC 51968-6) does; that field and a gene's result are kept separately.
 
 ### Importing a pedigree file
 
@@ -421,12 +421,33 @@ fields are never included - this is opt-in, the same way `@PEDIGREE` marks the o
   The value is read as the ontology providers store it by default: `code|system` (redcap_fhir_ontology_provider)
   or a bare code (advanced_fhir_ontology_provider). A field whose provider has a different code template (e.g.
   `${SYSTEM}|${CODE}`) gives wrong legend entries.
+- **`@PEDIGREE_FIELD(geneResult="<gene field>")`** - make a `radio` or `dropdown` field the result for the gene in a
+  `legend="candidate_genes"` field of the same row (*Tags only* mode). The result is drawn beside the gene (`BRCA1 +/−`)
+  and saved with it, as a result chosen in the editor is (see [Gene results](#gene-results)); the field gets no item of
+  its own in the node form. Its choice codes are read, not its labels:
+
+  | Result | Choice code | or its LOINC answer code |
+  |---|---|---|
+  | Heterozygous | `heterozygous` | `LA6706-1` |
+  | Homozygous | `homozygous` | `LA6705-3` |
+  | Hemizygous | `hemizygous` | `LA6707-9` |
+  | Heteroplasmic | `heteroplasmic` | `LA6703-8` |
+  | Homoplasmic | `homoplasmic` | `LA6704-6` |
+  | Positive, zygosity unknown | `positive` | `LA9633-4` (Present) |
+  | Negative | `negative` | `LA9634-2` (Absent) |
+
+  A choice with any other code means "not tested", with a logged warning. A row with no gene, or no result, gives no
+  result. The pairing is by field: change the gene in REDCap and the result goes with the new gene, so hide the result
+  until a gene is filled in (branching logic `[gene] <> ''`). A pairing that can't work is dropped with a logged
+  warning, and the field shows as a plain item: no field of that name on the instrument, a field that isn't a
+  `legend="candidate_genes"` ontology field, *Default + tags* mode (where the built-in Genes and their results are
+  edited in the editor), a field that isn't single-choice, or a second result field for the same gene field.
 - **`@PEDIGREE_FIELD(predicate="<name>")`** - layer a graph/app-state visibility condition onto the field, for cases
   `branching_logic` has no way to express (e.g. twin-group membership). Recognised predicates: `isFetus`,
   `hasRelationships`, `isProband`, `isRelatedToProband`, `hasToBeAdopted`, `isTwin`, `isTwinWithConsistentGender`,
   `canLinkRecord`, `canCreateNewRecord`, `canEditLinkedRecord`.
 
-`mapsTo`/`legend`/`predicate` are independent and may be combined, e.g. `@PEDIGREE_FIELD(mapsTo="gestationAge",predicate="isFetus")`.
+`mapsTo`/`legend`/`predicate` are independent and may be combined (`geneResult` stands alone), e.g. `@PEDIGREE_FIELD(mapsTo="gestationAge",predicate="isFetus")`.
 
 **Defaults.** A tagged field's REDCap `@DEFAULT` comes into the pedigree with the person's REDCap row. *Create in
 REDCap* opens REDCap's own form, which applies `@DEFAULT` as any new form does. Once the row is saved, its values,
@@ -780,13 +801,14 @@ feed the pedigree's legends once the relative is linked.
 **What it shows**
 
 - A classic (non-longitudinal) project: *Family history* holds the diagram field (`@PEDIGREE=HIDE_TEXT,COMPRESS_LARGE`,
-  so the Ashby family's pedigree, which is over the field's size limit, is stored compressed whatever the project's
+  so both families' pedigrees, each over the field's size limit, are stored compressed whatever the project's
   *Compress Data* setting) and *Relatives* repeats, one row per relative, so linking works without events too.
 - *Relatives* maps first and last name, sex, date of birth and carrier status with `mapsTo`, and has four ontology
   fields tagged with [`@PEDIGREE_FIELD(legend=...)`](#the-pedigree_field-action-tag):
   - *Primary condition* and *Other condition* - SNOMED CT (`http://snomed.info/sct?fhir_vs=refset/32570581000036105`),
     both `legend="disorders"`, so a person with two conditions shows both;
-  - *Gene with a variant* - HGNC (`http://www.genenames.org`), `legend="candidate_genes"`;
+  - *Gene with a variant* - HGNC (`http://www.genenames.org`), `legend="candidate_genes"`, with its result in *Zygosity*
+    (a radio tagged `geneResult="gene"`, shown once a gene is filled in), drawn beside the gene;
   - *Main clinical feature* - SNOMED CT (`http://ga4gh.org/fhir/ValueSet/phenotype`), `legend="hpo_positive"`.
 
   *Clinic notes* has no tag, so it never reaches the diagram.
@@ -794,7 +816,8 @@ feed the pedigree's legends once the relative is linked.
   - **Record 1, the Ashby family** - hypertrophic cardiomyopathy and MYBPC3. Mark has two conditions (hypertrophic
     cardiomyopathy and atrial fibrillation); his son Owen carries the variant with no condition (pre-symptomatic).
   - **Record 2, the Brook family** - dilated cardiomyopathy and TTN; Theo's sister Nina carries the variant
-    (pre-symptomatic).
+    (pre-symptomatic; her zygosity wasn't reported, so her result is *positive, zygosity unknown*). Every carrier's
+    gene is drawn with its result, e.g. `TTN +/−` for Theo.
 
 ![The Ashby family's pedigree with its disorders, candidate genes and phenotypes legends](documentation/example-legends/legends-ashby-family.png)
 

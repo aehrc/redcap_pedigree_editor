@@ -41,6 +41,9 @@ class RedcapInstrumentRowImporter
         // ID); a single value takes the first non-empty field.
         $byLinkId = [];
         foreach ($resolvedFields as $field) {
+            if (isset($field['geneResultFor'])) {
+                continue; // (a gene's result: see geneResults())
+            }
             if (!self::isPresent($rowData, $field)) {
                 continue;
             }
@@ -56,7 +59,53 @@ class RedcapInstrumentRowImporter
         foreach ($byLinkId as $linkId => $value) {
             $answers[] = ['linkId' => (string) $linkId, 'value' => $value];
         }
+        // After the genes, so they're listed before their results are set.
+        $geneResults = self::geneResults($rowData, $resolvedFields);
+        if ($geneResults !== null) {
+            $answers[] = ['linkId' => QuestionnaireDerivation::GENE_RESULTS_LINK_ID, 'value' => $geneResults];
+        }
         return $answers;
+    }
+
+    /**
+     * The row's gene results, `{<gene code>: <result>}`, from its `geneResult=` fields (design D4):
+     * each result field's accepted code (open-pedigree's or LOINC's, see
+     * QuestionnaireDerivation::GENE_RESULT_CODES), keyed by its gene field's code, as that gene's
+     * legend entry carries it. A gene field left empty, or a result field empty or holding any other
+     * code, gives nothing; a gene sent by two gene fields keeps the first accepted result for it. Null - nothing
+     * sent - when the fields have no pairing, or when a paired field is absent from the row (not
+     * fetched: unknown, not empty, as for every field); otherwise the row's full state, `{}`
+     * included, so a result the row no longer holds is cleared.
+     *
+     * @return array<string, string>|null
+     */
+    private static function geneResults(array $rowData, array $resolvedFields): ?array
+    {
+        $byField = [];
+        foreach ($resolvedFields as $field) {
+            $byField[$field['redcapField']] = $field;
+        }
+        $results = null;
+        foreach ($resolvedFields as $field) {
+            if (!isset($field['geneResultFor'])) {
+                continue;
+            }
+            $results = $results ?? [];
+            $geneField = $byField[$field['geneResultFor']] ?? null;
+            if (!self::isPresent($rowData, $field) || ($geneField !== null && !self::isPresent($rowData, $geneField))) {
+                return null; // (the row's results are unknown)
+            }
+            $code = (string) $rowData[$field['redcapField']];
+            if ($geneField === null || !isset(QuestionnaireDerivation::GENE_RESULT_CODES[$code])) {
+                continue;
+            }
+            $gene = self::extractValue($rowData, $geneField);
+            if (!is_array($gene) || !isset($gene[0]['id'])) {
+                continue;
+            }
+            $results[(string) $gene[0]['id']] = $results[(string) $gene[0]['id']] ?? QuestionnaireDerivation::GENE_RESULT_CODES[$code];
+        }
+        return $results;
     }
 
     private static function combineLists(array $a, array $b): array

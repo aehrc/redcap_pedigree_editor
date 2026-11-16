@@ -315,4 +315,78 @@ class RedcapInstrumentRowImporterTest extends TestCase
         );
         $this->assertSame([['linkId' => 'first_name', 'value' => 'Alice']], $answers);
     }
+
+    // --- gene results (pedigree-gene-results-from-linked-rows) ---
+
+    /** A gene field feeding candidate_genes, and its paired result field. */
+    private function geneFields(): array
+    {
+        return [
+            $this->field(['redcapField' => 'gene', 'linkId' => 'candidate_genes', 'legend' => true]),
+            $this->field(['redcapField' => 'gene_zygosity', 'linkId' => 'gene_results', 'type' => 'choice', 'geneResultFor' => 'gene',
+                'choices' => ['heterozygous' => 'Heterozygous', 'LA6705-3' => 'Homozygous', 'vus' => 'Uncertain']]),
+        ];
+    }
+
+    public function testAGenesResultIsSentAfterTheGenesKeyedByTheGenesCode(): void
+    {
+        $answers = RedcapInstrumentRowImporter::buildAnswers(['gene' => 'HGNC:1100|http://www.genenames.org', 'gene_zygosity' => 'heterozygous'], $this->geneFields());
+        $this->assertSame([
+            ['linkId' => 'candidate_genes', 'value' => [['id' => 'HGNC:1100', 'name' => 'HGNC:1100']]],
+            ['linkId' => 'gene_results', 'value' => ['HGNC:1100' => 'heterozygous']],
+        ], $answers);
+    }
+
+    public function testALoincResultCodeIsReadAsOpenPedigreesOwn(): void
+    {
+        $answers = RedcapInstrumentRowImporter::buildAnswers(['gene' => 'BRCA1', 'gene_zygosity' => 'LA6705-3'], $this->geneFields());
+        $this->assertSame(['BRCA1' => 'homozygous'], $answers[1]['value']);
+    }
+
+    public function testNoResultIsSentForAnEmptyGeneAnEmptyResultOrACodeThatIsntOne(): void
+    {
+        foreach ([['gene' => '', 'gene_zygosity' => 'heterozygous'], ['gene' => 'BRCA1', 'gene_zygosity' => ''],
+            ['gene' => 'BRCA1', 'gene_zygosity' => 'vus']] as $row) {
+            $answers = RedcapInstrumentRowImporter::buildAnswers($row, $this->geneFields());
+            // the row's full state: {} clears a result it no longer holds
+            $this->assertSame(['linkId' => 'gene_results', 'value' => []], end($answers), json_encode($row));
+        }
+    }
+
+    public function testNoGeneResultsAnswerWhenAPairedFieldWasntFetched(): void
+    {
+        // absent is unknown, not empty: nothing is sent, so nothing is cleared
+        foreach ([['gene' => 'BRCA1'], ['gene_zygosity' => 'heterozygous']] as $row) {
+            $answers = RedcapInstrumentRowImporter::buildAnswers($row, $this->geneFields());
+            $this->assertNotContains('gene_results', array_column($answers, 'linkId'), json_encode($row));
+        }
+    }
+
+    public function testAGeneSentByTwoGeneFieldsKeepsTheFirstResult(): void
+    {
+        $fields = array_merge($this->geneFields(), [
+            $this->field(['redcapField' => 'gene2', 'linkId' => 'candidate_genes', 'legend' => true]),
+            $this->field(['redcapField' => 'gene2_zygosity', 'linkId' => 'gene_results', 'type' => 'choice', 'geneResultFor' => 'gene2']),
+        ]);
+        $answers = RedcapInstrumentRowImporter::buildAnswers(
+            ['gene' => 'BRCA1', 'gene_zygosity' => 'heterozygous', 'gene2' => 'BRCA1', 'gene2_zygosity' => 'negative'], $fields);
+        $this->assertSame(['BRCA1' => 'heterozygous'], end($answers)['value']);
+    }
+
+    public function testNoGeneResultsAnswerWithoutAPairing(): void
+    {
+        $answers = RedcapInstrumentRowImporter::buildAnswers(['gene' => 'BRCA1'], [$this->geneFields()[0]]);
+        $this->assertSame(['candidate_genes'], array_column($answers, 'linkId'));
+    }
+
+    public function testTwoGeneFieldsEachWithAResult(): void
+    {
+        $fields = array_merge($this->geneFields(), [
+            $this->field(['redcapField' => 'gene2', 'linkId' => 'candidate_genes', 'legend' => true]),
+            $this->field(['redcapField' => 'gene2_zygosity', 'linkId' => 'gene_results', 'type' => 'choice', 'geneResultFor' => 'gene2']),
+        ]);
+        $answers = RedcapInstrumentRowImporter::buildAnswers(
+            ['gene' => 'BRCA1', 'gene_zygosity' => 'heterozygous', 'gene2' => 'TP53', 'gene2_zygosity' => 'LA9634-2'], $fields);
+        $this->assertSame(['BRCA1' => 'heterozygous', 'TP53' => 'negative'], end($answers)['value']);
+    }
 }

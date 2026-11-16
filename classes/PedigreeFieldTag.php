@@ -5,7 +5,7 @@ namespace AEHRC\PedigreeEditorExternalModule;
 /**
  * Parses the `@PEDIGREE_FIELD` action tag used to opt a repeating-instrument
  * field into Questionnaire derivation, along with its optional `mapsTo=`/
- * `legend=`/`predicate=` parameters.
+ * `legend=`/`predicate=`/`geneResult=` parameters.
  *
  * Distinct from the module's existing `@PEDIGREE`/`@PEDIGREE_HPO`/
  * `@PEDIGREE_SCT` tags, which mark the single field storing the whole
@@ -28,12 +28,16 @@ class PedigreeFieldTag
     /** @var string|null */
     public $predicate;
 
-    private function __construct(bool $present, ?string $mapsTo, ?string $legend, ?string $predicate)
+    /** @var string|null The gene field (a `candidate_genes` legend field) this field holds the result for. */
+    public $geneResult;
+
+    private function __construct(bool $present, ?string $mapsTo, ?string $legend, ?string $predicate, ?string $geneResult = null)
     {
         $this->present = $present;
         $this->mapsTo = $mapsTo;
         $this->legend = $legend;
         $this->predicate = $predicate;
+        $this->geneResult = $geneResult;
     }
 
     /**
@@ -49,7 +53,7 @@ class PedigreeFieldTag
             return new self(false, null, null, null);
         }
 
-        $params = ['mapsTo' => null, 'legend' => null, 'predicate' => null];
+        $params = ['mapsTo' => null, 'legend' => null, 'predicate' => null, 'geneResult' => null];
         if (!empty($tagMatch[2])) {
             if (preg_match_all(self::PARAM_PATTERN, $tagMatch[2], $paramMatches, PREG_SET_ORDER)) {
                 foreach ($paramMatches as $paramMatch) {
@@ -61,6 +65,6 @@ class PedigreeFieldTag
             }
         }
 
-        return new self(true, $params['mapsTo'], $params['legend'], $params['predicate']);
+        return new self(true, $params['mapsTo'], $params['legend'], $params['predicate'], $params['geneResult']);
     }
 }

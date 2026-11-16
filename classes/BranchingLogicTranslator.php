@@ -81,7 +81,7 @@ class BranchingLogicTranslator
                 return self::untranslatable($branchingLogic, 'references field "' . $fieldName . '" which is not an @PEDIGREE_FIELD-tagged field in this instrument');
             }
             if (isset($mappedFieldNames[$fieldName])) {
-                return self::untranslatable($branchingLogic, 'references field "' . $fieldName . '" which is mapped via mapsTo/legend — its value is not visible to enableWhen');
+                return self::untranslatable($branchingLogic, 'references field "' . $fieldName . '" which is mapped via mapsTo/legend or holds a gene\'s result (geneResult) — its value is not visible to enableWhen');
             }
 
             if ($rawValue === '') {
