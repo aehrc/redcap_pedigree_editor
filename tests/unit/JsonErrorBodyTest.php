@@ -15,7 +15,7 @@ class JsonErrorBodyTest extends TestCase
 {
     public function testHtmlSignificantCharactersAreEscaped(): void
     {
-        $body = pedigree_editor_json_error_body([
+        $body = \AEHRC\PedigreeEditorExternalModule\json_error_body([
             'error' => 'Invalid Request',
             'error_description' => "Params = <script>alert(\"x\" & 'y')</script>",
         ]);
@@ -30,9 +30,24 @@ class JsonErrorBodyTest extends TestCase
         $this->assertStringContainsString('\\u0027y\\u0027', $body);
     }
 
+    public function testInvalidUtf8IsReplacedNotAnEmptyBody(): void
+    {
+        $body = \AEHRC\PedigreeEditorExternalModule\json_error_body(['error' => 'Invalid Request', 'error_description' => "type \xFF"]);
+        $this->assertNotSame('', $body);
+        $this->assertSame('Invalid Request', json_decode($body, true)['error']);
+        $this->assertSame("type \u{FFFD}", json_decode($body, true)['error_description']);
+    }
+
+    public function testSuccessBodiesAreEscapedTheSameWay(): void
+    {
+        $body = \AEHRC\PedigreeEditorExternalModule\json_for_response([['name' => '<img src=x onerror="y">']]);
+        $this->assertStringNotContainsString('<img', $body);
+        $this->assertSame([['name' => '<img src=x onerror="y">']], json_decode($body, true));
+    }
+
     public function testTheBodyIsStillTheSameJson(): void
     {
         $data = ['error' => 'Invalid Request', 'error_description' => 'a/b <c> "d"'];
-        $this->assertSame($data, json_decode(pedigree_editor_json_error_body($data), true));
+        $this->assertSame($data, json_decode(\AEHRC\PedigreeEditorExternalModule\json_error_body($data), true));
     }
 }

@@ -23,7 +23,7 @@ $sendErrorResponse = function($error, $error_description){
     $errorArr = ['error' => $error, 'error_description' => $error_description];
     header('Content-type: application/json');
     http_response_code(400);
-    echo pedigree_editor_json_error_body($errorArr);
+    echo \AEHRC\PedigreeEditorExternalModule\json_error_body($errorArr);
     exit();
 };
 

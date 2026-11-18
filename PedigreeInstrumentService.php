@@ -21,7 +21,7 @@ $sendErrorResponse = function ($error, $error_description, $status = 400) {
     $errorArr = ['error' => $error, 'error_description' => $error_description];
     header('Content-type: application/json');
     http_response_code($status);
-    echo pedigree_editor_json_error_body($errorArr);
+    echo \AEHRC\PedigreeEditorExternalModule\json_error_body($errorArr);
     exit();
 };
 
@@ -78,7 +78,7 @@ $respond = function (array $read, array $response) use ($sendErrorResponse, $pro
         $sendErrorResponse($response['body']['error'], $response['body']['error_description'], $response['status']);
     }
     // (any other encoding failure throws to the endpoint's catch: a JSON 500, not an empty 200)
-    echo json_encode($response['body'], JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE | JSON_THROW_ON_ERROR);
+    echo \AEHRC\PedigreeEditorExternalModule\json_for_response($response['body']);
 };
 
 header('Content-type: application/json');
@@ -92,7 +92,7 @@ try {
         if ($questionnaire === null) {
             $sendErrorResponse('Not Configured', 'No repeating instrument is configured for pedigree import on this project.');
         }
-        echo json_encode($questionnaire, JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE | JSON_THROW_ON_ERROR);
+        echo \AEHRC\PedigreeEditorExternalModule\json_for_response($questionnaire);
     } elseif ('search' === $params['type']) {
         // Required, never defaulted to "all records" - see searchPedigreeInstrumentRows().
         $record = $requireString('record', 'search');
@@ -110,7 +110,7 @@ try {
                 ['M', 'F', 'U']
             ));
         }
-        echo json_encode($module->searchPedigreeInstrumentRows($project_id, $record, $eventId, $query, $allowedGenders), JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE | JSON_THROW_ON_ERROR);
+        echo \AEHRC\PedigreeEditorExternalModule\json_for_response($module->searchPedigreeInstrumentRows($project_id, $record, $eventId, $query, $allowedGenders));
     } elseif ('import' === $params['type']) {
         $record = $requireString('record', 'import');
         $instance = $requireString('instance', 'import');
