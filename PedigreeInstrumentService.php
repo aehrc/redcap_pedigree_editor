@@ -15,11 +15,13 @@
  * otherwise end up in server access logs and browser history via the URL).
  */
 
+require_once __DIR__ . '/JsonErrorBody.php';
+
 $sendErrorResponse = function ($error, $error_description, $status = 400) {
     $errorArr = ['error' => $error, 'error_description' => $error_description];
     header('Content-type: application/json');
     http_response_code($status);
-    echo json_encode($errorArr, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+    echo pedigree_editor_json_error_body($errorArr);
     exit();
 };
 
