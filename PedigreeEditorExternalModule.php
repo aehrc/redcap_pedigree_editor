@@ -77,7 +77,7 @@ class PedigreeEditorExternalModule extends AbstractExternalModule {
                     if (!is_array($responseJson) || !array_key_exists('access_token', $responseJson)) {
                         $errors .= "Failed to get Authentication Token for fhir server at '" . $authEndpoint . "'$response\n";
                     } elseif (FhirAuthToken::bearerToken($responseJson['access_token']) === null) {
-                        $errors .= "The Authentication Token from '" . $authEndpoint . "' can't be sent in a header (it has spaces or control characters)\n";
+                        $errors .= "The Authentication Token from '" . $authEndpoint . "' can't be sent in a header (it must be printable ASCII text with no spaces)\n";
                     }
                 }
             } catch (\Exception $e) {
@@ -644,7 +644,8 @@ EOD;
         $headers = [];
         $authToken = $this->getAuthToken();
         if ($authToken !== false) {
-            $headers[] = 'Authorization: Bearer ' . $this->getAuthToken();
+            // (the token just checked - a second fetch could fail and leave an empty Bearer)
+            $headers[] = 'Authorization: Bearer ' . $authToken;
         }
         $result = $this->httpGet($fullUrl, $headers);
 
@@ -1301,7 +1302,8 @@ EOD;
             foreach ($headers as $hvalue) {
                 $headerText .= $hvalue . "\r\n";
             }
-            $http_array = array('method' => 'GET', 'header' => $headerText, 'timeout' => $this->getFhirTimeout());
+            // (no redirects: the Authorization header would follow them to wherever they point)
+            $http_array = array('method' => 'GET', 'header' => $headerText, 'timeout' => $this->getFhirTimeout(), 'follow_location' => 0);
             // If using a proxy
             if (!sameHostUrl($fullUrl) && PROXY_HOSTNAME != '') {
                 $http_array['proxy'] = str_replace(array('http://', 'https://'), array('tcp://', 'tcp://'), PROXY_HOSTNAME);
@@ -1352,7 +1354,9 @@ EOD;
             $http_array = array('method' => 'POST',
                 'header' => "Content-type: $contentType" . "\r\n" . $headerText . "Content-Length: " . strlen($param_string) . "\r\n",
                 'content' => $param_string,
-                'timeout' => $this->getFhirTimeout()
+                'timeout' => $this->getFhirTimeout(),
+                // (no redirects: the Authorization header would follow them to wherever they point)
+                'follow_location' => 0
             );
             // If using a proxy
             if (!sameHostUrl($fullUrl) && PROXY_HOSTNAME != '') {
@@ -1444,9 +1448,9 @@ EOD;
                     $_SESSION['PEDIGREE_FHIR_ONTOLOGY_TOKEN_EXPIRES'] = $now + $lifetime - $margin;
                 }
             } elseif (array_key_exists('error', $responseJson)) {
-                error_log("Failed to negotiate auth token : " . json_encode($responseJson['error']) . " - " . json_encode($responseJson['error_description'] ?? ''));
+                error_log("Failed to negotiate auth token : " . json_encode($responseJson['error'], JSON_INVALID_UTF8_SUBSTITUTE) . " - " . json_encode($responseJson['error_description'] ?? '', JSON_INVALID_UTF8_SUBSTITUTE));
             } else {
-                error_log("Failed to negotiate auth token : " . $response);
+                error_log("Failed to negotiate auth token : " . json_encode($response, JSON_INVALID_UTF8_SUBSTITUTE));
             }
         } catch (\Exception $e) {
             $error_code = $e->getCode();
@@ -1458,6 +1462,7 @@ EOD;
             unset($_SESSION['PEDIGREE_FHIR_ONTOLOGY_TOKEN']);
             return false;
         }
-        return $_SESSION['PEDIGREE_FHIR_ONTOLOGY_TOKEN'];
+        // (the checked token itself, not read back from the session, so Psalm can follow it)
+        return $token;
     }
 }
