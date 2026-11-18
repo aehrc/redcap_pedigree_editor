@@ -11,6 +11,8 @@
 
 require_once __DIR__ . '/TerminologyErrorFormatter.php';
 
+require_once __DIR__ . '/JsonErrorBody.php';
+
 $sendErrorResponse = function($error, $error_description){
     if(strpos($_SERVER['HTTP_ACCEPT'] ?? '', 'text/html') === 0){
         header('Content-type: text/html');
@@ -21,7 +23,7 @@ $sendErrorResponse = function($error, $error_description){
     $errorArr = ['error' => $error, 'error_description' => $error_description];
     header('Content-type: application/json');
     http_response_code(400);
-    echo json_encode($errorArr, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
+    echo \AEHRC\PedigreeEditorExternalModule\json_error_body($errorArr);
     exit();
 };
 

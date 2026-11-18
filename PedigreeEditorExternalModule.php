@@ -11,6 +11,7 @@ use ExternalModules\AbstractExternalModule;
 // Deployed modules aren't `composer install`-ed, so classes/ can't rely on
 // the Composer autoloader (dev/test-only here, see composer.json) - require
 // each class explicitly.
+require_once __DIR__ . '/JsonErrorBody.php';
 require_once __DIR__ . '/classes/FhirUrls.php';
 require_once __DIR__ . '/classes/PedigreeFieldTag.php';
 require_once __DIR__ . '/classes/BranchingLogicTranslator.php';
@@ -648,7 +649,7 @@ EOD;
             $error = ['error' => 'Internal Error', 'error_description' => 'Failed to retrieve data from FHIR server - '.$fullUrl];
             header('Content-type: application/json');
             http_response_code(400);
-            echo json_encode($error, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+            echo json_error_body($error);
         } else {
             header('Content-type: application/json');
             echo $result;
