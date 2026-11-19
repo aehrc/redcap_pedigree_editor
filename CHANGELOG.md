@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.1.0](https://github.com/aehrc/redcap_pedigree_editor/compare/v1.0.0...v1.1.0) (2026-11-18)
+
+
+### Features
+
+* a gene's result from the linked row (@PEDIGREE_FIELD geneResult) ([#83](https://github.com/aehrc/redcap_pedigree_editor/issues/83)) ([37bda49](https://github.com/aehrc/redcap_pedigree_editor/commit/37bda496b1a14bebd7cfe08702b86e23ae5eeac5))
+* bundle open-pedigree 1.6.0 - a partner without a child, and fixes for issues 7 and 8 ([#76](https://github.com/aehrc/redcap_pedigree_editor/issues/76)) ([cd012d1](https://github.com/aehrc/redcap_pedigree_editor/commit/cd012d1539afc6687015b13b0a7a6c67f0517627))
+* bundle open-pedigree 2.1.0 - a result for each gene ([#81](https://github.com/aehrc/redcap_pedigree_editor/issues/81)) ([0bcac47](https://github.com/aehrc/redcap_pedigree_editor/commit/0bcac47c67dbdf206c7dd9b75542b7b1617e7685))
+* bundle open-pedigree 2.2.0 - imports list every problem in the file ([#82](https://github.com/aehrc/redcap_pedigree_editor/issues/82)) ([14d0e9e](https://github.com/aehrc/redcap_pedigree_editor/commit/14d0e9e9e80c4ac2a452a0667708fd104a94b247))
+* bundle open-pedigree 2.4.0 - black-and-white patterns and PNG export ([#84](https://github.com/aehrc/redcap_pedigree_editor/issues/84)) ([2088d6a](https://github.com/aehrc/redcap_pedigree_editor/commit/2088d6ace8081dc321b053f267a649d355ae0a0a))
+
+
+### Bug Fixes
+
+* hand the pedigree directly between the form and the editor window ([#79](https://github.com/aehrc/redcap_pedigree_editor/issues/79)) ([b2a232a](https://github.com/aehrc/redcap_pedigree_editor/commit/b2a232a032a10c8418db87dc58bf82c42f2fa547))
+* use open-pedigree's resolvable FHIR definition URLs ([#80](https://github.com/aehrc/redcap_pedigree_editor/issues/80)) ([b88d1ef](https://github.com/aehrc/redcap_pedigree_editor/commit/b88d1ef8ddda883b5006c86a3b15baa15684e45b))
+
 ## [1.0.0](https://github.com/aehrc/redcap_pedigree_editor/compare/v0.4.1...v1.0.0) (2026-11-05)
 
 
