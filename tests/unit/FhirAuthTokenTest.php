@@ -21,8 +21,25 @@ class FhirAuthTokenTest extends TestCase
 
     public function testBearerTokenRefusesAnythingThatCouldInjectAHeader(): void
     {
-        foreach (["tok\r\nX-Injected: 1", "tok\n", "tok\r", "tok\t1", 'tok with space', "tok\x7f", "t\u{00F6}k", '', null, 42, ['tok']] as $value) {
+        foreach (["tok\r\nX-Injected: 1", "tok\n", "tok\r", "tok\t1", 'tok with space', "tok\x7f", "t\u{00F6}k", '', null, 4.2, true, ['tok']] as $value) {
             $this->assertNull(FhirAuthToken::bearerToken($value), var_export($value, true));
+        }
+    }
+
+    public function testBearerTokenAcceptsAJsonNumberTokenAsItsDigits(): void
+    {
+        $this->assertSame('123456789', FhirAuthToken::bearerToken(123456789));
+    }
+
+    // --- isRedirectResponse(): the file_get_contents fallback doesn't follow redirects ---
+
+    public function testIsRedirectResponse(): void
+    {
+        foreach (['HTTP/1.1 302 Found', 'HTTP/1.0 301 Moved Permanently', 'HTTP/2 307'] as $status) {
+            $this->assertTrue(FhirAuthToken::isRedirectResponse([$status, 'Location: https://elsewhere.test/']), $status);
+        }
+        foreach ([['HTTP/1.1 200 OK'], ['HTTP/1.1 404 Not Found'], ['HTTP/1.1 3000 Odd'], [], ['Location: x']] as $headers) {
+            $this->assertFalse(FhirAuthToken::isRedirectResponse($headers), var_export($headers, true));
         }
     }
 }
