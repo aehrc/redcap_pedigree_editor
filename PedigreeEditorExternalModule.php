@@ -1303,7 +1303,7 @@ EOD;
                 $headerText .= $hvalue . "\r\n";
             }
             // (no redirects: the stream wrapper would send the Authorization header on to wherever one
-            // points - curl, the usual path, follows them but never sends it to another host)
+            // points - curl, the usual path, follows them but (libcurl 7.58+) doesn't send it to another host)
             $http_array = array('method' => 'GET', 'header' => $headerText, 'timeout' => $this->getFhirTimeout(), 'follow_location' => 0);
             // If using a proxy
             if (!sameHostUrl($fullUrl) && PROXY_HOSTNAME != '') {
@@ -1363,7 +1363,7 @@ EOD;
                 'content' => $param_string,
                 'timeout' => $this->getFhirTimeout(),
                 // (no redirects: the stream wrapper would send the Authorization header on to wherever one
-            // points - curl, the usual path, follows them but never sends it to another host)
+                // points - curl, the usual path, follows them but (libcurl 7.58+) doesn't send it to another host)
                 'follow_location' => 0
             );
             // If using a proxy
@@ -1389,7 +1389,11 @@ EOD;
                 return $content;
             } // If no content, check the headers to see if it's hiding there (why? not sure, but it happens)
             else {
-                $content = implode("", $http_response_header ?? []);
+                if (empty($http_response_header)) {
+                    // (the connection failed: no response at all)
+                    return false;
+                }
+                $content = implode("", $http_response_header);
                 //  If header is a true header, then return false, else return the content found in the header
                 return (substr($content, 0, 5) == 'HTTP/') ? false : $content;
             }
@@ -1499,7 +1503,7 @@ EOD;
             } elseif (array_key_exists('error', $responseJson)) {
                 error_log("Failed to negotiate auth token : " . json_encode($responseJson['error'], JSON_INVALID_UTF8_SUBSTITUTE) . " - " . json_encode($responseJson['error_description'] ?? '', JSON_INVALID_UTF8_SUBSTITUTE));
             } else {
-                error_log("Failed to negotiate auth token : " . json_encode($response, JSON_INVALID_UTF8_SUBSTITUTE));
+                error_log("Failed to negotiate auth token : no access_token in " . substr((string) json_encode($response, JSON_INVALID_UTF8_SUBSTITUTE), 0, 500));
             }
         } catch (\Exception $e) {
             $error_code = $e->getCode();
