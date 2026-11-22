@@ -50,12 +50,13 @@ jobs:
 
       - name: Fail the job if Psalm found taint issues
         run: |
-          # (workflow-command escaping: % and newlines in the message, and , : too in properties)
+          # (workflow-command escaping: % and newlines in the message, and , : too in properties;
+          # a finding with no location is still named and counted)
           jq -r 'def msg: gsub("%"; "%25") | gsub("\r"; "%0D") | gsub("\n"; "%0A");
                  def prop: msg | gsub(":"; "%3A") | gsub(","; "%2C");
             .runs[] | (.tool.driver.rules // [] | map({key: .id, value: .name}) | from_entries) as $names
             | .results[] | .locations[0].physicalLocation as $at
-            | "::error file=\($at.artifactLocation.uri | prop),line=\($at.region.startLine)::\(($names[.ruleId] // .ruleId) + ": " + .message.text | msg)"' psalm-taint.sarif
+            | "::error file=\(($at.artifactLocation.uri // "") | prop),line=\($at.region.startLine // 1)::\(($names[.ruleId] // .ruleId) + ": " + .message.text | msg)"' psalm-taint.sarif
           count=$(jq '[.runs[].results[]] | length' psalm-taint.sarif)
           echo "$count finding(s) the gate is for"
           test "$count" -eq 0
