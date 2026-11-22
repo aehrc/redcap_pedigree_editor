@@ -24,8 +24,9 @@
         the REDCap consortium's security scan, not to be a general code-quality gate.
         The taint issue types below are pinned to "error" regardless of errorLevel, so
         security findings always surface even though everything else is suppressed.
-        CI (security-scan.yml) gates on taint findings at error level, plus ParseError: Psalm 7's
-        exit code also counts ordinary issues, so it isn't what the gate looks at.
+        CI (security-scan.yml) gates on every Tainted* finding (Psalm 7 reports them all at error
+        level, so these pins don't narrow it) plus ParseError / Unrecognized*: Psalm 7's exit code
+        also counts ordinary issues, so it isn't what the gate looks at.
     -->
     <issueHandlers>
         <TaintedSql errorLevel="error"/>

@@ -28,13 +28,14 @@ jobs:
       - name: Run Psalm taint analysis
         run: vendor/bin/psalm --taint-analysis --no-progress --report=psalm-results.sarif || true
 
-      # What the gate is for, from the report: taint findings at error level (psalm.xml pins the
-      # categories mirroring the REDCap consortium's scan to error), and ParseError - a file Psalm
-      # can't parse is a file it can't check for taint. No report means Psalm itself failed.
+      # What the gate is for, from the report: every Tainted* finding (Psalm 7 reports them all at
+      # error level, whatever psalm.xml pins - a superset of the REDCap consortium's categories),
+      # and what stops Psalm checking code for taint at all - ParseError, UnrecognizedStatement,
+      # UnrecognizedExpression. No report means Psalm itself failed.
       - name: Keep only the findings the gate is for
         run: |
           test -s psalm-results.sarif || { echo "::error::Psalm wrote no report"; exit 1; }
-          jq '.runs |= map((.tool.driver.rules // [] | map(select(.name | startswith("Tainted") or . == "ParseError") | .id)) as $gated
+          jq '.runs |= map((.tool.driver.rules // [] | map(select(.name | startswith("Tainted") or IN("ParseError", "UnrecognizedStatement", "UnrecognizedExpression")) | .id)) as $gated
                 | .results |= map(select(.level == "error" and (.ruleId as $id | $gated | index($id)))))' \
             psalm-results.sarif > psalm-taint.sarif
 
@@ -49,12 +50,13 @@ jobs:
 
       - name: Fail the job if Psalm found taint issues
         run: |
-          # (workflow-command escaping: % and newlines in the message, and , : too in properties)
+          # (workflow-command escaping: % and newlines in the message, and , : too in properties;
+          # a finding with no location is still named and counted)
           jq -r 'def msg: gsub("%"; "%25") | gsub("\r"; "%0D") | gsub("\n"; "%0A");
                  def prop: msg | gsub(":"; "%3A") | gsub(","; "%2C");
             .runs[] | (.tool.driver.rules // [] | map({key: .id, value: .name}) | from_entries) as $names
             | .results[] | .locations[0].physicalLocation as $at
-            | "::error file=\($at.artifactLocation.uri | prop),line=\($at.region.startLine)::\(($names[.ruleId] // .ruleId) + ": " + .message.text | msg)"' psalm-taint.sarif
+            | "::error file=\(($at.artifactLocation.uri // "") | prop),line=\($at.region.startLine // 1)::\(($names[.ruleId] // .ruleId) + ": " + .message.text | msg)"' psalm-taint.sarif
           count=$(jq '[.runs[].results[]] | length' psalm-taint.sarif)
           echo "$count finding(s) the gate is for"
           test "$count" -eq 0
