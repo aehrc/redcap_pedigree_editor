@@ -398,7 +398,8 @@ fields are never included - this is opt-in, the same way `@PEDIGREE` marks the o
   | `carrierStatus` | `radio`/`dropdown` (choice) | codes: `''` (not affected), `carrier`, `affected`, `presymptomatic` |
   | `comments` | `notes` (text) | |
   | `childlessStatus` | `radio`/`dropdown` (choice) | codes: `childless`, `infertile` (anything else is cleared) |
-  | `isAdopted` | `yesno`/`truefalse` (boolean) | |
+  | `isAdopted` | `yesno`/`truefalse` (boolean) | adopted in (yes); no clears adopted in only. A yes/no field that has also recorded people adopted out will now draw them adopted in - change it to an `adoption` radio and recode those rows `out` |
+  | `adoption` | `radio`/`dropdown` (choice) | codes: `in` (adopted in), `out` (adopted out); anything else is not adopted. Drawn with brackets; an adopted-in child's line from their parents is dashed |
   | `monozygotic` | `yesno`/`truefalse` (boolean) | |
   | `evaluated` | `yesno`/`truefalse` (boolean) | |
   | `lostContact` | `yesno`/`truefalse` (boolean) | |
@@ -757,7 +758,7 @@ collects, and isn't any organisation's project.
 - A longitudinal project. The *Enrolment* event holds *Participant enrolment*, *Family history* (with the diagram field,
   `@PEDIGREE=HIDE_TEXT` so the form shows the diagram without its box of stored data) and *Family members*, which repeats in that event only, as linking requires. *Follow up 12m* and
   *Follow up 24m* hold a *Clinical follow-up* form.
-- *Family members* uses `@PEDIGREE_FIELD` with `mapsTo` for first and last name, sex, date of birth, adopted, vital
+- *Family members* uses `@PEDIGREE_FIELD` with `mapsTo` for first and last name, sex, date of birth, adoption (in or out), vital
   status, date of death, ADA2 status (carrier status: affected / carrier / pre-symptomatic) and tested. Relationship,
   ADA2 variants, ADA2 enzyme activity and *Notes about this person* are linked but unmapped, and *Contact notes* has no
   tag, so it never reaches the diagram.

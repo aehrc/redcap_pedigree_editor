@@ -279,8 +279,8 @@
 	<ItemDef OID="dob" Name="dob" DataType="date" Length="999" redcap:Variable="dob" redcap:FieldType="text" redcap:TextValidationType="date_ymd" redcap:Identifier="y" redcap:FieldAnnotation="@PEDIGREE_FIELD(mapsTo=&quot;birthDate&quot;)">
 		<Question><TranslatedText>Date of birth</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="adopted" Name="adopted" DataType="boolean" Length="1" redcap:Variable="adopted" redcap:FieldType="yesno" redcap:FieldNote="Answer yes if this person was adopted into or out of the family." redcap:FieldAnnotation="@PEDIGREE_FIELD(mapsTo=&quot;isAdopted&quot;)">
-		<Question><TranslatedText>Adopted?</TranslatedText></Question>
+	<ItemDef OID="adopted" Name="adopted" DataType="text" Length="3" redcap:Variable="adopted" redcap:FieldType="radio" redcap:FieldNote="Leave blank if this person was not adopted. Adopted in: brought into this family. Adopted out: born into it and adopted elsewhere." redcap:FieldAnnotation="@PEDIGREE_FIELD(mapsTo=&quot;adoption&quot;)">
+		<Question><TranslatedText>Adoption</TranslatedText></Question>
 		<CodeListRef CodeListOID="adopted.choices"/>
 	</ItemDef>
 	<ItemDef OID="life_status" Name="life_status" DataType="text" Length="11" redcap:Variable="life_status" redcap:FieldType="radio" redcap:FieldAnnotation="@PEDIGREE_FIELD(mapsTo=&quot;lifeStatus&quot;)">
@@ -443,9 +443,9 @@
 		<CodeListItem CodedValue="M"><Decode><TranslatedText>Male</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="U"><Decode><TranslatedText>Unknown</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="adopted.choices" Name="adopted" DataType="boolean" redcap:Variable="adopted">
-		<CodeListItem CodedValue="1"><Decode><TranslatedText>Yes</TranslatedText></Decode></CodeListItem>
-		<CodeListItem CodedValue="0"><Decode><TranslatedText>No</TranslatedText></Decode></CodeListItem>
+	<CodeList OID="adopted.choices" Name="adopted" DataType="text" redcap:Variable="adopted">
+		<CodeListItem CodedValue="in"><Decode><TranslatedText>Adopted in</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="out"><Decode><TranslatedText>Adopted out</TranslatedText></Decode></CodeListItem>
 	</CodeList>
 	<CodeList OID="life_status.choices" Name="life_status" DataType="text" redcap:Variable="life_status">
 		<CodeListItem CodedValue="alive"><Decode><TranslatedText>Alive</TranslatedText></Decode></CodeListItem>
@@ -602,7 +602,6 @@
 					<ItemData ItemOID="relationship_to_proband" Value="proband"/>
 					<ItemData ItemOID="sex" Value="F"/>
 					<ItemData ItemOID="dob" Value="2016-07-12"/>
-					<ItemData ItemOID="adopted" Value="0"/>
 					<ItemData ItemOID="life_status" Value="alive"/>
 				</ItemGroupData>
 				<ItemGroupData ItemGroupOID="family_members.carrier_status" ItemGroupRepeatKey="1">
@@ -633,7 +632,6 @@
 					<ItemData ItemOID="relationship_to_proband" Value="mother"/>
 					<ItemData ItemOID="sex" Value="F"/>
 					<ItemData ItemOID="dob" Value="1986-02-19"/>
-					<ItemData ItemOID="adopted" Value="0"/>
 					<ItemData ItemOID="life_status" Value="alive"/>
 				</ItemGroupData>
 				<ItemGroupData ItemGroupOID="family_members.carrier_status" ItemGroupRepeatKey="1">
@@ -658,7 +656,6 @@
 					<ItemData ItemOID="relationship_to_proband" Value="father"/>
 					<ItemData ItemOID="sex" Value="M"/>
 					<ItemData ItemOID="dob" Value="1984-11-02"/>
-					<ItemData ItemOID="adopted" Value="0"/>
 					<ItemData ItemOID="life_status" Value="alive"/>
 				</ItemGroupData>
 				<ItemGroupData ItemGroupOID="family_members.carrier_status" ItemGroupRepeatKey="1">
@@ -683,7 +680,6 @@
 					<ItemData ItemOID="relationship_to_proband" Value="sibling"/>
 					<ItemData ItemOID="sex" Value="M"/>
 					<ItemData ItemOID="dob" Value="2019-05-30"/>
-					<ItemData ItemOID="adopted" Value="0"/>
 					<ItemData ItemOID="life_status" Value="alive"/>
 				</ItemGroupData>
 				<ItemGroupData ItemGroupOID="family_members.carrier_status" ItemGroupRepeatKey="1">
@@ -711,7 +707,6 @@
 					<ItemData ItemOID="relationship_to_proband" Value="sibling"/>
 					<ItemData ItemOID="sex" Value="F"/>
 					<ItemData ItemOID="dob" Value="2013-09-08"/>
-					<ItemData ItemOID="adopted" Value="0"/>
 					<ItemData ItemOID="life_status" Value="alive"/>
 					<ItemData ItemOID="ada2_tested" Value="1"/>
 					<ItemData ItemOID="ada2_variants" Value="0"/>
@@ -731,7 +726,6 @@
 					<ItemData ItemOID="relationship_to_proband" Value="grandparent_paternal"/>
 					<ItemData ItemOID="sex" Value="M"/>
 					<ItemData ItemOID="dob" Value="1950-01-15"/>
-					<ItemData ItemOID="adopted" Value="0"/>
 					<ItemData ItemOID="life_status" Value="deceased"/>
 					<ItemData ItemOID="dod" Value="2012-06-21"/>
 					<ItemData ItemOID="ada2_tested" Value="0"/>
@@ -755,7 +749,6 @@
 					<ItemData ItemOID="relationship_to_proband" Value="grandparent_maternal"/>
 					<ItemData ItemOID="sex" Value="F"/>
 					<ItemData ItemOID="dob" Value="1958-04-27"/>
-					<ItemData ItemOID="adopted" Value="0"/>
 					<ItemData ItemOID="life_status" Value="alive"/>
 					<ItemData ItemOID="ada2_tested" Value="0"/>
 					<ItemData ItemOID="ada2_variants" Value="unknown"/>
@@ -775,7 +768,6 @@
 					<ItemData ItemOID="relationship_to_proband" Value="grandparent_paternal"/>
 					<ItemData ItemOID="sex" Value="F"/>
 					<ItemData ItemOID="dob" Value="1953-08-30"/>
-					<ItemData ItemOID="adopted" Value="0"/>
 					<ItemData ItemOID="life_status" Value="alive"/>
 					<ItemData ItemOID="ada2_tested" Value="0"/>
 					<ItemData ItemOID="ada2_variants" Value="not_tested"/>
@@ -795,7 +787,6 @@
 					<ItemData ItemOID="relationship_to_proband" Value="grandparent_maternal"/>
 					<ItemData ItemOID="sex" Value="M"/>
 					<ItemData ItemOID="dob" Value="1955-03-11"/>
-					<ItemData ItemOID="adopted" Value="0"/>
 					<ItemData ItemOID="life_status" Value="alive"/>
 					<ItemData ItemOID="ada2_tested" Value="0"/>
 					<ItemData ItemOID="ada2_variants" Value="unknown"/>
@@ -1025,7 +1016,6 @@
 					<ItemData ItemOID="relationship" Value="participant"/>
 					<ItemData ItemOID="sex" Value="M"/>
 					<ItemData ItemOID="dob" Value="1998-12-01"/>
-					<ItemData ItemOID="adopted" Value="0"/>
 					<ItemData ItemOID="life_status" Value="alive"/>
 				</ItemGroupData>
 				<ItemGroupData ItemGroupOID="family_members.carrier_status" ItemGroupRepeatKey="1">
@@ -1052,7 +1042,6 @@
 					<ItemData ItemOID="relationship" Value="mother"/>
 					<ItemData ItemOID="sex" Value="F"/>
 					<ItemData ItemOID="dob" Value="1971-03-14"/>
-					<ItemData ItemOID="adopted" Value="0"/>
 					<ItemData ItemOID="life_status" Value="alive"/>
 				</ItemGroupData>
 				<ItemGroupData ItemGroupOID="family_members.carrier_status" ItemGroupRepeatKey="1">
@@ -1076,7 +1065,6 @@
 					<ItemData ItemOID="relationship" Value="father"/>
 					<ItemData ItemOID="sex" Value="M"/>
 					<ItemData ItemOID="dob" Value="1969-10-05"/>
-					<ItemData ItemOID="adopted" Value="0"/>
 					<ItemData ItemOID="life_status" Value="alive"/>
 					<ItemData ItemOID="ada2_tested" Value="0"/>
 					<ItemData ItemOID="ada2_variants" Value="not_tested"/>
@@ -1095,7 +1083,7 @@
 					<ItemData ItemOID="relationship" Value="sibling"/>
 					<ItemData ItemOID="sex" Value="F"/>
 					<ItemData ItemOID="dob" Value="2001-06-22"/>
-					<ItemData ItemOID="adopted" Value="1"/>
+					<ItemData ItemOID="adopted" Value="in"/>
 					<ItemData ItemOID="life_status" Value="alive"/>
 					<ItemData ItemOID="ada2_tested" Value="0"/>
 					<ItemData ItemOID="ada2_variants" Value="not_tested"/>
@@ -1443,7 +1431,7 @@
           },
           {
             &quot;url&quot;: &quot;https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/linked-record-snapshot&quot;,
-            &quot;valueString&quot;: &quot;{\u0022first_name\u0022:\u0022Noah\u0022,\u0022last_name\u0022:\u0022Demo\u0022,\u0022relationship\u0022:\u0022participant\u0022,\u0022sex\u0022:\u0022M\u0022,\u0022dob\u0022:\u00222020-02-11\u0022,\u0022adopted\u0022:false,\u0022life_status\u0022:\u0022alive\u0022,\u0022carrier_status\u0022:\u0022affected\u0022,\u0022ada2_tested\u0022:true,\u0022ada2_variants\u0022:\u0022unknown\u0022,\u0022ada2_level\u0022:\u0022low\u0022,\u0022notes\u0022:\u0022Genetic testing in progress.\u0022}&quot;
+            &quot;valueString&quot;: &quot;{\u0022first_name\u0022:\u0022Noah\u0022,\u0022last_name\u0022:\u0022Demo\u0022,\u0022relationship\u0022:\u0022participant\u0022,\u0022sex\u0022:\u0022M\u0022,\u0022dob\u0022:\u00222020-02-11\u0022,\u0022life_status\u0022:\u0022alive\u0022,\u0022carrier_status\u0022:\u0022affected\u0022,\u0022ada2_tested\u0022:true,\u0022ada2_variants\u0022:\u0022unknown\u0022,\u0022ada2_level\u0022:\u0022low\u0022,\u0022notes\u0022:\u0022Genetic testing in progress.\u0022}&quot;
           }
         ],
         &quot;gender&quot;: &quot;male&quot;,
@@ -1479,7 +1467,7 @@
           },
           {
             &quot;url&quot;: &quot;https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/linked-record-snapshot&quot;,
-            &quot;valueString&quot;: &quot;{\u0022first_name\u0022:\u0022Ivan\u0022,\u0022last_name\u0022:\u0022Demo\u0022,\u0022relationship\u0022:\u0022father\u0022,\u0022sex\u0022:\u0022M\u0022,\u0022dob\u0022:\u00221988-05-17\u0022,\u0022adopted\u0022:false,\u0022life_status\u0022:\u0022alive\u0022,\u0022ada2_tested\u0022:false,\u0022ada2_variants\u0022:\u0022not_tested\u0022,\u0022ada2_level\u0022:\u0022not_tested\u0022}&quot;
+            &quot;valueString&quot;: &quot;{\u0022first_name\u0022:\u0022Ivan\u0022,\u0022last_name\u0022:\u0022Demo\u0022,\u0022relationship\u0022:\u0022father\u0022,\u0022sex\u0022:\u0022M\u0022,\u0022dob\u0022:\u00221988-05-17\u0022,\u0022life_status\u0022:\u0022alive\u0022,\u0022ada2_tested\u0022:false,\u0022ada2_variants\u0022:\u0022not_tested\u0022,\u0022ada2_level\u0022:\u0022not_tested\u0022}&quot;
           }
         ],
         &quot;gender&quot;: &quot;male&quot;,
@@ -1515,7 +1503,7 @@
           },
           {
             &quot;url&quot;: &quot;https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/linked-record-snapshot&quot;,
-            &quot;valueString&quot;: &quot;{\u0022first_name\u0022:\u0022Clare\u0022,\u0022last_name\u0022:\u0022Demo\u0022,\u0022relationship\u0022:\u0022mother\u0022,\u0022sex\u0022:\u0022F\u0022,\u0022dob\u0022:\u00221990-08-03\u0022,\u0022adopted\u0022:false,\u0022life_status\u0022:\u0022alive\u0022,\u0022ada2_tested\u0022:false,\u0022ada2_variants\u0022:\u0022not_tested\u0022,\u0022ada2_level\u0022:\u0022not_tested\u0022}&quot;
+            &quot;valueString&quot;: &quot;{\u0022first_name\u0022:\u0022Clare\u0022,\u0022last_name\u0022:\u0022Demo\u0022,\u0022relationship\u0022:\u0022mother\u0022,\u0022sex\u0022:\u0022F\u0022,\u0022dob\u0022:\u00221990-08-03\u0022,\u0022life_status\u0022:\u0022alive\u0022,\u0022ada2_tested\u0022:false,\u0022ada2_variants\u0022:\u0022not_tested\u0022,\u0022ada2_level\u0022:\u0022not_tested\u0022}&quot;
           }
         ],
         &quot;gender&quot;: &quot;female&quot;,
@@ -2039,7 +2027,6 @@
 					<ItemData ItemOID="relationship_to_proband" Value="proband"/>
 					<ItemData ItemOID="sex" Value="M"/>
 					<ItemData ItemOID="dob" Value="2020-02-11"/>
-					<ItemData ItemOID="adopted" Value="0"/>
 					<ItemData ItemOID="life_status" Value="alive"/>
 				</ItemGroupData>
 				<ItemGroupData ItemGroupOID="family_members.carrier_status" ItemGroupRepeatKey="1">
@@ -2067,7 +2054,6 @@
 					<ItemData ItemOID="relationship_to_proband" Value="mother"/>
 					<ItemData ItemOID="sex" Value="F"/>
 					<ItemData ItemOID="dob" Value="1990-08-03"/>
-					<ItemData ItemOID="adopted" Value="0"/>
 					<ItemData ItemOID="life_status" Value="alive"/>
 					<ItemData ItemOID="ada2_tested" Value="0"/>
 					<ItemData ItemOID="ada2_variants" Value="not_tested"/>
@@ -2087,7 +2073,6 @@
 					<ItemData ItemOID="relationship_to_proband" Value="father"/>
 					<ItemData ItemOID="sex" Value="M"/>
 					<ItemData ItemOID="dob" Value="1988-05-17"/>
-					<ItemData ItemOID="adopted" Value="0"/>
 					<ItemData ItemOID="life_status" Value="alive"/>
 					<ItemData ItemOID="ada2_tested" Value="0"/>
 					<ItemData ItemOID="ada2_variants" Value="not_tested"/>
@@ -2106,7 +2091,6 @@
 					<ItemData ItemOID="relationship" Value="aunt_uncle_maternal"/>
 					<ItemData ItemOID="sex" Value="F"/>
 					<ItemData ItemOID="dob" Value="1987-12-09"/>
-					<ItemData ItemOID="adopted" Value="0"/>
 					<ItemData ItemOID="life_status" Value="alive"/>
 					<ItemData ItemOID="ada2_tested" Value="0"/>
 					<ItemData ItemOID="ada2_variants" Value="unknown"/>
