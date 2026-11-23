@@ -302,14 +302,46 @@
           ]
         },
         {
-          "linkId": "adopted",
-          "type": "boolean",
-          "text": "Adopted",
-          "definition": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/PedigreeIndividual#PedigreeIndividual.isAdopted",
+          "linkId": "adoption",
+          "type": "choice",
+          "text": "Adoption",
+          "answerOption": [
+            {
+              "valueCoding": {
+                "code": "none",
+                "display": "Not adopted"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "in",
+                "display": "Adopted in"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "out",
+                "display": "Adopted out"
+              }
+            }
+          ],
+          "columns": 3,
+          "definition": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/PedigreeIndividual#PedigreeIndividual.adoption",
           "extension": [
             {
               "url": "https://aehrc.github.io/open-pedigree/fhir/StructureDefinition/questionnaire-field-mapping",
               "valueCode": "mapsToField"
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "radio-button"
+                  }
+                ]
+              }
             }
           ],
           "enableWhen": [
@@ -321,7 +353,9 @@
                 }
               ],
               "negate": true
-            },
+            }
+          ],
+          "disabledWhen": [
             {
               "extension": [
                 {
@@ -331,8 +365,7 @@
               ],
               "negate": true
             }
-          ],
-          "enableBehavior": "all"
+          ]
         },
         {
           "linkId": "monozygotic",

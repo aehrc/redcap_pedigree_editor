@@ -2,6 +2,7 @@
 
 namespace AEHRC\PedigreeEditorExternalModule\Tests;
 
+use AEHRC\PedigreeEditorExternalModule\FhirUrls;
 use AEHRC\PedigreeEditorExternalModule\QuestionnaireDerivation;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -172,6 +173,28 @@ class QuestionnaireDerivationTest extends TestCase
             ['url' => QuestionnaireDerivation::MAPPING_EXTENSION_URL, 'valueCode' => 'mapsToField'],
             $item['extension']
         );
+    }
+
+    public function testAdoptionMapsFromARadioToPedigreeIndividualAdoption(): void
+    {
+        // pedigree-adopted-in-out: adopted in / adopted out from one radio field
+        $dd = [
+            'adoption' => $this->field([
+                'field_type' => 'radio',
+                'field_annotation' => '@PEDIGREE_FIELD(mapsTo="adoption")',
+                'select_choices_or_calculations' => 'in, Adopted in | out, Adopted out',
+            ]),
+            'adopted_yesno' => $this->field([
+                'field_type' => 'yesno',
+                'field_annotation' => '@PEDIGREE_FIELD(mapsTo="adoption")',
+            ]),
+        ];
+        $result = QuestionnaireDerivation::derive($dd, 'family_members');
+        $items = $this->flatten($result['questionnaire']);
+        $this->assertSame(FhirUrls::PEDIGREE_INDIVIDUAL . '#PedigreeIndividual.adoption', $items['adoption']['definition']);
+        // a yes/no can't say adopted out: mapsTo="isAdopted" is the target for it
+        $this->assertArrayNotHasKey('definition', $items['adopted_yesno']);
+        $this->assertStringContainsString('adopted_yesno', implode(' ', $result['warnings']));
     }
 
     public function testMismatchedMapsToIsRejectedWithWarningAndDerivedAsPlainItem(): void
